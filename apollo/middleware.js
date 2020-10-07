@@ -1,0 +1,264 @@
+import _ from 'lodash';
+import * as Constants from '../constants';
+import * as Queries from './queryTemplates';
+import { processEvents, processCategories, processEventTypes, processEntity, _tmpAddMockPois } from "./utils";
+
+/**
+ * Creates the apollo middleware to intercept actions and dispatch success/error actions through redux
+ * @param {*} client: apollo client
+ */
+const apolloMiddleware = client => {
+    return store => next => action => {
+        if (action.type === Constants.GET_POI) {
+          client.query({
+              query: Queries.getPoi,
+              variables: action.query
+          }).then((resp) => {
+            let dispatch = { type: Constants.GET_POI_SUCCESS, payload: {} };
+            if (resp.data && resp.data.nodes.length > 0) {
+              processEntity(resp.data.nodes[0]);
+              dispatch.payload = { [resp.data.nodes[0].nid]: resp.data.nodes[0] };
+            }
+            store.dispatch(dispatch);
+          }).catch((e) => {
+            console.log(e);
+            //also dispatch the id which has failed
+            store.dispatch({ type: Constants.GET_POI_FAIL, payload: e });
+          });
+        }
+        else if (action.type === Constants.GET_POIS) {
+          client.query({
+              query: Queries.getPois,
+              variables: action.query
+          }).then((resp) => {
+            let dispatch = { type: Constants.GET_POIS_SUCCESS, payload: {} };
+            if (resp.data && resp.data.nodes.length > 0) {
+              let pois = resp.data.nodes;
+              pois.forEach((e) => processEntity(e, action.coords));
+              //key by nid
+              pois = pois.reduce((acc, curr) => ({ ...acc, [curr.nid]: curr}), {});
+              dispatch.payload = pois;
+            }
+            store.dispatch(dispatch);
+          }).catch((e) => {
+            console.log(e);
+            //also dispatch the id which has failed
+            store.dispatch({ type: Constants.GET_POIS_FAIL, payload: e });
+          });
+        }
+        else if (action.type === Constants.GET_INSPIRER) {
+          console.log("action.type", action.type);
+          client.query({
+              query: Queries.getInspirer,
+              variables: action.query
+          }).then((resp) => {
+            let dispatch = { type: Constants.GET_INSPIRER_SUCCESS, payload: {} };
+            if (resp.data && resp.data.nodes.length > 0) {
+              processEntity(resp.data.nodes[0]);
+              dispatch.payload = { [resp.data.nodes[0].nid]: resp.data.nodes[0] };
+            }
+            store.dispatch(dispatch);
+          }).catch((e) => {
+            console.log(e);
+            //also dispatch the id which has failed
+            store.dispatch({ type: Constants.GET_INSPIRER_FAIL, payload: e });
+          });
+        }
+        else if (action.type === Constants.GET_EXTRAS) {
+          client.query({
+              query: Queries.getPois,
+              variables: action.query
+          }).then((resp) => {
+            let dispatch = { type: Constants.GET_EXTRAS_SUCCESS, payload: {} };
+            if (resp.data && resp.data.nodes.length > 0) {
+              let pois = resp.data.nodes;
+              pois.forEach((e) => processEntity(e, action.coords));
+              //key by nid
+              pois = pois.reduce((acc, curr) => ({ ...acc, [curr.nid]: curr}), {});
+              dispatch.payload = pois;
+            }
+            store.dispatch(dispatch);
+          }).catch((e) => {
+            console.log(e);
+            //also dispatch the id which has failed
+            store.dispatch({ type: Constants.GET_EXTRAS_FAIL, payload: e });
+          });
+        }
+        // Categories
+        else if (action.type === Constants.GET_CATEGORIES) {
+            client.query({
+                query: Queries.getCategoriesQuery,
+                variables: action.query
+            }).then((resp) => {
+                if (resp.data) {
+                    var termsMap = {};
+                    var terms = processCategories(resp.data.terms, termsMap);
+                    store.dispatch({ type: Constants.GET_CATEGORIES_SUCCESS, payload: {terms: terms, termsMap: termsMap} });
+                }
+            }).catch((e) => {
+                console.log(e);
+                store.dispatch({ type: Constants.GET_CATEGORIES_FAIL, payload: e });
+            });
+        }
+        // Categories Inspirers
+        else if (action.type === Constants.GET_CATEGORIES_INSPIRERS) {
+          client.query({
+              query: Queries.getCategoriesQuery,
+              variables: action.query
+          }).then((resp) => {
+              if (resp.data) {
+                  var termsMap = {};
+                  var terms = processCategories(resp.data.terms, termsMap);
+                  store.dispatch({ type: Constants.GET_CATEGORIES_INSPIRERS_SUCCESS, payload: {terms: terms, termsMap: termsMap} });
+              }
+          }).catch((e) => {
+              console.log(e);
+              store.dispatch({ type: Constants.GET_CATEGORIES_INSPIRERS_FAIL, payload: e });
+          });
+        } 
+        // Events
+        else if (action.type === Constants.GET_EVENTS) {
+          client.query({
+            query: Queries.getEvents,
+            variables: action.query
+          }).then((resp) => {
+            // console.log('Events response:', resp.data.events.length);
+            const { lb: timeMin, ub: timeMax } = action.ubLb;
+            let dispatch = { 
+              type: Constants.GET_EVENTS_SUCCESS, 
+              payload: { events: {}, timeMin, timeMax, start: action.query.start, end: action.query.end, filtersByType: action.filtersByType, eventsById: {} } 
+            }
+            //Send also start/end to know which ones have been loaded correctly
+            if (resp.data && resp.data.events.length > 0) {
+              //also store events by id
+              resp.data.events.forEach((e) => processEntity(e));
+              let eventsById = resp.data.events.reduce((acc, curr) => ({ ...acc, [curr.nid]: curr}), {});
+              dispatch.payload.events = processEvents(resp.data.events, action.filtersByType);
+              dispatch.payload.eventsById = eventsById;
+            }
+            //dispatch empty events but still success cause we need to fill empty dates in reducer
+            store.dispatch(dispatch);
+          }).catch((e) => {
+            console.log(e);
+            store.dispatch({ 
+              type: Constants.GET_EVENTS_FAIL,
+              start: action.query.start, end: action.query.end,
+              payload: e
+            });
+          });
+        } 
+        // Events By Id
+        else if (action.type === Constants.GET_EVENTS_BY_ID) {
+          client.query({
+            query: Queries.getEventsById,
+            variables: action.query
+          }).then((resp) => {
+            let dispatch = { 
+              type: Constants.GET_EVENTS_BY_ID_SUCCESS, 
+              payload: { } 
+            }
+            //Send also start/end to know which ones have been loaded correctly
+            if (resp.data && resp.data.events.length > 0) {
+              let events = resp.data.events;
+              events = resp.data.events;
+              events.forEach((e) => processEntity(e));
+              //key by nid
+              events = events.reduce((acc, curr) => ({ ...acc, [curr.nid]: curr}), {});
+              dispatch.payload = events;
+            }
+            store.dispatch(dispatch);
+          }).catch((e) => {
+            console.log(e);
+            store.dispatch({ 
+              type: Constants.GET_EVENTS_BY_ID_FAIL,
+              start: action.query.start, end: action.query.end,
+              payload: e
+            });
+          });
+        } 
+        // Event types
+        else if (action.type === Constants.GET_EVENT_TYPES) {
+          client.query({
+            query: Queries.getEventTypes,
+            variables: action.query
+          }).then((resp) => {
+            let dispatch = { type: Constants.GET_EVENT_TYPES_SUCCESS, payload: { eventTypes: [] } };
+            if (resp.data && resp.data.eventTypes.nodes.length > 0) 
+              dispatch.payload.eventTypes = processEventTypes(resp.data.eventTypes.nodes);
+            store.dispatch(dispatch);
+          }).catch((e) => {
+            console.log(e);
+            store.dispatch({ 
+              type: Constants.GET_EVENT_TYPES_FAIL,
+              payload: e
+            });
+          });
+        }
+        // Itineraries
+        else if (action.type === Constants.GET_ITINERARIES) {
+          client.query({
+            query: Queries.getItineraries,
+            variables: action.query
+          }).then((resp) => {
+            let dispatch = { type: Constants.GET_ITINERARIES_SUCCESS, payload: { itineraries: [] } };
+            if (resp.data && resp.data.itineraries.length > 0){
+              let itineraries = resp.data.itineraries;
+              itineraries.forEach((e) => processEntity(e));
+              //TODO: temporary fix: add fake pois to "pois" key
+              itineraries.forEach((e) => _tmpAddMockPois(e));
+              //END_TODO
+              dispatch.payload = itineraries.reduce((acc, curr) => ({ ...acc, [curr.nid]: curr}), {});;
+            }
+            store.dispatch(dispatch);
+          }).catch((e) => {
+            console.log(e);
+            store.dispatch({ 
+              type: Constants.GET_ITINERARIES_FAIL,
+              payload: e
+            });
+          });
+        }
+        // Autocomplete
+        else if (action.type === Constants.AUTOCOMPLETE) {
+          client.query({
+            query: Queries.autocompleteQuery,
+            variables: action.query
+          }).then((resp) => {
+            let dispatch = { type: Constants.AUTOCOMPLETE_SUCCESS, payload: { autocomplete: [] } };
+            if (resp.data && resp.data.autocomplete.length > 0) {
+              dispatch.payload.autocomplete = resp.data.autocomplete;
+            }
+            store.dispatch(dispatch);
+          }).catch((e) => {
+            console.log(e);
+            store.dispatch({ 
+              type: Constants.AUTOCOMPLETE_FAIL,
+              payload: e
+            });
+          });
+        }
+        // Search
+        else if (action.type === Constants.SEARCH) {
+          client.query({
+            query: Queries.searchQuery,
+            variables: action.query
+          }).then((resp) => {
+            let dispatch = { type: Constants.SEARCH_SUCCESS, payload: { search: [] } };
+            if (resp.data && resp.data.search.length > 0) {
+              resp.data.search.forEach((e) => processEntity(e.node));
+              dispatch.payload.search = resp.data.search;
+            }
+            store.dispatch(dispatch);
+          }).catch((e) => {
+            console.log(e);
+            store.dispatch({ 
+              type: Constants.SEARCH_FAIL,
+              payload: e
+            });
+          });
+        }
+        next(action);
+    }
+};
+
+export default apolloMiddleware;

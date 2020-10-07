@@ -1,0 +1,140 @@
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//:::                                                                         :::
+//:::  This routine calculates the distance between two points (given the     :::
+//:::  latitude/longitude of those points). It is being used to calculate     :::
+//:::  the distance between two locations using GeoDataSource (TM) prodducts  :::
+//:::                                                                         :::
+//:::  Definitions:                                                           :::
+//:::    South latitudes are negative, east longitudes are positive           :::
+//:::                                                                         :::
+//:::  Passed to function:                                                    :::
+//:::    lat1, lon1 = Latitude and Longitude of point 1 (in decimal degrees)  :::
+//:::    lat2, lon2 = Latitude and Longitude of point 2 (in decimal degrees)  :::
+//:::    unit = the unit you desire for results                               :::
+//:::           where: 'M' is statute miles (default)                         :::
+//:::                  'K' is kilometers                                      :::
+//:::                  'N' is nautical miles                                  :::
+//:::                                                                         :::
+//:::  Worldwide cities and other features databases with latitude longitude  :::
+//:::  are available at https://www.geodatasource.com                         :::
+//:::                                                                         :::
+//:::  For enquiries, please contact sales@geodatasource.com                  :::
+//:::                                                                         :::
+//:::  Official Web site: https://www.geodatasource.com                       :::
+//:::                                                                         :::
+//:::               GeoDataSource.com (C) All Rights Reserved 2018            :::
+//:::                                                                         :::
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+export function distance(lat1, lon1, lat2, lon2, unit = "K") {
+	if ((lat1 == lat2) && (lon1 == lon2)) {
+		return 0;
+	}
+	else {
+		var radlat1 = Math.PI * lat1/180;
+		var radlat2 = Math.PI * lat2/180;
+		var theta = lon1-lon2;
+		var radtheta = Math.PI * theta/180;
+		var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+		if (dist > 1) {
+			dist = 1;
+		}
+		dist = Math.acos(dist);
+		dist = dist * 180/Math.PI;
+		dist = dist * 60 * 1.1515;
+		if (unit=="K") { dist = dist * 1.609344 }
+		if (unit=="N") { dist = dist * 0.8684 }
+		return dist;
+	}
+}
+
+export function distanceToString(distance, unit = "K") {
+    if(unit === "K") {
+        if(distance > 1) {
+            return distance.toFixed(1) + " km";
+        } else {
+            distance *= 1000;
+            return distance.toFixed(1) + " m";
+        }
+    }
+    return distance.toString();
+}
+
+// Generates a bounding rectangle ready for use in google maps [[lng0, lat0], [lng1, lat1], ..., [lngN, latN]]
+export function boundingRect(points, center, getCoordsFun) {
+	var arrayLength = points.length;
+	var trIndex = 0;
+	var blIndex = 0;
+	var tr = bl = getCoordsFun(points[0]);
+	
+	points.forEach((p, index) => {
+		var coords = getCoordsFun(p);
+		if(coords[0] < bl[0] || coords[1] < bl[1]) {
+			bl=coords;
+			blIndex = index;
+		}
+		if(coords[0] > tr[0] || coords[1] > tr[1]) {
+			tr=coords;
+			trIndex = index;
+		}
+	})
+
+	var maxLonDelta = Math.max(Math.abs(center[0]-tr[0]), Math.abs(center[0]-bl[0]));
+	var maxLatDelta = Math.max(Math.abs(center[1]-tr[1]), Math.abs(center[1]-bl[1]));
+
+	return {
+		longitude: center[0],
+		latitude: center[1],
+		longitudeDelta: maxLonDelta * 2.5,
+		latitudeDelta: maxLatDelta * 2.5
+	}
+}
+
+
+export function regionToPoligon(region) {
+	var polygon = [];
+	try {
+		polygon[0] = [region.longitude + region.longitudeDelta, region.latitude + region.latitudeDelta];
+		polygon[1] = [region.longitude - region.longitudeDelta, region.latitude + region.latitudeDelta];
+		polygon[2] = [region.longitude - region.longitudeDelta, region.latitude - region.latitudeDelta];
+		polygon[3] = [region.longitude + region.longitudeDelta, region.latitude - region.latitudeDelta];
+		polygon[4] = polygon[0];
+	} catch (ex) {
+		console.log(ex);
+	}
+	return polygon;
+}
+
+export function regionToCoords(region) {
+	var coords = [];
+	try {
+		coords[0] = region.longitude;
+		coords[1] = region.longitude;
+	} catch (ex) {
+		console.log(ex);
+	}
+	return coords;
+}
+
+export function coordsInBound(coords) {
+	// console.log(coords);
+	if(coords.latitude > 38.862172 && coords.latitude < 41.329934 && coords.longitude > 7.941310 && coords.longitude < 9.920187)
+		return true;
+	return false;
+}
+
+export function regionDiagonalKm(region) {
+	var d = -1;
+	try {
+		var polygon = [];
+		polygon[0] = [region.longitude + region.longitudeDelta/2, region.latitude + region.latitudeDelta/2];
+		polygon[1] = [region.longitude - region.longitudeDelta/2, region.latitude + region.latitudeDelta/2];
+		polygon[2] = [region.longitude - region.longitudeDelta/2, region.latitude - region.latitudeDelta/2];
+		polygon[3] = [region.longitude + region.longitudeDelta/2, region.latitude - region.latitudeDelta/2];
+		polygon[4] = polygon[0];
+		d = distance(polygon[0][1], polygon[0][0], polygon[2][1], polygon[2][0]);
+	} catch (ex) {
+		console.log(ex);
+	}
+	return d;
+}
