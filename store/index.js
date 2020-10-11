@@ -5,7 +5,7 @@ import localeReducer from '../reducers/locale';
 import othersReducer from '../reducers/others';
 import favouritesReducer from '../reducers/favourites';
 import categoriesReducer from '../reducers/categories';
-import categoriesInspirersReducer from '../reducers/categoriesInspirers';
+import categoriesInspirersReducer from '../reducers/_delete_categoriesInspirers';
 import eventsReducer from '../reducers/events';
 import inspirersReducer from '../reducers/inspirers';
 import itinerariesReducer from '../reducers/itineraries';
@@ -27,7 +27,6 @@ const rootReducer = combineReducers({
     favouritesState: favouritesReducer,
     //Graphql states
     categoriesState: categoriesReducer,
-    categoriesInspirersState: categoriesInspirersReducer,
     eventsState: eventsReducer,
     inspirersState: inspirersReducer,
     itinerariesState: itinerariesReducer,
@@ -44,13 +43,11 @@ const persistConfig = {
   whitelist: ['favouritesState'], //only store whitelisted reducers
 };
 
-//Create the apollo client
-var apolloClient = makeApolloClient(Config.APOLLO_KEY);
 
 //Persisted reducer
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-// export const configureStore;
-export const apolloClient;
+//Create the apollo client, export 
+export const apolloClient = makeApolloClient(Config.APOLLO_KEY);
 export const store = createStore(persistedReducer, applyMiddleware(axiosMiddleware(restClient), apolloMiddleware(apolloClient)));
 export const persistor = persistStore(store);

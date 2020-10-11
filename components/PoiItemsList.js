@@ -3,7 +3,7 @@ import { View, FlatList, StyleSheet, Text } from 'react-native';
 import _ from 'lodash';
 import PoiItem from '../components/PoiItem';
 import Colors from '../constants/Colors';
-import EntitiesFlatlist from "./loadingLayouts/EntitiesFlatlist"
+import LLEntitiesFlatlist from "./loadingLayouts/LLEntitiesFlatlist"
 import { AsyncOperationStatusIndicator } from "."
  
 /**
@@ -45,7 +45,7 @@ export default class PoiItemsList extends PureComponent {
               loading={true}
               success={this.state.data && this.state.data.length > 0}
               error={false}
-              loadingLayout={<EntitiesFlatlist horizontal={true} style={this.props.contentContainerStyle} title={listTitle} titleStyle={this.props.listTitleStyle} error={false}/>}>
+              loadingLayout={<LLEntitiesFlatlist horizontal={true} style={this.props.contentContainerStyle} title={listTitle} titleStyle={this.props.listTitleStyle} error={false}/>}>
               <View style={{flex: 1}}>   
                 <Text style={{...this.props.listTitleStyle}}>{listTitle}</Text>
                 <FlatList 

@@ -31,8 +31,8 @@ import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 import Layout from '../../constants/Layout';
 import actions from '../../actions';
-import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
+import * as Constants from '../../constants';
 import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
 
 /* Deferred rendering to speedup page inital load: 
@@ -40,7 +40,7 @@ import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
    number of components loaded when the page initially mounts.
    Other components are loaded right after the mount */
 const USE_DR = false;
-class BoilerPlateScreen extends Component {
+class InspirersScreen extends Component {
 
   constructor(props) {
     super(props);
@@ -61,6 +61,8 @@ class BoilerPlateScreen extends Component {
   componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     (USE_DR && setTimeout(() => (this.setState({ render: true })), 0));
+    console.log(this.props.actions)
+    this.props.actions.getCategories({ vid: Constants.VIDS.inspirersCategories });
   }
 
   /**
@@ -90,32 +92,48 @@ class BoilerPlateScreen extends Component {
   _isSuccessData  = () => false;    /* e.g. this.props.pois.success; */
   _isLoadingData  = () => true;   /* e.g. this.props.pois.loading; */
   _isErrorData    = () => null;    /* e.g. this.props.pois.error; */
-  // _renderLoadingOutcome = () => 
-  //   <AsyncOperationStatusIndicatorPlaceholder 
-  //     retryFun={() => {}} 
-  //     size={"large"} 
-  //     loading={this._isLoadingData()} 
-  //     error={this._isErrorData()} 
-  //   />;
 
+
+  _renderCategoryList = () => {
+    // var {categories} = this.props;
+    // var {term} = this.state;
+    // var currentCategories = term ? term.terms ? term.terms : [] : categories;
+
+    return (
+        <AsyncOperationStatusIndicator
+          loading={this._isLoadingData()}
+          success={this._isSuccessData()}
+          error={this._isErrorData()}
+          loadingLayout={
+            <LLEntitiesFlatlist 
+              horizontal={false} 
+              numColumns={1} 
+              itemStyle={styles.itemFlatlist} 
+              style={styles.listStyle} 
+              bodyContainerStyle={styles.listContainer}/>}
+        >
+          <Text>CIAO</Text>
+          {/* <FlatList
+            data={currentCategories}
+            renderItem={({item}) => this._renderCategoryListItem(item)}
+            keyExtractor={item => item.tid.toString()}
+            style={styles.listStyle}
+            bodyContainerStyle={styles.listContainer}
+            initialNumToRender={3} // Reduce initial render amount
+            maxToRenderPerBatch={2}
+            updateCellsBatchingPeriod={400} // Increase time between renders
+            windowSize={5} // Reduce the window size
+            /> */}
+        </AsyncOperationStatusIndicator>
+    );
+  }
 
   _renderContent = () => {
-     return (
-      <AsyncOperationStatusIndicator
-        loading={this._isLoadingData()}
-        success={this._isSuccessData()}
-        error={this._isErrorData()}
-        loadingLayout={
-          <LLEntitiesFlatlist 
-            horizontal={false} 
-            numColumns={1} 
-            itemStyle={styles.itemFlatlist} 
-            style={styles.listStyle} 
-            bodyContainerStyle={styles.listContainer}/>}
-        >
-        <Text>REAL CONTENT</Text>
-      </AsyncOperationStatusIndicator>
-     )
+    return (
+      <>
+        {this._renderCategoryList()}
+      </>
+    )
   }
 
 
@@ -125,7 +143,6 @@ class BoilerPlateScreen extends Component {
       <View style={styles.fill}>
         <ConnectedHeader iconTintColor="#24467C" />
         {render && this._renderContent()}
-        {this._renderLoadingOutcome()}
       </View>
     )
   }
@@ -133,31 +150,77 @@ class BoilerPlateScreen extends Component {
 }
 
 
-BoilerPlateScreen.navigationOptions = {
-  title: 'Boilerplate',
+InspirersScreen.navigationOptions = {
+  title: 'Inspirers',
 };
 
 
 const styles = StyleSheet.create({
   fill: {
-    flex: 1,
-    backgroundColor: "white"
-  },
-  header: {
-    backgroundColor: "white"
   },
   container: {
-    padding: 10,
+    backgroundColor: Colors.colorScreen2,
+    flex: 1,
   },
+  sectionTitle: {
+      fontSize: 16,
+      color: 'white',
+      fontWeight: "bold",
+      margin: 10
+  },
+  listContainer: {
+    marginTop: 0,
+    paddingTop: 0,
+    backgroundColor: Colors.colorScreen2,
+
+  },
+  listContainerHeader: {
+    paddingLeft: 10,
+  },
+  mainListContainer: {
+    backgroundColor: "white",
+  },
+  listStyle: {
+    paddingTop: 10, 
+    backgroundColor: Colors.colorScreen2,
+    paddingHorizontal: 10,
+    height: "100%",
+  },
+  listStyle2: {
+    paddingTop: 10, 
+    backgroundColor: Colors.colorScreen2,
+    paddingLeft: 20,
+    paddingRight: 10,
+    paddingBottom: 25,
+    marginBottom: 20,
+    marginTop: 10,
+  },
+  headerComponentStyle: {
+    marginTop: 0,
+    paddingTop: 0,
+    top: -15
+  },
+  listTitleStyle: {
+    fontSize: 16,
+    color: 'white',
+    fontWeight: "bold",
+    marginBottom: 10,
+    flex: 1
+  },
+  itemFlatlist: {
+    height: 240, 
+    width: "100%", 
+    marginBottom: 8
+  }
 });
 
 
-function BoilerPlateScreenContainer(props) {
+function InspirersScreenContainer(props) {
   const navigation = useNavigation();
   const route = useRoute();
   const store = useStore();
 
-  return <BoilerPlateScreen 
+  return <InspirersScreen 
     {...props}
     navigation={navigation}
     route={route}
@@ -197,4 +260,4 @@ export default connect(mapStateToProps, mapDispatchToProps, (stateProps, dispatc
     actions: dispatchProps,
     ...props
   }
-})(BoilerPlateScreenContainer)
+})(InspirersScreenContainer)

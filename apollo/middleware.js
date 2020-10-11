@@ -17,7 +17,7 @@ const apolloMiddleware = client => {
             let dispatch = { type: Constants.GET_POI_SUCCESS, payload: {} };
             if (resp.data && resp.data.nodes.length > 0) {
               processEntity(resp.data.nodes[0]);
-              dispatch.payload = { [resp.data.nodes[0].nid]: resp.data.nodes[0] };
+              dispatch.payload = { [resp.data.nodes[0].uuid]: resp.data.nodes[0] };
             }
             store.dispatch(dispatch);
           }).catch((e) => {
@@ -36,7 +36,7 @@ const apolloMiddleware = client => {
               let pois = resp.data.nodes;
               pois.forEach((e) => processEntity(e, action.coords));
               //key by nid
-              pois = pois.reduce((acc, curr) => ({ ...acc, [curr.nid]: curr}), {});
+              pois = pois.reduce((acc, curr) => ({ ...acc, [curr.uuid]: curr}), {});
               dispatch.payload = pois;
             }
             store.dispatch(dispatch);
@@ -47,7 +47,6 @@ const apolloMiddleware = client => {
           });
         }
         else if (action.type === Constants.GET_INSPIRER) {
-          console.log("action.type", action.type);
           client.query({
               query: Queries.getInspirer,
               variables: action.query
@@ -55,7 +54,7 @@ const apolloMiddleware = client => {
             let dispatch = { type: Constants.GET_INSPIRER_SUCCESS, payload: {} };
             if (resp.data && resp.data.nodes.length > 0) {
               processEntity(resp.data.nodes[0]);
-              dispatch.payload = { [resp.data.nodes[0].nid]: resp.data.nodes[0] };
+              dispatch.payload = { [resp.data.nodes[0].uuid]: resp.data.nodes[0] };
             }
             store.dispatch(dispatch);
           }).catch((e) => {
@@ -74,7 +73,7 @@ const apolloMiddleware = client => {
               let pois = resp.data.nodes;
               pois.forEach((e) => processEntity(e, action.coords));
               //key by nid
-              pois = pois.reduce((acc, curr) => ({ ...acc, [curr.nid]: curr}), {});
+              pois = pois.reduce((acc, curr) => ({ ...acc, [curr.uuid]: curr}), {});
               dispatch.payload = pois;
             }
             store.dispatch(dispatch);
@@ -84,7 +83,6 @@ const apolloMiddleware = client => {
             store.dispatch({ type: Constants.GET_EXTRAS_FAIL, payload: e });
           });
         }
-        // Categories
         else if (action.type === Constants.GET_CATEGORIES) {
             client.query({
                 query: Queries.getCategoriesQuery,
@@ -93,30 +91,20 @@ const apolloMiddleware = client => {
                 if (resp.data) {
                     var termsMap = {};
                     var terms = processCategories(resp.data.terms, termsMap);
-                    store.dispatch({ type: Constants.GET_CATEGORIES_SUCCESS, payload: {terms: terms, termsMap: termsMap} });
+                    let dispacth = { 
+                      type: Constants.GET_CATEGORIES_SUCCESS, 
+                      payload: { 
+                        terms: { [action.query.vid]: terms }, 
+                        termsMap: { [action.query.vid]: termsMap }
+                      }  
+                    };
+                    store.dispatch(dispacth);
                 }
             }).catch((e) => {
                 console.log(e);
                 store.dispatch({ type: Constants.GET_CATEGORIES_FAIL, payload: e });
             });
         }
-        // Categories Inspirers
-        else if (action.type === Constants.GET_CATEGORIES_INSPIRERS) {
-          client.query({
-              query: Queries.getCategoriesQuery,
-              variables: action.query
-          }).then((resp) => {
-              if (resp.data) {
-                  var termsMap = {};
-                  var terms = processCategories(resp.data.terms, termsMap);
-                  store.dispatch({ type: Constants.GET_CATEGORIES_INSPIRERS_SUCCESS, payload: {terms: terms, termsMap: termsMap} });
-              }
-          }).catch((e) => {
-              console.log(e);
-              store.dispatch({ type: Constants.GET_CATEGORIES_INSPIRERS_FAIL, payload: e });
-          });
-        } 
-        // Events
         else if (action.type === Constants.GET_EVENTS) {
           client.query({
             query: Queries.getEvents,
@@ -147,7 +135,6 @@ const apolloMiddleware = client => {
             });
           });
         } 
-        // Events By Id
         else if (action.type === Constants.GET_EVENTS_BY_ID) {
           client.query({
             query: Queries.getEventsById,
@@ -176,7 +163,6 @@ const apolloMiddleware = client => {
             });
           });
         } 
-        // Event types
         else if (action.type === Constants.GET_EVENT_TYPES) {
           client.query({
             query: Queries.getEventTypes,
@@ -194,7 +180,6 @@ const apolloMiddleware = client => {
             });
           });
         }
-        // Itineraries
         else if (action.type === Constants.GET_ITINERARIES) {
           client.query({
             query: Queries.getItineraries,
@@ -218,7 +203,6 @@ const apolloMiddleware = client => {
             });
           });
         }
-        // Autocomplete
         else if (action.type === Constants.AUTOCOMPLETE) {
           client.query({
             query: Queries.autocompleteQuery,
@@ -237,7 +221,6 @@ const apolloMiddleware = client => {
             });
           });
         }
-        // Search
         else if (action.type === Constants.SEARCH) {
           client.query({
             query: Queries.searchQuery,

@@ -12,7 +12,7 @@ import {
   // ScrollableHeader,
   // TabBarIcon, 
   // CalendarListItem, 
-  AsyncOperationStatusIndicator, 
+  // AsyncOperationStatusIndicator, 
   // AsyncOperationStatusIndicatorPlaceholder,
   // Webview, 
   // ConnectedText, 
@@ -33,14 +33,13 @@ import Layout from '../../constants/Layout';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
 
 /* Deferred rendering to speedup page inital load: 
    deferred rendering delays the rendering reducing the initial 
    number of components loaded when the page initially mounts.
    Other components are loaded right after the mount */
 const USE_DR = false;
-class BoilerPlateScreen extends Component {
+class PlacesScreen extends Component {
 
   constructor(props) {
     super(props);
@@ -87,35 +86,27 @@ class BoilerPlateScreen extends Component {
    *    Loading state is stored in this.props.searchAutocomplete.searchLoading
    *    Error state is stored in this.props.searchAutocomplete.searchError
    */
-  _isSuccessData  = () => false;    /* e.g. this.props.pois.success; */
-  _isLoadingData  = () => true;   /* e.g. this.props.pois.loading; */
+  _isSuccessData  = () => true;    /* e.g. this.props.pois.success; */
+  _isLoadingData  = () => false;   /* e.g. this.props.pois.loading; */
   _isErrorData    = () => null;    /* e.g. this.props.pois.error; */
-  // _renderLoadingOutcome = () => 
-  //   <AsyncOperationStatusIndicatorPlaceholder 
-  //     retryFun={() => {}} 
-  //     size={"large"} 
-  //     loading={this._isLoadingData()} 
-  //     error={this._isErrorData()} 
-  //   />;
+  _renderLoadingOutcome = () => 
+    <AsyncOperationStatusIndicatorPlaceholder 
+      retryFun={() => {}} 
+      size={"large"} 
+      loading={this._isLoadingData()} 
+      error={this._isErrorData()} 
+    />;
 
 
   _renderContent = () => {
-     return (
-      <AsyncOperationStatusIndicator
-        loading={this._isLoadingData()}
-        success={this._isSuccessData()}
-        error={this._isErrorData()}
-        loadingLayout={
-          <LLEntitiesFlatlist 
-            horizontal={false} 
-            numColumns={1} 
-            itemStyle={styles.itemFlatlist} 
-            style={styles.listStyle} 
-            bodyContainerStyle={styles.listContainer}/>}
-        >
-        <Text>REAL CONTENT</Text>
-      </AsyncOperationStatusIndicator>
-     )
+    if (this._isSuccessData())
+      return (
+        <View>
+          <Text>Success!</Text>
+        </View>
+      );
+    else 
+      return null; 
   }
 
 
@@ -123,7 +114,12 @@ class BoilerPlateScreen extends Component {
     const { render } = this.state;
     return (
       <View style={styles.fill}>
-        <ConnectedHeader iconTintColor="#24467C" />
+        <ConnectedHeader 
+          iconTintColor="#24467C"
+          containerStyle={{
+            marginTop: Layout.statusbarHeight,
+            height: Layout.header.height
+          }} />
         {render && this._renderContent()}
         {this._renderLoadingOutcome()}
       </View>
@@ -133,8 +129,8 @@ class BoilerPlateScreen extends Component {
 }
 
 
-BoilerPlateScreen.navigationOptions = {
-  title: 'Boilerplate',
+PlacesScreen.navigationOptions = {
+  title: 'Places',
 };
 
 
@@ -152,12 +148,12 @@ const styles = StyleSheet.create({
 });
 
 
-function BoilerPlateScreenContainer(props) {
+function PlacesScreenContainer(props) {
   const navigation = useNavigation();
   const route = useRoute();
   const store = useStore();
 
-  return <BoilerPlateScreen 
+  return <PlacesScreen 
     {...props}
     navigation={navigation}
     route={route}
@@ -176,6 +172,7 @@ const mapStateToProps = state => {
     favourites: state.favouritesState,
     //graphql
     categories: state.categoriesState,
+    categoriesInspirers: state.categoriesInspirersState,
     events: state.eventsState,
     inspirers: state.inspirersState,
     itineraries: state.itinerariesState,
@@ -197,4 +194,4 @@ export default connect(mapStateToProps, mapDispatchToProps, (stateProps, dispatc
     actions: dispatchProps,
     ...props
   }
-})(BoilerPlateScreenContainer)
+})(PlacesScreenContainer)

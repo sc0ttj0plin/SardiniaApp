@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react';
 import { FlatList, StyleSheet, View, Text } from 'react-native';
 import ShimmerWrapper from "../ShimmerWrapper"
 
-export default class EntitiesFlatlist extends PureComponent{
+export default class LLEntitiesFlatlist extends PureComponent{
 
     constructor(props){
         super(props);

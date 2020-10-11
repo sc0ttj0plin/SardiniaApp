@@ -4,27 +4,27 @@ import { Platform } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { useIsDrawerOpen } from '@react-navigation/drawer';
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 
 import TabBarIcon from '../components/TabBarIcon';
-import PlacesScreen from '../screens/Others/PlacesScreen';
-import InspirersScreen from '../screens/Others/InspirersScreen';
-import MapScreen from '../screens/Others/MapScreen';
-import ExploreScreen from '../screens/Others/ExploreScreen';
-import ExtrasScreen from '../screens/Others/ExtrasScreen';
-import ExtraScreen from '../screens/Others/Extra/ExtraScreen';
-import PlaceScreen from '../screens/Others/PlaceScreen';
-import InspirerScreen from '../screens/Others/InspirerScreen';
-import VideoScreen from '../screens/Others/VideoScreen';
-import FavouritesScreen from '../screens/Others/FavouritesScreen';
-import TabBar from "../components/TabBar";
-import ExperiencesEventsScreen from '../screens/Others/ExperiencesEventsScreen';
-import ExperiencesItinerariesScreen from '../screens/Others/ExperiencesItinerariesScreen';
-import EventScreen from '../screens/Others/EventScreen';
-import ItineraryScreen from '../screens/Others/ItineraryScreen';
-import SearchScreen from '../screens/Others/SearchScreen';
+import PlacesScreen from '../screens/Places/Places';
+import InspirersScreen from '../screens/Inspirers/Inspirers';
+// import MapScreen from '../screens/Others/MapScreen';
+// import ExploreScreen from '../screens/Others/ExploreScreen';
+// import ExtrasScreen from '../screens/Others/ExtrasScreen';
+// import ExtraScreen from '../screens/Others/Extra/ExtraScreen';
+// import PlaceScreen from '../screens/Others/PlaceScreen';
+// import InspirerScreen from '../screens/Others/InspirerScreen';
+// import VideoScreen from '../screens/Others/VideoScreen';
+// import FavouritesScreen from '../screens/Others/FavouritesScreen';
+// import ExperiencesEventsScreen from '../screens/Others/ExperiencesEventsScreen';
+// import ExperiencesItinerariesScreen from '../screens/Others/ExperiencesItinerariesScreen';
+// import EventScreen from '../screens/Others/EventScreen';
+// import ItineraryScreen from '../screens/Others/ItineraryScreen';
+// import SearchScreen from '../screens/Others/SearchScreen';
 import Boilerplate from '../screens/Boilerplates/Boilerplate';
-import { ConnectedText, ConnectedLanguageList } from '../components';
-import VirtualTourScreen from '../screens/Others/VirtualTourScreen';
+import { ConnectedText, ConnectedLanguageList, TabBar } from '../components';
+// import VirtualTourScreen from '../screens/Others/VirtualTourScreen';
 import * as Constants from '../constants';
 const {
   NavPlacesScreen, NavInspirersScreen ,NavMapScreen, 
@@ -35,7 +35,7 @@ const {
   NavMainStackScreen, NavVideoScreen, NavFavouritesScreen, NavFavouritesStackScreen 
 } = Constants.NAVIGATION;
 
-import {FromTopTransition} from '../transitions'
+import {FromTopTransition} from './transitions'
 import Colors from '../constants/Colors'; 
 
 /**
@@ -177,7 +177,7 @@ function ExtraStackScreen() {
  * Tab navigator (level: 2, parent: MainStack)
  * To prevent Tabs from showing on level 2 onwards we decouple them from their stacks and place on the same level of MainStack
  */
-const BottomTabNavigator = createBottomBottomTabNavigator();
+const BottomTabNavigator = createMaterialBottomTabNavigator();
  
 function TabNavigator() {
   return (
@@ -189,9 +189,9 @@ function TabNavigator() {
       swipeEnabled={false}
       tabBar={props => <TabBar {...props} navOptions={[placesNavigationOptions, inspirersNavigationOptions, trendsNavigationOptions, itinerariesNavigationOptions, eventsNavigationOptions]}/>}
       animationEnabled={true}>
-      <BottomTabNavigator.Screen name={"Boilerplate"} component={Boilerplate} options={placesNavigationOptions} label="ciao"/>
+      {/* <BottomTabNavigator.Screen name={"Boilerplate"} component={Boilerplate} options={placesNavigationOptions} label="Boilerplate"/> */}
       {/* <BottomTabNavigator.Screen name={NavPlacesScreen} component={PlacesScreen} options={placesNavigationOptions} label="ciao"/> */}
-      {/* <BottomTabNavigator.Screen name={NavInspirersScreen} component={InspirersScreen} options={inspirersNavigationOptions} /> */}
+      <BottomTabNavigator.Screen name={NavInspirersScreen} component={InspirersScreen} options={inspirersNavigationOptions} />
       {/* <BottomTabNavigator.Screen name={NavTrends} component={ExtraStackScreen} options={trendsNavigationOptions} /> */}
       {/* <BottomTabNavigator.Screen name={NavExperiencesItinerariesScreen} component={ExperiencesItinerariesScreen} options={itinerariesNavigationOptions} /> */}
       {/* <BottomTabNavigator.Screen name={NavExperiencesEventsScreen} component={ExperiencesEventsScreen} options={eventsNavigationOptions}/> */}
@@ -286,8 +286,8 @@ function CustomDrawerContent(props) {
 
   return (
     <DrawerContentScrollView {...props}>
-      <DrawerItemList state={newState} {...rest} />
-      <ConnectedLanguageList />
+      {/* <DrawerItemList state={newState} {...rest} /> */}
+      {/* <ConnectedLanguageList /> */}
     </DrawerContentScrollView>
   );
 }

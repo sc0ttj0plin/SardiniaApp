@@ -144,6 +144,18 @@ export const NAVIGATION = {
   NavMainStackScreen: "MainStackScreen",
   NavFavouritesScreen: "FavouritesScreen",
   NavFavouritesStackScreen: "FavouritesStackScreen",
+  NavBoilerPlate: "Boilerplate"
+}
+
+/**
+ * Vocabulary ids:
+ *  inspirers, pois, events
+ */
+export const VIDS = {
+  events: 4,
+  pois: 14,
+  inspirersCategories: 46,
+  poisCategories: 36,
 }
 
 export const styles = {

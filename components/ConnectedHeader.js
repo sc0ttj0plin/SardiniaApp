@@ -1,26 +1,26 @@
 import React, { PureComponent } from "react";
-import { View, Image, StyleSheet, Platform } from "react-native";
+import { View, Image, StyleSheet, Platform, NativeModules } from "react-native";
+const { StatusBarManager } = NativeModules;
 import { SearchBar, Button, Icon } from "react-native-elements";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 import Layout from '../constants/Layout';
-import * as graphqlActions from '../actions/graphql';
-import * as restActions from '../actions/rest';
-import * as localeActions from '../actions/locale';
-import * as othersActions from '../actions/others';
+import * as actions from '../actions';
 import Colors from '../constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import * as Constants from '../constants';
 import * as utils from '../helpers/utils';
 const { NavPlacesScreen, NavInspirersScreen ,NavMapScreen, NavExperiencesScreen, 
   NavItinerariesStack, NavEventsStack, 
-  NavExperiencesItinerariesScreen, NavItineraryScreen, NavExperiencesEventsScreen, 
+  NavExperiencesItinerariesScreen, NavItineraryScreen, NavExperiencesEventsScreen, NavBoilerPlate,
   NavEventScreen, NavExploreScreen, NavVirtualTourScreen, NavPlaceScreen, NavInspirerScreen, 
   NavExperiences, NavPlaces,NavInspirers ,NavExplore, NavEvents, NavTabNavigator, NavLanguageScreen1,
   NavSearchScreen, NavGalleryScreen, NavExtrasScreen, NavExtraScreen, NavFavouritesScreen } = Constants.NAVIGATION;
  
+const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
+
 //backButtonVisible == true: shows backButton, if set to false shows drawer menù icon
 const HEADER_BUTTONS_PER_SCREEN = {
   [NavPlacesScreen]: {backButtonVisible: false, searchButtonVisible: true},
@@ -48,6 +48,8 @@ const HEADER_BUTTONS_PER_SCREEN = {
   [NavLanguageScreen1]: {backButtonVisible: false, searchButtonVisible: true},
   [NavSearchScreen]: {backButtonVisible: true, searchButtonVisible: true},
   [NavFavouritesScreen]: {backButtonVisible: true, searchButtonVisible: true},
+  [NavBoilerPlate]: {backButtonVisible: true, searchButtonVisible: true},
+  ["default"]: {backButtonVisible: false, searchButtonVisible: true}
 }
 
 
@@ -61,7 +63,7 @@ class ConnectedHeader extends PureComponent {
   constructor(props) {
     super(props);
 
-    const { name: routeName } = this.props.route;
+    const { name: routeName = "default" } = this.props.route;
 
     this.state = {
       routeName,
@@ -195,7 +197,7 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: 'rgba(255,255,255,0.90)',
     height: 70,
-    marginTop: Layout.header.height,
+    marginTop: STATUSBAR_HEIGHT, //Layout.header.height,
     alignItems: "center"
   },
   searchBarExternalContainer: {
@@ -252,7 +254,7 @@ const mapStateToProps = state => {
 
 
 const mapDispatchToProps = dispatch => {
-  return {...bindActionCreators({ ...graphqlActions, ...restActions, ...localeActions, ...othersActions}, dispatch)};
+  return {...bindActionCreators({ ...actions }, dispatch)};
 };
 
 

@@ -6,7 +6,7 @@ import _ from 'lodash';
  */
 const INITIAL_STATE = {
   //categories
-  data: [],
+  data: {}, /** data is keyed by vid (e.g. places: 36, inspirers: 46) */
   success: false, 
   map: {},
   error: null,
@@ -23,12 +23,13 @@ export default function reducer(state = INITIAL_STATE, action) {
         loading: true 
       };
     case Constants.GET_CATEGORIES_SUCCESS:
+      console.log(action.payload)
       return { 
         ...state, 
         success: true,
         error: null, 
-        data: action.payload.terms, 
-        map: action.payload.termsMap, 
+        data: {...state.data, ...action.payload.terms}, /* e.g. { 36: { ... }, 46: { ... } } */
+        map: {...state.map, ...action.payload.termsMap},
         loading: false
       };
     case Constants.GET_CATEGORIES_FAIL:

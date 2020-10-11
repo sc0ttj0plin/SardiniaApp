@@ -4,7 +4,7 @@ import { FlatList, StyleSheet, View, Text } from 'react-native';
 import ShimmerWrapper from "../ShimmerWrapper"
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
-class HorizontalItemsFlatlist extends PureComponent {
+class LLHorizontalItemsFlatlist extends PureComponent {
 
     constructor(props){
         super(props);
@@ -61,9 +61,9 @@ const styles = StyleSheet.create({
   });
 
 
-function HorizontalItemsFlatlistContainer(props) {
+function LLHorizontalItemsFlatlistContainer(props) {
     const store = useStore();
-    return <HorizontalItemsFlatlist {...props} store={store} />;
+    return <LLHorizontalItemsFlatlist {...props} store={store} />;
 }
 
 const mapStateToProps = state => {
@@ -82,4 +82,4 @@ return {
     actions: dispatchProps,
     ...props
 }
-})(HorizontalItemsFlatlistContainer)
+})(LLHorizontalItemsFlatlistContainer)
