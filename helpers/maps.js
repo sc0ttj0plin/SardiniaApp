@@ -117,8 +117,7 @@ export function regionToCoords(region) {
 }
 
 export function coordsInBound(coords) {
-	// console.log(coords);
-	if(coords.latitude > 38.862172 && coords.latitude < 41.329934 && coords.longitude > 7.941310 && coords.longitude < 9.920187)
+	if (coords.latitude > 38.862172 && coords.latitude < 41.329934 && coords.longitude > 7.941310 && coords.longitude < 9.920187)
 		return true;
 	return false;
 }

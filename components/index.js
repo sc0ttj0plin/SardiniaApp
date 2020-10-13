@@ -7,7 +7,6 @@
 // export TabBarIcon from './TabBarIcon';
 // export CalendarListItem from './CalendarListItem';
 export AsyncOperationStatusIndicator from './AsyncOperationStatusIndicator';
-export AsyncOperationStatusIndicatorPlaceholder from './AsyncOperationStatusIndicatorPlaceholder';
 // export MapViewItinerary from './MapViewItinerary';
 // export Webview from './Webview';
 export ConnectedText from './ConnectedText';
@@ -20,5 +19,6 @@ export ConnectedHeader from './ConnectedHeader';
 // export PoiItemsList from './PoiItemsList';
 // export ExtrasListItem from './ExtrasListItem';
 export TabBar from './TabBar';
+export ScrollableContainer from './ScrollableContainer';
 
 

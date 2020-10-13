@@ -158,6 +158,29 @@ export const VIDS = {
   poisCategories: 36,
 }
 
+/* PAGINATION */
+export const PAGINATION = {
+  poisLimit: 12,
+  poisOffset: null, //not used yet
+}
+
+/* MAP CONSTANTS */
+export const MAP = {
+  //Sardinia
+  defaultRegion: {
+    longitude: 9.053451,
+    latitude: 40.0711,
+    latitudeDelta: 3,
+    longitudeDelta: 3
+  },
+}
+
+export const NAVIGATOR_OPTS = { 
+  enableHighAccuracy: true, 
+  timeout: 20000, 
+  maximumAge: 5000 
+};
+
 export const styles = {
   html: {
     shortText: "textAlign: center; color: black; font-size: 15;",

@@ -1,6 +1,6 @@
-import { apolloClient } from '../store';
 import * as Constants from '../constants';
 import { processEntity, _tmpAddMockPois } from "./utils";
+import { apolloClient } from '../store';
 import * as Queries from './queryTemplates';
 
 /**
