@@ -60,8 +60,7 @@ class InspirersScreen extends Component {
    */
   componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
-    (USE_DR && setTimeout(() => (this.setState({ render: true })), 0));
-    console.log(this.props.actions)
+    {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
     this.props.actions.getCategories({ vid: Constants.VIDS.inspirersCategories });
   }
 

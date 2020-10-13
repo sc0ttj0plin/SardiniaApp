@@ -1,5 +1,5 @@
 
-import React, { PureComponent, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import { FlatList, StyleSheet, View, Text } from 'react-native';
 import ShimmerWrapper from "../ShimmerWrapper"
 import { connect, useStore } from 'react-redux';

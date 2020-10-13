@@ -9,6 +9,7 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import TabBarIcon from '../components/TabBarIcon';
 import PlacesScreen from '../screens/Places/Places';
 import InspirersScreen from '../screens/Inspirers/Inspirers';
+import EventsScreen from '../screens/Events/Events';
 // import MapScreen from '../screens/Others/MapScreen';
 // import ExploreScreen from '../screens/Others/ExploreScreen';
 // import ExtrasScreen from '../screens/Others/ExtrasScreen';
@@ -29,7 +30,7 @@ import * as Constants from '../constants';
 const {
   NavPlacesScreen, NavInspirersScreen ,NavMapScreen, 
   NavExperiencesItinerariesScreen, 
-  NavItineraryScreen, NavExperiencesEventsScreen, NavEventScreen, NavExploreScreen, 
+  NavItineraryScreen, NavEventsScreen, NavEventScreen, NavExploreScreen, 
   NavVirtualTourScreen, NavPlaceScreen, NavInspirerScreen,
   NavTrends, NavTabNavigator, NavSearchScreen, NavSearchStackScreen, 
   NavMainStackScreen, NavVideoScreen, NavFavouritesScreen, NavFavouritesStackScreen 
@@ -90,7 +91,7 @@ var ConnectedTextEvents = <ConnectedText languageKey="tabEvents"/>;
 
 const eventsNavigationOptions = {
   languageKey: "tabEvents",
-  name: "ExperiencesEventsScreen",
+  name: "EventsScreen",
   backgroundActiveColor: Colors.colorScreen5, 
   icon: Platform.OS === 'ios' ? 'ios-calendar' : 'md-calendar',
   iconSourceDefault: require("../assets/icons/events_default.png"),
@@ -191,10 +192,10 @@ function TabNavigator() {
       animationEnabled={true}>
       {/* <BottomTabNavigator.Screen name={"Boilerplate"} component={Boilerplate} options={placesNavigationOptions} label="Boilerplate"/> */}
       {/* <BottomTabNavigator.Screen name={NavPlacesScreen} component={PlacesScreen} options={placesNavigationOptions} label="ciao"/> */}
-      <BottomTabNavigator.Screen name={NavInspirersScreen} component={InspirersScreen} options={inspirersNavigationOptions} />
+      {/* <BottomTabNavigator.Screen name={NavInspirersScreen} component={InspirersScreen} options={inspirersNavigationOptions} /> */}
       {/* <BottomTabNavigator.Screen name={NavTrends} component={ExtraStackScreen} options={trendsNavigationOptions} /> */}
       {/* <BottomTabNavigator.Screen name={NavExperiencesItinerariesScreen} component={ExperiencesItinerariesScreen} options={itinerariesNavigationOptions} /> */}
-      {/* <BottomTabNavigator.Screen name={NavExperiencesEventsScreen} component={ExperiencesEventsScreen} options={eventsNavigationOptions}/> */}
+      <BottomTabNavigator.Screen name={NavEventsScreen} component={EventsScreen} options={eventsNavigationOptions}/>
     </BottomTabNavigator.Navigator>
   );
 }

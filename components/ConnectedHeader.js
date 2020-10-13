@@ -14,7 +14,7 @@ import * as Constants from '../constants';
 import * as utils from '../helpers/utils';
 const { NavPlacesScreen, NavInspirersScreen ,NavMapScreen, NavExperiencesScreen, 
   NavItinerariesStack, NavEventsStack, 
-  NavExperiencesItinerariesScreen, NavItineraryScreen, NavExperiencesEventsScreen, NavBoilerPlate,
+  NavExperiencesItinerariesScreen, NavItineraryScreen, NavEventsScreen, NavBoilerPlate,
   NavEventScreen, NavExploreScreen, NavVirtualTourScreen, NavPlaceScreen, NavInspirerScreen, 
   NavExperiences, NavPlaces,NavInspirers ,NavExplore, NavEvents, NavTabNavigator, NavLanguageScreen1,
   NavSearchScreen, NavGalleryScreen, NavExtrasScreen, NavExtraScreen, NavFavouritesScreen } = Constants.NAVIGATION;
@@ -31,7 +31,7 @@ const HEADER_BUTTONS_PER_SCREEN = {
   [NavEventsStack]: {backButtonVisible: false, searchButtonVisible: true}, 
   [NavExperiencesItinerariesScreen]: {backButtonVisible: false, searchButtonVisible: true}, 
   [NavItineraryScreen]: {backButtonVisible: true, searchButtonVisible: true}, 
-  [NavExperiencesEventsScreen]: {backButtonVisible: false, searchButtonVisible: true}, 
+  [NavEventsScreen]: {backButtonVisible: false, searchButtonVisible: true}, 
   [NavEventScreen]: {backButtonVisible: true, searchButtonVisible: true}, 
   [NavExploreScreen]: {backButtonVisible: true, searchButtonVisible: true}, 
   [NavVirtualTourScreen]: {backButtonVisible: false, searchButtonVisible: true}, 

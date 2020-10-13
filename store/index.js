@@ -5,7 +5,6 @@ import localeReducer from '../reducers/locale';
 import othersReducer from '../reducers/others';
 import favouritesReducer from '../reducers/favourites';
 import categoriesReducer from '../reducers/categories';
-import categoriesInspirersReducer from '../reducers/_delete_categoriesInspirers';
 import eventsReducer from '../reducers/events';
 import inspirersReducer from '../reducers/inspirers';
 import itinerariesReducer from '../reducers/itineraries';

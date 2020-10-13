@@ -38,7 +38,7 @@ class ExperiencesScreen extends Component {
   }
 
   _openEvents = () => {
-    this.props.navigation.navigate(Constants.NAVIGATION.NavExperiencesEventsScreen);
+    this.props.navigation.navigate(Constants.NAVIGATION.NavEventsScreen);
   }
 
   _openInspirers = () => {

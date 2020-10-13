@@ -26,30 +26,43 @@ import {
   // ExtrasListItem, 
   // MapViewItinerary
  } from "../../components";
+import moment from "moment";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
+import { Calendar, LocaleConfig, CalendarList } from 'react-native-calendars';
 import Layout from '../../constants/Layout';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
 import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
 
+import { FETCH_NUM_MONTHS_FORWARD, FETCH_NUM_MONTHS_BACKWARDS } from '../../constants';
+
 /* Deferred rendering to speedup page inital load: 
    deferred rendering delays the rendering reducing the initial 
    number of components loaded when the page initially mounts.
    Other components are loaded right after the mount */
 const USE_DR = false;
-class BoilerPlateScreen extends Component {
+class EventsScreen extends Component {
 
   constructor(props) {
     super(props);
 
     /* Get props from navigation */
     //let { someNavProps } = props.route.params; 
+    for (let language in Constants.AGENDA_LOCALE)
+      LocaleConfig.locales[language] = Constants.AGENDA_LOCALE[language];
+
+    /* The upper and lower bound for date fetcher: use to load more months */
+    this._ubLb = { 
+      lb: this.props.eventsTimeMin || null,
+      ub: this.props.eventsTimeMax || null
+    };
 
     this.state = {
       render: USE_DR ? false : true,
+      selectedDay: moment().subtract(2, 'month').format('YYYY-MM-DD'),
     };
       
   }
@@ -87,9 +100,17 @@ class BoilerPlateScreen extends Component {
    *    Loading state is stored in this.props.searchAutocomplete.searchLoading
    *    Error state is stored in this.props.searchAutocomplete.searchError
    */
-  _isSuccessData  = () => false;    /* e.g. this.props.pois.success; */
-  _isLoadingData  = () => true;   /* e.g. this.props.pois.loading; */
+  _isSuccessData  = () => true;    /* e.g. this.props.pois.success; */
+  _isLoadingData  = () => false;   /* e.g. this.props.pois.loading; */
   _isErrorData    = () => null;    /* e.g. this.props.pois.error; */
+  // _renderLoadingOutcome = () => 
+  //   <AsyncOperationStatusIndicatorPlaceholder 
+  //     retryFun={() => {}} 
+  //     size={"large"} 
+  //     loading={this._isLoadingData()} 
+  //     error={this._isErrorData()} 
+  //   />;
+
 
   _renderContent = () => {
      return (
@@ -97,16 +118,39 @@ class BoilerPlateScreen extends Component {
         loading={this._isLoadingData()}
         success={this._isSuccessData()}
         error={this._isErrorData()}
-        retryFun={() => {}} 
-        loadingLayout={
-          <LLEntitiesFlatlist 
-            horizontal={false} 
-            numColumns={1} 
-            itemStyle={styles.itemFlatlist} 
-            style={styles.listStyle} 
-            bodyContainerStyle={styles.listContainer}/>}
-        >
-        <Text>REAL CONTENT</Text>
+        loadingLayout={<Text>NOW LOADING</Text>}>
+          <Calendar
+            // Initially visible month. Default = Date()
+            current={'2012-03-01'}
+            // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
+            minDate={'2012-05-10'}
+            // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
+            maxDate={'2012-05-30'}
+            // Handler which gets executed on day press. Default = undefined
+            onDayPress={(day) => {console.log('selected day', day)}}
+            // Handler which gets executed on day long press. Default = undefined
+            onDayLongPress={(day) => {console.log('selected day', day)}}
+            // Month format in calendar title. Formatting values: http://arshaw.com/xdate/#Formatting
+            monthFormat={'yyyy MM'}
+            // Handler which gets executed when visible month changes in calendar. Default = undefined
+            onMonthChange={(month) => {console.log('month changed', month)}}
+            // Do not show days of other months in month page. Default = false
+            hideExtraDays={true}
+            // If firstDay=1 week starts from Monday. Note that dayNames and dayNamesShort should still start from Sunday.
+            firstDay={1}
+            // Hide day names. Default = false
+            hideDayNames={true}
+            // Show week numbers to the left. Default = false
+            showWeekNumbers={true}
+            // Handler which gets executed when press arrow icon left. It receive a callback can go back month
+            onPressArrowLeft={subtractMonth => subtractMonth()}
+            // Handler which gets executed when press arrow icon right. It receive a callback can go next month
+            onPressArrowRight={addMonth => addMonth()}
+            // Replace default month and year title with custom one. the function receive a date as parameter.
+            renderHeader={(date) => {/*Return JSX*/}}
+            // Enable the option to swipe between months. Default = false
+            enableSwipeMonths={true}
+          />
       </AsyncOperationStatusIndicator>
      )
   }
@@ -125,8 +169,8 @@ class BoilerPlateScreen extends Component {
 }
 
 
-BoilerPlateScreen.navigationOptions = {
-  title: 'Boilerplate',
+EventsScreen.navigationOptions = {
+  title: 'Calendar',
 };
 
 
@@ -144,12 +188,12 @@ const styles = StyleSheet.create({
 });
 
 
-function BoilerPlateScreenContainer(props) {
+function EventsScreenContainer(props) {
   const navigation = useNavigation();
   const route = useRoute();
   const store = useStore();
 
-  return <BoilerPlateScreen 
+  return <EventsScreen 
     {...props}
     navigation={navigation}
     route={route}
@@ -189,4 +233,4 @@ export default connect(mapStateToProps, mapDispatchToProps, (stateProps, dispatc
     actions: dispatchProps,
     ...props
   }
-})(BoilerPlateScreenContainer)
+})(EventsScreenContainer)
