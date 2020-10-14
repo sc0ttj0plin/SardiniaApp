@@ -39,11 +39,9 @@ import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
 
 import { FETCH_NUM_MONTHS_FORWARD, FETCH_NUM_MONTHS_BACKWARDS } from '../../constants';
 
-/* Deferred rendering to speedup page inital load: 
-   deferred rendering delays the rendering reducing the initial 
-   number of components loaded when the page initially mounts.
-   Other components are loaded right after the mount */
+//Example calendar: https://github.com/wix/react-native-calendars/blob/master/example/src/screens/calendars.js
 const USE_DR = false;
+const INITIAL_DATE = { "dateString": moment().format("YYYYMMDD") };
 class EventsScreen extends Component {
 
   constructor(props) {
@@ -53,6 +51,10 @@ class EventsScreen extends Component {
     //let { someNavProps } = props.route.params; 
     for (let language in Constants.AGENDA_LOCALE)
       LocaleConfig.locales[language] = Constants.AGENDA_LOCALE[language];
+    LocaleConfig.defaultLocale = props.locale.lan;
+
+    this._refs = {};
+    this._queriedMonths = {};
 
     /* The upper and lower bound for date fetcher: use to load more months */
     this._ubLb = { 
@@ -64,6 +66,7 @@ class EventsScreen extends Component {
       render: USE_DR ? false : true,
       selectedDay: moment().subtract(2, 'month').format('YYYY-MM-DD'),
     };
+
       
   }
 
@@ -74,6 +77,9 @@ class EventsScreen extends Component {
   componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
+
+    this._loadEvents(INITIAL_DATE);
+
   }
 
   /**
@@ -81,12 +87,55 @@ class EventsScreen extends Component {
    * or to post-process data once it changes
    */
   componentDidUpdate(prevProps) {
-    /**
-     * Is the former props different from the newly propagated prop (redux)? perform some action
-     * if(prevProps.xxx !== this.props.xxx)
-     *  doStuff();
-     */
+    //  if(prevProps.events !== this.props.events)
+      // console.log(this.props.events.markedDates);
+     
   }
+
+
+    /**
+     * Load events for the current month
+     * @param {*} date: { "dateString": "2020-11-14", "day": 14, "month": 11, "timestamp": 1605312000000, "year": 2020 }
+     * TODO: remove .add/subtract(1,"year")
+     */
+    _loadEvents = (date) => {
+      const dateString = date.dateString;
+      const month = moment(dateString).subtract(1,"year").startOf('month');
+      const monthFormatted = month.format('YYYYMM');
+      //Is the month already loaded? skip
+      if (!this._queriedMonths[monthFormatted]) {
+        //set current date string have a reference month
+        this._currentMonth = month;
+        //compute new lower and upper bounds to date/time so the action creator knows how many empty [] it has to put in
+        this._ubLb = this._getDateIntervals(dateString);
+        //fetch the events using upper and lower time bounds in unix epoch time
+        const eventsQuery = {
+          start: Math.floor(this._ubLb.lb.valueOf()/1000), 
+          end: Math.floor(this._ubLb.ub.valueOf()/1000), 
+        };
+        this.props.actions.getEvents(eventsQuery, {}, this._ubLb);
+        this._queriedMonths[monthFormatted] = true;
+      }
+    }
+
+    /**
+     * Creates the upper and lower time bounds for the query adding and removing months 
+     * @param {*} dateString: "2020-11-14"
+     * @returns { "lb": "2019-08-31T22:00:00.000Z", "ub": "2019-10-31T22:59:59.999Z" }
+     * TODO: remove .add/.subtract(1,"year")
+     */
+    _getDateIntervals = (dateString) => {
+      //specify N months "around" today's month
+      if (dateString)
+        return ({
+          lb: moment(dateString).startOf('month').subtract(1,"year").subtract(FETCH_NUM_MONTHS_BACKWARDS, 'month'),
+          ub: moment(dateString).endOf('month').subtract(1,"year").add(FETCH_NUM_MONTHS_FORWARD, 'month')
+        });
+      return ({
+        lb: moment().startOf('month').subtract(1,"year").subtract(FETCH_NUM_MONTHS_BACKWARDS, 'month'),
+        ub: moment().endOf('month').subtract(1,"year").add(FETCH_NUM_MONTHS_FORWARD, 'month')
+      });
+    }
 
   /**
    * If the reducer embeds a single data type then e.g. only pois:
@@ -113,6 +162,8 @@ class EventsScreen extends Component {
 
 
   _renderContent = () => {
+    const { lan } = this.props.locale;
+    LocaleConfig.defaultLocale = lan;
      return (
       <AsyncOperationStatusIndicator
         loading={this._isLoadingData()}
@@ -120,34 +171,22 @@ class EventsScreen extends Component {
         error={this._isErrorData()}
         loadingLayout={<Text>NOW LOADING</Text>}>
           <Calendar
-            // Initially visible month. Default = Date()
-            current={'2012-03-01'}
-            // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
-            minDate={'2012-05-10'}
-            // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
-            maxDate={'2012-05-30'}
-            // Handler which gets executed on day press. Default = undefined
+            theme={Constants.styles.calendarTheme}
             onDayPress={(day) => {console.log('selected day', day)}}
-            // Handler which gets executed on day long press. Default = undefined
             onDayLongPress={(day) => {console.log('selected day', day)}}
-            // Month format in calendar title. Formatting values: http://arshaw.com/xdate/#Formatting
-            monthFormat={'yyyy MM'}
-            // Handler which gets executed when visible month changes in calendar. Default = undefined
-            onMonthChange={(month) => {console.log('month changed', month)}}
-            // Do not show days of other months in month page. Default = false
+            monthFormat={'MMMM yyyy'}
+            onMonthChange={(date) => this._loadEvents(date)}
             hideExtraDays={true}
-            // If firstDay=1 week starts from Monday. Note that dayNames and dayNamesShort should still start from Sunday.
+            markingType={'custom'}
+            markedDates={this.props.events.markedDates}
             firstDay={1}
-            // Hide day names. Default = false
-            hideDayNames={true}
-            // Show week numbers to the left. Default = false
-            showWeekNumbers={true}
+            hideDayNames={false}
             // Handler which gets executed when press arrow icon left. It receive a callback can go back month
-            onPressArrowLeft={subtractMonth => subtractMonth()}
+            // onPressArrowLeft={subtractMonth => subtractMonth()}
             // Handler which gets executed when press arrow icon right. It receive a callback can go next month
-            onPressArrowRight={addMonth => addMonth()}
+            // onPressArrowRight={addMonth => addMonth()}
             // Replace default month and year title with custom one. the function receive a date as parameter.
-            renderHeader={(date) => {/*Return JSX*/}}
+            // renderHeader={(date) => {/*Return JSX*/}}
             // Enable the option to swipe between months. Default = false
             enableSwipeMonths={true}
           />
@@ -203,21 +242,8 @@ function EventsScreenContainer(props) {
 
 const mapStateToProps = state => {
   return {
-    restState: state.restState,
-    //mixed state
-    othersState: state.othersState,
-    //language
     locale: state.localeState,
-    //favourites
-    favourites: state.favouritesState,
-    //graphql
-    categories: state.categoriesState,
     events: state.eventsState,
-    inspirers: state.inspirersState,
-    itineraries: state.itinerariesState,
-    nodes: state.nodesState,
-    pois: state.poisState,
-    searchAutocomplete: state.searchAutocompleteState,
   };
 };
 

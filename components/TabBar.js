@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   Dimensions
 } from 'react-native'
-import { ConnectedText, TabBarIcon } from '.';
+import ConnectedText from './ConnectedText';
+import TabBarIcon from './TabBarIcon';
 import posed from 'react-native-pose';
 import Layout from '../constants/Layout';
 import { Colors } from 'react-native/Libraries/NewAppScreen';

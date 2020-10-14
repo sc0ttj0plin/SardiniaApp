@@ -30,7 +30,7 @@ import {
  import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { apolloQuery } from '../apollo/middleware';
+import { apolloQuery } from '../../apollo/middleware';
 import _ from 'lodash';
 import Layout from '../../constants/Layout';
 import actions from '../../actions';
@@ -188,7 +188,7 @@ class BoilerPlateScreen extends Component {
     });
   }
 
- 
+  //HERE
   _loadMorePois = () => {
     var { coords } = this.state;
     if(coords && this._isPoiList() && !this.state.poisRefreshing){

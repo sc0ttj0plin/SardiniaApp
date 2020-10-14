@@ -54,7 +54,7 @@ class BoilerPlateScreen extends Component {
       
   }
 
-  /******* React.[Component|PureComponent] methods go down here *******/
+  /********************* React.[Component|PureComponent] methods go down here *********************/
 
   /**
    * Use this function to perform data fetching
@@ -83,7 +83,7 @@ class BoilerPlateScreen extends Component {
   componentWillUnmount() {
   }
 
-  /******* Non React.[Component|PureComponent] methods go down here *******/
+  /********************* Non React.[Component|PureComponent] methods go down here *********************/
 
   /**
    * If the reducer embeds a single data type then e.g. only pois:
@@ -101,6 +101,8 @@ class BoilerPlateScreen extends Component {
   _isLoadingData  = () => true;   /* e.g. this.props.pois.loading; */
   _isErrorData    = () => null;    /* e.g. this.props.pois.error; */
 
+
+  /********************* Render methods go down here *********************/
   _renderContent = () => {
      return (
       <AsyncOperationStatusIndicator
