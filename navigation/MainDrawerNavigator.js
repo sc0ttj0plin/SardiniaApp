@@ -191,7 +191,7 @@ function TabNavigator() {
       tabBar={props => <TabBar {...props} navOptions={[placesNavigationOptions, inspirersNavigationOptions, trendsNavigationOptions, itinerariesNavigationOptions, eventsNavigationOptions]}/>}
       animationEnabled={true}>
       {/* <BottomTabNavigator.Screen name={"Boilerplate"} component={Boilerplate} options={placesNavigationOptions} label="Boilerplate"/> */}
-      {/* <BottomTabNavigator.Screen name={NavPlacesScreen} component={PlacesScreen} options={placesNavigationOptions} label="ciao"/> */}
+      <BottomTabNavigator.Screen name={NavPlacesScreen} component={PlacesScreen} options={placesNavigationOptions}/>
       {/* <BottomTabNavigator.Screen name={NavInspirersScreen} component={InspirersScreen} options={inspirersNavigationOptions} /> */}
       {/* <BottomTabNavigator.Screen name={NavTrends} component={ExtraStackScreen} options={trendsNavigationOptions} /> */}
       {/* <BottomTabNavigator.Screen name={NavExperiencesItinerariesScreen} component={ExperiencesItinerariesScreen} options={itinerariesNavigationOptions} /> */}

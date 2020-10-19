@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { useRef } from 'react';
 import { Dimensions, StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
 import ScrollBottomSheet from 'react-native-scroll-bottom-sheet';
 import Animated from 'react-native-reanimated';
@@ -9,57 +9,7 @@ import { call, useCode, useAnimatedStyle, useSharedValue} from 'react-native-rea
 import { PanGestureHandler, State } from "react-native-gesture-handler";
 const { Value, event, interpolate } = Animated;
 
-/**
- * ScrollableContainer 
- */
-export default class ScrollableContainer extends PureComponent {
-  constructor(props){
-    super(props);
-    // Scrollable refernce
-    this._scrollable = {}
-    //Drag 
-    this._dragX = new Value(0);
-    this._dragY = new Value(0);
-    //Topmost component translation animations when scrolling
-    this._translateAnim = new Value(0);
-    this._translateAnimY = interpolate(translateAnim, {
-      inputRange: [0, 1],
-      outputRange: [0, -windowHeight/2],
-    });
-  
-  }
-
-  _renderHandle = () =>
-    <View style={styles.header}>
-      <View style={styles.panelHandle} />
-    </View>;
-
-  render() {
-    return (
-      <View style={styles.fill}>
-        <Animated.View style={[styles.fill, {transform: [{ translateY: translateAnimY } ]}]}>
-          {this.props.topComponent}
-        </Animated.View>
-
-        <ScrollBottomSheet 
-            componentType="FlatList"
-            snapPoints={[30, '50%', windowHeight - 200, windowHeight - 60]}
-            initialSnapIndex={2}
-            renderHandle={this._renderHandle()}
-            data={props.data || []}
-            keyExtractor={props.keyExtractor}
-            renderItem={props.renderItem}
-            ref={(ref)=>scrollable = ref}
-            ListHeaderComponent={props.ListHeaderComponent || null}
-            animatedPosition={translateAnim}
-            contentContainerStyle={styles.contentContainerStyle}>
-        </ScrollBottomSheet>
-      </View>
-    )
-  }
-}
-
-const styles = StyleSheet.create({
+const styles = {
   fill: {
     flex: 1,
   },
@@ -94,4 +44,129 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 10,
   },
-});
+}
+
+export default function ScrollableContainer (props) {
+  let scrollable = {}
+  scrollable = useRef();
+  dragX = new Value(0);
+  dragY = new Value(0);
+  gestureState = new Value(-1);
+  onGestureEvent = Animated.event([
+    {
+      nativeEvent: {
+        translationX: dragX,
+        translationY: dragY,
+        state: gestureState,
+      },
+    },
+  ]);
+
+  translateAnim = new Value(0);
+  translateAnimY = interpolate(translateAnim, {
+    inputRange: [0, 1],
+    outputRange: [0, -windowHeight/2],
+  });
+
+  useCode(() => {
+    return call([dragX], (translateAnim) => {
+      console.log(translateAnim[0])
+    })
+  }, [dragX]);
+
+
+return (
+        <View style={styles.fill}>
+
+        <Animated.View style={[styles.fill, {
+            transform: [
+            {
+                translateY: translateAnimY,
+            },
+            ],
+        }]}>
+            <MapView style={styles.fill} ref={map => { map = map }}
+            onPress={() => scrollable.snapTo(3)}
+            onPanDrag={() => scrollable.snapTo(3)}
+            onDoublePress={() => scrollable.snapTo(3)}>
+            
+            </MapView>
+        </Animated.View>
+        <ScrollBottomSheet // If you are using TS, that'll infer the renderItem `item` type
+            componentType="FlatList"
+            snapPoints={[30, '50%', windowHeight - 200, windowHeight - 60]}
+            initialSnapIndex={2}
+            renderHandle={() => (
+            <View style={styles.header}>
+                <View style={styles.panelHandle} />
+            </View>
+            )}
+            data={props.data ? props.data : []}
+            keyExtractor={props.keyExtractor}
+            renderItem={props.renderItem}
+            ref={(ref)=>scrollable = ref}
+            ListHeaderComponent={props.ListHeaderComponent ? props.ListHeaderComponent : <></>}
+            onSettle={(index) => {
+            console.log("onSettle", index);
+            }}
+            animatedPosition={translateAnim}
+            contentContainerStyle={styles.contentContainerStyle}
+        >
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            <Text>contentContainerStyle</Text>
+            </ScrollBottomSheet>
+        </View>
+    );
+}

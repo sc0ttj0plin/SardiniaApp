@@ -18,7 +18,18 @@ export ConnectedHeader from './ConnectedHeader';
 // export PoiItem from './PoiItem';
 // export PoiItemsList from './PoiItemsList';
 // export ExtrasListItem from './ExtrasListItem';
+export ClusteredMapViewTop from './ClusteredMapViewTop';
 export TabBar from './TabBar';
 export ScrollableContainer from './ScrollableContainer';
+// export EntityAbstract from './EntityAbstract';
+// export EntityDescription from './EntityDescription';
+// export EntityGallery from './EntityGallery';
+// export EntityHeader from './EntityHeader';
+export EntityItem from './EntityItem';
+// export EntityMap from './EntityMap';
+// export EntityRelatedList from './EntityRelatedList';
+// export EntityVirtualTour from './EntityVirtualTour';
+// export EntityWhyVisit from './EntityWhyVisit';
+
 
 
