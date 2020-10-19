@@ -23,7 +23,7 @@ class MapViewTop extends PureComponent {
     super(props);
     this.state = {
       term: this.props.term,
-      uuids: this.props.term ? this.props.term.uuids : []
+      uuids: []
     };
   }
 

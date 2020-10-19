@@ -191,7 +191,7 @@ function TabNavigator() {
       tabBar={props => <TabBar {...props} navOptions={[placesNavigationOptions, inspirersNavigationOptions, trendsNavigationOptions, itinerariesNavigationOptions, eventsNavigationOptions]}/>}
       animationEnabled={true}>
       {/* <BottomTabNavigator.Screen name={"Boilerplate"} component={Boilerplate} options={placesNavigationOptions} label="Boilerplate"/> */}
-      {/* <BottomTabNavigator.Screen name={NavPlacesScreen} component={PlacesScreen} options={placesNavigationOptions} label="ciao"/> */}
+      <BottomTabNavigator.Screen name={NavPlacesScreen} component={PlacesScreen} options={placesNavigationOptions} label="ciao"/>
       {/* <BottomTabNavigator.Screen name={NavInspirersScreen} component={InspirersScreen} options={inspirersNavigationOptions} /> */}
       {/* <BottomTabNavigator.Screen name={NavTrends} component={ExtraStackScreen} options={trendsNavigationOptions} /> */}
       {/* <BottomTabNavigator.Screen name={NavExperiencesItinerariesScreen} component={ExperiencesItinerariesScreen} options={itinerariesNavigationOptions} /> */}
@@ -214,7 +214,7 @@ function MainStackScreen() {
       <MainStack.Screen name={NavTabNavigator} component={TabNavigator} />
       {/* Places */}
       {/* <MainStack.Screen name={NavMapScreen} component={MapScreen} options={{...FromTopTransition}} /> */}
-      {/* <MainStack.Screen name={NavPlacesScreen} component={PlacesScreen}/> */}
+      <MainStack.Screen name={NavPlacesScreen} component={PlacesScreen}/>
       {/* <MainStack.Screen name={NavPlaceScreen} component={PlaceScreen}/> */}
       {/* <MainStack.Screen name={NavVideoScreen} component={VideoScreen}/> */}
       {/* <MainStack.Screen name={NavVirtualTourScreen} component={VirtualTourScreen}/> */}

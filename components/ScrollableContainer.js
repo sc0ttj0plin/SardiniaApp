@@ -22,7 +22,7 @@ export default class ScrollableContainer extends PureComponent {
     this._dragY = new Value(0);
     //Topmost component translation animations when scrolling
     this._translateAnim = new Value(0);
-    this._translateAnimY = interpolate(translateAnim, {
+    this._translateAnimY = interpolate(this._translateAnim, {
       inputRange: [0, 1],
       outputRange: [0, -windowHeight/2],
     });
@@ -37,7 +37,7 @@ export default class ScrollableContainer extends PureComponent {
   render() {
     return (
       <View style={styles.fill}>
-        <Animated.View style={[styles.fill, {transform: [{ translateY: translateAnimY } ]}]}>
+        <Animated.View style={[styles.fill, {transform: [{ translateY: this._translateAnimY } ]}]}>
           {this.props.topComponent}
         </Animated.View>
 
@@ -45,13 +45,13 @@ export default class ScrollableContainer extends PureComponent {
             componentType="FlatList"
             snapPoints={[30, '50%', windowHeight - 200, windowHeight - 60]}
             initialSnapIndex={2}
-            renderHandle={this._renderHandle()}
-            data={props.data || []}
-            keyExtractor={props.keyExtractor}
-            renderItem={props.renderItem}
-            ref={(ref)=>scrollable = ref}
-            ListHeaderComponent={props.ListHeaderComponent || null}
-            animatedPosition={translateAnim}
+            renderHandle={this._renderHandle}
+            data={this.props.data || []}
+            keyExtractor={this.props.keyExtractor}
+            renderItem={this.props.renderItem}
+            ref={(ref)=>this._scrollable = ref}
+            ListHeaderComponent={this.props.ListHeaderComponent || null}
+            animatedPosition={this._translateAnim}
             contentContainerStyle={styles.contentContainerStyle}>
         </ScrollBottomSheet>
       </View>

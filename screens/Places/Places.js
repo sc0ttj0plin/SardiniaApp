@@ -8,7 +8,7 @@ import {
   // GeoRefHListItem, 
   // GridGallery, 
   // GridGalleryImage, 
-  // MapViewTop, 
+  MapViewTop, 
   // ScrollableHeader,
   // TabBarIcon, 
   // CalendarListItem, 
@@ -30,7 +30,7 @@ import {
  import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { apolloQuery } from '../apollo/middleware';
+import { apolloQuery } from '../../apollo/middleware';
 import _ from 'lodash';
 import Layout from '../../constants/Layout';
 import actions from '../../actions';
@@ -43,13 +43,13 @@ import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
    number of components loaded when the page initially mounts.
    Other components are loaded right after the mount */
 const USE_DR = false;
-class BoilerPlateScreen extends Component {
+class PlacesScreen extends Component {
 
   constructor(props) {
     super(props);
 
-    const { region=null, term={}, coords={} } = props.route.params;
-    const { uuids=[] } = term.uuids;
+    // const { region=null, term={}, coords={} } = props.route.params;
+    // const { uuids=[] } = term.uuids;
     this._watchID = null; /* navigation watch identificator */
     this._onFocus = null;
 
@@ -57,12 +57,12 @@ class BoilerPlateScreen extends Component {
       render: USE_DR ? false : true,
       nearPois: [],
       nearPoisRefreshing: false,
-      tid: term.tid || -1,
-      uuids, /* uuids for categories */
-      term,
-      coords,
+      tid: -1,
+      uuids: null, /* uuids for categories */
+      term: null,
+      coords: null,
       poisLimit: Constants.PAGINATION.poisLimit,
-      region: region || Constants.MAP.defaultRegion,
+      region: Constants.MAP.defaultRegion,
     };
       
   }
@@ -313,9 +313,9 @@ class BoilerPlateScreen extends Component {
   _renderContent = () => {
      return (
       <ScrollableContainer 
-        topComponent={this._renderTopComponent()}
-        data={currentCategories}
-        ListHeaderComponent={this._renderListHeader()}
+        topComponent={this._renderTopComponent}
+        data={[]}
+        ListHeaderComponent={this._renderListHeader}
         renderItem={({item}) => this._renderCategoryListItem(item)}
         keyExtractor={item => item.tid.toString()}
       />
@@ -339,7 +339,7 @@ class BoilerPlateScreen extends Component {
 }
 
 
-BoilerPlateScreen.navigationOptions = {
+PlacesScreen.navigationOptions = {
   title: 'Boilerplate',
 };
 
@@ -376,12 +376,12 @@ const styles = StyleSheet.create({
 });
 
 
-function BoilerPlateScreenContainer(props) {
+function PlacesScreenContainer(props) {
   const navigation = useNavigation();
   const route = useRoute();
   const store = useStore();
 
-  return <BoilerPlateScreen 
+  return <PlacesScreen 
     {...props}
     navigation={navigation}
     route={route}
@@ -421,4 +421,4 @@ export default connect(mapStateToProps, mapDispatchToProps, (stateProps, dispatc
     actions: dispatchProps,
     ...props
   }
-})(BoilerPlateScreenContainer)
+})(PlacesScreenContainer)
