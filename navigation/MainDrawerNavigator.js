@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { useIsDrawerOpen } from '@react-navigation/drawer';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import TabBarIcon from '../components/TabBarIcon';
 import PlacesScreen from '../screens/Places/Places';
@@ -91,7 +92,7 @@ var ConnectedTextEvents = <ConnectedText languageKey="tabEvents"/>;
 
 const eventsNavigationOptions = {
   languageKey: "tabEvents",
-  name: "EventsScreen",
+  name: NavEventsScreen,
   backgroundActiveColor: Colors.colorScreen5, 
   icon: Platform.OS === 'ios' ? 'ios-calendar' : 'md-calendar',
   iconSourceDefault: require("../assets/icons/events_default.png"),
@@ -104,7 +105,7 @@ const eventsNavigationOptions = {
 
 const itinerariesNavigationOptions = {
   languageKey: "tabItineraries",
-  name: "ExperiencesItinerariesScreen", 
+  name: NavExperiencesItinerariesScreen, 
   backgroundActiveColor: Colors.colorScreen4,
   icon: Platform.OS === 'ios' ? 'md-analytics': 'md-analytics',
   iconSourceDefault: require("../assets/icons/itineraries_default.png"),
@@ -117,7 +118,7 @@ const itinerariesNavigationOptions = {
 
 const trendsNavigationOptions = {
   languageKey: "tabTrends",
-  name: "Trends", 
+  name: NavTrends, 
   backgroundActiveColor: Colors.colorScreen3, 
   icon: Platform.OS === 'ios' ? 'ios-star' : 'ios-star',
   iconSourceDefault: require("../assets/icons/central_icon.png"),
@@ -129,7 +130,7 @@ const trendsNavigationOptions = {
 
 const inspirersNavigationOptions = {
   languageKey: "tabWhatToDo",
-  name: "InspirersScreen", 
+  name: NavInspirersScreen, 
   backgroundActiveColor: Colors.colorScreen2, 
   icon: Platform.OS === 'ios' ? 'ios-compass' : 'md-compass',
   iconSourceDefault: require("../assets/icons/whatToDo_default.png"),
@@ -144,7 +145,7 @@ const inspirersNavigationOptions = {
 
 const placesNavigationOptions = {
   languageKey: "tabWhereToGo",
-  name: "PlacesScreen", 
+  name: NavPlacesScreen, 
   backgroundActiveColor: Colors.colorScreen1, 
   icon: Platform.OS === 'ios' ? 'ios-map' : 'md-map',
   iconSourceDefault: require("../assets/icons/whereToGo_default.png"),
@@ -178,7 +179,7 @@ function ExtraStackScreen() {
  * Tab navigator (level: 2, parent: MainStack)
  * To prevent Tabs from showing on level 2 onwards we decouple them from their stacks and place on the same level of MainStack
  */
-const BottomTabNavigator = createMaterialBottomTabNavigator();
+const BottomTabNavigator = createBottomTabNavigator();
  
 function TabNavigator() {
   return (
@@ -191,7 +192,7 @@ function TabNavigator() {
       tabBar={props => <TabBar {...props} navOptions={[placesNavigationOptions, inspirersNavigationOptions, trendsNavigationOptions, itinerariesNavigationOptions, eventsNavigationOptions]}/>}
       animationEnabled={true}>
       {/* <BottomTabNavigator.Screen name={"Boilerplate"} component={Boilerplate} options={placesNavigationOptions} label="Boilerplate"/> */}
-      <BottomTabNavigator.Screen name={NavPlacesScreen} component={PlacesScreen} options={placesNavigationOptions} label="ciao"/>
+      <BottomTabNavigator.Screen name={NavPlacesScreen} component={PlacesScreen} options={placesNavigationOptions}/>
       {/* <BottomTabNavigator.Screen name={NavInspirersScreen} component={InspirersScreen} options={inspirersNavigationOptions} /> */}
       {/* <BottomTabNavigator.Screen name={NavTrends} component={ExtraStackScreen} options={trendsNavigationOptions} /> */}
       {/* <BottomTabNavigator.Screen name={NavExperiencesItinerariesScreen} component={ExperiencesItinerariesScreen} options={itinerariesNavigationOptions} /> */}

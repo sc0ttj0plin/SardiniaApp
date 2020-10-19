@@ -1,4 +1,4 @@
-import React, { PureComponent, useRef } from 'react';
+import React, { PureComponent } from 'react';
 import { Dimensions, StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
 import ScrollBottomSheet from 'react-native-scroll-bottom-sheet';
 import Animated from 'react-native-reanimated';
@@ -16,7 +16,7 @@ export default class ScrollableContainer extends PureComponent {
   constructor(props){
     super(props);
     // Scrollable refernce
-    this._scrollable = {}
+    this._scrollable = null;
     //Drag 
     this._dragX = new Value(0);
     this._dragY = new Value(0);
@@ -42,17 +42,17 @@ export default class ScrollableContainer extends PureComponent {
         </Animated.View>
 
         <ScrollBottomSheet 
-            componentType="FlatList"
-            snapPoints={[30, '50%', windowHeight - 200, windowHeight - 60]}
-            initialSnapIndex={2}
-            renderHandle={this._renderHandle}
-            data={this.props.data || []}
-            keyExtractor={this.props.keyExtractor}
-            renderItem={this.props.renderItem}
-            ref={(ref)=>this._scrollable = ref}
-            ListHeaderComponent={this.props.ListHeaderComponent || null}
-            animatedPosition={this._translateAnim}
-            contentContainerStyle={styles.contentContainerStyle}>
+          componentType="FlatList"
+          snapPoints={[30, '50%', windowHeight - 200, windowHeight - 60]}
+          initialSnapIndex={2}
+          renderHandle={this._renderHandle}
+          data={this.props.data || []}
+          keyExtractor={this.props.keyExtractor}
+          renderItem={this.props.renderItem}
+          ref={(ref)=> this._scrollable = ref}
+          ListHeaderComponent={this.props.ListHeaderComponent || null}
+          animatedPosition={this._translateAnim}
+          contentContainerStyle={styles.contentContainerStyle}>
         </ScrollBottomSheet>
       </View>
     )
@@ -94,4 +94,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 10,
   },
-})
+});

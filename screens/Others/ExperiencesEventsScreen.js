@@ -66,7 +66,6 @@ class ExperiencesEventsScreen extends Component {
     };
 
     this.props.navigation.addListener('didFocus', this._navigationOnFocus);
-      
 
   }
 

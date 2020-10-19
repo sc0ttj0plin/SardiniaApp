@@ -10,6 +10,7 @@ import _ from 'lodash';
 const INITIAL_STATE = {
   //events
   events: {},
+  markedDates: {},
   eventsSuccess: false, 
   eventsFiltersByType: {},
   eventsMonthsStatuses: {},
@@ -67,6 +68,7 @@ export default function reducer(state = INITIAL_STATE, action) {
     case Constants.GET_EVENTS_SUCCESS:
       //calendar wants empty array [] if no event for a date, so what we do?
       //we create as many empty arrays as the days between the smallest date (timeMinMin) and greatest (timeMaxMax)!
+      //newEvents format is: "2020-09-02": [{ "title", "description", "date1", "date2", "uuid", "nid", "term", "image", "language", "abstract", "itinerary", "url_alias", "__typename", "date1Str" }, ...]
       let timeMinMin = !state.eventsTimeMin ? action.payload.timeMin : (moment(action.payload.timeMin).isBefore(state.eventsTimeMin) ?  action.payload.timeMin : state.eventsTimeMin);
       let timeMaxMax = !state.eventsTimeMax ? action.payload.timeMax : (moment(action.payload.timeMax).isAfter(state.eventsTimeMax) ?  action.payload.timeMax : state.eventsTimeMax);
       let newEvents = {};
@@ -77,17 +79,16 @@ export default function reducer(state = INITIAL_STATE, action) {
         //reset all the events
         newEvents = action.payload.events;
       }
-      //iterate over the days and add empty arrays as needed
-      for (let m = moment(timeMinMin); m.isBefore(timeMaxMax); m.add(1, 'days')) {
-        let date = m.format(Constants.DATE_FORMAT);
-        if (!newEvents[date])
-          newEvents[date] = [];
-      }
+      //Fill the markers
+      let markedDates = { [moment().format(Constants.DATE_FORMAT)]: Constants.CALENDAR.todayMarkerDefaultConf };
+      Object.keys(newEvents).map(date => markedDates[date] = Constants.CALENDAR.markedDatesDefaultConf);
+
       //NOTE: edits also eventsById state to store loaded events by id
       return { 
         ...state, 
         eventsSuccess: true,
         events: newEvents, 
+        markedDates,
         eventsById: { ...state.eventsById, ...action.payload.eventsById },
         eventsError: null, 
         eventsLoading: false,
@@ -112,17 +113,6 @@ export default function reducer(state = INITIAL_STATE, action) {
         eventsError, 
         eventsLoading 
       };
-    // case Constants.FILTER_EVENTS:
-    //   //Edits all the events "show" variables
-    //   let newEventsFiltered = state.events;
-    //   for (let key in newEventsFiltered) {
-    //     let eventsByDate = newEventsFiltered[key];
-    //     for (let idx in eventsByDate) {
-    //       let event = eventsByDate[idx];
-    //       event.show = action.ids[event.term.id] || true;
-    //     }
-    //   }
-    //   return { ...state, events: newEventsFiltered };
     // EVENT TYPES
     case Constants.GET_EVENT_TYPES:
       return { 

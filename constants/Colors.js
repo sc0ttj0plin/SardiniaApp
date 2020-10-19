@@ -2,13 +2,27 @@ const tintColor = '#2f95dc';
 
 export default {
   tintColor,
+  //Real mockup colors (grab from here)
+  blue: '#174A7C',        //rgb(23,74,124)
+  green: '#5D7F20',       //rgb(93,127,32)
+  yellow: '#F6A01A',      //rgb(246,160,26)
+  red: '#D9531E',         //rgb(217,83,30)
+  lightRed: 'rgba(217,83,30,0.5)',
+  black: '#000000',
+  darkGrey: '#333333',    //rgb(51,51,51)
+  mediumGrey: '#666666',  //rgb(102,102,102)
+  lightGrey: '#F2F2F2',   //rgb(242,242,242)
+  white: '#FFFFFF',
+  cyan: '#1FCBD9',        //rgb(31,203,217)
+  //Others
   tintColorTransparent: 'rgba(47,149,220, 0.8)',
   tabIconDefault: '#A7A7A7', 
   lightCyan: 'rgb(224,239,254)',
   tabIconSelected: "white",
   tabBackgroundSelected: '#2f95dc',
   tabBar: '#fefefe',
-  green: 'rgb(80,111,46)',
+  salmon: 'rgb(223,145,117)',
+  darkSalmon: 'rgb(206,62,24)',
   greenTransparent: 'rgba(80,111,46, 0.8)',
   blueTransparent: 'rgba(36,70,124, 0.7)',
   orange: 'rgb(215,85,42)',
@@ -23,9 +37,9 @@ export default {
   noticeBackground: tintColor,
   noticeText: '#fff',
   pressColor: tintColor,
-  colorScreen1: "#24467C",
-  colorScreen2: "#F59F1C",
+  colorScreen1: '#174A7C',
+  colorScreen2: '#F6A01A',
   colorScreen3: "white",
-  colorScreen4: "#6A892F",
-  colorScreen5: "#D3644D",
+  colorScreen4: '#5D7F20',
+  colorScreen5: '#D9531E',
 };

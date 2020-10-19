@@ -1,3 +1,4 @@
+import Colors from './Colors';
 // Actions
 export const GET_ENTITIES = 'visitsardinia/entities/LOAD';
 export const GET_ENTITIES_SUCCESS = 'visitsardinia/entities/LOAD_SUCCESS';
@@ -181,6 +182,28 @@ export const NAVIGATOR_OPTS = {
   maximumAge: 5000 
 };
 
+/* CALENDAR */
+export const CALENDAR = {
+  //Prevent having too many copies of the same object (this) in calendar dates reducer 
+  // for other props see: https://github.com/wix/react-native-calendars
+  markedDatesDefaultConf: {
+    marked: true, 
+    customStyles: {
+      container: {
+        backgroundColor: Colors.lightRed
+      }
+    }
+  },
+  todayMarkerDefaultConf: {
+    marked: true, 
+    customStyles: {
+      container: {
+        backgroundColor: Colors.red
+      }
+    }
+  }
+}
+
 export const styles = {
   html: {
     shortText: "textAlign: center; color: black; font-size: 15;",
@@ -191,6 +214,37 @@ export const styles = {
   innerText: {
     paddingLeft: 10,
     paddingRight: 10
-  }
+  },
+  calendarTheme: {
+    backgroundColor: Colors.lightGrey,
+    calendarBackground: Colors.lightGrey,
+    agendaDayNumColor: "black",
+    agendaTodayColor: "black",
+    agendaDayTextColor: "black",
+    arrowColor: 'black',
+    selectedDayBackgroundColor: "red",
+    selectedDayTextColor: Colors.colorScreen5,
+    dayTextColor: "black",
+    monthTextColor: "black",
+    color: "black",
+    textSectionTitleColor: "black",
+    textMonthFontWeight: "bold",
+    textDisabledColor: "#ECECEC",
+    todayTextColor: "white",
+    dotColor: "white" ,
+    textSectionTitleDisabledColor: '#d9e1e8',
+    selectedDotColor: '#ffffff',
+    disabledArrowColor: '#d9e1e8',
+    indicatorColor: 'blue',
+    // textDayFontFamily: 'space-mono',
+    // textMonthFontFamily: 'space-mono',
+    // textDayHeaderFontFamily: 'space-mono',
+    textDayFontWeight: 'bold',
+    textMonthFontWeight: 'bold',
+    textDayHeaderFontWeight: '300',
+    textDayFontSize: 16,
+    textMonthFontSize: 16,
+    textDayHeaderFontSize: 16
+  },
 }
 

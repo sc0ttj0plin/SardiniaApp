@@ -4,7 +4,7 @@ import {
   StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
-  // CategoryListItem, 
+  CategoryListItem, 
   // GeoRefHListItem, 
   // GridGallery, 
   // GridGalleryImage, 
@@ -16,8 +16,10 @@ import {
   // AsyncOperationStatusIndicatorPlaceholder,
   // Webview, 
   // ConnectedText, 
+  ClusteredMapViewTop,
   ConnectedHeader, 
   ScrollableContainer,
+  EntityItem,
   // ImageGridItem, 
   // ConnectedLanguageList, 
   // BoxWithText,
@@ -27,10 +29,11 @@ import {
   // ExtrasListItem, 
   // MapViewItinerary
  } from "../../components";
- import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
+import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
+import MapView from "react-native-map-clustering";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { apolloQuery } from '../../apollo/middleware';
+import { apolloQuery } from '../../apollo/queries';
 import _ from 'lodash';
 import Layout from '../../constants/Layout';
 import actions from '../../actions';
@@ -48,32 +51,38 @@ class PlacesScreen extends Component {
   constructor(props) {
     super(props);
 
-    // const { region=null, term={}, coords={} } = props.route.params;
-    // const { uuids=[] } = term.uuids;
+    const params = _.get(props.route, 'params', { region: null, term: {}, coords: {} });
+    const { region, term, coords } = params;
+    const uuids = _.get(term, 'uuids', []);
     this._watchID = null; /* navigation watch identificator */
     this._onFocus = null;
+    this._refs = {};
 
     this.state = {
       render: USE_DR ? false : true,
+      pois: [],
       nearPois: [],
       nearPoisRefreshing: false,
       tid: -1,
-      uuids: null, /* uuids for categories */
-      term: null,
-      coords: null,
+      uuids, /* uuids for categories */
+      term,
+      coords,
       poisLimit: Constants.PAGINATION.poisLimit,
       region: Constants.MAP.defaultRegion,
     };
       
   }
 
+  /**
+   * On mount load categories and start listening for user's location
+   */
   componentDidMount() {
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
     //If it's the first mount gets pois categories ("art and archeology...")
     if(this.state.tid < 0){
       this.props.actions.getCategories({ vid: Constants.VIDS.poisCategories });
     }
-    this._setupNavigation();
+    this._initGeolocation();
     
     this._onFocus = this.props.navigation.addListener('focus', () => {
       if(this.state.coords) {
@@ -99,7 +108,7 @@ class PlacesScreen extends Component {
   /**
    * Setup navigation: on mount get current position and watch changes using _onUpdateCoords
    */
-  _setupNavigation = () => {
+  _initGeolocation = () => {
     navigator.geolocation.getCurrentPosition(
       position => { this._onUpdateCoords(position.coords); }, 
       ex => { console.log(ex) },
@@ -117,8 +126,8 @@ class PlacesScreen extends Component {
    *  Pois: fetches new nearest pois and clusters.
    *  PoisCategories: if there are no more nested categories then, instead of loading subcategories load just pois (leaf)
    *  TODO PERFORMANCE ISSUE: 
-   *    - if we don't set a threshold on min number of meters there's the risk that this method will be invoked many times
-   *    - is invoked too many times also when pushing a new screen
+   *    - if we don't set a threshold on min number of meters there's the risk that this method will be invoked many times!
+   *    - it is invoked too many times also when pushing a new screen
    * @param {*} newCoords: the new user's coordinates
    */
   _onUpdateCoords(newCoords) {
@@ -155,7 +164,7 @@ class PlacesScreen extends Component {
         this.setState({ nearPois: pois });
       })
   }
-
+  
   /**
    * Uses the user's coordinates to fetch clusters of pois
    * TODO PERFORMANCE ISSUE: may be a source of performance degradation, 
@@ -188,15 +197,16 @@ class PlacesScreen extends Component {
     });
   }
 
- 
+  /**
+   * Get more pois when the user coordinates update
+   */
   _loadMorePois = () => {
     var { coords } = this.state;
     if(coords && this._isPoiList() && !this.state.poisRefreshing){
-      console.log("_loadMorePois");
       this.setState({
         poisRefreshing: true
       }, () => {
-        apolloQuery(graphqlActions.getNearestPois({
+        apolloQuery(actions.getNearestPois({
           limit: this.state.poisLimit,
           offset: this.state.pois ? this.state.pois.length : 0,
           x: coords.longitude,
@@ -212,7 +222,10 @@ class PlacesScreen extends Component {
     }
   }
 
-
+  /**
+   * Opens category item on click, push a new screen 
+   * @param {*} item: list item clicked
+   */
   _openCategory = (item) => {
     this.props.navigation.push(Constants.NAVIGATION.NavPlacesScreen, {
         term: item,
@@ -222,6 +235,9 @@ class PlacesScreen extends Component {
     );
   }
 
+  /**
+   * Opens fullscreen map on top of the screen
+   */
   _openMap = () => {
     this.props.navigation.navigate(Constants.NAVIGATION.NavMapScreen, {
       region: this.state.region,
@@ -232,16 +248,27 @@ class PlacesScreen extends Component {
     })
   }
 
+  /**
+   * Open single poi screen
+   * @param {*} item: item list
+   */
   _openPoi = (item) => {
     this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, {
       place: item
     })
   }
 
+  /**
+   * When user stops dragging the map, change selected region
+   * @param {*} region: region
+   */
   _onRegionChangeComplete = (region) => {
     this.state.region = region;
   }
 
+  /**
+   * Is poi list returns true if we reached the end of the three (pois instead of categories)
+   */
   _isPoiList = () => {
     return this.state.term && (!this.state.term.terms || this.state.term.terms.length == 0);
   }
@@ -257,24 +284,64 @@ class PlacesScreen extends Component {
 
   /* renders the topmost component: a map in our use case */
   _renderTopComponent = () => {
+    var { categories } = this.props;
+    const { term, coords, region, nearPois, clusters, uuids } = this.state;
+    var currentCategories = term ? term.terms ? term.terms : [] : categories.data[Constants.VIDS.poisCategories];
+    console.log(categories)
     return (
-      <MapViewTop
-        term={this.state.term}
-        coords={this.state.coords}
-        initRegion={this.state.region}
-        pois={this.state.nearPois}
-        clusters={this.state.clusters}
-        uuids={this.state.uuids}
+      // <View style={{flex: 1, backgroundColor: 'red', height: 300, width: 400}}>
+      //   <Text>CIAO</Text>
+      //   <Text>CIAO</Text>
+      //   <Text>CIAO</Text>
+      //   <Text>CIAO</Text>
+      //   <Text>CIAO</Text>
+      //   <Text>CIAO</Text>
+      //   <Text>CIAO</Text>
+      //   <Text>CIAO</Text>
+      //   <Text>CIAO</Text>
+      //   <Text>CIAO</Text>
+      //   <Text>CIAO</Text>
+      //   <Text>CIAO</Text>
+      //   <Text>CIAO</Text>
+      //   <Text>CIAO</Text>
+      //   <Text>CIAO</Text>
+      //   <Text>CIAO</Text>
+      // </View>
+      // <MapView style={{height: "100%", width: "100%"}} mapType='standard' region={this.state.region}></MapView>
+      <ClusteredMapViewTop
+        term={term}
+        coords={coords}
+        initRegion={region}
+        pois={nearPois}
+        clusters={clusters}
+        uuids={uuids}
         onRegionChangeComplete={this._onRegionChangeComplete}
-        style={{
-            flex: 1,
-        }}
-        categoriesMap={this.props.categoriesMap}
-        mapRef={ref => (this._refs["MapViewTop"] = ref)}
+        style={{ width: "100%", height: 400}}
+        categoriesMap={this.props.categories.map}
+        mapRef={ref => (this._refs["ClusteredMapViewTop"] = ref)}
       />
     )
   }
 
+  /* Renders a poi */
+  _renderPoiListItem = (item) => {
+    const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
+    return (
+      <EntityItem 
+        keyItem={item.nid}
+        backgroundTopLeftCorner={"white"}
+        iconColor={Colors.colorScreen1}
+        iconName={Platform.OS === 'ios' ? 'ios-map' : 'md-map'}
+        onPress={() => this._openPoi(item)}
+        title={`${title}`}
+        place={`${item.term.name}`}
+        image={`${item.image}`}
+        distance={this.state.isCordsInBound && item.distance}
+      />
+  )}
+
+  /* Horizontal nearpois items horizontal separator */
+  _renderHorizontalSeparator = () => <View style={{ width: 5, flex: 1 }}></View>;
 
   /* Renders the header of the scrollable container */
   _renderListHeader = () => {
@@ -309,17 +376,31 @@ class PlacesScreen extends Component {
       )
   }
 
+  _renderCategoryListItem = (item) => {
+    return (
+    <TouchableOpacity
+      onPress={() => this._openCategory(item)}
+      activeOpacity={0.7}
+    >
+      {/* <CategoryListItem image={item.image} title={item.name} /> */}
+    </TouchableOpacity>)
+  }
+
 
   _renderContent = () => {
-     return (
+    var { categories } = this.props;
+    const { term, coords, region, nearPois, clusters } = this.state;
+    var currentCategories = term ? term.terms ? term.terms : [] : categories.data[Constants.VIDS.poisCategories];
+
+    return (
       <ScrollableContainer 
         topComponent={this._renderTopComponent}
-        data={[]}
+        data={currentCategories}
         ListHeaderComponent={this._renderListHeader}
         renderItem={({item}) => this._renderCategoryListItem(item)}
         keyExtractor={item => item.tid.toString()}
       />
-     )
+    )
   }
 
 
@@ -340,7 +421,7 @@ class PlacesScreen extends Component {
 
 
 PlacesScreen.navigationOptions = {
-  title: 'Boilerplate',
+  title: 'Places',
 };
 
 
