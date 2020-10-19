@@ -35,7 +35,7 @@ export default class EntityItem extends PureComponent {
             key={keyItem}  
             onPress={onPress}
             activeOpacity={0.7}
-            style={{flex: 1}}
+            style={{width: 150, height: 150, backgroundColor: "transparent"}}
         >
             <GeoRefHListItem
                 title={`${title}`}

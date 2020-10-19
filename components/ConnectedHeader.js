@@ -197,8 +197,8 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: 'rgba(255,255,255,0.90)',
     height: 70,
-    marginTop: STATUSBAR_HEIGHT, //Layout.header.height,
-    alignItems: "center"
+    // marginTop: STATUSBAR_HEIGHT, //Layout.header.height,
+    alignItems: "center",
   },
   searchBarExternalContainer: {
     backgroundColor: 'transparent',

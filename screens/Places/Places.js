@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import { 
-  View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
-  StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
+  View, Text, ActivityIndicator, TouchableOpacity, 
+  StyleSheet, BackHandler, Platform, ScrollView, NativeModules } from "react-native";
+
+import { FlatList } from "react-native-gesture-handler"
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   CategoryListItem, 
@@ -40,7 +42,9 @@ import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
 import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
+const { StatusBarManager } = NativeModules;
 
+const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
 /* Deferred rendering to speedup page inital load: 
    deferred rendering delays the rendering reducing the initial 
    number of components loaded when the page initially mounts.
@@ -316,7 +320,7 @@ class PlacesScreen extends Component {
         clusters={clusters}
         uuids={uuids}
         onRegionChangeComplete={this._onRegionChangeComplete}
-        style={{ width: "100%", height: 400}}
+        style={{flex: 1}}
         categoriesMap={this.props.categories.map}
         mapRef={ref => (this._refs["ClusteredMapViewTop"] = ref)}
       />
@@ -346,13 +350,14 @@ class PlacesScreen extends Component {
   /* Renders the header of the scrollable container */
   _renderListHeader = () => {
     var {nearPois} = this.state;
+    console.log("near pois", nearPois.length)
     const { nearToYou, whereToGo } = this.props.locale.messages;
       return (
         <View style={{marginLeft: -10, marginRight: -10}}>
           <AsyncOperationStatusIndicator
             loading={true}
             success={nearPois && nearPois.length > 0}
-            loadingLayout={<LLEntitiesFlatlist horizontal={true} style={styles.listContainerHeader} title={nearToYou}/>}>
+            loadingLayout={<LLEntitiesFlatlist horizontal={true} style={styles.listContainerHeader} title={nearToYou} titleStyle={styles.sectionTitle}/>}>
             <View>  
               <Text style={styles.sectionTitle}>{nearToYou}</Text>
               <FlatList
@@ -382,7 +387,7 @@ class PlacesScreen extends Component {
       onPress={() => this._openCategory(item)}
       activeOpacity={0.7}
     >
-      {/* <CategoryListItem image={item.image} title={item.name} /> */}
+      <CategoryListItem image={item.image} title={item.name} />
     </TouchableOpacity>)
   }
 
@@ -391,7 +396,7 @@ class PlacesScreen extends Component {
     var { categories } = this.props;
     const { term, coords, region, nearPois, clusters } = this.state;
     var currentCategories = term ? term.terms ? term.terms : [] : categories.data[Constants.VIDS.poisCategories];
-
+    // console.log("current categories", currentCategories.length)
     return (
       <ScrollableContainer 
         topComponent={this._renderTopComponent}
@@ -407,10 +412,10 @@ class PlacesScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <View style={styles.fill}>
+      <View style={[styles.fill, {paddingTop: STATUSBAR_HEIGHT}]}>
         <ConnectedHeader 
           iconTintColor={Colors.colorScreen1} 
-          backButtonVisible={typeof this.state.term !== "undefined"}
+          backButtonVisible={!this.state.term}
         />
         {render && this._renderContent()}
       </View>
@@ -426,6 +431,9 @@ PlacesScreen.navigationOptions = {
 
 
 const styles = StyleSheet.create({
+  fill: {
+    flex: 1,
+  },
   container: {
     backgroundColor: Colors.colorScreen1,
     borderTopWidth: 0,
@@ -434,7 +442,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
       fontSize: 16,
-      color: 'white',
+      color: Colors.colorScreen1,
       fontWeight: "bold",
       margin: 10
   },

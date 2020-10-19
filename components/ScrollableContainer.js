@@ -1,5 +1,5 @@
 import React, { PureComponent, useRef } from 'react';
-import { Dimensions, StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
+import { Dimensions, StyleSheet, Text, View, TouchableOpacity, ScrollView, NativeModules } from 'react-native';
 import ScrollBottomSheet from 'react-native-scroll-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import MapView from 'react-native-maps';
@@ -8,7 +8,8 @@ const windowHeight = Dimensions.get('window').height;
 import { call, useCode, useAnimatedStyle, useSharedValue} from 'react-native-reanimated'
 import { PanGestureHandler, State } from "react-native-gesture-handler";
 const { Value, event, interpolate } = Animated;
-
+const { StatusBarManager } = NativeModules;
+const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
 /**
  * ScrollableContainer 
  */
@@ -36,14 +37,14 @@ export default class ScrollableContainer extends PureComponent {
 
   render() {
     return (
-      <View style={styles.fill}>
-        <Animated.View style={[styles.fill, {transform: [{ translateY: this._translateAnimY } ]}]}>
+      <View style={[styles.fill, {backgroundColor: "transparent"}]}>
+        <View style={[styles.fill]}>
           {this.props.topComponent()}
-        </Animated.View>
+        </View>
 
         <ScrollBottomSheet 
             componentType="FlatList"
-            snapPoints={[30, '50%', windowHeight - 200, windowHeight - 60]}
+            snapPoints={[5, windowHeight - 390, windowHeight - 180]}
             initialSnapIndex={2}
             renderHandle={this._renderHandle}
             data={this.props.data || []}
@@ -61,7 +62,7 @@ export default class ScrollableContainer extends PureComponent {
 
 const styles = StyleSheet.create({
   fill: {
-    flex: 1,
+    flex: 1
   },
   dragHandler: {
     alignSelf: 'stretch',
@@ -71,12 +72,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#ccc'
   },
   contentContainerStyle: {
-    padding: 16,
-    backgroundColor: '#F3F4F9',
+    paddingHorizontal: 16,
+    backgroundColor: 'white',
+    flex: 1,
   },
   header: {
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: '#F3F4F9',
     paddingVertical: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20

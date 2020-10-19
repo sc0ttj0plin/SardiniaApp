@@ -5,11 +5,15 @@ import { TouchableOpacity as RNGHTouchableOpacity } from "react-native-gesture-h
 const BottomSheetTouchable = (props) => {
   if (Platform.OS === "android") {
     return (
-      <RNGHTouchableOpacity {...props} />
+      <RNGHTouchableOpacity {...props}>
+        {props.children}
+      </RNGHTouchableOpacity>
     );
   }
  
-  return <TouchableOpacity {...props} />
+  return <TouchableOpacity {...props}>
+        {props.children}
+      </TouchableOpacity>
 };
  
 export default BottomSheetTouchable;
