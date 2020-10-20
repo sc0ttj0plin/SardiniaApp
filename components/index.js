@@ -5,6 +5,7 @@
 // export MapViewTop from './MapViewTop';
 // export ScrollableHeader from './ScrollableHeader';
 // export TabBarIcon from './TabBarIcon';
+
 // export CalendarListItem from './CalendarListItem';
 export AsyncOperationStatusIndicator from './AsyncOperationStatusIndicator';
 // export MapViewItinerary from './MapViewItinerary';
@@ -18,6 +19,7 @@ export ConnectedHeader from './ConnectedHeader';
 // export PoiItem from './PoiItem';
 // export PoiItemsList from './PoiItemsList';
 // export ExtrasListItem from './ExtrasListItem';
+export CategoryListItem from './CategoryListItem';
 export ClusteredMapViewTop from './ClusteredMapViewTop';
 export TabBar from './TabBar';
 export ScrollableContainer from './ScrollableContainer';

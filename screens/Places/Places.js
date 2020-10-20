@@ -55,7 +55,7 @@ class PlacesScreen extends Component {
   constructor(props) {
     super(props);
 
-    const params = _.get(props.route, 'params', { region: null, term: {}, coords: {} });
+    const params = _.get(props.route, 'params', { region: null, term: null, coords: {} });
     const { region, term, coords } = params;
     const uuids = _.get(term, 'uuids', []);
     this._watchID = null; /* navigation watch identificator */
@@ -284,34 +284,12 @@ class PlacesScreen extends Component {
   _isErrorData    = () => null;    /* e.g. this.props.pois.error; */
 
 
-
-
-  /* renders the topmost component: a map in our use case */
+  /* Renders the topmost component: a map in our use case */
   _renderTopComponent = () => {
     var { categories } = this.props;
     const { term, coords, region, nearPois, clusters, uuids } = this.state;
     var currentCategories = term ? term.terms ? term.terms : [] : categories.data[Constants.VIDS.poisCategories];
-    console.log(categories)
     return (
-      // <View style={{flex: 1, backgroundColor: 'red', height: 300, width: 400}}>
-      //   <Text>CIAO</Text>
-      //   <Text>CIAO</Text>
-      //   <Text>CIAO</Text>
-      //   <Text>CIAO</Text>
-      //   <Text>CIAO</Text>
-      //   <Text>CIAO</Text>
-      //   <Text>CIAO</Text>
-      //   <Text>CIAO</Text>
-      //   <Text>CIAO</Text>
-      //   <Text>CIAO</Text>
-      //   <Text>CIAO</Text>
-      //   <Text>CIAO</Text>
-      //   <Text>CIAO</Text>
-      //   <Text>CIAO</Text>
-      //   <Text>CIAO</Text>
-      //   <Text>CIAO</Text>
-      // </View>
-      // <MapView style={{height: "100%", width: "100%"}} mapType='standard' region={this.state.region}></MapView>
       <ClusteredMapViewTop
         term={term}
         coords={coords}
@@ -327,37 +305,17 @@ class PlacesScreen extends Component {
     )
   }
 
-  /* Renders a poi */
-  _renderPoiListItem = (item) => {
-    const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
-    return (
-      <EntityItem 
-        keyItem={item.nid}
-        backgroundTopLeftCorner={"white"}
-        iconColor={Colors.colorScreen1}
-        iconName={Platform.OS === 'ios' ? 'ios-map' : 'md-map'}
-        onPress={() => this._openPoi(item)}
-        title={`${title}`}
-        place={`${item.term.name}`}
-        image={`${item.image}`}
-        distance={this.state.isCordsInBound && item.distance}
-      />
-  )}
-
-  /* Horizontal nearpois items horizontal separator */
-  _renderHorizontalSeparator = () => <View style={{ width: 5, flex: 1 }}></View>;
-
-  /* Renders the header of the scrollable container */
+  /* Renders the Header of the scrollable container */
   _renderListHeader = () => {
-    var {nearPois} = this.state;
-    console.log("near pois", nearPois.length)
+    var { nearPois } = this.state;
     const { nearToYou, whereToGo } = this.props.locale.messages;
       return (
-        <View style={{marginLeft: -10, marginRight: -10}}>
+        <View style={{ marginLeft: -10, marginRight: -10 }}>
           <AsyncOperationStatusIndicator
             loading={true}
             success={nearPois && nearPois.length > 0}
-            loadingLayout={<LLEntitiesFlatlist horizontal={true} style={styles.listContainerHeader} title={nearToYou} titleStyle={styles.sectionTitle}/>}>
+            loadingLayout={<LLEntitiesFlatlist horizontal={true} style={styles.listContainerHeader} title={nearToYou} titleStyle={styles.sectionTitle}/>}
+          >
             <View>  
               <Text style={styles.sectionTitle}>{nearToYou}</Text>
               <FlatList
@@ -381,27 +339,42 @@ class PlacesScreen extends Component {
       )
   }
 
-  _renderCategoryListItem = (item) => {
+  /* Horizontal spacing for Header items */
+  _renderHorizontalSeparator = () => <View style={{ width: 5, flex: 1 }}></View>;
+
+  /* Renders a poi in Header */
+  _renderPoiListItem = (item) => {
+    const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
     return (
-    <TouchableOpacity
-      onPress={() => this._openCategory(item)}
-      activeOpacity={0.7}
-    >
-      <CategoryListItem image={item.image} title={item.name} />
-    </TouchableOpacity>)
-  }
+      <EntityItem 
+        keyItem={item.nid}
+        backgroundTopLeftCorner={"white"}
+        iconColor={Colors.colorScreen1}
+        iconName={Platform.OS === 'ios' ? 'ios-map' : 'md-map'}
+        onPress={() => this._openPoi(item)}
+        title={`${title}`}
+        place={`${item.term.name}`}
+        image={`${item.image}`}
+        distance={this.state.isCordsInBound && item.distance}
+      />
+  )}
+
+  /* Renders categories list */
+  _renderCategoryListItem = (item) => 
+      <CategoryListItem onPress={() => this._openCategory(item)} image={item.image} title={item.name} />;
 
 
+  /* Render content */
   _renderContent = () => {
-    var { categories } = this.props;
+    let { categories } = this.props;
     const { term, coords, region, nearPois, clusters } = this.state;
-    var currentCategories = term ? term.terms ? term.terms : [] : categories.data[Constants.VIDS.poisCategories];
-    // console.log("current categories", currentCategories.length)
+    let currentCategories = term ? (term.terms ? term.terms : []) : categories.data[Constants.VIDS.poisCategories];
+    // console.log("current categories", currentCategories.length) //categories.data[Constants.VIDS.poisCategories])
     return (
       <ScrollableContainer 
         topComponent={this._renderTopComponent}
-        data={currentCategories}
         ListHeaderComponent={this._renderListHeader}
+        data={currentCategories}
         renderItem={({item}) => this._renderCategoryListItem(item)}
         keyExtractor={item => item.tid.toString()}
       />

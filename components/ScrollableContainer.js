@@ -38,22 +38,22 @@ export default class ScrollableContainer extends PureComponent {
   render() {
     return (
       <View style={[styles.fill, {backgroundColor: "transparent"}]}>
-        <View style={[styles.fill]}>
+        <Animated.View style={[styles.fill, {transform: [{ translateY: this._translateAnimY } ]}]}>
           {this.props.topComponent()}
-        </View>
+        </Animated.View>
 
         <ScrollBottomSheet 
-            componentType="FlatList"
-            snapPoints={[5, windowHeight - 390, windowHeight - 180]}
-            initialSnapIndex={2}
-            renderHandle={this._renderHandle}
-            data={this.props.data || []}
-            keyExtractor={this.props.keyExtractor}
-            renderItem={this.props.renderItem}
-            ref={(ref)=>this._scrollable = ref}
-            ListHeaderComponent={this.props.ListHeaderComponent || null}
-            animatedPosition={this._translateAnim}
-            contentContainerStyle={styles.contentContainerStyle}>
+          componentType="FlatList"
+          snapPoints={[5, windowHeight - 390, windowHeight - 180]}
+          initialSnapIndex={2}
+          renderHandle={this._renderHandle}
+          data={this.props.data || []}
+          keyExtractor={this.props.keyExtractor}
+          renderItem={this.props.renderItem}
+          ref={(ref)=>this._scrollable = ref}
+          ListHeaderComponent={this.props.ListHeaderComponent || null}
+          animatedPosition={this._translateAnim}
+          contentContainerStyle={styles.contentContainerStyle}>
         </ScrollBottomSheet>
       </View>
     )
@@ -72,9 +72,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#ccc'
   },
   contentContainerStyle: {
+    // flex: 1,
     paddingHorizontal: 16,
     backgroundColor: 'white',
-    flex: 1,
   },
   header: {
     alignItems: 'center',
