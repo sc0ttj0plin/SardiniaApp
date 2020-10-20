@@ -445,10 +445,11 @@ const styles = StyleSheet.create({
   },
   filterButton: {
     position: "absolute",
-    bottom: 20,
+    bottom: 120,
     right: 10,
     alignItems: "center",
     height: 50,
+    width: 100,
     backgroundColor: "white",
     borderRadius: 50,
     paddingHorizontal: 20,

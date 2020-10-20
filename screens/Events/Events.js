@@ -1,8 +1,11 @@
 import React, { Component } from "react";
 import { 
-  View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
-  StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
+  View, Text, FlatList, ActivityIndicator, 
+  StyleSheet, BackHandler, Platform, ScrollView, SectionList, TouchableHighlight } from "react-native";
+import { Image } from "react-native-elements";
+import { TouchableOpacity } from "react-native-gesture-handler"
 import { useNavigation, useRoute } from '@react-navigation/native';
+
 import { 
   // CategoryListItem, 
   // GeoRefHListItem, 
@@ -190,10 +193,61 @@ class EventsScreen extends Component {
             // Enable the option to swipe between months. Default = false
             enableSwipeMonths={true}
           />
+          {this._renderEventsList()}
       </AsyncOperationStatusIndicator>
      )
   }
 
+  _renderEventsList = () => {
+    const events = _.get(this.props.events, "events", [])
+    let newEvents = []
+    for(let key in events){
+      let event = {
+        title: key,
+        data: events[key]
+      }
+      // console.log("key", key, event) 
+      newEvents.push(event)
+    }
+    // console.log("events", newEvents.length)
+
+    return(
+      <SectionList
+        sections={newEvents}
+        keyExtractor={(item) => item.title}
+        renderItem={({ item }) => this._renderEventsListItem(item)}
+        style={styles.listContent}
+        renderSectionHeader={({ section: { title } }) => (
+          <Text style={styles.header}>{title}</Text>
+      )}
+      />
+    )
+  }
+
+  _renderEventsListItem = (item) => {
+    // console.log(item.title)
+    const { lan } = this.props.locale;
+    let title = _.get(item.title, [lan, 0, "value"], null);
+    let term = _.get(item.term, "name", null);
+    let image = _.get(item, "image", "")
+    return(
+      <TouchableOpacity style={styles.listItemButton}>
+        <View style={styles.listItem}>
+          <View style={styles.imageView}>
+            <Image
+              style={styles.listItemImage} 
+              source={{uri: image}}
+              resizeMode="cover"
+              PlaceholderContent={<ActivityIndicator />}/>
+          </View>
+          <View style={styles.itemDescView}>
+              <Text style={styles.listItemTitle}>{title}</Text>
+              <Text style={styles.listItemTerm}>{term}</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    )
+  }
 
   render() {
     const { render } = this.state;
@@ -219,11 +273,52 @@ const styles = StyleSheet.create({
     backgroundColor: "white"
   },
   header: {
-    backgroundColor: "white"
+    backgroundColor: "white",
+    marginBottom: 10
   },
   container: {
     padding: 10,
   },
+  listContent: {
+    paddingHorizontal: 17
+  },
+  listItemButton: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-start"
+  },
+  listItem: {
+    minHeight: 78,
+    backgroundColor: "white",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    marginBottom: 16,
+    borderRadius: 5,
+    width: "99%",
+    display: "flex",
+    flexDirection: "row"
+  },
+  imageView: {
+    width: 78,
+    height: 78,
+    borderRadius: 5
+  },
+  itemDescView: {
+    paddingTop: 14,
+    paddingLeft: 10
+  },
+  listItemImage: {
+    width: "100%",
+    height: "100%",
+    zIndex: -1
+  }
 });
 
 

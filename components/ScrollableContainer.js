@@ -37,12 +37,13 @@ export default class ScrollableContainer extends PureComponent {
 
   render() {
     return (
-      <View style={[styles.fill, {backgroundColor: "transparent"}]}>
-        <Animated.View style={[styles.fill, {transform: [{ translateY: this._translateAnimY } ]}]}>
+      <View style={[styles.fill, {backgroundColor: "transparent", zIndex: -1,}]}>
+        <Animated.View style={[styles.fill, { transform: [{ translateY: this._translateAnimY } ]}]}>
           {this.props.topComponent()}
         </Animated.View>
 
-        <ScrollBottomSheet 
+        <ScrollBottomSheet
+          {...this.props} 
           componentType="FlatList"
           snapPoints={[5, windowHeight - 390, windowHeight - 180]}
           initialSnapIndex={2}
