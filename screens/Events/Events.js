@@ -96,49 +96,49 @@ class EventsScreen extends Component {
   }
 
 
-    /**
-     * Load events for the current month
-     * @param {*} date: { "dateString": "2020-11-14", "day": 14, "month": 11, "timestamp": 1605312000000, "year": 2020 }
-     * TODO: remove .add/subtract(1,"year")
-     */
-    _loadEvents = (date) => {
-      const dateString = date.dateString;
-      const month = moment(dateString).subtract(1,"year").startOf('month');
-      const monthFormatted = month.format('YYYYMM');
-      //Is the month already loaded? skip
-      if (!this._queriedMonths[monthFormatted]) {
-        //set current date string have a reference month
-        this._currentMonth = month;
-        //compute new lower and upper bounds to date/time so the action creator knows how many empty [] it has to put in
-        this._ubLb = this._getDateIntervals(dateString);
-        //fetch the events using upper and lower time bounds in unix epoch time
-        const eventsQuery = {
-          start: Math.floor(this._ubLb.lb.valueOf()/1000), 
-          end: Math.floor(this._ubLb.ub.valueOf()/1000), 
-        };
-        this.props.actions.getEvents(eventsQuery, {}, this._ubLb);
-        this._queriedMonths[monthFormatted] = true;
-      }
+  /**
+   * Load events for the current month
+   * @param {*} date: { "dateString": "2020-11-14", "day": 14, "month": 11, "timestamp": 1605312000000, "year": 2020 }
+   * TODO: remove .add/subtract(1,"year")
+   */
+  _loadEvents = (date) => {
+    const dateString = date.dateString;
+    const month = moment(dateString).subtract(1,"year").startOf('month');
+    const monthFormatted = month.format('YYYYMM');
+    //Is the month already loaded? skip
+    if (!this._queriedMonths[monthFormatted]) {
+      //set current date string have a reference month
+      this._currentMonth = month;
+      //compute new lower and upper bounds to date/time so the action creator knows how many empty [] it has to put in
+      this._ubLb = this._getDateIntervals(dateString);
+      //fetch the events using upper and lower time bounds in unix epoch time
+      const eventsQuery = {
+        start: Math.floor(this._ubLb.lb.valueOf()/1000), 
+        end: Math.floor(this._ubLb.ub.valueOf()/1000), 
+      };
+      this.props.actions.getEvents(eventsQuery, {}, this._ubLb);
+      this._queriedMonths[monthFormatted] = true;
     }
+  }
 
-    /**
-     * Creates the upper and lower time bounds for the query adding and removing months 
-     * @param {*} dateString: "2020-11-14"
-     * @returns { "lb": "2019-08-31T22:00:00.000Z", "ub": "2019-10-31T22:59:59.999Z" }
-     * TODO: remove .add/.subtract(1,"year")
-     */
-    _getDateIntervals = (dateString) => {
-      //specify N months "around" today's month
-      if (dateString)
-        return ({
-          lb: moment(dateString).startOf('month').subtract(1,"year").subtract(FETCH_NUM_MONTHS_BACKWARDS, 'month'),
-          ub: moment(dateString).endOf('month').subtract(1,"year").add(FETCH_NUM_MONTHS_FORWARD, 'month')
-        });
+  /**
+   * Creates the upper and lower time bounds for the query adding and removing months 
+   * @param {*} dateString: "2020-11-14"
+   * @returns { "lb": "2019-08-31T22:00:00.000Z", "ub": "2019-10-31T22:59:59.999Z" }
+   * TODO: remove .add/.subtract(1,"year")
+   */
+  _getDateIntervals = (dateString) => {
+    //specify N months "around" today's month
+    if (dateString)
       return ({
-        lb: moment().startOf('month').subtract(1,"year").subtract(FETCH_NUM_MONTHS_BACKWARDS, 'month'),
-        ub: moment().endOf('month').subtract(1,"year").add(FETCH_NUM_MONTHS_FORWARD, 'month')
+        lb: moment(dateString).startOf('month').subtract(1,"year").subtract(FETCH_NUM_MONTHS_BACKWARDS, 'month'),
+        ub: moment(dateString).endOf('month').subtract(1,"year").add(FETCH_NUM_MONTHS_FORWARD, 'month')
       });
-    }
+    return ({
+      lb: moment().startOf('month').subtract(1,"year").subtract(FETCH_NUM_MONTHS_BACKWARDS, 'month'),
+      ub: moment().endOf('month').subtract(1,"year").add(FETCH_NUM_MONTHS_FORWARD, 'month')
+    });
+  }
 
   /**
    * If the reducer embeds a single data type then e.g. only pois:
