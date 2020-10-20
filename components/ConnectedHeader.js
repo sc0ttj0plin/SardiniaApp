@@ -92,8 +92,10 @@ class ConnectedHeader extends PureComponent {
   }
   
   _backButtonPressed = () => {
-    var { navigation } = this.props;
-    navigation.goBack();
+    if (this.props.backOnPress)
+      this.props.backOnPress()
+    else 
+      this.props.navigation.goBack();
   }
 
   _updateSearch = search => {
@@ -193,6 +195,7 @@ ConnectedHeader.navigationOptions = {
 
 const styles = StyleSheet.create({
   container: {
+    zIndex: 999,
     flexDirection: "row",
     width: "100%",
     backgroundColor: 'rgba(255,255,255,0.90)',

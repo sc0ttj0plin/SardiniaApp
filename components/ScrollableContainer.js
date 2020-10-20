@@ -44,6 +44,7 @@ export default class ScrollableContainer extends PureComponent {
 
         <ScrollBottomSheet 
           componentType="FlatList"
+          numColumns={this.props.numColumns || 1}
           snapPoints={[5, windowHeight - 390, windowHeight - 180]}
           initialSnapIndex={2}
           renderHandle={this._renderHandle}

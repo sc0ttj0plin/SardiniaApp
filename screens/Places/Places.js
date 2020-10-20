@@ -55,9 +55,13 @@ class PlacesScreen extends Component {
   constructor(props) {
     super(props);
 
-    const params = _.get(props.route, 'params', { region: null, term: null, coords: {} });
-    const { region, term, coords } = params;
-    const uuids = _.get(term, 'uuids', []);
+    // const params = _.get(props.route, 'params', { region: null, term: null, coords: {} });
+    // const { region, term, coords } = params; /* passed from the top component */
+    // const uuids = _.get(term, 'uuids', []);
+    const term = null;
+    const coords = {};
+    const region = null;
+    const uuids = [];
     this._watchID = null; /* navigation watch identificator */
     this._onFocus = null;
     this._refs = {};
@@ -69,6 +73,7 @@ class PlacesScreen extends Component {
       nearPoisRefreshing: false,
       tid: -1,
       uuids, /* uuids for categories */
+      prevTerm: null,
       term,
       coords,
       poisLimit: Constants.PAGINATION.poisLimit,
@@ -156,6 +161,7 @@ class PlacesScreen extends Component {
 
   /**
    * Loads pois that are near "coords" and sets nearPois on state
+   * uuids controls the category of the pois
    * @param {*} coords: the coordinates for which to load new pois
    */
   _fetchNearestPois(coords) {
@@ -202,11 +208,14 @@ class PlacesScreen extends Component {
   }
 
   /**
-   * Get more pois when the user coordinates update
+   * Get more pois when the user coordinates update and we reach the end of the category tree 
+   * to load pois in the bottom scrollable container list (not header)
+   * uuids controls the category of the pois
    */
   _loadMorePois = () => {
     var { coords } = this.state;
     if(coords && this._isPoiList() && !this.state.poisRefreshing){
+      console.log("load finally pois!")
       this.setState({
         poisRefreshing: true
       }, () => {
@@ -231,12 +240,14 @@ class PlacesScreen extends Component {
    * @param {*} item: list item clicked
    */
   _openCategory = (item) => {
-    this.props.navigation.push(Constants.NAVIGATION.NavPlacesScreen, {
-        term: item,
-        region: this.state.region,
-        coords: this.state.coords
-      },
-    );
+    const { region, coords, term } = this.state;
+    this.setState({
+      prevTerm: term,
+      term: item, 
+      uuids: item.uuids,
+      region,
+      coords,
+    }, this._loadMorePois)
   }
 
   /**
@@ -367,26 +378,42 @@ class PlacesScreen extends Component {
   /* Render content */
   _renderContent = () => {
     let { categories } = this.props;
-    const { term, coords, region, nearPois, clusters } = this.state;
-    let currentCategories = term ? (term.terms ? term.terms : []) : categories.data[Constants.VIDS.poisCategories];
+    const { term, coords, region, nearPois, clusters, pois } = this.state;
+    const isPoiList = this._isPoiList();
+    let data = [];
+    let renderItem = null;
+    let numColums = 1; //One for categories, two for pois
+    //if we reached the end renders pois
+    if (isPoiList) {
+      data = pois;
+      renderItem = ({ item }) => this._renderPoiListItem(item);
+      numColums = 2;
+    } else {
+      //initially term is null so we get categories from redux, then term is populated with nested terms (categories) 
+      data = term ? (term.terms ? term.terms : []) : categories.data[Constants.VIDS.poisCategories];
+      renderItem = ({ item }) => this._renderCategoryListItem(item);
+    }
+
     // console.log("current categories", currentCategories.length) //categories.data[Constants.VIDS.poisCategories])
     return (
       <ScrollableContainer 
         topComponent={this._renderTopComponent}
         ListHeaderComponent={this._renderListHeader}
-        data={currentCategories}
-        renderItem={({item}) => this._renderCategoryListItem(item)}
-        keyExtractor={item => item.tid.toString()}
+        data={data}
+        numColums={numColums}
+        renderItem={renderItem}
+        keyExtractor={item => item.uuid}
       />
     )
   }
 
 
   render() {
-    const { render } = this.state;
+    const { render, uuids } = this.state;
     return (
       <View style={[styles.fill, {paddingTop: STATUSBAR_HEIGHT}]}>
         <ConnectedHeader 
+          backOnPress={() => this.setState({ term: this.state.prevTerm })}
           iconTintColor={Colors.colorScreen1} 
           backButtonVisible={!this.state.term}
         />
