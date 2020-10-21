@@ -42,6 +42,7 @@ import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
 import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
+import { Button } from "react-native-paper";
 const { StatusBarManager } = NativeModules;
 
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
@@ -122,12 +123,12 @@ class PlacesScreen extends Component {
   }
 
   /**
-   * Get current term and its child uuids, if useCategories is true fallbacks to categories
+   * Get current term and its child uuids, if fallbackToCategories is true fallbacks to categories
    * 
    */
-  _getCurrentTerm = (useCategories=false) => {
+  _getCurrentTerm = (fallbackToCategories=false) => {
     let term = this.props.others.placesTerms[this.props.others.placesTerms.length - 1];
-    if (useCategories)
+    if (fallbackToCategories)
       term = term ? (term.terms ? term.terms : []) : this.props.categories.data[Constants.VIDS.poisCategories]
     const childUuids = term ? term.childUuids : null;
     return { term, childUuids };
@@ -247,7 +248,7 @@ class PlacesScreen extends Component {
    * Opens category item on click, push a new screen 
    * @param {*} item: list item clicked
    */
-  _openCategory = (item) => {
+  _selectCategory = (item) => {
     // const { region, coords, term } = this.state;
     const { region, coords } = this.state;
     this.props.actions.pushCurrentCategoryPlaces(item);
@@ -290,24 +291,39 @@ class PlacesScreen extends Component {
   _isErrorData    = () => null;    /* e.g. this.props.pois.error; */
 
 
+  _renderTopComponentCategorySelector = (item) => 
+    <TouchableOpacity style={styles.categorySelectorBtn} onPress={() => this._selectCategory(item)}>
+      <Text style={{color: 'white'}}>{item.name}</Text>
+    </TouchableOpacity>
+
   /* Renders the topmost component: a map in our use case */
   _renderTopComponent = () => {
     var { categories } = this.props;
-    const { term, childUuids } = this._getCurrentTerm();
+    const { term, childUuids } = this._getCurrentTerm(true);
     const { coords, region, nearPois, clusters } = this.state;
     return (
-      <ClusteredMapViewTop
-        term={term}
-        coords={coords}
-        initRegion={region}
-        pois={nearPois}
-        clusters={clusters}
-        uuids={childUuids}
-        onRegionChangeComplete={this._onRegionChangeComplete}
-        style={{flex: 1}}
-        categoriesMap={categories.map}
-        mapRef={ref => (this._refs["ClusteredMapViewTop"] = ref)}
+      <FlatList
+        horizontal={true}
+        renderItem={({item}) => this._renderTopComponentCategorySelector(item)}
+        data={term}
+        extraData={this.props.locale}
+        keyExtractor={item => item.uuid}
+        ItemSeparatorComponent={this._renderHorizontalSeparator}
+        contentContainerStyle={styles.listContainerHeader}
+        showsHorizontalScrollIndicator={false}
       />
+      // <ClusteredMapViewTop
+      //   term={term}
+      //   coords={coords}
+      //   initRegion={region}
+      //   pois={nearPois}
+      //   clusters={clusters}
+      //   uuids={childUuids}
+      //   onRegionChangeComplete={this._onRegionChangeComplete}
+      //   style={{flex: 1}}
+      //   categoriesMap={categories.map}
+      //   mapRef={ref => (this._refs["ClusteredMapViewTop"] = ref)}
+      // />
     )
   }
 
@@ -329,7 +345,7 @@ class PlacesScreen extends Component {
                 renderItem={({item}) => this._renderPoiListItem(item)}
                 data={nearPois}
                 extraData={this.props.locale}
-                keyExtractor={item => item.nid.toString()}
+                keyExtractor={item => item.uuid}
                 ItemSeparatorComponent={this._renderHorizontalSeparator}
                 contentContainerStyle={styles.listContainerHeader}
                 showsHorizontalScrollIndicator={false}
@@ -367,7 +383,7 @@ class PlacesScreen extends Component {
 
   /* Renders categories list */
   _renderCategoryListItem = (item) => 
-      <CategoryListItem onPress={() => this._openCategory(item)} image={item.image} title={item.name} />;
+      <CategoryListItem onPress={() => this._selectCategory(item)} image={item.image} title={item.name} />;
 
 
   /* Render content */
@@ -396,7 +412,7 @@ class PlacesScreen extends Component {
         topComponent={this._renderTopComponent}
         ListHeaderComponent={this._renderListHeader}
         data={data}
-        initialSnapIndex={0}
+        initialSnapIndex={1}
         numColums={numColums}
         renderItem={renderItem}
         keyExtractor={item => item.uuid}
@@ -459,6 +475,14 @@ const styles = StyleSheet.create({
     height: "100%",
     paddingHorizontal: 10,
   },
+  categorySelectorBtn: {
+    height: 40, 
+    padding: 10, 
+    backgroundColor: Colors.blue, 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    borderRadius: 10
+  }
 });
 
 

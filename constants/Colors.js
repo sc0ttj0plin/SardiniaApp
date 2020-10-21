@@ -4,6 +4,7 @@ export default {
   tintColor,
   //Real mockup colors (grab from here)
   blue: '#174A7C',        //rgb(23,74,124)
+  lightBlue: 'rgba(23,74,124,0.5)',
   green: '#5D7F20',       //rgb(93,127,32)
   yellow: '#F6A01A',      //rgb(246,160,26)
   red: '#D9531E',         //rgb(217,83,30)
