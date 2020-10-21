@@ -19,3 +19,22 @@ export function resetSearchAndAutocompleteStr() {
     type: Constants.RESET_SEARCH_AND_AUTOCOMPLETE_STR,
   };
 }
+
+export function pushCurrentCategoryPlaces(term) {
+  return {
+    type: Constants.PUSH_CURRENT_CATEGORY_PLACES,
+    payload: term
+  }
+}
+
+export function popCurrentCategoryPlaces() {
+  return {
+    type: Constants.POP_CURRENT_CATEGORY_PLACES
+  }
+}
+
+export function resetCurrentCategoryPlaces() {
+  return {
+    type: Constants.RESET_CURRENT_CATEGORY_PLACES
+  }
+}

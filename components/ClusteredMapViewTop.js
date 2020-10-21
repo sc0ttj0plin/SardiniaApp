@@ -34,8 +34,17 @@ class ClusteredMapViewTop extends PureComponent {
     })
   }
 
-  componentWillUnmount() {
+  componentDidUpdate(prevProps) {
+    var {coords, pois} = this.props;
     
+    if(coords && this._checkPois(pois, this.state.pois)) {
+      this.setState({pois: pois});
+      var region = boundingRect(pois, [coords.longitude, coords.latitude], (p) => p.georef.coordinates);
+      this._region = region;
+      this.props.onRegionChangeComplete(region);
+      setTimeout(() => this.map && this.map.animateToRegion(region,1000), 500);
+      this._fetchPois();
+    }
   }
 
   _checkPois(newPois, pois) {
@@ -82,18 +91,6 @@ class ClusteredMapViewTop extends PureComponent {
     }
   }
 
-  componentDidUpdate(prevProps) {
-    var {coords, pois} = this.props;
-    
-    if(coords && this._checkPois(pois, this.state.pois)) {
-      this.setState({pois: pois});
-      var region = boundingRect(pois, [coords.longitude, coords.latitude], (p) => p.georef.coordinates);
-      this._region = region;
-      this.props.onRegionChangeComplete(region);
-      setTimeout(() => this.map && this.map.animateToRegion(region,1000), 500);
-      this._fetchPois();
-    }
-  }
 
   _clusterKeyExtractor(cluster) {
     if(cluster.count == 1)
@@ -122,13 +119,12 @@ class ClusteredMapViewTop extends PureComponent {
     var {initRegion, pois} = this.state;
     var {categoriesMap, clusters} = this.props;
 
-    console.log(new Date(), "Render MapTopView", this.props.term ? this.props.term.name : "HOME");
-
     return (
+    <View>
      <MapView
         mapRef={ref => { this.props.mapRef(ref); this.map = ref; }}
         provider={ PROVIDER_GOOGLE }
-        style={this.props.style}
+        style={ styles.fill }
         showsUserLocation={ true }
         initialRegion={ this.props.initRegion }
         mapType='standard'
@@ -145,7 +141,6 @@ class ClusteredMapViewTop extends PureComponent {
           left: 0
       }}
         >
-
           {clusters && clusters.map((cluster, idx) => 
             cluster.count > 1 ? (
               <ClusterMarker
@@ -164,10 +159,10 @@ class ClusteredMapViewTop extends PureComponent {
               />
             )
         )}
-
           {Object.keys(categoriesMap).length > 0 && pois && pois.map((item) => this._renderEntityMarker(item))}
           
         </MapView>
+      </View>
     );
   }
 }

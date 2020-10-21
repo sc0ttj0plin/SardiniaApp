@@ -55,13 +55,6 @@ class PlacesScreen extends Component {
   constructor(props) {
     super(props);
 
-    // const params = _.get(props.route, 'params', { region: null, term: null, coords: {} });
-    // const { region, term, coords } = params; /* passed from the top component */
-    // const uuids = _.get(term, 'uuids', []);
-    const term = null;
-    const coords = {};
-    const region = null;
-    const uuids = [];
     this._watchID = null; /* navigation watch identificator */
     this._onFocus = null;
     this._refs = {};
@@ -72,10 +65,10 @@ class PlacesScreen extends Component {
       nearPois: [],
       nearPoisRefreshing: false,
       tid: -1,
-      uuids, /* uuids for categories */
+      // term: null, /* current category */
+      // uuids: [], /* uuids for child categories */ 
       prevTerm: null,
-      term,
-      coords,
+      coords: {},
       poisLimit: Constants.PAGINATION.poisLimit,
       region: Constants.MAP.defaultRegion,
     };
@@ -101,11 +94,9 @@ class PlacesScreen extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    /**
-     * Is the former props different from the newly propagated prop (redux)? perform some action
-     * if(prevProps.xxx !== this.props.xxx)
-     *  doStuff();
-     */
+    if(prevProps.others.placesTerms !== this.props.others.placesTerms) {
+      this._loadMorePois();
+    }
   }
 
   componentWillUnmount() {
@@ -131,6 +122,18 @@ class PlacesScreen extends Component {
   }
 
   /**
+   * Get current term and its child uuids, if useCategories is true fallbacks to categories
+   * 
+   */
+  _getCurrentTerm = (useCategories=false) => {
+    let term = this.props.others.placesTerms[this.props.others.placesTerms.length - 1];
+    if (useCategories)
+      term = term ? (term.terms ? term.terms : []) : this.props.categories.data[Constants.VIDS.poisCategories]
+    const childUuids = term ? term.childUuids : null;
+    return { term, childUuids };
+  }
+
+  /**
    * Invoked whenever the coordinates get updated (either on initial load or when the user moves)
    *  Pois: fetches new nearest pois and clusters.
    *  PoisCategories: if there are no more nested categories then, instead of loading subcategories load just pois (leaf)
@@ -140,7 +143,9 @@ class PlacesScreen extends Component {
    * @param {*} newCoords: the new user's coordinates
    */
   _onUpdateCoords(newCoords) {
-    const { coords, term } = this.state;
+    const { term } = this._getCurrentTerm();
+    // const { coords, term } = this.state;
+    const { coords } = this.state;
     if(!coords || coords.latitude !== newCoords.latitude || coords.longitude !== newCoords.longitude) {
       let isCordsInBound = coordsInBound(newCoords); 
       // Are coordinates within sardinia's area? fetch the updated pois list
@@ -165,14 +170,15 @@ class PlacesScreen extends Component {
    * @param {*} coords: the coordinates for which to load new pois
    */
   _fetchNearestPois(coords) {
+    const { term, childUuids } = this._getCurrentTerm();
     return apolloQuery(actions.getNearestPois({
-        limit: 8,
-        x: coords.longitude,
-        y: coords.latitude,
-        uuids: this.state.uuids.length > 0 ? this.state.uuids : null
-      })).then((pois) => {
-        this.setState({ nearPois: pois });
-      })
+      limit: 8,
+      x: coords.longitude,
+      y: coords.latitude,
+      uuids: childUuids, //this.state.uuids.length > 0 ? this.state.uuids : null
+    })).then((pois) => {
+      this.setState({ nearPois: pois });
+    });
   }
   
   /**
@@ -182,14 +188,15 @@ class PlacesScreen extends Component {
    * @param {*} coords: new user coordinates (not used)
    */
   _fetchClusters(coords) {
-    const { region, uuids } = this.state;
+    const { term, childUuids } = this._getCurrentTerm();
+    const { region } = this.state;
 
     const p = regionToPoligon(region);
     const regionString = `${p[0][0]} ${p[0][1]}, ${p[1][0]} ${p[1][1]}, ${p[2][0]} ${p[2][1]}, ${p[3][0]} ${p[3][1]}, ${p[4][0]} ${p[4][1]}`;
     
     let uuidString = "{";
-    for(var i=0; i<uuids.length; i++)
-      uuidString += i < uuids.length - 1 ? uuids + "," : uuids;
+    for(var i=0; i<childUuids.length; i++)
+      uuidString += i < childUuids.length - 1 ? childUuids + "," : childUuids;
     uuidString += "}";
 
     const km = regionDiagonalKm(region);
@@ -213,6 +220,7 @@ class PlacesScreen extends Component {
    * uuids controls the category of the pois
    */
   _loadMorePois = () => {
+    const { term, childUuids } = this._getCurrentTerm();
     var { coords } = this.state;
     if(coords && this._isPoiList() && !this.state.poisRefreshing){
       console.log("load finally pois!")
@@ -224,7 +232,7 @@ class PlacesScreen extends Component {
           offset: this.state.pois ? this.state.pois.length : 0,
           x: coords.longitude,
           y: coords.latitude,
-          uuids: this.state.uuids.length > 0 ? this.state.uuids : null
+          uuids: childUuids//this.state.uuids.length > 0 ? this.state.uuids : null
         })).then((pois) => {
           this.setState({
             pois: this.state.pois ? [...this.state.pois, ...pois] : pois,
@@ -240,27 +248,13 @@ class PlacesScreen extends Component {
    * @param {*} item: list item clicked
    */
   _openCategory = (item) => {
-    const { region, coords, term } = this.state;
+    // const { region, coords, term } = this.state;
+    const { region, coords } = this.state;
+    this.props.actions.pushCurrentCategoryPlaces(item);
     this.setState({
-      prevTerm: term,
-      term: item, 
-      uuids: item.uuids,
       region,
       coords,
-    }, this._loadMorePois)
-  }
-
-  /**
-   * Opens fullscreen map on top of the screen
-   */
-  _openMap = () => {
-    this.props.navigation.navigate(Constants.NAVIGATION.NavMapScreen, {
-      region: this.state.region,
-      pois: this.state.nearPois,
-      term: this.state.term,
-      uuids: this.state.uuids,
-      coords: this.state.coords
-    })
+    });
   }
 
   /**
@@ -282,13 +276,14 @@ class PlacesScreen extends Component {
   }
 
   /**
-   * Is poi list returns true if we reached the end of the three (pois instead of categories)
+   * Is poi list returns true if we reached the end of the three (no more sub categories)
    */
   _isPoiList = () => {
-    return this.state.term && (!this.state.term.terms || this.state.term.terms.length == 0);
+    const { term } = this._getCurrentTerm();
+    return term && (!term.terms || term.terms.length == 0);
   }
 
-
+  _backButtonPress = () => this.props.actions.popCurrentCategoryPlaces();
 
   _isSuccessData  = () => false;    /* e.g. this.props.pois.success; */
   _isLoadingData  = () => true;   /* e.g. this.props.pois.loading; */
@@ -298,8 +293,8 @@ class PlacesScreen extends Component {
   /* Renders the topmost component: a map in our use case */
   _renderTopComponent = () => {
     var { categories } = this.props;
-    const { term, coords, region, nearPois, clusters, uuids } = this.state;
-    var currentCategories = term ? term.terms ? term.terms : [] : categories.data[Constants.VIDS.poisCategories];
+    const { term, childUuids } = this._getCurrentTerm();
+    const { coords, region, nearPois, clusters } = this.state;
     return (
       <ClusteredMapViewTop
         term={term}
@@ -307,10 +302,10 @@ class PlacesScreen extends Component {
         initRegion={region}
         pois={nearPois}
         clusters={clusters}
-        uuids={uuids}
+        uuids={childUuids}
         onRegionChangeComplete={this._onRegionChangeComplete}
         style={{flex: 1}}
-        categoriesMap={this.props.categories.map}
+        categoriesMap={categories.map}
         mapRef={ref => (this._refs["ClusteredMapViewTop"] = ref)}
       />
     )
@@ -378,28 +373,30 @@ class PlacesScreen extends Component {
   /* Render content */
   _renderContent = () => {
     let { categories } = this.props;
-    const { term, coords, region, nearPois, clusters, pois } = this.state;
+    const { term } = this._getCurrentTerm(true);
+    // const { term, coords, region, nearPois, clusters, pois } = this.state;
+    const { pois } = this.state;
     const isPoiList = this._isPoiList();
     let data = [];
     let renderItem = null;
     let numColums = 1; //One for categories, two for pois
-    //if we reached the end renders pois
+    //if no more nested categories renders pois
     if (isPoiList) {
       data = pois;
       renderItem = ({ item }) => this._renderPoiListItem(item);
       numColums = 2;
     } else {
-      //initially term is null so we get categories from redux, then term is populated with nested terms (categories) 
-      data = term ? (term.terms ? term.terms : []) : categories.data[Constants.VIDS.poisCategories];
+      //initially term is null so we get terms from redux, then term is populated with nested terms (categories) 
+      data = term;
       renderItem = ({ item }) => this._renderCategoryListItem(item);
     }
 
-    // console.log("current categories", currentCategories.length) //categories.data[Constants.VIDS.poisCategories])
     return (
       <ScrollableContainer 
         topComponent={this._renderTopComponent}
         ListHeaderComponent={this._renderListHeader}
         data={data}
+        initialSnapIndex={0}
         numColums={numColums}
         renderItem={renderItem}
         keyExtractor={item => item.uuid}
@@ -409,11 +406,11 @@ class PlacesScreen extends Component {
 
 
   render() {
-    const { render, uuids } = this.state;
+    const { render } = this.state;
     return (
       <View style={[styles.fill, {paddingTop: STATUSBAR_HEIGHT}]}>
         <ConnectedHeader 
-          backOnPress={() => this.setState({ term: this.state.prevTerm })}
+          backOnPress={this._backButtonPress}
           iconTintColor={Colors.colorScreen1} 
           backButtonVisible={!this.state.term}
         />
@@ -482,19 +479,13 @@ const mapStateToProps = state => {
   return {
     restState: state.restState,
     //mixed state
-    othersState: state.othersState,
+    others: state.othersState,
     //language
     locale: state.localeState,
     //favourites
     favourites: state.favouritesState,
     //graphql
     categories: state.categoriesState,
-    events: state.eventsState,
-    inspirers: state.inspirersState,
-    itineraries: state.itinerariesState,
-    nodes: state.nodesState,
-    pois: state.poisState,
-    searchAutocomplete: state.searchAutocompleteState,
   };
 };
 

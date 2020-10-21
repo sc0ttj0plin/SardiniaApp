@@ -47,7 +47,7 @@ export default class ScrollableContainer extends PureComponent {
           componentType="FlatList"
           numColumns={this.props.numColumns || 1}
           snapPoints={[5, windowHeight - 390, windowHeight - 180]}
-          initialSnapIndex={2}
+          initialSnapIndex={this.props.initialSnapIndex >=0 ? this.props.initialSnapIndex : 2}
           renderHandle={this._renderHandle}
           data={this.props.data || []}
           keyExtractor={this.props.keyExtractor}

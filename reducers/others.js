@@ -3,6 +3,7 @@ import * as Constants from '../constants';
 const INITIAL_STATE = {
   searchOrAutocomplete: "autocomplete",
   searchStr: "",
+  placesTerms: [],
 }
 
 
@@ -24,6 +25,26 @@ export default function reducer(state = INITIAL_STATE, action) {
       return {
         ...state,
         searchStr: INITIAL_STATE.searchStr,
+      }
+    //PLACES CATEGORIES (POP/PUSH) (scoped case to reuse var names)
+    case Constants.PUSH_CURRENT_CATEGORY_PLACES: {
+      let newplacesTerms = [...state.placesTerms];
+      newplacesTerms.push(action.payload);
+      return {
+        ...state,
+        placesTerms: newplacesTerms,
+      }
+    } case Constants.POP_CURRENT_CATEGORY_PLACES: {
+      let newplacesTerms = [...state.placesTerms];
+      newplacesTerms.pop();
+      return {
+        ...state,
+        placesTerms: newplacesTerms,
+      }
+    } case Constants.RESET_CURRENT_CATEGORY_PLACES:
+      return {
+        ...state,
+        placesTerms: INITIAL_STATE.placesTerms
       }
     default:
       return state;

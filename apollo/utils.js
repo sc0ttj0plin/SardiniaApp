@@ -30,8 +30,20 @@ export const processEvents = function(events) {
 
 /**
  * Process categories 
- * @param {*} categories: 
- * @param {*} termsMap
+ * Process each category adding the field: "uuids" which adds the current category's sub-categories
+ * e.g.:
+ * {   
+ *     ...
+ *     "uuid": "2c217b84-6ab6-4702-a88b-c560970f1d3d", //current category uuid
+ *     "uuids": Array [                                //sub categories uuids
+ *       "844ac546-4da8-406a-8258-8e5b96fc6f7f",
+ *       "db9db33b-df26-41b2-8a86-ceaf7c4e313e",
+ *       "1b3f8171-db41-4811-a824-3d9eb622e40a",
+ *       "1a8de1f9-c101-406c-87c6-8561f52a3565",
+ *     ],
+ *     ...
+ * @param {*} categories input categories (with nested terms)
+ * @param {*} termsMap terms keys by uuid
  */
 export const processCategories = function(categories, termsMap) {
   var cCategories = [];
@@ -45,13 +57,13 @@ export const processCategories = function(categories, termsMap) {
       else
         c.image = "https://www.sardegnainblog.it/video/wp-content/uploads/2018/06/isola-asinara-escursioni-in-barca.jpg"
         if(c.nodes_terms_aggregate.aggregate.count > 0) {
-          c.uuids = [c.uuid];
+          c.childUuids = [c.uuid];
       }
 
       if(c.terms && c.terms.length > 0) {
           var terms = processCategories(c.terms, termsMap);   
           for(var j=0; j<terms.length; j++){
-              c.uuids = c.uuids ? c.uuids.concat(terms[j].uuids) : terms[j].uuids;
+              c.childUuids = c.childUuids ? c.childUuids.concat(terms[j].childUuids) : terms[j].childUuids;
               c.image = terms[j].image.replace("public://", "https://www.sardegnaturismo.it/sites/default/files/");
           };
           c.terms = terms;

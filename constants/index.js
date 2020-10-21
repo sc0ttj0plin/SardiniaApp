@@ -70,6 +70,9 @@ export const RESET_SEARCH_AND_AUTOCOMPLETE_STR = 'visitsardinia/search_autocompl
 export const SET_FAVOURITE = 'visitsardinia/favourites/SET_FAVOURITE';
 export const UNSET_FAVOURITE = 'visitsardinia/favourites/UNSET_FAVOURITE';
 export const TOGGLE_FAVOURITE = 'visitsardinia/favourites/TOGGLE_FAVOURITE';
+export const PUSH_CURRENT_CATEGORY_PLACES = 'visitsardinia/places/PUSH_CURRENT_CATEGORY_PLACES';
+export const POP_CURRENT_CATEGORY_PLACES = 'visitsardinia/places/POP_CURRENT_CATEGORY_PLACES';
+export const RESET_CURRENT_CATEGORY_PLACES = 'visitsardinia/places/RESET_CURRENT_CATEGORY_PLACES';
 
 // API
 export const FETCH_NUM_MONTHS_BACKWARDS = 1;

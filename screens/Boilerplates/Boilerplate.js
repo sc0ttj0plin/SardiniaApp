@@ -174,7 +174,7 @@ const mapStateToProps = state => {
   return {
     restState: state.restState,
     //mixed state
-    othersState: state.othersState,
+    others: state.othersState,
     //language
     locale: state.localeState,
     //favourites

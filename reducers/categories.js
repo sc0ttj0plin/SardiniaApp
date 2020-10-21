@@ -6,9 +6,9 @@ import _ from 'lodash';
  */
 const INITIAL_STATE = {
   //categories
-  data: {}, /** data is keyed by vid (e.g. places: 36, inspirers: 46) */
+  data: {}, /* data is keyed by vid (e.g. places: 36, inspirers: 46) */
   success: false, 
-  map: {},
+  map: {}, /* map are terms keyed by uuid */
   error: null,
   loading: false,
 }
@@ -28,8 +28,8 @@ export default function reducer(state = INITIAL_STATE, action) {
         ...state, 
         success: true,
         error: null, 
-        data: {...state.data, ...action.payload.terms}, /* e.g. { 36: { ... }, 46: { ... } } */
-        map: {...state.map, ...action.payload.termsMap},
+        data: {...state.data, ...action.payload.terms}, /* e.g. { 36: [ {name: "xxx", uuid: ...} ], 46: [ ... ] } */
+        map: {...state.map, ...action.payload.termsMap}, /* e.g. { "2c217b84-6ab6-4702-a88b-c560970f1d3d": {"name": "Archeologia e Arte", ...} ...} */
         loading: false
       };
     case Constants.GET_CATEGORIES_FAIL:
