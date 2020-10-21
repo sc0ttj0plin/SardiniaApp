@@ -120,7 +120,7 @@ class ClusteredMapViewTop extends PureComponent {
     var {categoriesMap, clusters} = this.props;
 
     return (
-    <View>
+    <>
      <MapView
         mapRef={ref => { this.props.mapRef(ref); this.map = ref; }}
         provider={ PROVIDER_GOOGLE }
@@ -162,7 +162,7 @@ class ClusteredMapViewTop extends PureComponent {
           {Object.keys(categoriesMap).length > 0 && pois && pois.map((item) => this._renderEntityMarker(item))}
           
         </MapView>
-      </View>
+      </>
     );
   }
 }

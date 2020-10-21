@@ -304,7 +304,7 @@ class PlacesScreen extends Component {
         clusters={clusters}
         uuids={childUuids}
         onRegionChangeComplete={this._onRegionChangeComplete}
-        style={{flex: 1}}
+        style={{width: 500, height: 300}}
         categoriesMap={categories.map}
         mapRef={ref => (this._refs["ClusteredMapViewTop"] = ref)}
       />
