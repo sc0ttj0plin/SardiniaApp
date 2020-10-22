@@ -186,6 +186,30 @@ export const NAVIGATOR_OPTS = {
   maximumAge: 5000 
 };
 
+/* related list options by key */
+export const RELATED_LIST_TYPES = {
+  "places": {
+    backgroundTopLeftCorner: "",
+    iconColor: "",
+    iconName: ""
+  },
+  "inspirers": {
+    backgroundTopLeftCorner: "",
+    iconColor: "",
+    iconName: ""
+  }, 
+  "itineraries": {
+    backgroundTopLeftCorner: "",
+    iconColor: "",
+    iconName: ""
+  },
+  "events": {
+    backgroundTopLeftCorner: "",
+    iconColor: "",
+    iconName: ""
+  }
+}
+
 /* CALENDAR */
 export const CALENDAR = {
   //Prevent having too many copies of the same object (this) in calendar dates reducer 

@@ -16,7 +16,7 @@ export default class EventListItem extends PureComponent {
         <View style={styles.listItem}>
           <View style={styles.imageView}>
             <Image
-              style={styles.listItemImage} 
+              style={styles.imageView} 
               source={{uri: image}}
               resizeMode="cover"
               PlaceholderContent={<ActivityIndicator style={styles.spinner} color={"white"}/>}/>
