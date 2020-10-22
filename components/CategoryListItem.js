@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { ActivityIndicator } from 'react-native';
 import { Image } from 'react-native-elements';
-import BoxWithText from "./BoxWithText"; 
+// import BoxWithText from "./BoxWithText"; 
 // import { TouchableOpacity } from "react-native-gesture-handler"
 
 /**
@@ -15,7 +15,49 @@ class CategoryListItem extends PureComponent {
       width: 0
     };
   }
+
+  hexToRgb = (hex, opacity) => {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    let r =  parseInt(result[1], 16);
+    let g = parseInt(result[2], 16);
+    let b = parseInt(result[3], 16);
+
+    let color;
+    if(opacity >= 0 && opacity <= 1)
+      color = `rgba(${r}, ${g}, ${b}, ${opacity})}`;
+    else 
+      color = `rgb(${r}, ${g}, ${b})}`;
+    return color;
+  }
   
+  
+  _renderBoxWithText = (title, showBoxes, opacityBackground, bgColor) => {
+    let backgroundColor = opacityBackground ? (`rgba(60, 66, 72, ${opacityBackground})`) : "";
+
+    if(bgColor)
+      backgroundColor = this.hexToRgb(bgColor, opacityBackground);
+
+    return (
+      <View style={[styles.titleContainer]}>
+          <View style={[styles.titleContainerBackground, {
+            backgroundColor: backgroundColor
+            }]}>
+              <Text style={[styles.title]}>
+                  {title}
+              </Text>
+              {
+                showBoxes &&
+                <View style={styles.boxes}>
+                    <View style={styles.box1}></View>
+                    <View style={styles.box2}></View>
+                    <View style={styles.box3}></View>
+                    <View style={styles.box4}></View>
+                </View>
+              }
+          </View>
+      </View>
+    );
+  }
 
   render() { 
     var image = this.props.image ? this.props.image : "https://via.placeholder.com/300x150";
@@ -27,11 +69,7 @@ class CategoryListItem extends PureComponent {
             style={[styles.image, { width: this.state.width, height: this.state.height }, this.props.imageStyle]} 
             PlaceholderContent={<ActivityIndicator style={styles.spinner} color={"white"} />}
             >
-            <BoxWithText
-              visibleBoxes
-              extraStyle={{}}
-              title={this.props.title} 
-              opacityBackground={0.8}/>
+            {this._renderBoxWithText(this.props.title, true, 0.8)}
           </Image>
         </TouchableOpacity>
       </View>
@@ -55,39 +93,54 @@ const styles = StyleSheet.create({
       position: "relative",
       textAlignVertical: "center",
     },
-    titlePrefix: {
-      fontSize: 15,
-      color: "#ffffff",
-      textShadowOffset: {width: -1, height: 1},
-      textShadowRadius: 10,
-      textAlign: "center",
-    },
-    title: {
-      fontSize: 20,
-      color: "#ffffff",
-      textShadowOffset: {width: -1, height: 1},
-      textShadowRadius: 10,
-      padding: 10,
-      textAlign: "center"
-    },
     image: {
       resizeMode: "cover",
       flex: 1,
       justifyContent: 'flex-end',
       alignItems: 'flex-end',
     },
+    title: {
+      fontSize: 16,
+      color: "#ffffff",
+      padding: 10,
+      textAlign: "center",
+      fontWeight: "300"
+    },
     titleContainer: {
       width: "100%",
-      height: "100%",
+      height: "60%",
       alignSelf: "flex-end",
       justifyContent: "flex-end",
       alignItems: "flex-end"
     },
     titleContainerBackground:  {
-      width: 200,
-      backgroundColor: "rgba(60,66,72, 0.8)",
-      paddingVertical: 25,
-      paddingHorizontal: 15
+      width: "100%",
+      backgroundColor: "rgba(60,66,72, 0.8)"
+    },
+    boxes: {
+        position: "absolute",
+        width: "117%",
+        alignSelf: "center",
+        height: 10,
+        backgroundColor: "white",
+        flexDirection: "row",
+        marginTop: -10
+    },
+    box1: {
+        backgroundColor: "#154A7D",
+        flex: 1
+    },
+    box2: {
+        backgroundColor: "#F59F1C",
+        flex: 1
+    },
+    box3: {
+        backgroundColor: "#50712A",
+        flex: 1
+    },
+    box4: {
+        backgroundColor: "#D95620",
+        flex: 1
     }
 
 });

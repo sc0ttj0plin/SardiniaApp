@@ -34,7 +34,7 @@ class BoxWithText extends PureComponent {
       backgroundColor = this.hexToRgb(this.props.backgroundColor, this.props.opacityBackground);
 
     return (
-        <View style={{ ...styles.titleContainer, ...this.props.extraStyle }}>
+        <View style={[styles.titleContainer, this.props.extraStyle]}>
             <View style={[styles.titleContainerBackground, {
               backgroundColor: backgroundColor
               }]}>
