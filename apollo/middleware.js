@@ -120,7 +120,7 @@ const apolloMiddleware = client => {
             if (resp.data && resp.data.events.length > 0) {
               //also store events by id
               resp.data.events.forEach((e) => processEntity(e));
-              let eventsById = resp.data.events.reduce((acc, curr) => ({ ...acc, [curr.nid]: curr}), {});
+              let eventsById = resp.data.events.reduce((acc, curr) => ({ ...acc, [curr.uuid]: curr}), {});
               dispatch.payload.events = processEvents(resp.data.events, action.filtersByType);
               dispatch.payload.eventsById = eventsById;
             }

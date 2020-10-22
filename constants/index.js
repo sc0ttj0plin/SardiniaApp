@@ -79,7 +79,8 @@ export const FETCH_NUM_MONTHS_BACKWARDS = 1;
 export const FETCH_NUM_MONTHS_FORWARD = 0;
 // Others
 export const DEFAULT_LANGUAGE = 'it';
-export const DATE_FORMAT = 'YYYY-MM-DD';
+export const DATE_SEP = '-';
+export const DATE_FORMAT = `YYYY${DATE_SEP}MM${DATE_SEP}DD`;
 export const AGENDA_LOCALE = {
   'it': {
     monthNames: ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'],
@@ -245,9 +246,23 @@ export const styles = {
     textDayFontWeight: 'bold',
     textMonthFontWeight: 'bold',
     textDayHeaderFontWeight: '300',
-    textDayFontSize: 16,
+    textDayFontSize: 12,
     textMonthFontSize: 16,
-    textDayHeaderFontSize: 16
+    textDayHeaderFontSize: 12,
+    'stylesheet.calendar.header': {
+      week: {
+        marginTop: 5,
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+      }
+    },
+    'stylesheet.day.single': {
+      base: {
+        width: 24,
+        height: 24,
+        alignItems: 'center',
+      },
+    }
   },
 }
 

@@ -163,13 +163,7 @@ class EventsScreen extends Component {
   _isSuccessData  = () => true;    /* e.g. this.props.pois.success; */
   _isLoadingData  = () => false;   /* e.g. this.props.pois.loading; */
   _isErrorData    = () => null;    /* e.g. this.props.pois.error; */
-  // _renderLoadingOutcome = () => 
-  //   <AsyncOperationStatusIndicatorPlaceholder 
-  //     retryFun={() => {}} 
-  //     size={"large"} 
-  //     loading={this._isLoadingData()} 
-  //     error={this._isErrorData()} 
-  //   />;
+
 
 
   _renderContent = () => {
@@ -207,34 +201,37 @@ class EventsScreen extends Component {
   }
 
   _renderEventsList = () => {
-    const events = _.get(this.props.events, "events", [])
-    let newEvents = []
-    let currentMonth = parseInt(this.state.currentMonth.split("-")[1])
-    let currentYear = parseInt(this.state.currentMonth.split("-")[0])
-    // console.log("current month", this.state.currentMonth, INITIAL_MONTH)
-    for(let key in events){
-      console.log("key", key, events[key].length)
-      let month = parseInt(("" + key).split("-")[1])
-      let year = parseInt(("" + key).split("-")[0])
-      // console.log("events length", events[key].length > 5, month, year, currentMonth, currentYear)
-      if(month == currentMonth && year == currentYear){
-        let event = {
-          title: key,
-          data: events[key]
-        }
-        newEvents.push(event)
-      }
-    }
-
+    // const events = _.get(this.props.events, "events", [])
+    // let newEvents = []
+    // let currentMonth = parseInt(this.state.currentMonth.split("-")[1])
+    // let currentYear = parseInt(this.state.currentMonth.split("-")[0])
+    // // console.log("current month", this.state.currentMonth, INITIAL_MONTH)
+    // for(let key in events){
+    //   console.log("key", key, events[key].length)
+    //   let month = parseInt(("" + key).split("-")[1])
+    //   let year = parseInt(("" + key).split("-")[0])
+    //   // console.log("events length", events[key].length > 5, month, year, currentMonth, currentYear)
+    //   if(month == currentMonth && year == currentYear){
+    //     let event = {
+    //       title: key,
+    //       data: events[key]
+    //     }
+    //     newEvents.push(event)
+    //   }
+    // }
+    const { currentMonth } = this.state;
+    console.log("currentmo", this.state.currentMonth)
     return(
       <SectionList
-        sections={newEvents}
+        sections={this.props.events.events[currentMonth]}
         keyExtractor={(item) => item.title}
         renderItem={({ item }) => this._renderEventsListItem(item)}
         style={styles.listContent}
         renderSectionHeader={({ section: { title } }) => (
-          <Text style={styles.header}>{title}</Text>
-      )}
+          <View style={{flex:1, backgroundColor: Colors.lightGrey, justifyContent: 'center', borderRadius: 5, marginTop: 5, marginBottom: 5}}>
+            <Text style={styles.header}>{title}</Text>
+          </View>
+        )}
       />
     )
   }
@@ -277,8 +274,10 @@ const styles = StyleSheet.create({
     backgroundColor: "white"
   },
   header: {
-    backgroundColor: "white",
-    marginBottom: 10
+    // backgroundColor: "white",
+    margin: 5,
+    color: Colors.red,
+    fontWeight: 'bold'
   },
   container: {
     padding: 10,

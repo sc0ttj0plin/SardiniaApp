@@ -481,8 +481,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   categorySelectorBtn: {
-    height: 40, 
-    padding: 10, 
+    height: 30, 
+    padding: 5, 
     backgroundColor: Colors.blue, 
     alignItems: 'center', 
     justifyContent: 'center', 
