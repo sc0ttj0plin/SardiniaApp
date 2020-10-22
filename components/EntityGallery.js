@@ -1,7 +1,7 @@
 import React, {PureComponent} from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { View, StyleSheet, Text } from 'react-native';
-import { GridGallery } from '.';
+import { GridGallery } from './GridGallery';
 import * as Constants from '../constants';
 
 class EntityMedia extends PureComponent {  

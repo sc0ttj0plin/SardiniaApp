@@ -28,6 +28,8 @@ export ScrollableContainer from './ScrollableContainer';
 // export EntityGallery from './EntityGallery';
 // export EntityHeader from './EntityHeader';
 export EntityItem from './EntityItem';
+export EventListItem from './EventListItem';
+
 // export EntityMap from './EntityMap';
 // export EntityRelatedList from './EntityRelatedList';
 // export EntityVirtualTour from './EntityVirtualTour';

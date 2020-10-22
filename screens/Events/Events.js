@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { 
   View, Text, FlatList, ActivityIndicator, 
-  StyleSheet, BackHandler, Platform, ScrollView, SectionList, TouchableHighlight } from "react-native";
-import { Image } from "react-native-elements";
-import { TouchableOpacity } from "react-native-gesture-handler"
+  StyleSheet, BackHandler, Platform, ScrollView, SectionList, TouchableHighlight, NativeModules } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
+const { StatusBarManager } = NativeModules;
+const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
 
 import { 
   // CategoryListItem, 
@@ -19,7 +19,8 @@ import {
   // AsyncOperationStatusIndicatorPlaceholder,
   // Webview, 
   // ConnectedText, 
-  ConnectedHeader, 
+  ConnectedHeader,
+  EventListItem, 
   // ImageGridItem, 
   // ConnectedLanguageList, 
   // BoxWithText,
@@ -45,6 +46,8 @@ import { FETCH_NUM_MONTHS_FORWARD, FETCH_NUM_MONTHS_BACKWARDS } from '../../cons
 //Example calendar: https://github.com/wix/react-native-calendars/blob/master/example/src/screens/calendars.js
 const USE_DR = false;
 const INITIAL_DATE = { "dateString": moment().format("YYYYMMDD") };
+const INITIAL_MONTH = moment().format("YYYY-MM");
+
 class EventsScreen extends Component {
 
   constructor(props) {
@@ -68,6 +71,7 @@ class EventsScreen extends Component {
     this.state = {
       render: USE_DR ? false : true,
       selectedDay: moment().subtract(2, 'month').format('YYYY-MM-DD'),
+      currentMonth: INITIAL_MONTH
     };
 
       
@@ -119,6 +123,9 @@ class EventsScreen extends Component {
       this.props.actions.getEvents(eventsQuery, {}, this._ubLb);
       this._queriedMonths[monthFormatted] = true;
     }
+    this.setState({
+      currentMonth: moment(dateString).format("YYYY-MM")
+    })
   }
 
   /**
@@ -139,6 +146,7 @@ class EventsScreen extends Component {
       ub: moment().endOf('month').subtract(1,"year").add(FETCH_NUM_MONTHS_FORWARD, 'month')
     });
   }
+
 
   /**
    * If the reducer embeds a single data type then e.g. only pois:
@@ -201,15 +209,22 @@ class EventsScreen extends Component {
   _renderEventsList = () => {
     const events = _.get(this.props.events, "events", [])
     let newEvents = []
+    let currentMonth = parseInt(this.state.currentMonth.split("-")[1])
+    let currentYear = parseInt(this.state.currentMonth.split("-")[0])
+    // console.log("current month", this.state.currentMonth, INITIAL_MONTH)
     for(let key in events){
-      let event = {
-        title: key,
-        data: events[key]
+      console.log("key", key, events[key].length)
+      let month = parseInt(("" + key).split("-")[1])
+      let year = parseInt(("" + key).split("-")[0])
+      // console.log("events length", events[key].length > 5, month, year, currentMonth, currentYear)
+      if(month == currentMonth && year == currentYear){
+        let event = {
+          title: key,
+          data: events[key]
+        }
+        newEvents.push(event)
       }
-      // console.log("key", key, event) 
-      newEvents.push(event)
     }
-    // console.log("events", newEvents.length)
 
     return(
       <SectionList
@@ -231,28 +246,17 @@ class EventsScreen extends Component {
     let term = _.get(item.term, "name", null);
     let image = _.get(item, "image", "")
     return(
-      <TouchableOpacity style={styles.listItemButton}>
-        <View style={styles.listItem}>
-          <View style={styles.imageView}>
-            <Image
-              style={styles.listItemImage} 
-              source={{uri: image}}
-              resizeMode="cover"
-              PlaceholderContent={<ActivityIndicator />}/>
-          </View>
-          <View style={styles.itemDescView}>
-              <Text style={styles.listItemTitle}>{title}</Text>
-              <Text style={styles.listItemTerm}>{term}</Text>
-          </View>
-        </View>
-      </TouchableOpacity>
+      <EventListItem 
+        title={title}
+        term={term}
+        image={image}/>
     )
   }
 
   render() {
     const { render } = this.state;
     return (
-      <View style={styles.fill}>
+      <View style={[styles.fill, {paddingTop: STATUSBAR_HEIGHT}]}>
         <ConnectedHeader iconTintColor="#24467C" />
         {render && this._renderContent()}
       </View>
@@ -282,43 +286,7 @@ const styles = StyleSheet.create({
   listContent: {
     paddingHorizontal: 17
   },
-  listItemButton: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "flex-start"
-  },
-  listItem: {
-    minHeight: 78,
-    backgroundColor: "white",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    marginBottom: 16,
-    borderRadius: 5,
-    width: "99%",
-    display: "flex",
-    flexDirection: "row"
-  },
-  imageView: {
-    width: 78,
-    height: 78,
-    borderRadius: 5
-  },
-  itemDescView: {
-    paddingTop: 14,
-    paddingLeft: 10
-  },
-  listItemImage: {
-    width: "100%",
-    height: "100%",
-    zIndex: -1
-  }
+  
 });
 
 

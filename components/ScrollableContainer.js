@@ -41,7 +41,7 @@ export default class ScrollableContainer extends PureComponent {
         <Animated.View style={[styles.fill, { transform: [{ translateY: this._translateAnimY } ]}]}>
           {this.props.topComponent()}
         </Animated.View>
-
+        
         <ScrollBottomSheet
           {...this.props} 
           componentType="FlatList"

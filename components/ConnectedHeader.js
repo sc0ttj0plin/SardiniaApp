@@ -105,6 +105,12 @@ class ConnectedHeader extends PureComponent {
     this.props.actions.setSearchOrAutocomplete(search);
   };
 
+  componentDidUpdate(prevProps){
+    if(prevProps.backButtonVisible != this.props.backButtonVisible)
+      this.setState({
+        backButtonVisible: this.props.backButtonVisible
+      })
+  }
 
   render() {
     const { searchStr } = this.props.others;
