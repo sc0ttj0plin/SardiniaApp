@@ -17,7 +17,7 @@ export default class EntityMarker extends PureComponent {
         cluster: this.props.cluster,
         term: this.props.term && this.props.term,
         image: this.props.term && this.props.term.marker,
-        trackingViewChanges: true,
+        trackingViewChanges: false,
         selected: this.props.selected
     }
   }

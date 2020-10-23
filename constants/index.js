@@ -1,4 +1,6 @@
 import Colors from './Colors';
+import { Platform } from "react-native"
+
 // Actions
 export const GET_ENTITIES = 'visitsardinia/entities/LOAD';
 export const GET_ENTITIES_SUCCESS = 'visitsardinia/entities/LOAD_SUCCESS';
@@ -79,8 +81,7 @@ export const FETCH_NUM_MONTHS_BACKWARDS = 1;
 export const FETCH_NUM_MONTHS_FORWARD = 0;
 // Others
 export const DEFAULT_LANGUAGE = 'it';
-export const DATE_SEP = '-';
-export const DATE_FORMAT = `YYYY${DATE_SEP}MM${DATE_SEP}DD`;
+export const DATE_FORMAT = 'YYYY-MM-DD';
 export const AGENDA_LOCALE = {
   'it': {
     monthNames: ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'],
@@ -189,26 +190,27 @@ export const NAVIGATOR_OPTS = {
 /* related list options by key */
 export const RELATED_LIST_TYPES = {
   "places": {
-    backgroundTopLeftCorner: "",
-    iconColor: "",
-    iconName: ""
+    backgroundTopRightCorner: Colors.colorScreen1,
+    iconColor: "white",
+    iconName: Platform.OS === 'ios' ? 'ios-map' : 'md-map'
   },
   "inspirers": {
-    backgroundTopLeftCorner: "",
-    iconColor: "",
-    iconName: ""
+    backgroundTopRightCorner: Colors.colorScreen2,
+    iconColor: "white",
+    iconName: Platform.OS === 'ios' ? 'ios-map' : 'md-map'
   }, 
   "itineraries": {
-    backgroundTopLeftCorner: "",
-    iconColor: "",
-    iconName: ""
+    backgroundTopRightCorner: Colors.colorScreen4,
+    iconColor: "white",
+    iconName: Platform.OS === 'ios' ? 'ios-analytics' : 'md-analytics'
   },
   "events": {
-    backgroundTopLeftCorner: "",
-    iconColor: "",
-    iconName: ""
+    backgroundTopRightCorner: Colors.colorScreen5,
+    iconColor: "white",
+    iconName: Platform.OS === 'ios' ? 'ios-calendar' : "md-calendar"
   }
 }
+
 
 /* CALENDAR */
 export const CALENDAR = {
@@ -270,23 +272,9 @@ export const styles = {
     textDayFontWeight: 'bold',
     textMonthFontWeight: 'bold',
     textDayHeaderFontWeight: '300',
-    textDayFontSize: 12,
+    textDayFontSize: 16,
     textMonthFontSize: 16,
-    textDayHeaderFontSize: 12,
-    'stylesheet.calendar.header': {
-      week: {
-        marginTop: 5,
-        flexDirection: 'row',
-        justifyContent: 'space-between'
-      }
-    },
-    'stylesheet.day.single': {
-      base: {
-        width: 24,
-        height: 24,
-        alignItems: 'center',
-      },
-    }
+    textDayHeaderFontSize: 16
   },
 }
 

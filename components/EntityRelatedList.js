@@ -1,14 +1,9 @@
 import React, { PureComponent } from 'react';
-import { TouchableOpacity, View, Platform, FlatList, StyleSheet, Text } from 'react-native';
-import { Image } from 'react-native-elements';
-import { GeoRefHListItem} from ".";
-import { Ionicons } from '@expo/vector-icons';
-import * as Constants from '../constants';
+import { View, FlatList, StyleSheet, Text } from 'react-native';
 import _ from 'lodash';
-import EntityItem from './EntityItem';
-import Colors from '../constants/Colors';
 import LLEntitiesFlatlist from "./loadingLayouts/LLEntitiesFlatlist"
-import { AsyncOperationStatusIndicator } from "."
+import EntityItem from './EntityItem';
+import AsyncOperationStatusIndicator from "./AsyncOperationStatusIndicator"
  
 export default class EntityRelatedList extends PureComponent {
 
@@ -19,17 +14,15 @@ export default class EntityRelatedList extends PureComponent {
             data: props.data ? props.data : []
         }
     }
-
+    
     _renderPoiListItem = (item) => {
         const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
-        const {cornerIconName} = this.props
+        const {listType} = this.props
         let place = item && item.term ? item.term.name : "";
         return (
             <EntityItem 
                 keyItem={item.nid}
-                backgroundTopLeftCorner={this.props.cornerColor ? this.props.cornerColor: "white"}
-                iconColor={this.props.cornerIconColor ? this.props.cornerIconColor : Colors.colorScreen1}
-                iconName={cornerIconName ? cornerIconName : ""}
+                listType={listType}
                 onPress={ () => this.props.onPressItem(item)}
                 title={`${title}`}
                 place={`${place}`}
