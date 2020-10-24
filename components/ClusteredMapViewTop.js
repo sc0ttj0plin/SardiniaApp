@@ -80,28 +80,6 @@ class ClusteredMapViewTop extends PureComponent {
   }
 
   /**
-   * Initializes a cluster for each poi
-   * @param {*} pois: initial pois
-   */
-  // _setupInitialClusters(pois) {
-  //   let clusters = [];
-  //   pois && pois.forEach((poi) => {
-  //     let cluster = {};
-  //     cluster.centroid = {
-  //       coordinates: poi.georef.coordinates
-  //     }
-  //     cluster.count = 1;
-  //     cluster.terms_objs = [{
-  //       nid: poi.nid,
-  //       title: poi.title,
-  //       term: poi.term.uuid
-  //     }];
-  //     clusters.push(cluster);
-  //   })
-  //   return clusters;
-  // }
-
-  /**
    * Fetch current clusters + pois based on current region 
    *   clusters === pois when the cluster count is 1
    */
@@ -114,8 +92,6 @@ class ClusteredMapViewTop extends PureComponent {
     
     let p = regionToPoligon(region);
     
-    console.log("REGION", region, "\n", p)
-    // let regionString = p[0][0] + " " + p[0][1] + ", " + p[1][0] + " " + p[1][1] + ", " + p[2][0] + " " + p[2][1] + ", " + p[3][0] + " " + p[3][1] + ", " +  p[4][0] + " " + p[4][1];
     const regionString = `${p[0][0]} ${p[0][1]}, ${p[1][0]} ${p[1][1]}, ${p[2][0]} ${p[2][1]}, ${p[3][0]} ${p[3][1]}, ${p[4][0]} ${p[4][1]}`;
     
     let uuidString = "{";
@@ -132,18 +108,6 @@ class ClusteredMapViewTop extends PureComponent {
       this.setState({ clusters });
     });
   }
-
-
-  // _openCategory(item) {
-  //   this.setState({
-  //     term: item,
-  //     tids: item.tids,
-  //     uuids: item.uuids
-  //   }, () => {
-  //     this._filterListRef.scrollToOffset({ animated: false, offset: 0 });
-  //     this._fetchClusters();
-  //   });
-  // }
 
   /**
    * Called when user presses poi or cluster items, 
@@ -234,35 +198,6 @@ class ClusteredMapViewTop extends PureComponent {
     )
   }
 
-  // _renderFilterItem(item) {
-  //   //render go back button
-  //   if(this.state.term && item.tid === this.state.term.tid) {
-  //     return (
-  //       <Button
-  //         title={item.name}
-  //         onPress={() => this._goBackCategory()}
-  //         buttonStyle={styles.buttonFilter}
-  //         titleStyle={[styles.buttonFilterText, {marginLeft: 5}]}
-  //         icon={
-  //           <Ionicons
-  //             name={Platform.OS === 'ios' ? 'ios-arrow-back' : 'md-arrow-back'}
-  //             color={"white"}
-  //           />
-  //         }>
-  //       </Button>
-  //     )
-  //   }
-  //   else {
-  //     return (
-  //       <Button
-  //         title={item.name}
-  //         onPress={() => this._openCategory(item)}
-  //         buttonStyle={styles.buttonFilter}
-  //         titleStyle={styles.buttonFilterText}>
-  //       </Button>
-  //     )
-  //   }
-  // }
 
   /**
    * Render single poi on bottom of mapview (outside scrollableContainer)
@@ -298,28 +233,6 @@ class ClusteredMapViewTop extends PureComponent {
         selected={false}
       />);
   }
-
-  // _renderFilter() {
-  //   var {categories} = this.props;
-  //   var {term} = this.state;
-  //   var currentCategories = term ? term.terms ? term.terms : [] : categories;
-  //   if(term)
-  //     currentCategories = [term, ...currentCategories];
-
-  //   return (
-  //     <FlatList
-  //       ref={ref => this._filterListRef = ref}
-  //       style={[styles.filters, {top: this.state.headerH}]}
-  //       horizontal={true}
-  //       renderItem={({item}) => this._renderFilterItem(item)}
-  //       data={currentCategories}
-  //       keyExtractor={item => item.tid.toString()}
-  //       ItemSeparatorComponent={this._renderHorizontalSeparator}
-  //       showsHorizontalScrollIndicator={false}
-  //       contentContainerStyle={styles.filterListContainer}
-  //       />
-  //   );
-  // }
 
   /**
    * Based on number of elements that a cluster comprises renders 
@@ -393,19 +306,6 @@ class ClusteredMapViewTop extends PureComponent {
           {this._renderClustersOrPoi(clusters)}
           {this._renderSelectedPoi(selectedCluster)}
         </MapView>
-
-        {/* <View
-          onLayout={(event) => { this.setState({ headerH: 5 + event.nativeEvent.layout.height + Layout.header.map.top + Layout.statusbarHeight }) }}
-          style={ [styles.bar, 
-            {
-              top: Layout.header.map.top + Layout.statusbarHeight,
-              transform: [{
-                scale: Layout.header.map.scale
-              }]
-            }
-          ]}>
-        </View> */}
-        {/* {this._renderFilter()} */}
         {selectedCluster && this._renderEntityWidget()}
       </View>
 
