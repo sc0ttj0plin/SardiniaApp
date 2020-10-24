@@ -38,6 +38,7 @@ class ClusteredMapViewTop extends PureComponent {
 
     this._region = region;
     this._coords = coords;
+    console.log("region constructor", region)
   }
 
   componentDidMount() {
@@ -60,20 +61,23 @@ class ClusteredMapViewTop extends PureComponent {
     );
     //Whenever the user changes position re-fetch clusters and pois
     this._watchID = navigator.geolocation.watchPosition(
-      position => { this._fetchClusters(position.coords); }, 
+      position => { 
+        if(this._region)
+          this._fetchClusters(position.coords); 
+      }, 
       ex => { console.log(ex) },
       Constants.NAVIGATOR.watchPositionOpts
     );
   }
 
-    /**
-     * Get current term (category) and its child uuids, 
-     */
-    _getCurrentTerm = () => {
-      let term = this.props.others.placesTerms[this.props.others.placesTerms.length - 1];
-      const childUuids = term ? term.childUuids : null;
-      return { term, childUuids };
-    }
+  /**
+   * Get current term (category) and its child uuids, 
+   */
+  _getCurrentTerm = () => {
+    let term = this.props.others.placesTerms[this.props.others.placesTerms.length - 1];
+    const childUuids = term && term.childUuids ? term.childUuids : [];
+    return { term, childUuids };
+  }
 
   /**
    * Initializes a cluster for each poi
@@ -111,7 +115,8 @@ class ClusteredMapViewTop extends PureComponent {
     let p = regionToPoligon(region);
     
     console.log("REGION", region, "\n", p)
-    let regionString = p[0][0] + " " + p[0][1] + ", " + p[1][0] + " " + p[1][1] + ", " + p[2][0] + " " + p[2][1] + ", " + p[3][0] + " " + p[3][1] + ", " +  p[4][0] + " " + p[4][1];
+    // let regionString = p[0][0] + " " + p[0][1] + ", " + p[1][0] + " " + p[1][1] + ", " + p[2][0] + " " + p[2][1] + ", " + p[3][0] + " " + p[3][1] + ", " +  p[4][0] + " " + p[4][1];
+    const regionString = `${p[0][0]} ${p[0][1]}, ${p[1][0]} ${p[1][1]}, ${p[2][0]} ${p[2][1]}, ${p[3][0]} ${p[3][1]}, ${p[4][0]} ${p[4][1]}`;
     
     let uuidString = "{";
     for(let i=0; i<childUuids.length; i++) {
@@ -182,8 +187,10 @@ class ClusteredMapViewTop extends PureComponent {
     this.setState({
       animationToPoi: false
     })
+    console.log("on region change complete")
     this._region = region;
-    this._fetchClusters();
+    if(region)
+      this._fetchClusters();
   }
 
   /**
@@ -277,7 +284,7 @@ class ClusteredMapViewTop extends PureComponent {
    * @param {*} item 
    */
   _renderEntityMarker(item) {
-    var {categoriesMap} = this.props;
+    var {term} = this.props;
     var cluster = item;
     item.centroid = {
       coordinates: item.georef.coordinates
@@ -287,7 +294,7 @@ class ClusteredMapViewTop extends PureComponent {
         cluster={cluster}
         key={item.uuid}
         onPress={(e) => this._onPoiPress(cluster, e)}
-        term={categoriesMap && categoriesMap[item.term.uuid]}
+        term={term && term[item.term.uuid]}
         selected={false}
       />);
   }
@@ -320,6 +327,7 @@ class ClusteredMapViewTop extends PureComponent {
    * @param {*} clusters 
    */
   _renderClustersOrPoi = (clusters) => {
+    const {term} = this.props;
     if (clusters)
       return (clusters.map((cluster, idx) => 
           cluster.count > 1 ? (
@@ -334,7 +342,7 @@ class ClusteredMapViewTop extends PureComponent {
               cluster={cluster}
               key={this._clusterKeyExtractor(cluster)}
               onPress={(e) => this._onPoiPress(cluster, e)}
-              term={categoriesMap && categoriesMap[cluster.terms_objs[0].term]}
+              term={term && term[cluster.terms_objs[0].term]}
               selected={false}
             />
           )

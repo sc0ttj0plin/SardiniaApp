@@ -310,6 +310,7 @@ class PlacesScreen extends PureComponent {
     var { categories } = this.props;
     const { term, childUuids } = this._getCurrentTerm(true);
     const { coords, region, nearPois, clusters } = this.state;
+    // console.log("region places", region)
     return (
       <>
       <FlatList
@@ -326,13 +327,12 @@ class PlacesScreen extends PureComponent {
       <ClusteredMapViewTop
         term={term}
         coords={coords}
-        initRegion={region}
+        region={region}
         pois={nearPois}
         clusters={clusters}
         uuids={childUuids}
-        onRegionChangeComplete={this._onRegionChangeComplete}
         style={{flex: 1}}
-        categoriesMap={categories.map}
+        categoriesMap={term}
         mapRef={ref => (this._refs["ClusteredMapViewTop"] = ref)}
       />
       </>
