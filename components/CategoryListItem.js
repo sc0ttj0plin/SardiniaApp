@@ -16,26 +16,23 @@ class CategoryListItem extends PureComponent {
     };
   }
 
-  hexToRgb = (hex, opacity) => {
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    let r =  parseInt(result[1], 16);
-    let g = parseInt(result[2], 16);
-    let b = parseInt(result[3], 16);
+  // hexToRgb = (hex, opacity) => {
+  //   var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  //   let r =  parseInt(result[1], 16);
+  //   let g = parseInt(result[2], 16);
+  //   let b = parseInt(result[3], 16);
 
-    let color;
-    if(opacity >= 0 && opacity <= 1)
-      color = `rgba(${r}, ${g}, ${b}, ${opacity})}`;
-    else 
-      color = `rgb(${r}, ${g}, ${b})}`;
-    return color;
-  }
+  //   let color;
+  //   if(opacity >= 0 && opacity <= 1)
+  //     color = `rgba(${r}, ${g}, ${b}, ${opacity})}`;
+  //   else 
+  //     color = `rgb(${r}, ${g}, ${b})}`;
+  //   return color;
+  // }
   
   
   _renderBoxWithText = (title, showBoxes, opacityBackground, bgColor) => {
-    let backgroundColor = opacityBackground ? (`rgba(60, 66, 72, ${opacityBackground})`) : "";
-
-    if(bgColor)
-      backgroundColor = this.hexToRgb(bgColor, opacityBackground);
+    let backgroundColor = opacityBackground ? (`rgba(60, 66, 72, ${opacityBackground})`) : (`rgba(60, 66, 72, 0.8)`);
 
     return (
       <View style={[styles.titleContainer]}>
