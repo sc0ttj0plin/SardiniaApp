@@ -48,7 +48,7 @@ class MapScreen extends Component {
         this._updateCooords(position.coords)
       }, 
       ex => { console.log(ex) },
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+      Constants.NAVIGATOR.getCurrentPositionOpts
     );
   }
   

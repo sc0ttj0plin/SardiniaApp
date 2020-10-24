@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import { 
   View, Text, ActivityIndicator, TouchableOpacity, 
   StyleSheet, BackHandler, Platform, ScrollView, NativeModules } from "react-native";
@@ -45,18 +45,24 @@ import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
 import { Button } from "react-native-paper";
 const { StatusBarManager } = NativeModules;
 
+/**
+ * Map:             Clusters + pois that update with user map's interaction
+ *                    can be filtered by category *same filter of Categories&Pois (redux)
+ * NearToYou:       near to the user's location (all categories) rendered in the top header
+ *                    called at mount + when user changes position (_fetchNearestPois)
+ * Categories&Pois: List of Categories and Pois that are in the list
+ *                    called when the user reaches the end of the category tree 
+ *                    using current selected category + user location (_loadMorePois)
+ */
+
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
-/* Deferred rendering to speedup page inital load: 
-   deferred rendering delays the rendering reducing the initial 
-   number of components loaded when the page initially mounts.
-   Other components are loaded right after the mount */
 const USE_DR = false;
-class PlacesScreen extends Component {
+class PlacesScreen extends PureComponent {
 
   constructor(props) {
     super(props);
 
-    this._watchID = null; /* navigation watch identificator */
+    this._watchID = null; /* navigation watch hook */
     this._onFocus = null;
     this._refs = {};
 
@@ -113,18 +119,18 @@ class PlacesScreen extends Component {
     navigator.geolocation.getCurrentPosition(
       position => { this._onUpdateCoords(position.coords); }, 
       ex => { console.log(ex) },
-      Constants.NAVIGATOR_OPTS
+      Constants.NAVIGATOR.watchPositionOpts
     );
     this._watchID = navigator.geolocation.watchPosition(
       position => { this._onUpdateCoords(position.coords); }, 
       ex => { console.log(ex) },
-      Constants.NAVIGATOR_OPTS
+      Constants.NAVIGATOR.watchPositionOpts
     );
   }
 
   /**
-   * Get current term and its child uuids, if fallbackToCategories is true fallbacks to categories
-   * 
+   * Get current term (category) and its child uuids, 
+   *   if fallbackToCategories is true fallbacks to initial categories
    */
   _getCurrentTerm = (fallbackToCategories=false) => {
     let term = this.props.others.placesTerms[this.props.others.placesTerms.length - 1];
@@ -144,7 +150,6 @@ class PlacesScreen extends Component {
    * @param {*} newCoords: the new user's coordinates
    */
   _onUpdateCoords(newCoords) {
-    const { term } = this._getCurrentTerm();
     // const { coords, term } = this.state;
     const { coords } = this.state;
     if(!coords || coords.latitude !== newCoords.latitude || coords.longitude !== newCoords.longitude) {
@@ -155,12 +160,14 @@ class PlacesScreen extends Component {
         this._fetchNearestPois(newCoords).then(() => {
           this.setState({ nearPoisRefreshing: false });
         });
-      } else {
-        this.setState({ isCordsInBound: isCordsInBound, coords: newCoords });
-        this._fetchClusters(newCoords);
       }
+      // } else {
+      //   this.setState({ isCordsInBound: isCordsInBound, coords: newCoords });
+      //   this._fetchClustersAndPois(newCoords);
+      // }
     }
-    if(term && (!term.terms || term.terms.length == 0)){
+    // Update list of pois if we are at the bottom of the category tree
+    if(this._isPoiList()){
       this._loadMorePois();
     } 
   }
@@ -188,43 +195,44 @@ class PlacesScreen extends Component {
    *  coords is not used, it only uses region to update the clusters but is invoked whenever coords change!!!
    * @param {*} coords: new user coordinates (not used)
    */
-  _fetchClusters(coords) {
-    const { term, childUuids } = this._getCurrentTerm();
-    const { region } = this.state;
+  // _fetchClustersAndPois(coords) {
+  //   const { term, childUuids } = this._getCurrentTerm();
+  //   const { region } = this.state;
 
-    const p = regionToPoligon(region);
-    const regionString = `${p[0][0]} ${p[0][1]}, ${p[1][0]} ${p[1][1]}, ${p[2][0]} ${p[2][1]}, ${p[3][0]} ${p[3][1]}, ${p[4][0]} ${p[4][1]}`;
+  //   const p = regionToPoligon(region);
+  //   const regionString = `${p[0][0]} ${p[0][1]}, ${p[1][0]} ${p[1][1]}, ${p[2][0]} ${p[2][1]}, ${p[3][0]} ${p[3][1]}, ${p[4][0]} ${p[4][1]}`;
     
-    let uuidString = "{";
-    for(var i=0; i<childUuids.length; i++)
-      uuidString += i < childUuids.length - 1 ? childUuids + "," : childUuids;
-    uuidString += "}";
+  //   let uuidString = "{";
+  //   for(var i=0; i<childUuids.length; i++)
+  //     uuidString += i < childUuids.length - 1 ? childUuids + "," : childUuids;
+  //   uuidString += "}";
 
-    const km = regionDiagonalKm(region);
-    const dEps = (km / 1000) / (Layout.window.diagonal / Layout.map.markerPixels);
-    //run the query, set clusters and resets nearpois
-    apolloQuery(actions.getClusters({
-      polygon: regionString,
-      cats: uuidString,
-      dbscan_eps: dEps
-    })).then((clusters) => {
-      this.setState({
-        clusters: clusters,
-        nearPois: []
-      });
-    });
-  }
+  //   const km = regionDiagonalKm(region);
+  //   const dEps = (km / 1000) / (Layout.window.diagonal / Layout.map.markerPixels);
+  //   //run the query, set clusters and resets nearpois
+  //   apolloQuery(actions.getClusters({
+  //     polygon: regionString,
+  //     cats: uuidString,
+  //     dbscan_eps: dEps
+  //   })).then((clusters) => {
+  //     this.setState({
+  //       clusters: clusters,
+  //       nearPois: []
+  //     });
+  //   });
+  // }
 
   /**
-   * Get more pois when the user coordinates update and we reach the end of the category tree 
+   * Get more pois when the user changes position and/or 
+   * we reach the end of the category tree . 
+   * Pois are loaded in order of distance from the user and are "categorized"
    * to load pois in the bottom scrollable container list (not header)
    * uuids controls the category of the pois
    */
   _loadMorePois = () => {
-    const { term, childUuids } = this._getCurrentTerm();
+    const { childUuids } = this._getCurrentTerm();
     var { coords } = this.state;
     if(coords && this._isPoiList() && !this.state.poisRefreshing){
-      console.log("load finally pois!")
       this.setState({
         poisRefreshing: true
       }, () => {
@@ -233,7 +241,7 @@ class PlacesScreen extends Component {
           offset: this.state.pois ? this.state.pois.length : 0,
           x: coords.longitude,
           y: coords.latitude,
-          uuids: childUuids//this.state.uuids.length > 0 ? this.state.uuids : null
+          uuids: childUuids
         })).then((pois) => {
           this.setState({
             pois: this.state.pois ? [...this.state.pois, ...pois] : pois,
@@ -515,13 +523,10 @@ function PlacesScreenContainer(props) {
 
 const mapStateToProps = state => {
   return {
-    restState: state.restState,
     //mixed state
     others: state.othersState,
     //language
     locale: state.localeState,
-    //favourites
-    favourites: state.favouritesState,
     //graphql
     categories: state.categoriesState,
   };

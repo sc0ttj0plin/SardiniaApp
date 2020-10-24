@@ -181,11 +181,20 @@ export const MAP = {
   },
 }
 
-export const NAVIGATOR_OPTS = { 
-  enableHighAccuracy: true, 
-  timeout: 20000, 
-  maximumAge: 5000 
-};
+export const NAVIGATOR = {
+  watchPositionOpts: { 
+    enableHighAccuracy: true, 
+    timeout: 20000, 
+    maximumAge: 5000,
+    distanceFilter: 50, /* only trigger callback when distance differs of 25 meters */
+  },
+  getCurrentPositionOpts: { 
+    enableHighAccuracy: true, 
+    timeout: 20000, 
+    maximumAge: 1000,
+  } 
+}
+
 
 /* related list options by key */
 export const RELATED_LIST_TYPES = {
