@@ -2,8 +2,6 @@ import React, { PureComponent } from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { ActivityIndicator } from 'react-native';
 import { Image } from 'react-native-elements';
-// import BoxWithText from "./BoxWithText"; 
-// import { TouchableOpacity } from "react-native-gesture-handler"
 
 /**
  * List item element that represents a category
@@ -16,22 +14,7 @@ class CategoryListItem extends PureComponent {
     };
   }
 
-  // hexToRgb = (hex, opacity) => {
-  //   var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  //   let r =  parseInt(result[1], 16);
-  //   let g = parseInt(result[2], 16);
-  //   let b = parseInt(result[3], 16);
-
-  //   let color;
-  //   if(opacity >= 0 && opacity <= 1)
-  //     color = `rgba(${r}, ${g}, ${b}, ${opacity})}`;
-  //   else 
-  //     color = `rgb(${r}, ${g}, ${b})}`;
-  //   return color;
-  // }
-  
-  
-  _renderBoxWithText = (title, showBoxes, opacityBackground, bgColor) => {
+  _renderBottomBox = (title, showBoxes, opacityBackground, bgColor) => {
     let backgroundColor = opacityBackground ? (`rgba(60, 66, 72, ${opacityBackground})`) : (`rgba(60, 66, 72, 0.8)`);
 
     return (
@@ -66,7 +49,7 @@ class CategoryListItem extends PureComponent {
             style={[styles.image, { width: this.state.width, height: this.state.height }, this.props.imageStyle]} 
             PlaceholderContent={<ActivityIndicator style={styles.spinner} color={"white"} />}
             >
-            {this._renderBoxWithText(this.props.title, true, 0.8)}
+            {this._renderBottomBox(this.props.title, true, 0.8)}
           </Image>
         </TouchableOpacity>
       </View>

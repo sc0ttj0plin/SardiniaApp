@@ -43,6 +43,7 @@ import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
 import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
 import { Button } from "react-native-paper";
+
 const { StatusBarManager } = NativeModules;
 
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;

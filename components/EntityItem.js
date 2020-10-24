@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react';
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import GeoRefHListItem from "../components/GeoRefHListItem";
 import BottomSheetTouchable from "../components/BottomSheetTouchable";
 import { Ionicons } from '@expo/vector-icons';
 
 export default class EntityItem extends PureComponent {
   render() {
-    const { onPress, icon, keyItem, type, title, place, image, distance, listType } = this.props;
+    const { onPress, keyItem, title, place, image, distance, listType } = this.props;
 
     let entityOptions = Constants.RELATED_LIST_TYPES[listType] || Constants.RELATED_LIST_TYPES["places"]
     return (
@@ -25,12 +25,12 @@ export default class EntityItem extends PureComponent {
             <View style={[styles.corner, {
               borderTopColor: entityOptions.backgroundTopRightCorner,
             }]}>
-                <Ionicons
-                    name={entityOptions.iconName}
-                    size={13}
-                    style={styles.cornerIcon}
-                    color={entityOptions.iconColor}
-                />
+              <Ionicons
+                  name={entityOptions.iconName}
+                  size={13}
+                  style={styles.cornerIcon}
+                  color={entityOptions.iconColor}
+              />
             </View>
       </BottomSheetTouchable>
     );
