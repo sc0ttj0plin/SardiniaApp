@@ -108,6 +108,7 @@ class EventsScreen extends Component {
   _loadEvents = (date) => {
     const dateString = date.dateString;
     const month = moment(dateString).subtract(1,"year").startOf('month');
+    // const month = moment(dateString).startOf('month');
     const monthFormatted = month.format('YYYYMM');
     //Is the month already loaded? skip
     if (!this._queriedMonths[monthFormatted]) {
@@ -139,10 +140,14 @@ class EventsScreen extends Component {
     if (dateString)
       return ({
         lb: moment(dateString).startOf('month').subtract(1,"year").subtract(FETCH_NUM_MONTHS_BACKWARDS, 'month'),
+        // lb: moment(dateString).startOf('month').subtract(FETCH_NUM_MONTHS_BACKWARDS, 'month'),
         ub: moment(dateString).endOf('month').subtract(1,"year").add(FETCH_NUM_MONTHS_FORWARD, 'month')
+        // ub: moment(dateString).endOf('month').add(FETCH_NUM_MONTHS_FORWARD, 'month')
       });
     return ({
+      // lb: moment().startOf('month').subtract(FETCH_NUM_MONTHS_BACKWARDS, 'month'),
       lb: moment().startOf('month').subtract(1,"year").subtract(FETCH_NUM_MONTHS_BACKWARDS, 'month'),
+      // ub: moment().endOf('month').add(FETCH_NUM_MONTHS_FORWARD, 'month')
       ub: moment().endOf('month').subtract(1,"year").add(FETCH_NUM_MONTHS_FORWARD, 'month')
     });
   }

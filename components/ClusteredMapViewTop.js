@@ -1,201 +1,485 @@
 import React, {PureComponent} from 'react';
-import { Marker, PROVIDER_GOOGLE, AnimatedRegion, Animated } from 'react-native-maps';
-import MapView from "react-native-map-clustering";
-import { View, ScrollView, StyleSheet, Dimensions} from 'react-native';
-
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Dimensions, Platform} from 'react-native';
+import Layout from '../constants/Layout';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import {regionToCoords, distance, regionToPoligon, regionDiagonalKm} from '../helpers/maps'
 import actions from '../actions';
-import {distance, boundingRect, regionToPoligon} from '../helpers/maps';
 import { apolloQuery } from '../apollo/queries';
-import EntityMarker from '../components/map/EntityMarker'
-import ClusterMarker from '../components/map/ClusterMarker'
+import { Button } from 'react-native-elements';
+import { Ionicons } from '@expo/vector-icons';
+import Colors from '../constants/Colors';
+import EntityMarker from './map/EntityMarker'
+import ClusterMarker from './map/ClusterMarker'
+import EntityWidgetInMapView from './map/EntityWidgetInMapView'
+import * as Constants from '../constants';
 
-let { width, height } = Dimensions.get('window');
-
-const ASPECT_RATIO = width / height;
-const LATITUDE_DELTA = 0.0922;
-const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-
+/**
+ * Definitions:
+ *  cluster = poi inside > 1 ? then is just a number of inner pois, else is a poi
+ */
 class ClusteredMapViewTop extends PureComponent {  
-  
+
   constructor(props) {
     super(props);
+
+    var { region, coords } = props;
+
+    this._watchID = null; /* navigation watch hook */
+
     this.state = {
-      term: this.props.term,
-      uuids: this.props.term ? this.props.term.uuids : []
+      initRegion: region,
+      clusters: [],
+      animationToPoi: false, 
+      selectedCluster: null, /* currently selected cluster/poi */
     };
+
+    this._region = region;
+    this._coords = coords;
   }
 
   componentDidMount() {
-    this.props.unfocusFunctionsListeners.push(() => {
-      this.map = null;
-    })
+    this._initGeolocation();
+  }
+  
+  componentWillUnmount() {
+
   }
 
-  componentDidUpdate(prevProps) {
-    var {coords, pois} = this.props;
+
+  /**
+   * Setup navigation: on mount get current position and watch changes
+   */
+  _initGeolocation = () => {
+    navigator.geolocation.getCurrentPosition(
+      position => this._coords = position.coords, 
+      ex => { console.log(ex) },
+      Constants.NAVIGATOR.getCurrentPositionOpts
+    );
+    //Whenever the user changes position re-fetch clusters and pois
+    this._watchID = navigator.geolocation.watchPosition(
+      position => { this._fetchClusters(position.coords); }, 
+      ex => { console.log(ex) },
+      Constants.NAVIGATOR.watchPositionOpts
+    );
+  }
+
+    /**
+     * Get current term (category) and its child uuids, 
+     */
+    _getCurrentTerm = () => {
+      let term = this.props.others.placesTerms[this.props.others.placesTerms.length - 1];
+      const childUuids = term ? term.childUuids : null;
+      return { term, childUuids };
+    }
+
+  /**
+   * Initializes a cluster for each poi
+   * @param {*} pois: initial pois
+   */
+  // _setupInitialClusters(pois) {
+  //   let clusters = [];
+  //   pois && pois.forEach((poi) => {
+  //     let cluster = {};
+  //     cluster.centroid = {
+  //       coordinates: poi.georef.coordinates
+  //     }
+  //     cluster.count = 1;
+  //     cluster.terms_objs = [{
+  //       nid: poi.nid,
+  //       title: poi.title,
+  //       term: poi.term.uuid
+  //     }];
+  //     clusters.push(cluster);
+  //   })
+  //   return clusters;
+  // }
+
+  /**
+   * Fetch current clusters + pois based on current region 
+   *   clusters === pois when the cluster count is 1
+   */
+  _fetchClusters() {
+    const { term, childUuids } = this._getCurrentTerm();
+    let region = this._region;
     
-    if(coords && this._checkPois(pois, this.state.pois)) {
-      this.setState({pois: pois});
-      var region = boundingRect(pois, [coords.longitude, coords.latitude], (p) => p.georef.coordinates);
-      this._region = region;
-      this.props.onRegionChangeComplete(region);
-      setTimeout(() => this.map && this.map.animateToRegion(region,1000), 500);
-      this._fetchPois();
+    let km = regionDiagonalKm(region);
+    let dEps = (km / 1000) / (Layout.window.diagonal / Layout.map.markerPixels);
+    
+    let p = regionToPoligon(region);
+    
+    console.log("REGION", region, "\n", p)
+    let regionString = p[0][0] + " " + p[0][1] + ", " + p[1][0] + " " + p[1][1] + ", " + p[2][0] + " " + p[2][1] + ", " + p[3][0] + " " + p[3][1] + ", " +  p[4][0] + " " + p[4][1];
+    
+    let uuidString = "{";
+    for(let i=0; i<childUuids.length; i++) {
+      uuidString += i < childUuids.length - 1 ? childUuids + "," : childUuids;
     }
+    uuidString += "}";
+
+    apolloQuery(actions.getClusters({
+      polygon: regionString,
+      cats: uuidString,
+      dbscan_eps: dEps
+    })).then((clusters) => {
+      this.setState({ clusters });
+    });
   }
 
-  _checkPois(newPois, pois) {
-    if(!pois && newPois && newPois.length > 0)
-      return true;
-    if(pois && newPois && pois.length > 0 && newPois.length > 0){
-      pois.forEach((poi) => {
-        var found = false;
-        newPois.forEach((newPoi) => {
-          if(poi.nid == newPoi.nid)
-            found = true;
-        })
-        if(!found)
-          return true;
+
+  // _openCategory(item) {
+  //   this.setState({
+  //     term: item,
+  //     tids: item.tids,
+  //     uuids: item.uuids
+  //   }, () => {
+  //     this._filterListRef.scrollToOffset({ animated: false, offset: 0 });
+  //     this._fetchClusters();
+  //   });
+  // }
+
+  /**
+   * Called when user presses poi or cluster items, 
+   *   set current poi if cluster.count == 1 else zooms in 
+   *   to cluster region
+   * @param {*} item: cluster
+   * @param {*} e: press event 
+   */
+  _onPoiPress(item, e) {
+    e.stopPropagation();
+    
+    if(item.count == 1) {
+      let animationToPoi = Platform.OS === "android" ? true : false;
+      this.setState({
+        selectedCluster: item,
+        animationToPoi: animationToPoi
       })
-    }
-    return false;
-  }
-
-  _checkCoords(newCoords, coords) {
-    if(newCoords && !coords)
-      return true;
-    if(newCoords && coords && (newCoords.latitude != coords.latitude || newCoords.longitude != coords.longitude))
-      return true;
-    return false;
-  }
-
-  _fetchPois() {
-    var poligon = regionToPoligon(this._region);
-    if(this.state && poligon.length > 0) {
-      apolloQuery(actions.getNearPois({
-        polygon: {
-          type: "Polygon",
-          coordinates: [
-            poligon
-          ]
-        },
-        uuids: this.state.uuids && this.state.uuids.length > 0 ? this.state.uuids : null
-      })).then((pois) => {
-        this.setState({
-          pois: pois
-        });
-      });
+    } else {
+      let region = this._region;
+      region.latitude = item.centroid.coordinates[1];
+      region.longitude = item.centroid.coordinates[0];
+      region.longitudeDelta = region.longitudeDelta/2;
+      region.latitudeDelta = region.latitudeDelta/2;
+      this._mapRef.animateToRegion(region);
     }
   }
 
+  /**
+   * When user moves the map clears current cluster selection
+   */
+  _onRegionChange = () => {
+    if(!this.state.animationToPoi)
+      this._clearClusterSelection();
+  }
 
+  /**
+   * Set current region to view and re-fetch pois for that region
+   * @param {*} region: region boundaries that describe current view
+   */
+  _onRegionChangeComplete = (region) => {
+    this.setState({
+      animationToPoi: false
+    })
+    this._region = region;
+    this._fetchClusters();
+  }
+
+  /**
+   * When user presses on map clears the selected cluster
+   */
+  _clearClusterSelection = () => {
+    if(this.state.selectedCluster)
+      this.setState({ selectedCluster: null });
+  }
+
+  /**
+   * Navigate to entity screen
+   * @param {*} item: poi
+   */
+  _openEntity(item) {
+    console.log("GOTO ENTITY!", item);
+    // this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, {
+    //   place: item.terms_objs[0]
+    // })
+  }
+
+  /**
+   * Extract unique identifier for the current cluster
+   * @param {*} cluster: current cluster (>1 then is cluster, else is a poi)
+   */
   _clusterKeyExtractor(cluster) {
-    if(cluster.count == 1)
-      return cluster.terms_objs[0].nid.toString();
-    else
-      return cluster.centroid.coordinates[0]+"-"+cluster.centroid.coordinates[0]+"_"+cluster.count;
+    if(cluster.count == 1) {
+      return cluster.terms_objs[0].uuid;
+    } else {
+      const { centroid: { coordinates }, count } = cluster;
+      return `${coordinates[0]}-${coordinates[0]}-${count}`;
+    }
   }
 
+  /**
+   * Horizonal separator
+   */
+  _renderHorizontalSeparator = () => {
+    return (
+      <View style={{width: 5, flex: 1}}></View>
+    )
+  }
 
+  // _renderFilterItem(item) {
+  //   //render go back button
+  //   if(this.state.term && item.tid === this.state.term.tid) {
+  //     return (
+  //       <Button
+  //         title={item.name}
+  //         onPress={() => this._goBackCategory()}
+  //         buttonStyle={styles.buttonFilter}
+  //         titleStyle={[styles.buttonFilterText, {marginLeft: 5}]}
+  //         icon={
+  //           <Ionicons
+  //             name={Platform.OS === 'ios' ? 'ios-arrow-back' : 'md-arrow-back'}
+  //             color={"white"}
+  //           />
+  //         }>
+  //       </Button>
+  //     )
+  //   }
+  //   else {
+  //     return (
+  //       <Button
+  //         title={item.name}
+  //         onPress={() => this._openCategory(item)}
+  //         buttonStyle={styles.buttonFilter}
+  //         titleStyle={styles.buttonFilterText}>
+  //       </Button>
+  //     )
+  //   }
+  // }
+
+  /**
+   * Render single poi on bottom of mapview (outside scrollableContainer)
+   */
+  _renderEntityWidget() {
+    return (
+      <View style={[styles.entityWidget]}>
+        <TouchableOpacity
+          style={styles.fill}
+          onPress={() => this._openEntity(this.state.selectedCluster)}
+          activeOpacity={0.7}>
+          <EntityWidgetInMapView locale={this.props.locale} cluster={this.state.selectedCluster} coords={this._coords} />
+        </TouchableOpacity>
+      </View>)
+  }
+
+  /**
+   * Renders single poi marker
+   * @param {*} item 
+   */
   _renderEntityMarker(item) {
     var {categoriesMap} = this.props;
     var cluster = item;
     item.centroid = {
       coordinates: item.georef.coordinates
     }
-    return (<EntityMarker
-      cluster={cluster}
-      key={item.nid.toString()}
-      onPress={(e) => this._onPoiPress(cluster, e)}
-      term={categoriesMap && categoriesMap[item.term.uuid]}
-      selected={false}
-    />)
+    return (
+      <EntityMarker
+        cluster={cluster}
+        key={item.uuid}
+        onPress={(e) => this._onPoiPress(cluster, e)}
+        term={categoriesMap && categoriesMap[item.term.uuid]}
+        selected={false}
+      />);
   }
-  
+
+  // _renderFilter() {
+  //   var {categories} = this.props;
+  //   var {term} = this.state;
+  //   var currentCategories = term ? term.terms ? term.terms : [] : categories;
+  //   if(term)
+  //     currentCategories = [term, ...currentCategories];
+
+  //   return (
+  //     <FlatList
+  //       ref={ref => this._filterListRef = ref}
+  //       style={[styles.filters, {top: this.state.headerH}]}
+  //       horizontal={true}
+  //       renderItem={({item}) => this._renderFilterItem(item)}
+  //       data={currentCategories}
+  //       keyExtractor={item => item.tid.toString()}
+  //       ItemSeparatorComponent={this._renderHorizontalSeparator}
+  //       showsHorizontalScrollIndicator={false}
+  //       contentContainerStyle={styles.filterListContainer}
+  //       />
+  //   );
+  // }
+
+  /**
+   * Based on number of elements that a cluster comprises renders 
+   * a marker with #of pois or a marker representing the poi category
+   * @param {*} clusters 
+   */
+  _renderClustersOrPoi = (clusters) => {
+    if (clusters)
+      return (clusters.map((cluster, idx) => 
+          cluster.count > 1 ? (
+            <ClusterMarker
+              cluster={cluster}
+              key={this._clusterKeyExtractor(cluster)}
+              onPress={(e) => this._onPoiPress(cluster, e)}
+            />
+          ) :
+          (
+            <EntityMarker
+              cluster={cluster}
+              key={this._clusterKeyExtractor(cluster)}
+              onPress={(e) => this._onPoiPress(cluster, e)}
+              term={categoriesMap && categoriesMap[cluster.terms_objs[0].term]}
+              selected={false}
+            />
+          )
+      ));
+    else 
+      return null;
+  }
+
+  /**
+   * Renders selected poi (changes appereance)
+   * @param {*} selectedPoi 
+   */
+  _renderSelectedPoi = (selectedPoi) => {
+    if (selectedPoi)
+      return (
+        <EntityMarker
+          cluster={selectedPoi}
+          key={this._clusterKeyExtractor(selectedPoi)+"_selected"}
+          onPress={(e) => this._onPoiPress(selectedPoi, e)}
+          term={categoriesMap && categoriesMap[selectedPoi.terms_objs[0].term]}
+          selected={true}
+        />
+      )
+    else 
+      return null;
+  }
+
   render() {
-    var {initRegion, pois} = this.state;
-    var {categoriesMap, clusters} = this.props;
+    var {initRegion, pois, clusters, selectedCluster} = this.state;
+    var {categoriesMap} = this.props;
 
     return (
-    <>
-     <MapView
-        mapRef={ref => { this.props.mapRef(ref); this.map = ref; }}
-        provider={ PROVIDER_GOOGLE }
-        style={ styles.fill }
-        showsUserLocation={ true }
-        initialRegion={ this.props.initRegion }
-        mapType='standard'
-        showsIndoorLevelPicker={true}
-        showsCompass={false}
-        clusteringEnabled={false}
-        onPress={this.props.onPress}
-        onPanDrag={this.props.onPanDrag}
-        onDoublePress={this.props.onDoublePress}
-        mapPadding={{
-          top: 0,
-          right: 0,
-          bottom: 100,
-          left: 0
-      }}
-        >
-          {clusters && clusters.map((cluster, idx) => 
-            cluster.count > 1 ? (
-              <ClusterMarker
-                cluster={cluster}
-                key={this._clusterKeyExtractor(cluster)}
-                onPress={(e) => this._onPoiPress(cluster, e)}
-              />
-            ) :
-            (
-              <EntityMarker
-                cluster={cluster}
-                key={this._clusterKeyExtractor(cluster)}
-                onPress={(e) => this._onPoiPress(cluster, e)}
-                term={categoriesMap && categoriesMap[cluster.terms_objs[0].term]}
-                selected={false}
-              />
-            )
-        )}
-          {Object.keys(categoriesMap).length > 0 && pois && pois.map((item) => this._renderEntityMarker(item))}
-          
+      <View style={ styles.fill }>
+
+        <MapView
+          ref={ref => this._mapRef = ref}
+          provider={ PROVIDER_GOOGLE }
+          style={ styles.fill }
+          showsUserLocation={ true }
+          initialRegion={initRegion}
+          mapType='standard'
+          showsIndoorLevelPicker={true}
+          showsCompass={false}
+          onPress={this._clearClusterSelection}
+          onRegionChange={this._onRegionChange}
+          onRegionChangeComplete={this._onRegionChangeComplete}
+          >
+          {this._renderClustersOrPoi(clusters)}
+          {this._renderSelectedPoi(selectedCluster)}
         </MapView>
-      </>
+
+        {/* <View
+          onLayout={(event) => { this.setState({ headerH: 5 + event.nativeEvent.layout.height + Layout.header.map.top + Layout.statusbarHeight }) }}
+          style={ [styles.bar, 
+            {
+              top: Layout.header.map.top + Layout.statusbarHeight,
+              transform: [{
+                scale: Layout.header.map.scale
+              }]
+            }
+          ]}>
+        </View> */}
+        {/* {this._renderFilter()} */}
+        {selectedCluster && this._renderEntityWidget()}
+      </View>
+
     );
   }
 }
 
 const styles = StyleSheet.create({
   fill: {
-    flex: 1
+    width: "100%",
+    height: "100%"
   },
+  bar: {
+    width: "100%",
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+  },
+  filters: {
+    position: 'absolute',
+    top: 110,
+    width: "100%"
+  },
+  buttonFilter: {
+    borderRadius: 10
+  },
+  buttonFilterText: {
+    fontSize: 14
+  },
+  filterListContainer: {
+    paddingLeft: 8,
+    paddingRight: 8
+  },
+  marker: {
+    padding: 5,
+    backgroundColor: "white",
+    borderWidth: 2,
+    borderColor: '#3a23a2',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  markerText: {
+    fontSize: 16
+  },
+  entityWidget: {
+    width: "100%",
+    height: 180,
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    padding: 10
+  }
 });
 
-export default (props) => {
+
+function ClusteredMapViewTopContainer(props) {
   const navigation = useNavigation();
   const route = useRoute();
   const store = useStore();
-
-  const focusFunctionsListeners = [];
-  const unfocusFunctionsListeners = [];
-
-  React.useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      focusFunctionsListeners.forEach(f => f())
-    });
-    return () => {
-      unsubscribe();
-      unfocusFunctionsListeners.forEach(f => f())
-    };
-  }, [navigation]);
-
-  return <ClusteredMapViewTop
-    {...props}
-    navigation={navigation}
-    route={route}
-    store={store}
-    focusFunctionsListeners={focusFunctionsListeners}
-    unfocusFunctionsListeners={unfocusFunctionsListeners} />;
+  return <ClusteredMapViewTop {...props} navigation={navigation} route={route} store={store} />;
 }
+
+const mapStateToProps = state => {
+  return {
+    //mixed state
+    others: state.othersState,
+    //language
+    locale: state.localeState,
+    //graphql
+    categories: state.categoriesState,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {...bindActionCreators({ ...actions}, dispatch)};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps, (stateProps, dispatchProps, props) => {
+  return {
+    ...stateProps,
+    actions: dispatchProps,
+    ...props
+  }
+})(ClusteredMapViewTopContainer)

@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import GeoRefHListItem from "../components/GeoRefHListItem";
 import BottomSheetTouchable from "../components/BottomSheetTouchable";
 import { Ionicons } from '@expo/vector-icons';
+import * as Constants from '../constants';
 
 export default class EntityItem extends PureComponent {
   render() {

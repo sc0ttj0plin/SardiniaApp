@@ -3,8 +3,8 @@ import { StyleSheet, Text, View } from "react-native";
 import { ActivityIndicator } from 'react-native';
 import { Image } from 'react-native-elements';
 import {distance, distanceToString} from '../../helpers/maps'
-import * as graphqlActions from '../../actions/graphql';
-import { apolloQuery } from '../../apollo/middleware';
+import actions from '../../actions';
+import { apolloQuery } from '../../apollo/queries';
 import _ from 'lodash';
 
 /**
@@ -46,7 +46,7 @@ export default class EntityWidgetInMapView extends PureComponent {
   }
 
   _fetchPoi(nid) {
-      apolloQuery(graphqlActions.getPoi({ 
+      apolloQuery(actions.getPoi({ 
         nid 
       })).then((data) => {
         var entity = {...this.state.entity, ...data[0]};
