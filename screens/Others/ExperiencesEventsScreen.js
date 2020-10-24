@@ -89,10 +89,14 @@ class ExperiencesEventsScreen extends Component {
       return ({
         lb: moment(dateString).startOf('month').subtract(1,"year").subtract(FETCH_NUM_MONTHS_BACKWARDS, 'month'),
         ub: moment(dateString).endOf('month').subtract(1,"year").add(FETCH_NUM_MONTHS_FORWARD, 'month')
+        // lb: moment(dateString).startOf('month').subtract(FETCH_NUM_MONTHS_BACKWARDS, 'month'),
+        // ub: moment(dateString).endOf('month').add(FETCH_NUM_MONTHS_FORWARD, 'month')
       });
     return ({
       lb: moment().startOf('month').subtract(1,"year").subtract(FETCH_NUM_MONTHS_BACKWARDS, 'month'),
       ub: moment().endOf('month').subtract(1,"year").add(FETCH_NUM_MONTHS_FORWARD, 'month')
+      // lb: moment().startOf('month').subtract(FETCH_NUM_MONTHS_BACKWARDS, 'month'),
+      // ub: moment().endOf('month').add(FETCH_NUM_MONTHS_FORWARD, 'month')
     });
   }
  
@@ -108,6 +112,7 @@ class ExperiencesEventsScreen extends Component {
   _loadItemsForMonth = (dateString) => {
     //set current month loading
     const month = moment(dateString).subtract(1,"year").startOf('month');
+    // const month = moment(dateString).startOf('month');
     const monthFormatted = month.format('YYYYMM');
     if (!this._queriedMonths[monthFormatted]) {
       //set current date string have a reference month

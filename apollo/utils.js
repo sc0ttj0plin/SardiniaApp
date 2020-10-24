@@ -17,10 +17,11 @@ export const processEvents = function(events) {
       if (e.date1) {
         //TODO: remove .add(1,"year")
         let dateFormatted = moment.unix(e.date1).add(1,"year").format(Constants.DATE_FORMAT);
+        // let dateFormatted = moment.unix(e.date1).format(Constants.DATE_FORMAT);
         let singleEvent = { 
           ...e,
           image: e.image.replace("public://", "https://www.sardegnaturismo.it/sites/default/files/"),
-          date1Str: moment.unix(e.date1).add(1,"year").format('DD MMMM YYYY'),
+          date1Str: moment.unix(e.date1).format('DD MMMM YYYY'),
         };
         eventsObj[dateFormatted] = eventsObj[dateFormatted] ? [...eventsObj[dateFormatted], singleEvent] : [singleEvent] 
       }

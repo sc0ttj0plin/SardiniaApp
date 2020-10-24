@@ -83,18 +83,15 @@ export default function reducer(state = INITIAL_STATE, action) {
         return acc;
       }, {});
 
-
       //Fill the markers with custom style (needed for calendar) (add today first)
       let markedDates = { [moment().format(Constants.DATE_FORMAT)]: Constants.CALENDAR.todayMarkerDefaultConf };
       Object.keys(newEvents).map(date => markedDates[date] = Constants.CALENDAR.markedDatesDefaultConf);
-
       /* 
-         events can be returned both in 
-         section list format: [{ title: "2020-09-02", data: [{ "title", "description", "date1", "date2", "uuid", "nid", "term", "image", "language", "abstract", "itinerary", "url_alias", "__typename", "date1Str" }, ...]}]  
-         OR 
-         classic format: {"2020-09-02": [{ "title", "description", "date1", "date2", "uuid", "nid", "term", "image", "language", "abstract", "itinerary", "url_alias", "__typename", "date1Str" }, ...]...}
+        events can be returned both in 
+        section list format: [{ title: "2020-09-02", data: [{ "title", "description", "date1", "date2", "uuid", "nid", "term", "image", "language", "abstract", "itinerary", "url_alias", "__typename", "date1Str" }, ...]}]  
+        OR 
+        classic format: {"2020-09-02": [{ "title", "description", "date1", "date2", "uuid", "nid", "term", "image", "language", "abstract", "itinerary", "url_alias", "__typename", "date1Str" }, ...]...}
       */
-
       //NOTE: edits also eventsById state to store loaded events by id
       return { 
         ...state, 
