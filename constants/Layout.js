@@ -1,5 +1,5 @@
-import { Dimensions, Platform } from 'react-native';
-import { getStatusBarHeight } from 'react-native-status-bar-height';
+import { Dimensions, Platform, NativeModules } from 'react-native';
+const { StatusBarManager } = NativeModules;
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
@@ -17,7 +17,7 @@ export default {
     gridInnerVPadding: 10,
     gridInnerHPadding: 10
   },
-  statusbarHeight: Platform.OS === "ios" ? getStatusBarHeight() - 10 : getStatusBarHeight(),
+  statusbarHeight: Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT,
   header:{
     height: Platform.OS === 'ios' ? 66 : 56,
     map: {

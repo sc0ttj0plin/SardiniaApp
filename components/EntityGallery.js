@@ -1,10 +1,10 @@
 import React, {PureComponent} from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { View, StyleSheet, Text } from 'react-native';
-import { GridGallery } from './GridGallery';
+import GridGallery from './GridGallery';
 import * as Constants from '../constants';
 
-class EntityMedia extends PureComponent {  
+class EntityGallery extends PureComponent {  
   
   constructor(props) {
     super(props);
@@ -20,7 +20,7 @@ class EntityMedia extends PureComponent {
       <View style={styles.mainView}>
         <Text style={[styles.sectionTitle]}>{title}</Text>
         <View style={styles.borderLine}></View>
-        <GridGallery images={images} onPress={(index) => {
+        <GridGallery images={images} useFlatList onPress={(index) => {
             this.props.navigation.navigate(Constants.NAVIGATION.NavGalleryScreen, {
               images: images,
               initialPage: index
@@ -64,7 +64,7 @@ export default (props) => {
   const navigation = useNavigation();
   const route = useRoute();
 
-  return <EntityMedia
+  return <EntityGallery
     {...props}
     navigation={navigation}
     route={route}/>;

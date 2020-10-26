@@ -28,7 +28,7 @@ export default function reducer(state = INITIAL_STATE, action) {
     case Constants.GET_EXTRAS_SUCCESS:
     case Constants.GET_POIS_SUCCESS:
     case Constants.GET_POI_SUCCESS:
-      //action.payload is an object keyed by the poi's nid: e.g. 1342: {...}
+      //action.payload is an object keyed by the poi's uuid: e.g. cd07df75-9870-41dd-8bd6-5884403f9302: {...}
       return { 
         ...state, 
         data: {...state.data, ...action.payload }, 

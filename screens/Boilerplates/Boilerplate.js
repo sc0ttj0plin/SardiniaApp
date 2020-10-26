@@ -12,6 +12,17 @@ import {
   // ScrollableHeader,
   // TabBarIcon, 
   // CalendarListItem, 
+  // EntityAbstract,
+  // EntityDescription,
+  // EntityGallery,
+  // EntityHeader,
+  // EntityItem,
+  // EventListItem,
+  // EntityMap,
+  // EntityRelatedList,
+  // EntityVirtualTour,
+  // EntityWhyVisit,
+  // TopMedia,
   AsyncOperationStatusIndicator, 
   // AsyncOperationStatusIndicatorPlaceholder,
   // Webview, 
@@ -128,7 +139,7 @@ class BoilerPlateScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <View style={styles.fill}>
+      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
         <ConnectedHeader iconTintColor="#24467C" />
         {render && this._renderContent()}
       </View>
