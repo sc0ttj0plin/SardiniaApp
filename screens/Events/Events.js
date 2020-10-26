@@ -4,7 +4,6 @@ import {
   StyleSheet, BackHandler, Platform, ScrollView, SectionList, TouchableHighlight, NativeModules } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 const { StatusBarManager } = NativeModules;
-const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
 
 import { 
   // CategoryListItem, 
@@ -153,18 +152,6 @@ class EventsScreen extends Component {
   }
 
 
-  /**
-   * If the reducer embeds a single data type then e.g. only pois:
-   *    Data is stored in this.props.pois.data
-   *    Success state is stored in this.props.pois.success
-   *    Loading state is stored in this.props.pois.loading
-   *    Error state is stored in this.props.pois.error
-   * If the reducer embeds multiple data types then (e.g. search + autocomplete):
-   *    Data is stored in this.props.searchAutocomplete.search
-   *    Success state is stored in this.props.searchAutocomplete.searchSuccess
-   *    Loading state is stored in this.props.searchAutocomplete.searchLoading
-   *    Error state is stored in this.props.searchAutocomplete.searchError
-   */
   _isSuccessData  = () => true;    /* e.g. this.props.pois.success; */
   _isLoadingData  = () => false;   /* e.g. this.props.pois.loading; */
   _isErrorData    = () => null;    /* e.g. this.props.pois.error; */
@@ -191,13 +178,6 @@ class EventsScreen extends Component {
             markedDates={this.props.events.markedDates}
             firstDay={1}
             hideDayNames={false}
-            // Handler which gets executed when press arrow icon left. It receive a callback can go back month
-            // onPressArrowLeft={subtractMonth => subtractMonth()}
-            // Handler which gets executed when press arrow icon right. It receive a callback can go next month
-            // onPressArrowRight={addMonth => addMonth()}
-            // Replace default month and year title with custom one. the function receive a date as parameter.
-            // renderHeader={(date) => {/*Return JSX*/}}
-            // Enable the option to swipe between months. Default = false
             enableSwipeMonths={true}
           />
           {this._renderEventsList()}
@@ -206,24 +186,6 @@ class EventsScreen extends Component {
   }
 
   _renderEventsList = () => {
-    // const events = _.get(this.props.events, "events", [])
-    // let newEvents = []
-    // let currentMonth = parseInt(this.state.currentMonth.split("-")[1])
-    // let currentYear = parseInt(this.state.currentMonth.split("-")[0])
-    // // console.log("current month", this.state.currentMonth, INITIAL_MONTH)
-    // for(let key in events){
-    //   console.log("key", key, events[key].length)
-    //   let month = parseInt(("" + key).split("-")[1])
-    //   let year = parseInt(("" + key).split("-")[0])
-    //   // console.log("events length", events[key].length > 5, month, year, currentMonth, currentYear)
-    //   if(month == currentMonth && year == currentYear){
-    //     let event = {
-    //       title: key,
-    //       data: events[key]
-    //     }
-    //     newEvents.push(event)
-    //   }
-    // }
     const { currentMonth } = this.state;
     console.log("currentmo", this.state.currentMonth)
     return(
@@ -258,7 +220,7 @@ class EventsScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <View style={[styles.fill, {paddingTop: STATUSBAR_HEIGHT}]}>
+      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
         <ConnectedHeader iconTintColor="#24467C" />
         {render && this._renderContent()}
       </View>

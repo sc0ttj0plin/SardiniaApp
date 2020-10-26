@@ -217,8 +217,8 @@ query {
 `;
 
 export const getPoi = gql`
-query ($nid: Int, $uuid: String) {
-  nodes(where: { nid: {_eq: $nid}, uuid: {_eq: $uuid} }) {
+query ($uuid: String) {
+  nodes(where: { uuid: {_eq: $uuid} }) {
     nid
     uuid
     title: legacy(path: "title_field")
@@ -351,8 +351,8 @@ query ($limit: Int, $offset: Int, $uuids: [String!]) {
 `;
 
 export const getInspirer = gql`
-query ($uuid: String, $nid: Int) {
-  nodes(where: { nid: {_eq: $nid}, uuid: {_eq: $uuid} } ) {
+query ($uuid: String) {
+  nodes(where: { uuid: {_eq: $uuid} } ) {
     uuid
     nid
     title: legacy(path: "title_field")

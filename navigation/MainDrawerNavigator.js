@@ -10,6 +10,7 @@ import {useRoute} from '@react-navigation/native';
 
 import TabBarIcon from '../components/TabBarIcon';
 import PlacesScreen from '../screens/Places/Places';
+import PlaceScreen from '../screens/Places/Place';
 import InspirersScreen from '../screens/Inspirers/Inspirers';
 import EventsScreen from '../screens/Events/Events';
 // import MapScreen from '../screens/Others/MapScreen';
@@ -40,6 +41,7 @@ const {
 
 import {FromTopTransition} from './transitions'
 import Colors from '../constants/Colors'; 
+import Place from '../screens/Places/Place';
 
 /**
  * App navigation hyerarchy is as follows
@@ -203,7 +205,10 @@ function TabNavigator() {
   );
 }
 
+/* TODO: NAVIGATION ISSUE: LOTS OF SCREENS GET MOUNTED AND NEVER UNMOUNTED WITH TIME APP GETS VERY SLOW WITH USE
+  SOLUTION: use nested navigators and hide bottom tab navigator
 
+*/
 /**
  * Main Navigator (level: 1, parent: DrawerNavigator)
  */
@@ -217,8 +222,8 @@ function MainStackScreen() {
       <MainStack.Screen name={NavTabNavigator} component={TabNavigator} />
       {/* Places */}
       {/* <MainStack.Screen name={NavMapScreen} component={MapScreen} options={{...FromTopTransition}} /> */}
-      <MainStack.Screen name={NavPlacesScreen} component={PlacesScreen}/>
-      {/* <MainStack.Screen name={NavPlaceScreen} component={PlaceScreen}/> */}
+      {/* <MainStack.Screen name={NavPlacesScreen} component={PlacesScreen}/> */}
+      <MainStack.Screen name={NavPlaceScreen} component={PlaceScreen}/>
       {/* <MainStack.Screen name={NavVideoScreen} component={VideoScreen}/> */}
       {/* <MainStack.Screen name={NavVirtualTourScreen} component={VirtualTourScreen}/> */}
       {/* <MainStack.Screen name={NavInspirersScreen} component={InspirersScreen}/> */}
