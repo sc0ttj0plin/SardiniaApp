@@ -1,4 +1,6 @@
+
 import _ from 'lodash';
+import videos from '../constants/_sampleVideos';
 
 export const searchParser = (queryStr) => {
   return queryStr.replace(/ /g, " & ");
@@ -30,15 +32,49 @@ export const getCoordinates = (entity) => {
 }
 
 /**
- * 
- * @param {*} entity 
- * @param {*} fields 
- * @param {*} lan 
+ * Safe multiple fields _.get
+ * @param {*} entity: node
+ * @param {*} fields e.g. { "coordinates": 1, "image": 1, }
+ * @param {*} path 
  */
-export const getEntityInfo = (entity, fields={}, getTree=["it", 0, "value"], defaults={}) => {
-  let returnObj = _.reduce(fields, (acc, el, key) => {
-    if (entity[key])
-      acc[key] = _.get(entity[key], getTree, defaults[key] || null);
+export const getEntityInfo = (entity, fields=[], path=["it", 0, "value"], defaultVal=null) => {
+  let returnObj = _.reduce(fields, (acc, el) => {
+    if (entity[el])
+      acc[el] = _.get(entity[el], path, defaultVal);
+    return acc;
   }, {});
   return returnObj;
+}
+
+/**
+ * Returns a sample videos for that entity if its nid matches the current one
+ */
+export const getSampleVideoIndex = (nid) => {
+  for(let i = 0; i < videos.length; i++ ){
+   if(videos[i].nid == nid)
+    return videos[i]["video_url"];
+  }
+  return null;
+}
+
+/**
+ * Extract images from gallery in a simpler format
+ * @param {*} entity: node
+ */
+export const getGalleryImages = (entity) => {
+  if(entity && entity.gallery){
+    return entity.gallery.map((item) => { 
+      var image = {
+        title_field: item.title_field,
+        key: item.uid,
+        source: {uri: item.uri},
+        dimensions: {
+          width: item.width,
+          height: item.height
+        }
+      }
+      return image;
+    })
+  }
+  else return []
 }

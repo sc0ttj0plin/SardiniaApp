@@ -26,7 +26,7 @@ import HTML from 'react-native-render-html';
 import { Fab } from 'native-base';
 import { useSafeArea } from 'react-native-safe-area-context';
 import PoiItem from '../components/PoiItem';
-import videos from '../constants/_sampleVideos'
+import videos from '../constants/_sampleVideos';
 import pois from '../constants/_samplePois';
 
 class PlaceScreen extends Component {  
