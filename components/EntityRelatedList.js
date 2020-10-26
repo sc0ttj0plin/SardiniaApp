@@ -50,7 +50,7 @@ export default class EntityRelatedList extends PureComponent {
                         data={this.state.data}
                         renderItem={({item, index}) => this._renderPoiListItem(item, index)}
                         style={styles.fill}
-                        ItemSeparatorComponent={this.props.ItemSeparatorComponent ? this.props.ItemSeparatorComponent : null}
+                        ItemSeparatorComponent={<View style={{width: 5, flex: 1}}></View>}
                         contentContainerStyle={this.props.contentContainerStyle ? this.props.contentContainerStyle : {}}
                         showsHorizontalScrollIndicator={this.props.showsHorizontalScrollIndicator ? this.props.showsHorizontalScrollIndicator : true}
                         initialNumToRender={2} // Reduce initial render amount

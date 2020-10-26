@@ -39,7 +39,7 @@ import {
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { greedyArrayFinder, getEntityInfo } from '../../helpers/utils';
+import { greedyArrayFinder, getEntityInfo, getCoordinates, getSampleVideoIndex, getGalleryImages } from '../../helpers/utils';
 import _ from 'lodash';
 import Layout from '../../constants/Layout';
 import { apolloQuery } from '../../apollo/queries';
@@ -55,19 +55,22 @@ class PlaceScreen extends Component {
   constructor(props) {
     super(props);
 
-    const uuid = props.route.params.item.uuid;
+    const { uuid } = props.route.params.item;
 
     /* Get props from navigation */
     this.state = {
-      uuid,
       render: USE_DR ? false : true,
       //entity initial state
+      uuid,
+      entity: { term: {} },
       abstract: null, 
       title: null, 
       description: null, 
       whyVisit: null, 
       coordinates: null, 
-      socialUrl: null
+      socialUrl: null,
+      sampleVideoUrl: null,
+      gallery: []
     };
       
   }
@@ -78,24 +81,57 @@ class PlaceScreen extends Component {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
     this.props.actions.getPoi({ uuid: this.state.uuid });
+    //Get related entities
+    //todo: use 
+    try {
+      //todo: use constants
+      const relatedHotels = await apolloQuery(actions.getNodes({ type: "Constants....attrattore", offset: Math.ceil(Math.random()*100), limit: 5 }));
+      //Todo; init state
+      this.setState({ relatedHotels });
+      ...
+    }
+    apolloQuery(actions.getNodes({
+      type: "evento",
+      offset: Math.ceil(Math.random()*100),
+      limit: 5
+    })).then((nodes) => {
+      this.setState({relatedEvents: nodes})
+    })
+    apolloQuery(actions.getNodes({
+      type: "itinerario",
+      offset: Math.ceil(Math.random()*10),
+      limit: 5
+    })).then((nodes) => {
+      this.setState({relatedItineraries: nodes})
+    })
+
   }
 
   /* NOTE: since this screen is not */
   componentDidUpdate(prevProps) {
     const { uuid } = this.state;
-    // const uuid = this.props.route.params.item.uuid;
-    //If a new screen is 
-    // if (prevProps.route.params.item !== this.props.route.params.item)
-    //   this.props.actions.getPoi({ uuid });
     
-    if (prevProps.pois.data[uuid] !== this.props.pois.data[uuid]) {
+    if (prevProps.pois.data !== this.props.pois.data) {
+      console.log('entity')
+      const { pois, locale } = this.props;
+      const entity = pois.data[uuid];
       const { lan } = locale;
-      const { pois, favourites, locale } = this.props;
-      const { abstract, title, description, whyVisit } = 
-      getEntityInfo(entity, {"abstract": 1, "title": 1, "description": 1, "whyVisit": 1}, [lan, 0, "value"]);
+      const { abstract, title, description, whyVisit } = getEntityInfo(entity, ["abstract", "title", "description", "whyVisit"], [lan, 0, "value"]);
       const coordinates = getCoordinates(entity);
       const socialUrl = `${Constants.WEBSITE_URL}${greedyArrayFinder(entity.url_alias, "language", lan, "alias", "")}`;
-      this.setState({ abstract, title, description, whyVisit, coordinates, socialUrl });
+      const sampleVideoUrl = getSampleVideoIndex(entity.nid);
+      const gallery = getGalleryImages(entity);
+      this.setState({ 
+        entity,
+        abstract, 
+        title, 
+        description, 
+        whyVisit, 
+        coordinates, 
+        socialUrl,
+        sampleVideoUrl,
+        gallery,
+      });
     }
     
   }
@@ -104,21 +140,69 @@ class PlaceScreen extends Component {
     console.log("Unmount Place!!")
   }
   
+  //TODO: move "sdsdas" into Constants.
+  _openRelatedItem = (item) => {
+    var type = item.type;
+    switch(type) {
+      case "attrattore":
+        this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item });
+        break;
+      case "evento":
+        this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item });
+        break;
+      case "itinerario":
+        this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, { item })
+        break;
+      //add ispiratore?
+      default:
+        break;
+    }
+  }
   
   /********************* Render methods go down here *********************/
+
+
+  _renderRelatedList = (title, relatedList, listType) => {
+    return (
+        <EntityRelatedList
+          horizontal={true}
+          data={relatedList ? relatedList : []} 
+          extraData={this.props.locale}
+          keyExtractor={item => item.nid.toString()}
+          contentContainerStyle={styles.listContainerHeader}
+          showsHorizontalScrollIndicator={false}
+          locale={this.props.locale}
+          onPressItem={this._openRelatedItem}
+          listType={listType}
+          listTitle={title}
+          listTitleStyle={styles.sectionTitle}
+        />
+    )
+  }
+
   _renderContent = () => {
+    const { uuid, entity, abstract, title, description, whyVisit, coordinates, socialUrl, sampleVideoUrl, gallery } = this.state;
+    const { locale, pois, favourites, } = this.props;
     const { lan } = locale;
-    const { whyVisit: whyVisitTitle, discoverMore } = locale.messages;
+    const { whyVisit: whyVisitTitle, discoverMore, gallery: galleryTitle, description: descriptionTitle } = locale.messages;
     
     const { orientation } = this.state;
-    const entity = pois[uuid];
     const isFavourite = favourites.places[uuid];
-
 
      return (
        <View style={styles.fill}>
          <ScrollView style={styles.fill}>
-          <TopMedia urlVideo={} urlImage={} />   
+          <TopMedia urlVideo={sampleVideoUrl} urlImage={entity.image} />   
+          <View style={[styles.headerContainer]}> 
+            <EntityHeader title={title} term={entity.term.name}/>
+          </View>
+          <View style={[styles.container]}>
+            <EntityAbstract abstract={abstract}/>
+            <EntityWhyVisit title={whyVisitTitle} text={whyVisit}/>
+            <EntityMap entity={entity}/>
+            <EntityGallery images={gallery} title={galleryTitle}/>
+            <EntityDescription title={descriptionTitle} text={description}/>
+          </View>
          </ScrollView>
        </View>
      );
@@ -153,6 +237,17 @@ const styles = StyleSheet.create({
   },
   container: {
     padding: 10,
+  },
+  headerContainer: {
+    padding: 10,
+    backgroundColor: "white",
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 30, 
+    marginTop: -30
+  },
+  container: {
+    backgroundColor: "white",
+    textAlign: "center"
   },
 });
 

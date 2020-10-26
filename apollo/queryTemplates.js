@@ -115,6 +115,7 @@ query ($start: Int, $end: Int, $types: [Int!]) {
   events: nodes(where: {type: {_eq: "evento"}, term: {tid: {_in: $types}}, date1: {_gte: $start, _lte: $end}}, order_by: {date1: asc}) {
     title: legacy(path: "title_field")
     description: legacy(path: "body")
+    type
     date1
     date2
     uuid
@@ -139,9 +140,10 @@ query ($nids: [Int!]) {
   events: nodes(where: { nid: {_in: $nids} }) {
     title: legacy(path: "title_field")
     description: legacy(path: "body")
+    uuid
+    type
     date1
     date2
-    uuid
     nid: legacy(path: "nid")
     term {
       tid
@@ -164,6 +166,7 @@ query {
   itineraries: nodes(where: {type: {_eq: "itinerario"}}) {
     nid
     uuid
+    type
     title: legacy(path: "title_field")
     abstract: legacy(path: "field_occhiello")
     subtitle: legacy(path: "field_citazione_iniziale")
@@ -221,6 +224,7 @@ query ($uuid: String) {
   nodes(where: { uuid: {_eq: $uuid} }) {
     nid
     uuid
+    type
     title: legacy(path: "title_field")
     description: legacy(path: "body")
     georef
@@ -253,6 +257,7 @@ query ($polygon: geometry!, $uuids: [String!]) {
      }) {
      uuid
      nid
+     type
      title: legacy(path: "title_field")
      georef
      term {
@@ -307,6 +312,7 @@ query ($nids: [Int!]) {
   nodes(where: { nid: {_in: $nids} }) {
     uuid
     nid
+    type
     title: legacy(path: "title_field")
     description: legacy(path: "body")
     georef
@@ -331,6 +337,7 @@ query ($limit: Int, $offset: Int, $uuids: [String!]) {
   nodes(where: {nodes_terms: {term: {uuid: {_in: $uuids}}}}, offset: $offset, limit: $limit) {
     nid
     uuid
+    type
     title: legacy(path: "title_field")
     description: legacy(path: "body")
     nodes_terms(where: {term_uuid: {_in: $uuids}}) {
@@ -355,6 +362,7 @@ query ($uuid: String) {
   nodes(where: { uuid: {_eq: $uuid} } ) {
     uuid
     nid
+    type
     title: legacy(path: "title_field")
     description: legacy(path: "body")
     nodes_terms(where: {term: {vid: {_eq:46}}}) {
@@ -379,6 +387,7 @@ query ($nids: [Int!]) {
   nodes(where: { nid: {_in: $nids} }) {
     nid
     uuid
+    type
     title: legacy(path: "title_field")
     abstract: legacy(path: "field_occhiello")
     subtitle: legacy(path: "field_citazione_iniziale") 
