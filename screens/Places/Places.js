@@ -73,8 +73,6 @@ class PlacesScreen extends PureComponent {
       nearPois: [],
       nearPoisRefreshing: false,
       tid: -1,
-      // term: null, /* current category */
-      // uuids: [], /* uuids for child categories */ 
       prevTerm: null,
       coords: {},
       poisLimit: Constants.PAGINATION.poisLimit,
@@ -162,10 +160,6 @@ class PlacesScreen extends PureComponent {
           this.setState({ nearPoisRefreshing: false });
         });
       }
-      // } else {
-      //   this.setState({ isCordsInBound: isCordsInBound, coords: newCoords });
-      //   this._fetchClustersAndPois(newCoords);
-      // }
     }
     // Update list of pois if we are at the bottom of the category tree
     if(this._isPoiList()){
@@ -189,39 +183,7 @@ class PlacesScreen extends PureComponent {
       this.setState({ nearPois: pois });
     });
   }
-  
-  /**
-   * Uses the user's coordinates to fetch clusters of pois
-   * TODO PERFORMANCE ISSUE: may be a source of performance degradation, 
-   *  coords is not used, it only uses region to update the clusters but is invoked whenever coords change!!!
-   * @param {*} coords: new user coordinates (not used)
-   */
-  // _fetchClustersAndPois(coords) {
-  //   const { term, childUuids } = this._getCurrentTerm();
-  //   const { region } = this.state;
 
-  //   const p = regionToPoligon(region);
-  //   const regionString = `${p[0][0]} ${p[0][1]}, ${p[1][0]} ${p[1][1]}, ${p[2][0]} ${p[2][1]}, ${p[3][0]} ${p[3][1]}, ${p[4][0]} ${p[4][1]}`;
-    
-  //   let uuidString = "{";
-  //   for(var i=0; i<childUuids.length; i++)
-  //     uuidString += i < childUuids.length - 1 ? childUuids + "," : childUuids;
-  //   uuidString += "}";
-
-  //   const km = regionDiagonalKm(region);
-  //   const dEps = (km / 1000) / (Layout.window.diagonal / Layout.map.markerPixels);
-  //   //run the query, set clusters and resets nearpois
-  //   apolloQuery(actions.getClusters({
-  //     polygon: regionString,
-  //     cats: uuidString,
-  //     dbscan_eps: dEps
-  //   })).then((clusters) => {
-  //     this.setState({
-  //       clusters: clusters,
-  //       nearPois: []
-  //     });
-  //   });
-  // }
 
   /**
    * Get more pois when the user changes position and/or 
