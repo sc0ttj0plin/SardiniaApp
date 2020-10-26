@@ -1,5 +1,6 @@
 import { Dimensions, Platform } from 'react-native';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
+import { useSafeArea } from 'react-native-safe-area-context';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
@@ -12,6 +13,7 @@ export default {
     vPadding: 10,
     diagonal: diagonal
   },
+  insets: useSafeArea(),
   list: {
     vPadding: 10,
     gridInnerVPadding: 10,

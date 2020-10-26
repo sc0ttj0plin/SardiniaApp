@@ -6,6 +6,7 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '
 import { useIsDrawerOpen } from '@react-navigation/drawer';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import {useRoute} from '@react-navigation/native';
 
 import TabBarIcon from '../components/TabBarIcon';
 import PlacesScreen from '../screens/Places/Places';
@@ -182,6 +183,7 @@ function ExtraStackScreen() {
 const BottomTabNavigator = createBottomTabNavigator();
  
 function TabNavigator() {
+  const route = useRoute();
   return (
     <BottomTabNavigator.Navigator 
       lazy={true}
@@ -189,7 +191,7 @@ function TabNavigator() {
       activeColor={Colors.tintColor}
       tabBarPosition="bottom" 
       swipeEnabled={false}
-      tabBar={props => <TabBar {...props} navOptions={[placesNavigationOptions, inspirersNavigationOptions, trendsNavigationOptions, itinerariesNavigationOptions, eventsNavigationOptions]}/>}
+      tabBar={props => <TabBar {...props} activeRoute={route} navOptions={[placesNavigationOptions, inspirersNavigationOptions, trendsNavigationOptions, itinerariesNavigationOptions, eventsNavigationOptions]}/>}
       animationEnabled={true}>
       {/* <BottomTabNavigator.Screen name={"Boilerplate"} component={Boilerplate} options={placesNavigationOptions} label="Boilerplate"/> */}
       <BottomTabNavigator.Screen name={NavPlacesScreen} component={PlacesScreen} options={placesNavigationOptions}/>
