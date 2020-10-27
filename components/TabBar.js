@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React from 'react'
 import {
   View,
   Text,
@@ -11,7 +11,8 @@ import TabBarIcon from './TabBarIcon';
 import posed from 'react-native-pose';
 import Layout from '../constants/Layout';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-
+import { useSafeArea } from 'react-native-safe-area-context';
+ 
 // define click zoom
 const Scaler = posed.View({ 
   active: { scale: 1 },
@@ -24,28 +25,18 @@ const CenterScaler = posed.View({
     inactive: { scale: 0.5 } 
 })
 
-var insets = Layout.insets ? Layout.insets : {bottom: 0};
-
 /**
  * TabBar is the bottom tab bar used in tab navigation screens.
  * Includes an animated component that scales up on focus
  */
-export default class TabBar extends PureComponent{
-
-  constructor(props){
-    super(props)
-
-    this.state = {
-      routes: null,
-      activeRouteIndex: null
-    }
-  }
-
-  componentDidMount(){
-
-    const { routes, index } = this.props.state
+const TabBar = props => {
+    var insets = useSafeArea();
+    const {
+        navigation
+    } = props
+    const { routes, index } = props.state
     let activeRouteIndex = index;
-    let descriptors = this.props.descriptors ? this.props.descriptors : []
+    let descriptors = props.descriptors ? props.descriptors : []
     let newRoutes = []
     for(let key in descriptors){
         let descriptor = descriptors[key];
@@ -59,80 +50,58 @@ export default class TabBar extends PureComponent{
         }
         newRoutes.push(route)
     }
-    
-    this.setState({
-      routes: newRoutes,
-      activeRouteIndex
-    })
-  }
 
-  componentDidUpdate(prevProps){
-    console.log("screen ", this.props.state.routeNames[this.props.state.index])
-    if(prevProps.state.index != this.props.state.index){
-      this.setState({
-        activeRouteIndex: this.props.state.index
-      })
+    const onTabPress = (screen) => {
+        navigation.navigate(screen);
     }
-  }
 
-  onTabPress = (screen) => {
-    this.props.navigation.navigate(screen);
-
-  }
-
-  render(){
-    return (
-      <>
-        {this.state.routes && 
-          <Scaler style={[Styles.container, {height: 63+insets.bottom, paddingBottom: insets.bottom}]}>
-            {this.state.routes.map((route, routeIndex) => {
-              const isRouteActive = routeIndex === this.state.activeRouteIndex
-              return (
-                <TouchableOpacity
-                  key={routeIndex}
-                  activeOpacity={0.7}
-                  style={[Styles.tabButton, {
-                      backgroundColor: isRouteActive && route.backgroundActiveColor ? route.backgroundActiveColor : "white" 
-                  }]}
-                  onPress={ () => this.onTabPress(route.name)}>
-                      {route.name == 'Trends' ? ( // Special handling of special icons
-                      <CenterScaler
-                          style={[Styles.scalerOnline, {
-                              backgroundColor: isRouteActive ? "white" : "white",
-                              marginBottom: isRouteActive ? 15 : 0
-                          }]}
-                          pose={isRouteActive ? 'active' : 'inactive'}>
-                              { route.icon &&
-                                  <View style={[Styles.iconContainer]}>
-                                      <TabBarIcon focused={isRouteActive} name={route.icon} iconSourceDefault={route.iconSourceDefault} />
-                                  </View>
-                              }
-                      </CenterScaler>
-                  ) : ( // normal icon normal processing
-                    <Scaler
-                      style={Styles.scaler}
-                      pose={isRouteActive ? 'active' : 'inactive'} 
-                    >
+  return (
+    <Scaler style={[Styles.container, {height: 63+insets.bottom, paddingBottom: insets.bottom}]}>
+      {newRoutes.map((route, routeIndex) => {
+        const isRouteActive = routeIndex === activeRouteIndex
+        return (
+          <TouchableOpacity
+            key={routeIndex}
+            activeOpacity={0.7}
+            style={[Styles.tabButton, {
+                backgroundColor: isRouteActive && route.backgroundActiveColor ? route.backgroundActiveColor : "white" 
+            }]}
+            onPress={ () => onTabPress(route.name)}>
+                {route.name == 'Trends' ? ( // Special handling of special icons
+                <CenterScaler
+                    style={[Styles.scalerOnline, {
+                        backgroundColor: isRouteActive ? "white" : "white",
+                        marginBottom: isRouteActive ? 15 : 0
+                    }]}
+                    pose={isRouteActive ? 'active' : 'inactive'}>
                         { route.icon &&
-                          <View style={Styles.iconContainer}>
-                              <TabBarIcon focused={isRouteActive} name={route.icon} tintColor={isRouteActive ? "white" : Colors.tintColor} iconSourceDefault={route.iconSourceDefault} iconSourceActive={route.iconSourceActive}/>
-                          </View>
+                            <View style={[Styles.iconContainer]}>
+                                <TabBarIcon focused={isRouteActive} name={route.icon} iconSourceDefault={route.iconSourceDefault} />
+                            </View>
                         }
-                          <ConnectedText textStyle={[Styles.iconText, {
-                              color: isRouteActive ? "white" : "#A7A7A7"
-                          }]} languageKey={route.languageKey}>
-      
-                          </ConnectedText>
-                    </Scaler>
-                  )}
-                </TouchableOpacity>
-              )
-            })}
-          </Scaler>
-        }
-      </>
-    )
-  }
+                </CenterScaler>
+            ) : ( // normal icon normal processing
+              <Scaler
+                style={Styles.scaler}
+                pose={isRouteActive ? 'active' : 'inactive'} 
+              >
+                  { route.icon &&
+                    <View style={Styles.iconContainer}>
+                        <TabBarIcon focused={isRouteActive} name={route.icon} tintColor={isRouteActive ? "white" : Colors.tintColor} iconSourceDefault={route.iconSourceDefault} iconSourceActive={route.iconSourceActive}/>
+                    </View>
+                  }
+                    <ConnectedText textStyle={[Styles.iconText, {
+                        color: isRouteActive ? "white" : "#A7A7A7"
+                    }]} languageKey={route.languageKey}>
+
+                    </ConnectedText>
+              </Scaler>
+            )}
+          </TouchableOpacity>
+        )
+      })}
+    </Scaler>
+  )
 }
  
 const Styles = StyleSheet.create({
@@ -194,3 +163,4 @@ const Styles = StyleSheet.create({
   }
 })
  
+export default TabBar

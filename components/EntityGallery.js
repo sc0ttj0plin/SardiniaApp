@@ -17,16 +17,20 @@ class EntityGallery extends PureComponent {
   render() {
     const { title, images } = this.props;
     return (
-      <View style={styles.mainView}>
-        <Text style={[styles.sectionTitle]}>{title}</Text>
-        <View style={styles.borderLine}></View>
-        <GridGallery images={images} useFlatList onPress={(index) => {
-            this.props.navigation.navigate(Constants.NAVIGATION.NavGalleryScreen, {
-              images: images,
-              initialPage: index
-            })
-        }}/>
-    </View>
+      <>
+        { images && images.length > 0 &&
+          <View style={styles.mainView}>
+            <Text style={[styles.sectionTitle]}>{title}</Text>
+            <View style={styles.borderLine}></View>
+            <GridGallery images={images} useFlatList={false} onPress={(index) => {
+                this.props.navigation.navigate(Constants.NAVIGATION.NavGalleryScreen, {
+                  images: images,
+                  initialPage: index
+                })
+            }}/>
+          </View>
+        }
+      </>
     );
   }
 }

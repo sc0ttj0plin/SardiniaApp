@@ -329,6 +329,7 @@ class PlacesScreen extends PureComponent {
         place={`${item.term.name}`}
         image={`${item.image}`}
         distance={this.state.isCordsInBound && item.distance}
+        extraStyle={{marginBottom: 10}}
       />
   )}
 

@@ -1,11 +1,7 @@
-<<<<<<< HEAD
-import { Dimensions, Platform } from 'react-native';
-import { getStatusBarHeight } from 'react-native-status-bar-height';
-import { useSafeArea } from 'react-native-safe-area-context';
-=======
 import { Dimensions, Platform, NativeModules } from 'react-native';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
+// import { useSafeArea } from 'react-native-safe-area-context';
 const { StatusBarManager } = NativeModules;
->>>>>>> 775ef5d552440bc148683c1b2061de639d32787c
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
@@ -18,7 +14,7 @@ export default {
     vPadding: 10,
     diagonal: diagonal
   },
-  insets: useSafeArea(),
+  insets: {},
   list: {
     vPadding: 10,
     gridInnerVPadding: 10,

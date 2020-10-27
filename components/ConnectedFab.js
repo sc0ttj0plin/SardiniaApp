@@ -1,21 +1,18 @@
 import React, { PureComponent, Component } from "react";
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, Platform, Linking } from "react-native";
 import { NavigationEvents, useNavigation, useRoute } from '@react-navigation/native';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as graphqlActions from '../actions/graphql';
-import * as restActions from '../actions/rest';
-import * as localeActions from '../actions/locale';
-import * as othersActions from '../actions/others';
-import * as favouritesAction from '../actions/favourites';
-import { Icon } from "react-native-elements";
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import actions from '../actions';
+// import { Icon, Button } from "react-native-elements";
+import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons'; 
+import { FontAwesome } from '@expo/vector-icons'; 
 import Colors from '../constants/Colors';
+import * as Constants from '../constants';
 import _ from 'lodash';
 
-/**
- * Connected fab component used for rendering a set of actions 
- * represented as button and hidden until press
- */
 class ConnectedFab extends PureComponent {
 
   constructor(props) {
@@ -23,49 +20,68 @@ class ConnectedFab extends PureComponent {
 
     this.state = {
       active: false,
-      direction: props.direction ? props.direction : "up"
+      direction: props.direction ? props.direction : "up",
+      nid: props.nid,
+      isFavourite: props.favourites.places[props.nid]
     };
   }
 
-  render() {
-    return (
-      <View style={{
-        width: 55,
-        backgroundColor: "transparent",
-      }}>
-      <TouchableOpacity 
-        style={[styles.btn1, {backgroundColor: this.props.color}]}
-        onPress={() => this.setState({ active: !this.state.active })} 
-        activeOpacity={0.8}>
-            <Icon name="add" size={25} color={"white"} />
+  _openNavigator = (title, coords) => {
+    const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
+    const latLng = `${coords.latitude},${coords.longitude}`;
+    const label = title;
+    const url = Platform.select({
+      ios: `${scheme}${label}@${latLng}`,
+      android: `${scheme}${latLng}(${label})`
+    });
+    Linking.openURL(url); 
+  }
 
+  _renderButton = (backgroundColor, iconName, onPress) => {
+    return(
+      <TouchableOpacity
+        activeOpacity={0.7} 
+        style={[{ backgroundColor: backgroundColor }, styles.button]} 
+        onPress={onPress}>
+        <FontAwesome name={iconName} size={20} color="#174A7C" /> 
       </TouchableOpacity>
-      { this.state.active &&      
-        <View style={styles.fabView}>
-          {this.props.children}
-        </View>
-      }
+    )
+  }
+
+  render() {
+    const isFavourite = this.props.favourites.places[this.state.nid];
+    const { shareLink, coordinates, color, title } = this.props;
+    const backgroundColor = color || Colors.colorScreen1;
+    return (
+      <View style={styles.fabView}>
+        <TouchableOpacity 
+          style={[styles.fabButton, {backgroundColor: backgroundColor}]}
+          onPress={() => this.setState({ active: !this.state.active })} 
+          activeOpacity={0.8}>
+            <FontAwesome5 name={this.state.active ? "times" : "plus"} size={25} color={"white"} />
+        </TouchableOpacity>
+        { this.state.active &&      
+          <View style={styles.fabChildrenContainer}>
+            { shareLink != "" && shareLink &&
+              this._renderButton(backgroundColor, "share-alt", () => Linking.openURL(shareLink))
+            }
+            { this.state.nid != "" && this.state.nid &&
+              this._renderButton(backgroundColor, isFavourite ? "heart" : "heart-o", () => this.props.actions.toggleFavourite({ type: "places", id: this.state.nid }))
+            }
+            {coordinates && (
+              this._renderButton(backgroundColor, "location-arrow", () => this._openNavigator(title, coordinates))
+            )}
+          </View>
+        }
       </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  btn1: {
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "column",
-    height: 55,
-    width: 55,
-    borderRadius: 50
-  },
   fabView: {
-    justifyContent: "flex-start",
-    alignItems: "center",
-    flexDirection: "column",
     width: 55,
     backgroundColor: "transparent",
-    marginTop: 15
   },
   fabContainer: { 
     width: "100%",
@@ -77,11 +93,44 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     alignItems: "flex-end",
     flexDirection: "column"
-    // top: 10,
-    // right: 10,
   },
   fabStyle: {
     backgroundColor: Colors.tintColor
+  },
+  fabButton: {
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "column",
+    height: 55,
+    width: 55,
+    borderRadius: 50
+  },
+  fabChildrenContainer: {
+    justifyContent: "flex-start",
+    alignItems: "center",
+    flexDirection: "column",
+    width: 55,
+    backgroundColor: "transparent",
+    marginTop: 15
+  },
+  button: {
+    padding: 8, 
+    borderRadius: 50, 
+    marginBottom: 10,
+    height: 36,
+    width: 36,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f2f2f2",
+    shadowColor: "#000",
+    shadowOffset: {
+    width: 0,
+    height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5, 
   }
 });
 
@@ -103,9 +152,8 @@ const mapStateToProps = state => ({
   favourites: state.favouritesState,
 });
 const mapDispatchToProps = dispatch => {
-  return {...bindActionCreators({ ...graphqlActions, ...restActions, ...localeActions, ...othersActions, ...favouritesAction}, dispatch)};
+  return {...bindActionCreators({ ...actions}, dispatch)};
 };
-
 
 export default connect(mapStateToProps, mapDispatchToProps, (stateProps, dispatchProps, props) => {
   return {

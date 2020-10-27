@@ -15,7 +15,7 @@ export default class EntityItem extends PureComponent {
             key={keyItem}  
             onPress={onPress}
             activeOpacity={0.7}
-            style={styles.fill}
+            style={[styles.fill, this.props.extraStyle]}
         >
             <GeoRefHListItem
                 title={`${title}`}

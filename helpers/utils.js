@@ -1,6 +1,7 @@
 
 import _ from 'lodash';
 import videos from '../constants/_sampleVideos';
+import * as Constants from "../constants"
 
 export const searchParser = (queryStr) => {
   return queryStr.replace(/ /g, " & ");
@@ -78,3 +79,4 @@ export const getGalleryImages = (entity) => {
   }
   else return []
 }
+

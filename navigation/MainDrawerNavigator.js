@@ -185,7 +185,6 @@ function ExtraStackScreen() {
 const BottomTabNavigator = createBottomTabNavigator();
  
 function TabNavigator() {
-  const route = useRoute();
   return (
     <BottomTabNavigator.Navigator 
       lazy={true}
@@ -193,7 +192,7 @@ function TabNavigator() {
       activeColor={Colors.tintColor}
       tabBarPosition="bottom" 
       swipeEnabled={false}
-      tabBar={props => <TabBar {...props} activeRoute={route} navOptions={[placesNavigationOptions, inspirersNavigationOptions, trendsNavigationOptions, itinerariesNavigationOptions, eventsNavigationOptions]}/>}
+      tabBar={props => <TabBar {...props} navOptions={[placesNavigationOptions, inspirersNavigationOptions, trendsNavigationOptions, itinerariesNavigationOptions, eventsNavigationOptions]}/>}
       animationEnabled={true}>
       {/* <BottomTabNavigator.Screen name={"Boilerplate"} component={Boilerplate} options={placesNavigationOptions} label="Boilerplate"/> */}
       <BottomTabNavigator.Screen name={NavPlacesScreen} component={PlacesScreen} options={placesNavigationOptions}/>
@@ -214,7 +213,6 @@ function TabNavigator() {
  */
 var MainStack = createStackNavigator();
 function MainStackScreen() {
-  const isDrawerOpen = useIsDrawerOpen();
   return (
     <>
     <MainStack.Navigator headerMode="none" initialRouteName={NavTabNavigator}>
@@ -233,9 +231,6 @@ function MainStackScreen() {
       {/* Events */}
       {/* <MainStack.Screen name={NavEventScreen} component={EventScreen} /> */}
     </MainStack.Navigator>
-    { isDrawerOpen &&
-      <></>
-    }
     </>
   );
 }

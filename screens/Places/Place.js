@@ -27,11 +27,12 @@ import {
   EntityRelatedList,
   EntityVirtualTour,
   EntityWhyVisit,
+  EntityAccomodations,
   TopMedia,
   // ImageGridItem, 
   // ConnectedLanguageList, 
   // BoxWithText,
-  // ConnectedFab, 
+  ConnectedFab, 
   // PoiItem, 
   // PoiItemsList, 
   // ExtrasListItem, 
@@ -68,16 +69,19 @@ class PlaceScreen extends Component {
       description: null, 
       whyVisit: null, 
       coordinates: null, 
-      socialUrl: null,
+      socialUrl: null, 
       sampleVideoUrl: null,
-      gallery: []
+      gallery: [],
+      relatedHotels: null,
+      relatedEvents: null,
+      relatedItineraries: null
     };
       
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
 
-  componentDidMount() {
+  async componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
     this.props.actions.getPoi({ uuid: this.state.uuid });
@@ -85,25 +89,11 @@ class PlaceScreen extends Component {
     //todo: use 
     try {
       //todo: use constants
-      const relatedHotels = await apolloQuery(actions.getNodes({ type: "Constants....attrattore", offset: Math.ceil(Math.random()*100), limit: 5 }));
-      //Todo; init state
-      this.setState({ relatedHotels });
-      ...
+      const relatedPlaces = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES["places"], offset: Math.ceil(Math.random()*100), limit: 5}))
+      this.setState({relatedPlaces})
+    } catch(error){
+      console.log(error)
     }
-    apolloQuery(actions.getNodes({
-      type: "evento",
-      offset: Math.ceil(Math.random()*100),
-      limit: 5
-    })).then((nodes) => {
-      this.setState({relatedEvents: nodes})
-    })
-    apolloQuery(actions.getNodes({
-      type: "itinerario",
-      offset: Math.ceil(Math.random()*10),
-      limit: 5
-    })).then((nodes) => {
-      this.setState({relatedItineraries: nodes})
-    })
 
   }
 
@@ -134,31 +124,33 @@ class PlaceScreen extends Component {
       });
     }
     
+    
   }
   
   componentWillUnmount() {
     console.log("Unmount Place!!")
   }
-  
-  //TODO: move "sdsdas" into Constants.
-  _openRelatedItem = (item) => {
+
+  _openEntity = (item) => {
     var type = item.type;
     switch(type) {
-      case "attrattore":
-        this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item });
+      case Constants.NODE_TYPES["places"]:
+        console.log("case attrattore")
+        this.props.navigation.push(Constants.NAVIGATION.NavPlaceScreen, { item });
         break;
-      case "evento":
+      case Constants.NODE_TYPES["events"]:
         this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item });
         break;
-      case "itinerario":
+      case Constants.NODE_TYPES["itineraries"]:
         this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, { item })
         break;
-      //add ispiratore?
+      case Constants.NODE_TYPES["inspirers"]:
+        this.props.navigation.navigate(Constants.NAVIGATION.NavInspirerScreen, { item })
+        break;
       default:
         break;
     }
   }
-  
   /********************* Render methods go down here *********************/
 
 
@@ -172,11 +164,27 @@ class PlaceScreen extends Component {
           contentContainerStyle={styles.listContainerHeader}
           showsHorizontalScrollIndicator={false}
           locale={this.props.locale}
-          onPressItem={this._openRelatedItem}
+          onPressItem={this._openEntity}
           listType={listType}
           listTitle={title}
           listTitleStyle={styles.sectionTitle}
         />
+    )
+  }
+
+  
+  _renderFab = (nid, title, coordinates, shareLink) => {
+    return (
+      <View style={styles.fab}>
+        <ConnectedFab 
+          color={Colors.colorScreen1}
+          nid={nid}
+          title={title}
+          coordinates={coordinates} 
+          shareLink={shareLink}
+          direction="down"
+        /> 
+      </View>
     )
   }
 
@@ -192,16 +200,20 @@ class PlaceScreen extends Component {
      return (
        <View style={styles.fill}>
          <ScrollView style={styles.fill}>
-          <TopMedia urlVideo={sampleVideoUrl} urlImage={entity.image} />   
+          <TopMedia urlVideo={sampleVideoUrl} urlImage={entity.image} />
+          {this._renderFab(entity.nid, title, coordinates, socialUrl)}   
           <View style={[styles.headerContainer]}> 
             <EntityHeader title={title} term={entity.term.name}/>
           </View>
           <View style={[styles.container]}>
             <EntityAbstract abstract={abstract}/>
             <EntityWhyVisit title={whyVisitTitle} text={whyVisit}/>
-            <EntityMap entity={entity}/>
+            <EntityMap coordinates={coordinates}/>
             <EntityGallery images={gallery} title={galleryTitle}/>
             <EntityDescription title={descriptionTitle} text={description}/>
+            <View style={styles.separator}/>
+            {this._renderRelatedList("Potrebbe interessarti anche", this.state.relatedPlaces, "places")}
+            <EntityAccomodations horizontal/>
           </View>
          </ScrollView>
        </View>
@@ -232,11 +244,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white"
   },
+  fab: {
+    position: "absolute",
+    zIndex: 1,
+    top: 25,
+    right: 20,
+    height: 50,
+    width: 50
+  },
   header: {
     backgroundColor: "white"
   },
   container: {
     padding: 10,
+    marginBottom: 30
   },
   headerContainer: {
     padding: 10,
@@ -245,10 +266,27 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 30, 
     marginTop: -30
   },
-  container: {
+  container: { 
     backgroundColor: "white",
     textAlign: "center"
   },
+  sectionTitle: {
+    flex: 1,
+    textAlign: "center",
+    paddingTop: 10,
+    paddingBottom: 10,
+    color: "#000000E6",
+    fontWeight: "bold"
+  },
+  listContainerHeader: {
+    paddingLeft: 10,
+  },
+  separator: {
+    width: "100%",
+    height: 8,
+    backgroundColor: "#F2F2F2",
+    marginVertical: 32
+  }
 });
 
 

@@ -5,12 +5,14 @@ import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import Layout from '../constants/Layout';
 // import { TouchableOpacity } from 'react-native-gesture-handler';
 
-export default class EntityHeader extends PureComponent {  
+export default class EntityMap extends PureComponent {  
   
   constructor(props) {
     super(props);
     this.state = {
     };
+
+    this._map = null
   }
 
   
@@ -24,38 +26,31 @@ export default class EntityHeader extends PureComponent {
     });
     Linking.openURL(url); 
   }
-
-  _getCoordinates = (entity) => {
-    if(entity && entity.georef)
-      return { latitude: entity.georef.coordinates[1], longitude: entity.georef.coordinates[0] };
-    else  
-      return null
-  }
   
   render() {
-    const { entity } = this.props;
+    const { coordinates } = this.props;
     return (
       <>
-        { entity &&(
+        { coordinates && (
           <View styles={styles.fill}>
             <View 
               style={styles.mapContainer}
               pointerEvents="none">
               <MapView
-                ref={ map => this.map = map }
+                ref={ map => this._map = map }
                 initialRegion={Constants.REGION_SARDINIA}
                 provider={ PROVIDER_GOOGLE }
                 style={{flex: 1}}>
                 <MapView.Marker
-                  coordinate={this._getCoordinates(entity)}
-                  tracksViewChanges={true} />
+                  coordinate={coordinates}
+                  tracksViewChanges={false} />
               </MapView>
             </View>
             <View style={styles.openNavigatorContainer}>
               <TouchableOpacity
                 activeOpacity={0.7}
                 style={styles.button}
-                onPress={() => this._openNavigator("", this._getCoordinates(entity))}>
+                onPress={() => this._openNavigator("", coordinates)}>
                 <Text style={styles.buttonText}>vai al navigatore</Text>
               </TouchableOpacity>
             </View>

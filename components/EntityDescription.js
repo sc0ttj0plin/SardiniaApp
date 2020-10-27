@@ -15,14 +15,14 @@ export default class EntityDescription extends PureComponent {
     const { text, title } = this.props;
     return (
       <>
-        { text &&(
+        { text != "" && text &&(
           <View style={[Constants.styles.innerText, styles.container]}>
             <Text style={styles.title}>{title}</Text>
             <View style={styles.borderLine}></View>
             <HTML html={"<font style=\"" + Constants.styles.html.longText + "\">" + text + "</font>"} />
           </View>
         )}
-      </>
+      </> 
     );
   }
 }
@@ -50,7 +50,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold"
   },
   container: {
-    flexDirection: "column",
-    marginBottom: 30
+    flexDirection: "column"
   }
 });

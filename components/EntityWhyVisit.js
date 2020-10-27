@@ -13,12 +13,14 @@ export default class EntityWhyVisit extends PureComponent {
   
   render() {
     const { text, title } = this.props;
+    let show = text != "" && text != null ? true : false
+
     return (
       <>
-        { text &&(
+        { show &&(
           <View style={[Constants.styles.innerText, styles.container]}>
             <Text style={styles.title}>{title}</Text>
-            <View style={styles.borderLine}></View>
+            {/* <View style={styles.borderLine}></View> */}
             <HTML html={"<font style=\"" + Constants.styles.html.shortTextSecondary + "\">" + text + "</font>"} />
           </View>
         )}
@@ -41,14 +43,16 @@ const styles = StyleSheet.create({
   },
   title: {
     alignSelf: "center",
-    marginTop: 25,
-    color: "white",
-    fontWeight: "bold"
+    color: "#174A7C",
+    fontWeight: "bold",
+    marginBottom: 16,
+    fontSize: 18,
+    opacity: 1
   },
   container: {
     width: "100%",
     marginTop: 30,
-    backgroundColor: "#24467C",
+    backgroundColor: "white",
     flexDirection: "column",
     paddingBottom: 20
   }

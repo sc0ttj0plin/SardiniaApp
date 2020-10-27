@@ -11,10 +11,10 @@ export default class EntityRelatedList extends PureComponent {
         super(props)
 
         this.state = {
-            data: props.data ? props.data : []
+            data: props.data || []
         }
     }
-    
+
     _renderPoiListItem = (item) => {
         const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
         const {listType} = this.props
@@ -32,27 +32,50 @@ export default class EntityRelatedList extends PureComponent {
         )
     }
 
+    componentDidUpdate(prevProps){
+        if(prevProps.data !== this.props.data){
+            console.log("loaded", this.props.listTitle)
+            this.setState({data: this.props.data})
+        }
+    }
+
+    _renderHorizontalSeparator = () => {
+        return (
+          <View style={{width: 5, flex: 1}}></View>
+        )
+    }
+
+      
     render() {
-        const { listTitle } = this.props; 
+        const { 
+            listTitle, 
+            contentContainerStyle, 
+            listTitleStyle, 
+            horizontal, 
+            extraData,
+            showsHorizontalScrollIndicator  
+        } = this.props; 
+        const {data} = this.state
         return (
             <AsyncOperationStatusIndicator
                 loading={true}
-                success={this.state.data && this.state.data.length > 0}
+                success={data && data.length > 0}
                 error={false}
-                loadingLayout={<LLEntitiesFlatlist horizontal={true} style={this.props.contentContainerStyle} title={listTitle} titleStyle={this.props.listTitleStyle} error={false}/>}>
+                loadingLayout={<LLEntitiesFlatlist horizontal={true} style={contentContainerStyle} title={listTitle} titleStyle={listTitleStyle} error={false}/>}>
                 <View style={{flex: 1}}>   
-                    <Text style={{...this.props.listTitleStyle}}>{listTitle}</Text>
+                    <Text style={listTitleStyle}>{listTitle}</Text>
                     <FlatList 
-                        horizontal={this.props.horizontal ? this.props.horizontal : false}
+                        {...this.props} 
+                        horizontal={horizontal || false}
                         key={listTitle + "-1"}
-                        extraData={this.props.extraData}
-                        keyExtractor={item => item.nid.toString()}
-                        data={this.state.data}
+                        extraData={extraData}
+                        keyExtractor={item => item.uuid}
+                        data={data}
                         renderItem={({item, index}) => this._renderPoiListItem(item, index)}
                         style={styles.fill}
-                        ItemSeparatorComponent={<View style={{width: 5, flex: 1}}></View>}
-                        contentContainerStyle={this.props.contentContainerStyle ? this.props.contentContainerStyle : {}}
-                        showsHorizontalScrollIndicator={this.props.showsHorizontalScrollIndicator ? this.props.showsHorizontalScrollIndicator : true}
+                        ItemSeparatorComponent={this._renderHorizontalSeparator}
+                        contentContainerStyle={contentContainerStyle}
+                        showsHorizontalScrollIndicator={showsHorizontalScrollIndicator || true}
                         initialNumToRender={2} // Reduce initial render amount
                         updateCellsBatchingPeriod={400} // Increase time between renders
                         windowSize={10} // Reduce the window size

@@ -61,9 +61,13 @@ export function apolloQuery(action) {
         variables: action.query
     }).then((resp) => {
         var pois = resp.data.nodes;
-        pois.forEach(e => e.term = e.nodes_terms[0].term);
-        pois.forEach((e) => processEntity(e));
-        return pois;
+        if(pois){
+            pois.forEach(e => e.term = e.nodes_terms[0] ? e.nodes_terms[0].term : null);
+            pois.forEach((e) => processEntity(e));
+            return pois;
+        }
+        else
+            return null
     })
   } else if (action.type === Constants.GET_EXTRAS) {
     return apolloClient.query({

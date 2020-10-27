@@ -3,12 +3,13 @@ import { View, StyleSheet, ImageBackground } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Image } from 'react-native-elements';
 import { useNavigation, useRoute } from '@react-navigation/native';
-
+import ShimmerWrapper from "./ShimmerWrapper"
 class TopMedia extends PureComponent {  
   
   constructor(props) {
     super(props);
     this.state = {
+      loadedImage: false
     };
   }
 
@@ -47,19 +48,28 @@ class TopMedia extends PureComponent {
       }}>
         <ImageBackground style={[styles.image, styles.imageBackground]}
           source={{uri: urlImage}}
+          onLoad={() => this.setState({loadedImage: true})}
         >
-          { this.props.urlVideo &&
+          { this.props.urlVideo != "" && this.props.urlVideo&&
             this._renderVideoPlayer()
+          }
+          { !this.state.loadedImage &&
+            <ShimmerWrapper shimmerStyle={styles.shimmer}/>
           }
         </ImageBackground>
       </View>
     );
   }
-}
+} 
 
 const styles = StyleSheet.create({
   fill: {
     flex: 1
+  },
+  shimmer: {
+    maxHeight: 200,
+    height: 200,
+    width: "100%"
   },
   image: {
     maxHeight: 200,

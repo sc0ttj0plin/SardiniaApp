@@ -15,7 +15,7 @@ export ConnectedHeader from './ConnectedHeader';
 // export ImageGridItem from './ImageGridItem';
 // export ConnectedLanguageList from './ConnectedLanguageList';
 // export BoxWithText from './BoxWithText';
-// export ConnectedFab from './ConnectedFab';
+export ConnectedFab from './ConnectedFab';
 // export PoiItem from './PoiItem';
 // export PoiItemsList from './PoiItemsList';
 // export ExtrasListItem from './ExtrasListItem';
@@ -34,6 +34,7 @@ export EntityMap from './EntityMap';
 export EntityRelatedList from './EntityRelatedList';
 export EntityVirtualTour from './EntityVirtualTour';
 export EntityWhyVisit from './EntityWhyVisit';
+export EntityAccomodations from './EntityAccomodations';
 export TopMedia from './TopMedia';
 
 

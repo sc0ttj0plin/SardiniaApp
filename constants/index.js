@@ -220,6 +220,13 @@ export const RELATED_LIST_TYPES = {
   }
 }
 
+/* Nodes types: used for queries */
+export const NODE_TYPES = {
+  "places": "attrattore",
+  "inspirers": "ispiratore",
+  "itineraries": "itinerario",
+  "events": "evento"
+}
 
 /* CALENDAR */
 export const CALENDAR = {
@@ -245,9 +252,9 @@ export const CALENDAR = {
 
 export const styles = {
   html: {
-    shortText: "textAlign: center; color: black; font-size: 15;",
-    shortTextSecondary: "textAlign: center; color: white; font-size: 15;",
-    longText: "textAlign: justify; opacity: 1; font-size: 15;",
+    shortText: "textAlign: center; color: #333333; font-size: 15;",
+    shortTextSecondary: "textAlign: center; color: #333333; font-size: 15;",
+    longText: "textAlign: center; opacity: 1; font-size: 15; padding-left: 16px; padding-right: 16px;",
     longTextLeft: "textAlign: left; opacity: 1; font-size: 15;",
   },
   innerText: {

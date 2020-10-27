@@ -13,7 +13,10 @@ export default class EntityHeader extends PureComponent {
     const { term, title } = this.props;
     return (
       <>
-        { term &&(
+        <View style={styles.topLineContainer}>
+          <View style={styles.topLine}/>  
+        </View>
+        { term != "" && term &&(
           <View style={[styles.categoryContainer]}>
             <Text style={[styles.category]}>{term}</Text>
             <View style={styles.borderLine}></View>
@@ -34,26 +37,40 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   borderLine: {
-    backgroundColor: "#24467C",
-    height: 7,
-    width: 100,
+    backgroundColor: "#174A7C",
+    height: 4,
+    width: 61,
     alignSelf: "center",
-    marginTop: 6,
-    marginBottom: 10
+    marginTop: 16,
+    marginBottom: 16
   },
   category: {
-    fontSize: 12,
+    fontSize: 15,
     flex: 1,
-    opacity: 0.6,
     textAlign: "center",
-    color: "black"
+    fontWeight: "bold",
+    opacity: 0.8,
+    color: "#666666"
   },
   title: {
-    fontSize: 16,
+    fontSize: 20,
     flex: 1,
     textAlign: "center",
-    opacity: 0.6,
-    color: "black",
+    color: "#000000E6",
     fontWeight: "bold"
+  },
+  topLineContainer: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  topLine: {
+    width: 32,
+    height: 4,
+    backgroundColor: "#0000001A",
+    borderRadius: 2,
+    marginTop: 20,
+    marginBottom: 16
   }
 });

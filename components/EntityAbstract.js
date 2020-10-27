@@ -13,9 +13,10 @@ export default class EntityAbstract extends PureComponent {
   
   render() {
     const { abstract } = this.props;
+    let show = abstract != "" && abstract != null ? true : false
     return (
       <>
-        { abstract &&(
+        { show &&(
           <HTML containerStyle={[Constants.styles.innerText]} html={"<font style=\"" + Constants.styles.html.shortText + "\">" + abstract + "</font>"} />
         )}
       </>
