@@ -13,6 +13,7 @@ import PlacesScreen from '../screens/Places/Places';
 import PlaceScreen from '../screens/Places/Place';
 import InspirersScreen from '../screens/Inspirers/Inspirers';
 import EventsScreen from '../screens/Events/Events';
+import EventScreen from '../screens/Events/Event';
 // import MapScreen from '../screens/Others/MapScreen';
 // import ExploreScreen from '../screens/Others/ExploreScreen';
 // import ExtrasScreen from '../screens/Others/ExtrasScreen';
@@ -195,8 +196,8 @@ function TabNavigator() {
       tabBar={props => <TabBar {...props} navOptions={[placesNavigationOptions, inspirersNavigationOptions, trendsNavigationOptions, itinerariesNavigationOptions, eventsNavigationOptions]}/>}
       animationEnabled={true}>
       {/* <BottomTabNavigator.Screen name={"Boilerplate"} component={Boilerplate} options={placesNavigationOptions} label="Boilerplate"/> */}
-      <BottomTabNavigator.Screen name={NavPlacesScreen} component={PlacesScreen} options={placesNavigationOptions}/>
       <BottomTabNavigator.Screen name={NavEventsScreen} component={EventsScreen} options={eventsNavigationOptions}/>
+      <BottomTabNavigator.Screen name={NavPlacesScreen} component={PlacesScreen} options={placesNavigationOptions}/>
       {/* <BottomTabNavigator.Screen name={NavInspirersScreen} component={InspirersScreen} options={inspirersNavigationOptions} /> */}
       {/* <BottomTabNavigator.Screen name={NavTrends} component={ExtraStackScreen} options={trendsNavigationOptions} /> */}
       {/* <BottomTabNavigator.Screen name={NavExperiencesItinerariesScreen} component={ExperiencesItinerariesScreen} options={itinerariesNavigationOptions} /> */}
@@ -204,10 +205,6 @@ function TabNavigator() {
   );
 }
 
-/* TODO: NAVIGATION ISSUE: LOTS OF SCREENS GET MOUNTED AND NEVER UNMOUNTED WITH TIME APP GETS VERY SLOW WITH USE
-  SOLUTION: use nested navigators and hide bottom tab navigator
-
-*/
 /**
  * Main Navigator (level: 1, parent: DrawerNavigator)
  */
@@ -229,7 +226,7 @@ function MainStackScreen() {
       {/* Itineraries */}
       {/* <MainStack.Screen name={NavItineraryScreen} component={ItineraryScreen}  /> */}
       {/* Events */}
-      {/* <MainStack.Screen name={NavEventScreen} component={EventScreen} /> */}
+      <MainStack.Screen name={NavEventScreen} component={EventScreen} />
     </MainStack.Navigator>
     </>
   );

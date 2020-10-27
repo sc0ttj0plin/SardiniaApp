@@ -9,10 +9,10 @@ import Colors from '../constants/Colors';
  */
 export default class EventListItem extends PureComponent {
   render() {
-    const { title, term, image } = this.props
+    const { title, term, image, date } = this.props
 
     return (
-      <TouchableOpacity style={styles.listItemButton} activeOpacity={0.7}>
+      <TouchableOpacity style={styles.listItemButton} activeOpacity={0.7} onPress={this.props.onPress}>
         <View style={styles.listItem}>
           <View style={styles.imageView}>
             <Image
@@ -23,6 +23,7 @@ export default class EventListItem extends PureComponent {
           </View>
           <View style={styles.itemDescView}>
               <Text style={styles.listItemTitle}>{title}</Text>
+              <Text style={styles.listItemTitle}>{date}</Text>
               <Text style={styles.listItemTerm}>{term}</Text>
           </View>
         </View>

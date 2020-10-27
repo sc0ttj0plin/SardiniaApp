@@ -27,6 +27,7 @@ const dict = {
     favouritesPlaces: "Posti preferiti",
     favouritesEvents: "Eventi preferiti",
     favouriteItineraries: "Itinerari preferiti",
+    canBeOfInterest: "Potrebbe interessarti anche",
     //NAVIGATION
     tabWhatToDo: "Cosa fare",
     tabWhereToGo: "Dove andare",
@@ -70,6 +71,7 @@ const dict = {
     favouritesPlaces: "Favourite Places",
     favouritesEvents: "Favourite Events",
     favouriteItineraries: "Favourite Itineraries",
+    canBeOfInterest: "You can be interested also to",
     //NAVIGATION
     tabWhatToDo: "What to do",
     tabWhereToGo: "Where to go",

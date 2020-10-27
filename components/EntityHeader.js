@@ -1,5 +1,6 @@
 import React, {PureComponent} from 'react';
 import { View, StyleSheet, Text } from 'react-native';
+import Colors from '../constants/Colors';
 
 export default class EntityHeader extends PureComponent {  
   
@@ -10,7 +11,7 @@ export default class EntityHeader extends PureComponent {
   }
   
   render() {
-    const { term, title } = this.props;
+    const { term, title, borderColor } = this.props;
     return (
       <>
         <View style={styles.topLineContainer}>
@@ -19,7 +20,7 @@ export default class EntityHeader extends PureComponent {
         { term != "" && term &&(
           <View style={[styles.categoryContainer]}>
             <Text style={[styles.category]}>{term}</Text>
-            <View style={styles.borderLine}></View>
+            <View style={[styles.borderLine, {backgroundColor: borderColor || Colors.blue}]}></View>
           </View>
         )}
         <Text style={[styles.title]}>{title}</Text>
@@ -37,7 +38,6 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   borderLine: {
-    backgroundColor: "#174A7C",
     height: 4,
     width: 61,
     alignSelf: "center",

@@ -81,7 +81,11 @@ export const FETCH_NUM_MONTHS_BACKWARDS = 1;
 export const FETCH_NUM_MONTHS_FORWARD = 0;
 // Others
 export const DEFAULT_LANGUAGE = 'it';
-export const DATE_FORMAT = 'YYYY-MM-DD';
+export const DATE_SEP = '-';
+export const DATE_FORMAT = `YYYY${DATE_SEP}MM${DATE_SEP}DD`;
+export const DATE_FORMAT_RENDER = `DD / MM / YYYY`;
+export const YEAR_MONTH_FORMAT = `YYYY${DATE_SEP}MM`;
+
 export const AGENDA_LOCALE = {
   'it': {
     monthNames: ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'],
@@ -195,25 +199,31 @@ export const NAVIGATOR = {
   } 
 }
 
+export const ENTITY_TYPES = {
+  places: "places",
+  inspirers: "inspirers",
+  itineraries: "itineraries",
+  events: "events",
+}
 
 /* related list options by key */
 export const RELATED_LIST_TYPES = {
-  "places": {
+  places: {
     backgroundTopRightCorner: Colors.colorScreen1,
     iconColor: "white",
     iconName: Platform.OS === 'ios' ? 'ios-map' : 'md-map'
   },
-  "inspirers": {
+  inspirers: {
     backgroundTopRightCorner: Colors.colorScreen2,
     iconColor: "white",
     iconName: Platform.OS === 'ios' ? 'ios-map' : 'md-map'
   }, 
-  "itineraries": {
+  itineraries: {
     backgroundTopRightCorner: Colors.colorScreen4,
     iconColor: "white",
     iconName: Platform.OS === 'ios' ? 'ios-analytics' : 'md-analytics'
   },
-  "events": {
+  events: {
     backgroundTopRightCorner: Colors.colorScreen5,
     iconColor: "white",
     iconName: Platform.OS === 'ios' ? 'ios-calendar' : "md-calendar"
@@ -222,10 +232,10 @@ export const RELATED_LIST_TYPES = {
 
 /* Nodes types: used for queries */
 export const NODE_TYPES = {
-  "places": "attrattore",
-  "inspirers": "ispiratore",
-  "itineraries": "itinerario",
-  "events": "evento"
+  places: "attrattore",
+  inspirers: "ispiratore",
+  itineraries: "itinerario",
+  events: "evento",
 }
 
 /* CALENDAR */

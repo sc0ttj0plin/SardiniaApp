@@ -9,16 +9,21 @@ import _ from 'lodash';
  */
 const INITIAL_STATE = {
   //events
-  events: [],
-  eventsByMonth: {},
-  markedDates: {},
+  eventsById: {},
+  eventsByYearMonth: {},
+  eventsByYearMonthDay: {},
+  eventsCalendarMarkers: {},
+  /* { YYYY-MM-DD: {markerStyle} }, init with today */
+  eventsCalendarMarkers: { 
+    [moment().format(Constants.DATE_FORMAT)]: Constants.CALENDAR.todayMarkerDefaultConf 
+  },
   eventsSuccess: false, 
   eventsFiltersByType: {},
   eventsMonthsStatuses: {},
   eventsError: null,
   eventsLoading: false,
-  timeMin: null,
-  timeMax: null,
+  // timeMin: null,
+  // timeMax: null,
   //eventsById
   eventsById: {},
   eventsByIdSuccess: false, 
@@ -67,43 +72,53 @@ export default function reducer(state = INITIAL_STATE, action) {
         eventsLoading: true 
       };
     case Constants.GET_EVENTS_SUCCESS:
-      //calendar wants empty array [] if no event for a date, so what we do?
+      // action.payload.events data format: [{"title", "description", "date1" (unix epoch), "date2" (unix epoch), "uuid", "nid", "term", "image", "language", "abstract", "itinerary", "url_alias", "__typename"}, ...]
+      //[Agenda only]: calendar wants empty array [] if no event for a date, so what we do?
       //we create as many empty arrays as the days between the smallest date (timeMinMin) and greatest (timeMaxMax)!
-      let timeMinMin = !state.eventsTimeMin ? action.payload.timeMin : (moment(action.payload.timeMin).isBefore(state.eventsTimeMin) ?  action.payload.timeMin : state.eventsTimeMin);
-      let timeMaxMax = !state.eventsTimeMax ? action.payload.timeMax : (moment(action.payload.timeMax).isAfter(state.eventsTimeMax) ?  action.payload.timeMax : state.eventsTimeMax);
+      //let timeMinMin = !state.eventsTimeMin ? action.payload.timeMin : (moment(action.payload.timeMin).isBefore(state.eventsTimeMin) ?  action.payload.timeMin : state.eventsTimeMin);
+      //let timeMaxMax = !state.eventsTimeMax ? action.payload.timeMax : (moment(action.payload.timeMax).isAfter(state.eventsTimeMax) ?  action.payload.timeMax : state.eventsTimeMax);
+      
+      // By uuid format ({uuid: {event}, ...})
+      // By YYYY-MM-DD format && YYYY-MM format (for quick calendar access (year-month))
+      // Markers for calendar
+      let eventsById = {} 
+      let eventsByYearMonth = {};
+      let eventsByYearMonthDay = {};
+      let eventsCalendarMarkers = {};
 
-      //Classic format
-      let newEvents = {...state.events, ...action.payload.events};
-      //Section list format but group by month: e.g. 2020-10: [{title: "2020-09-02", data: ...}]
-      let sectionListEventsByMonth = Object.keys(newEvents).reduce((acc, date) => {
-        let yearMonth = date.substr(0, date.lastIndexOf(Constants.DATE_SEP));
-        console.log(yearMonth, date, newEvents[date].length);
-        acc[yearMonth] = acc[yearMonth] || [];
-        acc[yearMonth].push({title: date, data: newEvents[date]}); 
-        return acc;
-      }, {});
+      action.payload.events.forEach((event) => { 
+        const eventDate = moment.unix(event.date1).add(1,"year");
+        // let dateFormatted = moment.unix(e.date1).format(Constants.DATE_FORMAT); //TODO: temporary fix to show events
+        let eventYearMonthDay = eventDate.format(Constants.DATE_FORMAT);
+        let eventYearMonth = eventYearMonthDay.substr(0, eventYearMonthDay.lastIndexOf(Constants.DATE_SEP));
+        event.date1render = eventDate.format(Constants.DATE_FORMAT_RENDER);
+        eventsById[event.uuid] = event;
+        eventsByYearMonth[eventYearMonth] = eventsByYearMonth[eventYearMonth] || [];
+        eventsByYearMonthDay[eventYearMonthDay] = eventsByYearMonthDay[eventYearMonthDay] || [];
+        eventsByYearMonth[eventYearMonth].push(event)
+        eventsByYearMonthDay[eventYearMonthDay].push(event);
+        eventsCalendarMarkers[eventYearMonthDay] = Constants.CALENDAR.markedDatesDefaultConf;
+      });
+      
+      let newEventsById = { ...state.eventsById, ...eventsById };
+      let newEventsByYearMonth = { ...state.eventsByYearMonth, ...eventsByYearMonth };
+      let newEventsByYearMonthDay = { ...state.eventsByYearMonthDay, ...eventsByYearMonthDay };
+      let newEventsCalendarMarkers = { ...state.eventsCalendarMarkers,  ...eventsCalendarMarkers };
+      console.log("HEHEHE", eventsCalendarMarkers)
 
-      //Fill the markers with custom style (needed for calendar) (add today first)
-      let markedDates = { [moment().format(Constants.DATE_FORMAT)]: Constants.CALENDAR.todayMarkerDefaultConf };
-      Object.keys(newEvents).map(date => markedDates[date] = Constants.CALENDAR.markedDatesDefaultConf);
-      /* 
-        events can be returned both in 
-        section list format: [{ title: "2020-09-02", data: [{ "title", "description", "date1", "date2", "uuid", "nid", "term", "image", "language", "abstract", "itinerary", "url_alias", "__typename", "date1Str" }, ...]}]  
-        OR 
-        classic format: {"2020-09-02": [{ "title", "description", "date1", "date2", "uuid", "nid", "term", "image", "language", "abstract", "itinerary", "url_alias", "__typename", "date1Str" }, ...]...}
-      */
-      //NOTE: edits also eventsById state to store loaded events by id
       return { 
         ...state, 
+        eventsCalendarMarkers,
+        eventsById: newEventsById,
+        eventsByYearMonth: newEventsByYearMonth,
+        eventsByYearMonthDay: newEventsByYearMonthDay,
+        eventsCalendarMarkers: newEventsCalendarMarkers,
         eventsSuccess: true,
-        events: sectionListEventsByMonth, /* or newEvents */
-        markedDates,
-        eventsById: { ...state.eventsById, ...action.payload.eventsById },
         eventsError: null, 
         eventsLoading: false,
         eventsFiltersByType: action.payload.filtersByType,
-        eventsTimeMin: timeMinMin,
-        eventsTimeMax: timeMaxMax,
+        //eventsTimeMin: timeMinMin,
+        //eventsTimeMax: timeMaxMax,
       };
     case Constants.GET_EVENTS_FAIL:
       return { 
@@ -113,15 +128,7 @@ export default function reducer(state = INITIAL_STATE, action) {
         eventsError: 'Error while fetching events',
       };
     case Constants.RESET_EVENTS:
-      const { events, eventsSuccess, eventsMonthsStatuses, eventsError, eventsLoading } = INITIAL_STATE
-      return { 
-        ...state, 
-        events, 
-        eventsSuccess,
-        eventsMonthsStatuses, 
-        eventsError, 
-        eventsLoading 
-      };
+      return INITIAL_STATE;
     // EVENT TYPES
     case Constants.GET_EVENT_TYPES:
       return { 

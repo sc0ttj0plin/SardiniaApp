@@ -120,9 +120,10 @@ const apolloMiddleware = client => {
             if (resp.data && resp.data.events.length > 0) {
               //also store events by id
               resp.data.events.forEach((e) => processEntity(e));
-              let eventsById = resp.data.events.reduce((acc, curr) => ({ ...acc, [curr.uuid]: curr}), {});
-              dispatch.payload.events = processEvents(resp.data.events, action.filtersByType);
-              dispatch.payload.eventsById = eventsById;
+              // let eventsById = resp.data.events.reduce((acc, curr) => ({ ...acc, [curr.uuid]: curr}), {});
+              // dispatch.payload.events = processEvents(resp.data.events, action.filtersByType);
+              // dispatch.payload.eventsById = eventsById;
+              dispatch.payload.events = resp.data.events;
             }
             //dispatch empty events but still success cause we need to fill empty dates in reducer
             store.dispatch(dispatch);

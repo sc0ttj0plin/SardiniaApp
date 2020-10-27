@@ -72,9 +72,7 @@ class PlaceScreen extends Component {
       socialUrl: null, 
       sampleVideoUrl: null,
       gallery: [],
-      relatedHotels: null,
-      relatedEvents: null,
-      relatedItineraries: null
+      relatedEntities: [],
     };
       
   }
@@ -86,89 +84,77 @@ class PlaceScreen extends Component {
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
     this.props.actions.getPoi({ uuid: this.state.uuid });
     //Get related entities
-    //todo: use 
     try {
-      //todo: use constants
-      const relatedPlaces = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES["places"], offset: Math.ceil(Math.random()*100), limit: 5}))
-      this.setState({relatedPlaces})
+      const relatedEntities = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.places, offset: Math.ceil(Math.random()*100), limit: 5}))
+      this.setState({ relatedEntities })
     } catch(error){
       console.log(error)
     }
-
   }
 
   /* NOTE: since this screen is not */
   componentDidUpdate(prevProps) {
     const { uuid } = this.state;
-    
     if (prevProps.pois.data !== this.props.pois.data) {
-      console.log('entity')
-      const { pois, locale } = this.props;
-      const entity = pois.data[uuid];
-      const { lan } = locale;
-      const { abstract, title, description, whyVisit } = getEntityInfo(entity, ["abstract", "title", "description", "whyVisit"], [lan, 0, "value"]);
-      const coordinates = getCoordinates(entity);
-      const socialUrl = `${Constants.WEBSITE_URL}${greedyArrayFinder(entity.url_alias, "language", lan, "alias", "")}`;
-      const sampleVideoUrl = getSampleVideoIndex(entity.nid);
-      const gallery = getGalleryImages(entity);
-      this.setState({ 
-        entity,
-        abstract, 
-        title, 
-        description, 
-        whyVisit, 
-        coordinates, 
-        socialUrl,
-        sampleVideoUrl,
-        gallery,
-      });
+      this._parseEntity(this.props.pois.data[uuid]);
     }
-    
-    
   }
   
   componentWillUnmount() {
-    console.log("Unmount Place!!")
+
   }
 
-  _openEntity = (item) => {
+  /********************* Non React.[Component|PureComponent] methods go down here *********************/
+
+  _parseEntity = (entity) => {
+    const { locale } = this.props;
+    const { lan } = locale;
+    const { abstract, title, description, whyVisit } = getEntityInfo(entity, ["abstract", "title", "description", "whyVisit"], [lan, 0, "value"]);
+    const coordinates = getCoordinates(entity);
+    const socialUrl = `${Constants.WEBSITE_URL}${greedyArrayFinder(entity.url_alias, "language", lan, "alias", "")}`;
+    const sampleVideoUrl = getSampleVideoIndex(entity.nid);
+    const gallery = getGalleryImages(entity);
+    this.setState({ entity, abstract,  title,  description,  whyVisit,  coordinates,  socialUrl, sampleVideoUrl, gallery });
+  }
+
+  _openRelatedEntity = (item) => {
     var type = item.type;
     switch(type) {
-      case Constants.NODE_TYPES["places"]:
-        console.log("case attrattore")
+      case Constants.NODE_TYPES.places:
         this.props.navigation.push(Constants.NAVIGATION.NavPlaceScreen, { item });
         break;
-      case Constants.NODE_TYPES["events"]:
+      case Constants.NODE_TYPES.events:
         this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item });
         break;
-      case Constants.NODE_TYPES["itineraries"]:
+      case Constants.NODE_TYPES.itineraries:
         this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, { item })
         break;
-      case Constants.NODE_TYPES["inspirers"]:
+      case Constants.NODE_TYPES.inspirers:
         this.props.navigation.navigate(Constants.NAVIGATION.NavInspirerScreen, { item })
         break;
       default:
         break;
     }
   }
+
   /********************* Render methods go down here *********************/
 
 
   _renderRelatedList = (title, relatedList, listType) => {
     return (
-        <EntityRelatedList
-          horizontal={true}
-          data={relatedList ? relatedList : []} 
-          extraData={this.props.locale}
-          keyExtractor={item => item.nid.toString()}
-          contentContainerStyle={styles.listContainerHeader}
-          showsHorizontalScrollIndicator={false}
-          locale={this.props.locale}
-          onPressItem={this._openEntity}
-          listType={listType}
-          listTitle={title}
-          listTitleStyle={styles.sectionTitle}
-        />
+      <EntityRelatedList
+        horizontal={true}
+        data={relatedList ? relatedList : []} 
+        extraData={this.props.locale}
+        keyExtractor={item => item.nid.toString()}
+        contentContainerStyle={styles.listContainerHeader}
+        showsHorizontalScrollIndicator={false}
+        locale={this.props.locale}
+        onPressItem={this._openRelatedEntity}
+        listType={listType}
+        listTitle={title}
+        listTitleStyle={styles.sectionTitle}
+      />
     )
   }
 
@@ -177,7 +163,7 @@ class PlaceScreen extends Component {
     return (
       <View style={styles.fab}>
         <ConnectedFab 
-          color={Colors.colorScreen1}
+          color={Colors.blue}
           nid={nid}
           title={title}
           coordinates={coordinates} 
@@ -189,10 +175,16 @@ class PlaceScreen extends Component {
   }
 
   _renderContent = () => {
-    const { uuid, entity, abstract, title, description, whyVisit, coordinates, socialUrl, sampleVideoUrl, gallery } = this.state;
+    const { uuid, entity, abstract, title, description, whyVisit, coordinates, socialUrl, sampleVideoUrl, gallery, relatedEntities } = this.state;
     const { locale, pois, favourites, } = this.props;
     const { lan } = locale;
-    const { whyVisit: whyVisitTitle, discoverMore, gallery: galleryTitle, description: descriptionTitle } = locale.messages;
+    const { 
+      whyVisit: whyVisitTitle, 
+      discoverMore, 
+      gallery: galleryTitle, 
+      description: descriptionTitle,
+      canBeOfInterest,
+    } = locale.messages;
     
     const { orientation } = this.state;
     const isFavourite = favourites.places[uuid];
@@ -203,7 +195,7 @@ class PlaceScreen extends Component {
           <TopMedia urlVideo={sampleVideoUrl} urlImage={entity.image} />
           {this._renderFab(entity.nid, title, coordinates, socialUrl)}   
           <View style={[styles.headerContainer]}> 
-            <EntityHeader title={title} term={entity.term.name}/>
+            <EntityHeader title={title} term={entity.term.name} borderColor={Colors.blue}/>
           </View>
           <View style={[styles.container]}>
             <EntityAbstract abstract={abstract}/>
@@ -212,7 +204,7 @@ class PlaceScreen extends Component {
             <EntityGallery images={gallery} title={galleryTitle}/>
             <EntityDescription title={descriptionTitle} text={description}/>
             <View style={styles.separator}/>
-            {this._renderRelatedList("Potrebbe interessarti anche", this.state.relatedPlaces, "places")}
+            {this._renderRelatedList(canBeOfInterest, relatedEntities, Constants.ENTITY_TYPES.places)}
             <EntityAccomodations horizontal/>
           </View>
          </ScrollView>

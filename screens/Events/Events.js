@@ -45,7 +45,7 @@ import { FETCH_NUM_MONTHS_FORWARD, FETCH_NUM_MONTHS_BACKWARDS } from '../../cons
 //Example calendar: https://github.com/wix/react-native-calendars/blob/master/example/src/screens/calendars.js
 const USE_DR = false;
 const INITIAL_DATE = { "dateString": moment().format("YYYYMMDD") };
-const INITIAL_MONTH = moment().format("YYYY-MM");
+const INITIAL_MONTH = moment().format(Constants.YEAR_MONTH_FORMAT);
 
 class EventsScreen extends Component {
 
@@ -72,9 +72,10 @@ class EventsScreen extends Component {
       selectedDay: moment().subtract(2, 'month').format('YYYY-MM-DD'),
       currentMonth: INITIAL_MONTH
     };
-
       
   }
+
+  /********************* React.[Component|PureComponent] methods go down here *********************/
 
   /**
    * Use this function to perform data fetching
@@ -94,10 +95,11 @@ class EventsScreen extends Component {
    */
   componentDidUpdate(prevProps) {
     //  if(prevProps.events !== this.props.events)
-      // console.log(this.props.events.markedDates);
+      // console.log(this.props.events.eventsCalendarMarkers);
      
   }
 
+  /********************* Non React.[Component|PureComponent] methods go down here *********************/
 
   /**
    * Load events for the current month
@@ -124,7 +126,7 @@ class EventsScreen extends Component {
       this._queriedMonths[monthFormatted] = true;
     }
     this.setState({
-      currentMonth: moment(dateString).format("YYYY-MM")
+      currentMonth: moment(dateString).format(Constants.YEAR_MONTH_FORMAT)
     })
   }
 
@@ -156,7 +158,8 @@ class EventsScreen extends Component {
   _isLoadingData  = () => false;   /* e.g. this.props.pois.loading; */
   _isErrorData    = () => null;    /* e.g. this.props.pois.error; */
 
-
+  
+  /********************* Render methods go down here *********************/
 
   _renderContent = () => {
     const { lan } = this.props.locale;
@@ -175,12 +178,14 @@ class EventsScreen extends Component {
             onMonthChange={(date) => this._loadEvents(date)}
             hideExtraDays={true}
             markingType={'custom'}
-            markedDates={this.props.events.markedDates}
+            eventsCalendarMarkers={this.props.events.eventsCalendarMarkers}
             firstDay={1}
             hideDayNames={false}
             enableSwipeMonths={true}
           />
+          <View style={styles.calendarList}>
           {this._renderEventsList()}
+          </View>
       </AsyncOperationStatusIndicator>
      )
   }
@@ -189,16 +194,11 @@ class EventsScreen extends Component {
     const { currentMonth } = this.state;
     console.log("currentmo", this.state.currentMonth)
     return(
-      <SectionList
-        sections={this.props.events.events[currentMonth]}
+      <FlatList
+        data={this.props.events.eventsByYearMonth[currentMonth]}
         keyExtractor={(item) => item.title}
         renderItem={({ item }) => this._renderEventsListItem(item)}
         style={styles.listContent}
-        renderSectionHeader={({ section: { title } }) => (
-          <View style={{flex:1, backgroundColor: Colors.lightGrey, justifyContent: 'center', borderRadius: 5, marginTop: 5, marginBottom: 5}}>
-            <Text style={styles.header}>{title}</Text>
-          </View>
-        )}
       />
     )
   }
@@ -206,14 +206,18 @@ class EventsScreen extends Component {
   _renderEventsListItem = (item) => {
     // console.log(item.title)
     const { lan } = this.props.locale;
-    let title = _.get(item.title, [lan, 0, "value"], null);
-    let term = _.get(item.term, "name", null);
-    let image = _.get(item, "image", "")
+    const title = _.get(item.title, [lan, 0, "value"], null);
+    const term = item.term.name;
+    const image = item.image;
+    const date = item.date1render;
     return(
       <EventListItem 
-        title={title}
+        onPress={this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item })}  
+        title={title} 
         term={term}
-        image={image}/>
+        image={image}
+        date={date}
+      />
     )
   }
 
@@ -252,7 +256,10 @@ const styles = StyleSheet.create({
   listContent: {
     paddingHorizontal: 17
   },
-  
+  calendarList: {
+    marginTop: 10,
+    marginBottom: 100,
+  },
 });
 
 

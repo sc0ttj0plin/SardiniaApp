@@ -36,6 +36,7 @@ export EntityVirtualTour from './EntityVirtualTour';
 export EntityWhyVisit from './EntityWhyVisit';
 export EntityAccomodations from './EntityAccomodations';
 export TopMedia from './TopMedia';
+export EntityStages from './EntityStages';
 
 
 

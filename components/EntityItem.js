@@ -9,7 +9,7 @@ export default class EntityItem extends PureComponent {
   render() {
     const { onPress, keyItem, title, place, image, distance, listType } = this.props;
 
-    let entityOptions = Constants.RELATED_LIST_TYPES[listType] || Constants.RELATED_LIST_TYPES["places"]
+    let entityOptions = Constants.RELATED_LIST_TYPES[listType] || Constants.RELATED_LIST_TYPES.places
     return (
         <BottomSheetTouchable 
             key={keyItem}  
