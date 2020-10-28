@@ -14,6 +14,8 @@ import PlaceScreen from '../screens/Places/Place';
 import InspirersScreen from '../screens/Inspirers/Inspirers';
 import EventsScreen from '../screens/Events/Events';
 import EventScreen from '../screens/Events/Event';
+import ExtrasScreen from '../screens/Extras/Extras';
+import ExtraScreen from '../screens/Extras/Extra';
 // import MapScreen from '../screens/Others/MapScreen';
 // import ExploreScreen from '../screens/Others/ExploreScreen';
 // import ExtrasScreen from '../screens/Others/ExtrasScreen';
@@ -36,7 +38,7 @@ const {
   NavExperiencesItinerariesScreen, 
   NavItineraryScreen, NavEventsScreen, NavEventScreen, NavExploreScreen, 
   NavVirtualTourScreen, NavPlaceScreen, NavInspirerScreen,
-  NavTrends, NavTabNavigator, NavSearchScreen, NavSearchStackScreen, 
+  NavExtrasScreen, NavExtraScreen, NavTabNavigator, NavSearchScreen, NavSearchStackScreen, 
   NavMainStackScreen, NavVideoScreen, NavFavouritesScreen, NavFavouritesStackScreen 
 } = Constants.NAVIGATION;
 
@@ -86,7 +88,7 @@ import Place from '../screens/Places/Place';
   */
 var ConnectedTextPlaces = <ConnectedText languageKey="tabWhereToGo" />;
 var ConnectedTextExperiences = <ConnectedText languageKey="tabWhatToDo"/>;
-var ConnectedTextTrends = <ConnectedText languageKey="tabTrends" />;
+var ConnectedTextExtras = <ConnectedText languageKey="tabExtras" />;
 var ConnectedTextItineraries = <ConnectedText languageKey="tabItineraries" />;
 var ConnectedTextEvents = <ConnectedText languageKey="tabEvents"/>;
 
@@ -120,13 +122,13 @@ const itinerariesNavigationOptions = {
   ),
 };
 
-const trendsNavigationOptions = {
-  languageKey: "tabTrends",
-  name: NavTrends, 
+const extrasNavigationOptions = {
+  languageKey: "tabExtras",
+  name: NavExtrasScreen, 
   backgroundActiveColor: Colors.colorScreen3, 
   icon: Platform.OS === 'ios' ? 'ios-star' : 'ios-star',
   iconSourceDefault: require("../assets/icons/central_icon.png"),
-  tabBarLabel: ConnectedTextTrends,
+  tabBarLabel: ConnectedTextExtras,
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-star' : 'ios-star'} />
   ),
@@ -193,13 +195,14 @@ function TabNavigator() {
       activeColor={Colors.tintColor}
       tabBarPosition="bottom" 
       swipeEnabled={false}
-      tabBar={props => <TabBar {...props} navOptions={[placesNavigationOptions, inspirersNavigationOptions, trendsNavigationOptions, itinerariesNavigationOptions, eventsNavigationOptions]}/>}
+      tabBar={props => <TabBar {...props} navOptions={[placesNavigationOptions, inspirersNavigationOptions, extrasNavigationOptions, itinerariesNavigationOptions, eventsNavigationOptions]}/>}
       animationEnabled={true}>
       {/* <BottomTabNavigator.Screen name={"Boilerplate"} component={Boilerplate} options={placesNavigationOptions} label="Boilerplate"/> */}
+      {/* <BottomTabNavigator.Screen name={NavExtrasScreen} component={ExtraStackScreen} options={extrasNavigationOptions} /> */}
+      <BottomTabNavigator.Screen name={NavExtrasScreen} component={ExtrasScreen} options={extrasNavigationOptions}/>
       <BottomTabNavigator.Screen name={NavEventsScreen} component={EventsScreen} options={eventsNavigationOptions}/>
       <BottomTabNavigator.Screen name={NavPlacesScreen} component={PlacesScreen} options={placesNavigationOptions}/>
       {/* <BottomTabNavigator.Screen name={NavInspirersScreen} component={InspirersScreen} options={inspirersNavigationOptions} /> */}
-      {/* <BottomTabNavigator.Screen name={NavTrends} component={ExtraStackScreen} options={trendsNavigationOptions} /> */}
       {/* <BottomTabNavigator.Screen name={NavExperiencesItinerariesScreen} component={ExperiencesItinerariesScreen} options={itinerariesNavigationOptions} /> */}
     </BottomTabNavigator.Navigator>
   );
@@ -215,10 +218,12 @@ function MainStackScreen() {
     <MainStack.Navigator headerMode="none" initialRouteName={NavTabNavigator}>
       {/* TabNavigator */}
       <MainStack.Screen name={NavTabNavigator} component={TabNavigator} />
-      {/* Places */}
+      {/* Inner screens */}
+      <MainStack.Screen name={NavPlaceScreen} component={PlaceScreen}/>
+      <MainStack.Screen name={NavEventScreen} component={EventScreen} />
+      <MainStack.Screen name={NavExtraScreen} component={ExtraScreen} />
       {/* <MainStack.Screen name={NavMapScreen} component={MapScreen} options={{...FromTopTransition}} /> */}
       {/* <MainStack.Screen name={NavPlacesScreen} component={PlacesScreen}/> */}
-      <MainStack.Screen name={NavPlaceScreen} component={PlaceScreen}/>
       {/* <MainStack.Screen name={NavVideoScreen} component={VideoScreen}/> */}
       {/* <MainStack.Screen name={NavVirtualTourScreen} component={VirtualTourScreen}/> */}
       {/* <MainStack.Screen name={NavInspirersScreen} component={InspirersScreen}/> */}
@@ -226,7 +231,6 @@ function MainStackScreen() {
       {/* Itineraries */}
       {/* <MainStack.Screen name={NavItineraryScreen} component={ItineraryScreen}  /> */}
       {/* Events */}
-      <MainStack.Screen name={NavEventScreen} component={EventScreen} />
     </MainStack.Navigator>
     </>
   );

@@ -86,40 +86,11 @@ export const DATE_FORMAT = `YYYY${DATE_SEP}MM${DATE_SEP}DD`;
 export const DATE_FORMAT_RENDER = `DD / MM / YYYY`;
 export const YEAR_MONTH_FORMAT = `YYYY${DATE_SEP}MM`;
 
-export const AGENDA_LOCALE = {
-  'it': {
-    monthNames: ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'],
-    monthNamesShort: ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'],
-    dayNames: ['Domenica','Lunedi','Martedi','Mercoledì','Giovedi','Venerdì','Sabato'],
-    dayNamesShort: ['Dom','Lun','Mar','Mer','Gio','Ven','Sab'],
-    today: 'Oggi'
-  },
-  'en': {
-    monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-    monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
-    dayNames: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-    dayNamesShort: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-    today: 'Today'
-  },
-  'fr': {
-    monthNames: ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'],
-    monthNamesShort: ['Janv.','Févr.','Mars','Avril','Mai','Juin','Juil.','Août','Sept.','Oct.','Nov.','Déc.'],
-    dayNames: ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'],
-    dayNamesShort: ['Dim.','Lun.','Mar.','Mer.','Jeu.','Ven.','Sam.'],
-    today: 'Aujourd\'hui'
-  },
-  'de': {
-      monthNames: [ 'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'July', 'August', 'September', 'Oktober', 'November', 'Dezember'],
-      monthNamesShort: [ 'Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep.', 'Okt', 'Nov', 'Dez' ],
-      dayNames: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
-      dayNamesShort: ['So.', 'Mo.', 'Di.', 'Mi.', 'Do.', 'Fr.', 'Sa.'],
-  }
-};
 export const REGION_SARDINIA = { longitude: 9.0, latitude: 40.0, longitudeDelta: 2, latitudeDelta: 2.5 };
 
 export const WEBSITE_URL = "https://www.sardegnaturismo.it/";
 
-//NAVIGATION
+/* NAVIGATION */
 export const NAVIGATION = {
   NavPlacesScreen: "PlacesScreen",
   NavInspirersScreen: "InspirersScreen",
@@ -136,8 +107,6 @@ export const NAVIGATION = {
   NavPlaceScreen: "PlaceScreen",
   NavVideoScreen: "VideoScreen",
   NavInspirerScreen: "InspirerScreen",
-  NavTrendsScreen: "TrendsScreen",
-  NavTrendScreen: "TrendScreen",
   NavExtrasScreen: "ExtrasScreen",
   NavExperiences: "Experiences",
   NavPlaces: "Places",
@@ -145,7 +114,8 @@ export const NAVIGATION = {
   NavGalleryScreen: "GalleryScreen",
   NavExplore: "Explore",
   NavEvents: "Events",
-  NavTrends: "Trends",
+  NavExtrasScreen: "Extras",
+  NavExtraScreen: "Extra",
   NavItineraries: "Itineraries",
   NavTabNavigator: "TabNavigator",
   NavLanguageScreen1: "LanguageScreen1",
@@ -166,6 +136,69 @@ export const VIDS = {
   pois: 14,
   inspirersCategories: 46,
   poisCategories: 36,
+}
+
+/* SCREENS CONFIGURATIONS */
+export const SCREENS = {
+  events: {
+    agendaLocale: {
+      'it': {
+        monthNames: ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'],
+        monthNamesShort: ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'],
+        dayNames: ['Domenica','Lunedi','Martedi','Mercoledì','Giovedi','Venerdì','Sabato'],
+        dayNamesShort: ['Dom','Lun','Mar','Mer','Gio','Ven','Sab'],
+        today: 'Oggi'
+      },
+      'en': {
+        monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+        monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
+        dayNames: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        dayNamesShort: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        today: 'Today'
+      },
+      'fr': {
+        monthNames: ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'],
+        monthNamesShort: ['Janv.','Févr.','Mars','Avril','Mai','Juin','Juil.','Août','Sept.','Oct.','Nov.','Déc.'],
+        dayNames: ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'],
+        dayNamesShort: ['Dim.','Lun.','Mar.','Mer.','Jeu.','Ven.','Sam.'],
+        today: 'Aujourd\'hui'
+      },
+      'de': {
+          monthNames: [ 'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'July', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+          monthNamesShort: [ 'Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep.', 'Okt', 'Nov', 'Dez' ],
+          dayNames: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
+          dayNamesShort: ['So.', 'Mo.', 'Di.', 'Mi.', 'Do.', 'Fr.', 'Sa.'],
+      }
+    },
+    calendar: {
+      //Prevent having too many copies of the same object (this) in calendar dates reducer 
+      // for other props see: https://github.com/wix/react-native-calendars
+      markedDatesDefaultConf: {
+        marked: true, 
+        customStyles: {
+          container: {
+            backgroundColor: Colors.lightRed
+          }
+        }
+      },
+      todayMarkerDefaultConf: {
+        marked: true, 
+        customStyles: {
+          container: {
+            backgroundColor: Colors.red
+          }
+        }
+      }
+    },
+  },
+  extras: {
+    defaultUuids: [
+      "deba536c-a275-4c54-8848-25fa3244593d",
+      "d065c9c3-070c-4965-9ee5-072e893f990d", 
+      "7a432c9f-fbf1-41b0-bd10-9f2440eb1c9f", 
+      "a67d6b6d-716d-40ae-8a49-c845e85f68f2",
+    ]
+  }
 }
 
 /* PAGINATION */
@@ -236,28 +269,6 @@ export const NODE_TYPES = {
   inspirers: "ispiratore",
   itineraries: "itinerario",
   events: "evento",
-}
-
-/* CALENDAR */
-export const CALENDAR = {
-  //Prevent having too many copies of the same object (this) in calendar dates reducer 
-  // for other props see: https://github.com/wix/react-native-calendars
-  markedDatesDefaultConf: {
-    marked: true, 
-    customStyles: {
-      container: {
-        backgroundColor: Colors.lightRed
-      }
-    }
-  },
-  todayMarkerDefaultConf: {
-    marked: true, 
-    customStyles: {
-      container: {
-        backgroundColor: Colors.red
-      }
-    }
-  }
 }
 
 export const styles = {

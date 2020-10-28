@@ -8,7 +8,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import _ from 'lodash';
 import { LinearGradient } from 'expo-linear-gradient';
 
-class TrendsListItem extends PureComponent{ 
+class ExtrasListItem extends PureComponent{ 
   constructor(props) {
     super(props);
     this.state = {
@@ -126,4 +126,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default TrendsListItem;
+export default ExtrasListItem;

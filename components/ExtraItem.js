@@ -17,13 +17,12 @@ class ExtraItem extends PureComponent{
   }
   
   render() {
-    let title =  _.get(this.props.item, "title", null);
-    let image =  _.get(this.props.item, "image", "https://via.placeholder.com/300x150");
+    const { title, image, imageStyle, onPress, btnTitle } = this.props;
     return (
       <View style={styles.container} onLayout={(event) => { this.setState({ width: event.nativeEvent.layout.width }); }}>
           <Image 
             source={{ uri: image }} 
-            style={[styles.image, { width: this.state.width, height: this.state.height }, this.props.imageStyle]} 
+            style={[styles.image, { width: this.state.width, height: this.state.height }, imageStyle]} 
             PlaceholderContent={<ActivityIndicator style={styles.spinner} color={"white"} />}
             >
         <View style={{
@@ -47,7 +46,7 @@ class ExtraItem extends PureComponent{
             </Text>
             <TouchableOpacity
                 activeOpacity={0.7}
-                onPress={this.props.onPress ? this.props.onPress : () => {}}
+                onPress={onPress ? onPress : () => {}}
                 style={{
                     justifyContent: "center",
                     alignSelf: "center",
@@ -61,7 +60,7 @@ class ExtraItem extends PureComponent{
                         padding: 5,
                         paddingHorizontal: 15,
                         fontWeight: "bold"
-                    }}>APPROFONDISCI</Text>
+                    }}>{btnTitle}</Text>
             </TouchableOpacity>
 
 

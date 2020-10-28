@@ -54,8 +54,8 @@ class EventsScreen extends Component {
 
     /* Get props from navigation */
     //let { someNavProps } = props.route.params; 
-    for (let language in Constants.AGENDA_LOCALE)
-      LocaleConfig.locales[language] = Constants.AGENDA_LOCALE[language];
+    for (let language in Constants.SCREENS.events.agendaLocale)
+      LocaleConfig.locales[language] = Constants.SCREENS.events.agendaLocale[language];
     LocaleConfig.defaultLocale = props.locale.lan;
 
     this._refs = {};
@@ -178,7 +178,7 @@ class EventsScreen extends Component {
             onMonthChange={(date) => this._loadEvents(date)}
             hideExtraDays={true}
             markingType={'custom'}
-            eventsCalendarMarkers={this.props.events.eventsCalendarMarkers}
+            markedDates={this.props.events.eventsCalendarMarkers}
             firstDay={1}
             hideDayNames={false}
             enableSwipeMonths={true}
@@ -192,7 +192,6 @@ class EventsScreen extends Component {
 
   _renderEventsList = () => {
     const { currentMonth } = this.state;
-    console.log("currentmo", this.state.currentMonth)
     return(
       <FlatList
         data={this.props.events.eventsByYearMonth[currentMonth]}
@@ -212,7 +211,7 @@ class EventsScreen extends Component {
     const date = item.date1render;
     return(
       <EventListItem 
-        onPress={this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item })}  
+        onPress={() => this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item })}  
         title={title} 
         term={term}
         image={image}

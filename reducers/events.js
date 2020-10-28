@@ -15,7 +15,7 @@ const INITIAL_STATE = {
   eventsCalendarMarkers: {},
   /* { YYYY-MM-DD: {markerStyle} }, init with today */
   eventsCalendarMarkers: { 
-    [moment().format(Constants.DATE_FORMAT)]: Constants.CALENDAR.todayMarkerDefaultConf 
+    [moment().format(Constants.DATE_FORMAT)]: Constants.SCREENS.events.calendar.todayMarkerDefaultConf 
   },
   eventsSuccess: false, 
   eventsFiltersByType: {},
@@ -97,14 +97,13 @@ export default function reducer(state = INITIAL_STATE, action) {
         eventsByYearMonthDay[eventYearMonthDay] = eventsByYearMonthDay[eventYearMonthDay] || [];
         eventsByYearMonth[eventYearMonth].push(event)
         eventsByYearMonthDay[eventYearMonthDay].push(event);
-        eventsCalendarMarkers[eventYearMonthDay] = Constants.CALENDAR.markedDatesDefaultConf;
+        eventsCalendarMarkers[eventYearMonthDay] = Constants.SCREENS.events.calendar.markedDatesDefaultConf;
       });
       
       let newEventsById = { ...state.eventsById, ...eventsById };
       let newEventsByYearMonth = { ...state.eventsByYearMonth, ...eventsByYearMonth };
       let newEventsByYearMonthDay = { ...state.eventsByYearMonthDay, ...eventsByYearMonthDay };
       let newEventsCalendarMarkers = { ...state.eventsCalendarMarkers,  ...eventsCalendarMarkers };
-      console.log("HEHEHE", eventsCalendarMarkers)
 
       return { 
         ...state, 

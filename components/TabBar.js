@@ -67,7 +67,7 @@ const TabBar = props => {
                 backgroundColor: isRouteActive && route.backgroundActiveColor ? route.backgroundActiveColor : "white" 
             }]}
             onPress={ () => onTabPress(route.name)}>
-                {route.name == 'Trends' ? ( // Special handling of special icons
+                {route.name == 'Extras' ? ( // Special handling of special icons
                 <CenterScaler
                     style={[Styles.scalerOnline, {
                         backgroundColor: isRouteActive ? "white" : "white",

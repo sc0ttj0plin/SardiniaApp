@@ -136,8 +136,8 @@ query ($start: Int, $end: Int, $types: [Int!]) {
 
 
 export const getEventsById = gql`
-query ($nids: [Int!]) {
-  events: nodes(where: { nid: {_in: $nids} }) {
+query ($uuids: [String!]) {
+  events: nodes(where: { uuid: {_in: $uuids} }) {
     title: legacy(path: "title_field")
     description: legacy(path: "body")
     uuid
@@ -308,8 +308,8 @@ query ($x: float8, $y: float8, $limit: Int, $offset: Int, $uuids: [String!]) {
 `;
 
 export const getPois = gql`
-query ($nids: [Int!]) {
-  nodes(where: { nid: {_in: $nids} }) {
+query ($uuids: [String!]) {
+  nodes(where: { uuid: {_in: $uuids} }) {
     uuid
     nid
     type
@@ -383,8 +383,8 @@ query ($uuid: String) {
 `;
 
 export const getExtras = gql`
-query ($nids: [Int!]) {
-  nodes(where: { nid: {_in: $nids} }) {
+query ($uuids: [String!]) {
+  nodes(where: { uuid: {_in: $uuids} }) {
     nid
     uuid
     type

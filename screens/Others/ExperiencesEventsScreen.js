@@ -42,8 +42,8 @@ class ExperiencesEventsScreen extends Component {
     // Agenda's locales
     
     const { lan } = props.locale;
-    for (let language in Constants.AGENDA_LOCALE)
-      LocaleConfig.locales[language] = Constants.AGENDA_LOCALE[language];
+    for (let language in Constants.SCREENS.events.agendaLocale)
+      LocaleConfig.locales[language] = Constants.SCREENS.events.agendaLocale[language];
     LocaleConfig.defaultLocale = props.locale.lan;
 
     this._refs = {};
