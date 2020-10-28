@@ -33,6 +33,7 @@ const dict = {
     extrasCentenaryLand: "La terra dei Centenari", 
     extrasLiveTheSea: "Vivere il Mare",
     findOutMore: "APPROFONDISCI",
+    open3DModel: "APRI IL MODELLO 3D",
     //NAVIGATION
     tabWhatToDo: "Cosa fare",
     tabWhereToGo: "Dove andare",
@@ -82,6 +83,7 @@ const dict = {
     extrasCentenaryLand: "The Island of the Centenaries", 
     extrasLiveTheSea: "Live the Sea",
     findOutMore: "FIND OUT MORE",
+    open3DModel: "OPEN 3D MODEL",
     //NAVIGATION
     tabWhatToDo: "What to do",
     tabWhereToGo: "Where to go",
