@@ -46,7 +46,7 @@ class ExtrasScreen extends Component {
       // Replace title with temporary custom title
       const { extrasWildNature, extrasMythIsland, extrasCentenaryLand, extrasLiveTheSea } = this.props.locale.messages;
       const titles = [extrasWildNature, extrasMythIsland, extrasCentenaryLand, extrasLiveTheSea];
-      const { lan } = this.props.locale.lan;
+      const { lan } = this.props.locale;
       let extras = [];
       Constants.SCREENS.extras.defaultUuids.forEach((uuid, index) => {
         let poi = this.props.pois.data[uuid];
@@ -78,7 +78,7 @@ class ExtrasScreen extends Component {
     const title = _.get(item.title, [lan, 0, "value"], null);
     return(
       <ExtraItem 
-        onPress={ () => this.props.navigation.navigate(Constants.NAVIGATION.NavExtraScreen, { nid: item.id, title: item.title})}
+        onPress={ () => this.props.navigation.navigate(Constants.NAVIGATION.NavExtraScreen, { item })}
         title={title}
         image={item.image}
         btnTitle={findOutMore}

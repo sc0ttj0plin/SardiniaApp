@@ -82,14 +82,8 @@ class PlaceScreen extends Component {
   async componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
+    this._fetchRelatedNodes();
     this.props.actions.getPoi({ uuid: this.state.uuid });
-    //Get related entities
-    try {
-      const relatedEntities = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.places, offset: Math.ceil(Math.random()*100), limit: 5}))
-      this.setState({ relatedEntities })
-    } catch(error){
-      console.log(error)
-    }
   }
 
   /* NOTE: since this screen is not */
@@ -105,7 +99,15 @@ class PlaceScreen extends Component {
   }
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
-
+  _fetchRelatedNodes = async () => {
+    try {
+      const relatedEntities = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.places, offset: Math.ceil(Math.random()*100), limit: 5}))
+      this.setState({ relatedEntities })
+    } catch(error){
+      console.log(error)
+    }
+  }
+  
   _parseEntity = (entity) => {
     const { locale } = this.props;
     const { lan } = locale;

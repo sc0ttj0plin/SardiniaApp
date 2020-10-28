@@ -71,13 +71,8 @@ class EventScreen extends Component {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
     const { uuid } = this.state;
+    this._fetchRelatedNodes();
     this._parseEntity(this.props.events.eventsById[uuid]);
-    try {
-      const relatedEntities = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.events, offset: Math.ceil(Math.random()*100), limit: 5}))
-      this.setState({ relatedEntities })
-    } catch(error){
-      console.log(error)
-    }
   }
 
   componentDidUpdate(prevProps) {
@@ -97,6 +92,14 @@ class EventScreen extends Component {
   _isLoadingData  = () => true;   /* e.g. this.props.pois.loading; */
   _isErrorData    = () => null;    /* e.g. this.props.pois.error; */
 
+  _fetchRelatedNodes = async () => {
+    try {
+      const relatedEntities = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.events, offset: Math.ceil(Math.random()*100), limit: 5}))
+      this.setState({ relatedEntities })
+    } catch(error){
+      console.log(error)
+    }
+  }
 
   _parseEntity = (entity) => {
     console.log(entity)
