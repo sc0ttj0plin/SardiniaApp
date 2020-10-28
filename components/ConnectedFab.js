@@ -26,6 +26,14 @@ class ConnectedFab extends PureComponent {
     };
   }
 
+  componentDidUpdate(prevProps){
+    if(prevProps.nid !== this.props.nid){
+      this.setState({
+        nid: this.props.nid
+      })
+    }
+  }
+
   _openNavigator = (title, coords) => {
     const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
     const latLng = `${coords.latitude},${coords.longitude}`;
@@ -37,13 +45,16 @@ class ConnectedFab extends PureComponent {
     Linking.openURL(url); 
   }
 
+
+
   _renderButton = (backgroundColor, iconName, onPress) => {
+
     return(
       <TouchableOpacity
         activeOpacity={0.7} 
-        style={[{ backgroundColor: backgroundColor }, styles.button]} 
+        style={[styles.button]} 
         onPress={onPress}>
-        <FontAwesome name={iconName} size={20} color="#174A7C" /> 
+        <FontAwesome name={iconName} size={20} color={backgroundColor} /> 
       </TouchableOpacity>
     )
   }

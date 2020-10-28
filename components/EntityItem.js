@@ -7,15 +7,16 @@ import * as Constants from '../constants';
 
 export default class EntityItem extends PureComponent {
   render() {
-    const { onPress, keyItem, title, place, image, distance, listType } = this.props;
+    const { onPress, keyItem, title, place, image, distance, listType, horizontal } = this.props;
 
     let entityOptions = Constants.RELATED_LIST_TYPES[listType] || Constants.RELATED_LIST_TYPES.places
+    let marginRight = horizontal ? 0 : 0
     return (
         <BottomSheetTouchable 
             key={keyItem}  
             onPress={onPress}
             activeOpacity={0.7}
-            style={[styles.fill, this.props.extraStyle]}
+            style={[styles.fill, this.props.style]}
         >
             <GeoRefHListItem
                 title={`${title}`}

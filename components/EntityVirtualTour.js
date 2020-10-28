@@ -1,25 +1,36 @@
 import React, {PureComponent} from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, Animated, Easing } from 'react-native';
+import Colors from '../constants/Colors';
+import { Fontisto } from '@expo/vector-icons';
 
 export default class EntityHeader extends PureComponent {  
   
   constructor(props) {
     super(props);
     this.state = {
+      rotation: props.rotation
     };
   }
-  
+
+  componentDidUpdate(prevProps){
+    if(prevProps.rotation !== this.props.rotation)
+      this.state.rotation = this.props.rotation
+  }
   render() {
-    const { term, title } = this.props;
+    const { link } = this.props;
+
     return (
       <>
-        { term &&(
-          <View style={[styles.categoryContainer]}>
-            <Text style={[styles.category]}>{term}</Text>
-            <View style={styles.borderLine}></View>
-          </View>
-        )}
-        <Text style={[styles.title]}>{title}</Text>
+        {/* { link &&( */}
+          <TouchableOpacity style={styles.virtualLink} activeOpacity={0.8}>
+            <Animated.View style={{
+              transform: [{rotate: this.state.rotation}]
+            }}>
+              <Fontisto name="unity" size={50} color="white" />
+            </Animated.View>
+            <Text style={styles.text}>Apri modello 3D</Text>
+          </TouchableOpacity>
+        
       </>
     );
   }
@@ -29,31 +40,19 @@ const styles = StyleSheet.create({
   fill: {
     flex: 1
   },
-  categoryContainer: {
-    flexDirection: "column",
-    justifyContent: "center"
+  virtualLink: {
+    flex: 1, 
+    height: 200, 
+    marginTop: 20, 
+    marginBottom: 10, 
+    backgroundColor: Colors.black, 
+    alignItems: 'center', 
+    justifyContent: 'center'
   },
-  borderLine: {
-    backgroundColor: "#24467C",
-    height: 7,
-    width: 100,
-    alignSelf: "center",
-    marginTop: 6,
-    marginBottom: 10
-  },
-  category: {
-    fontSize: 12,
-    flex: 1,
-    opacity: 0.6,
-    textAlign: "center",
-    color: "black"
-  },
-  title: {
-    fontSize: 16,
-    flex: 1,
-    textAlign: "center",
-    opacity: 0.6,
-    color: "black",
+  text: {
+    color: "white",
+    marginTop: 10,
+    textTransform: "uppercase",
     fontWeight: "bold"
   }
 });

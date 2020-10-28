@@ -204,7 +204,7 @@ class PlaceScreen extends Component {
             <EntityWhyVisit title={whyVisitTitle} text={whyVisit}/>
             <EntityMap coordinates={coordinates}/>
             <EntityGallery images={gallery} title={galleryTitle}/>
-            <EntityDescription title={descriptionTitle} text={description}/>
+            <EntityDescription title={descriptionTitle} text={description} color={Colors.colorScreen1}/>
             <View style={styles.separator}/>
             {this._renderRelatedList(canBeOfInterest, relatedEntities, Constants.ENTITY_TYPES.places)}
             <EntityAccomodations horizontal/>

@@ -170,21 +170,23 @@ class EventsScreen extends Component {
         success={this._isSuccessData()}
         error={this._isErrorData()}
         loadingLayout={<Text>NOW LOADING</Text>}>
-          <Calendar
-            theme={Constants.styles.calendarTheme}
-            onDayPress={(day) => {console.log('selected day', day)}}
-            onDayLongPress={(day) => {console.log('selected day', day)}}
-            monthFormat={'MMMM yyyy'}
-            onMonthChange={(date) => this._loadEvents(date)}
-            hideExtraDays={true}
-            markingType={'custom'}
-            markedDates={this.props.events.eventsCalendarMarkers}
-            firstDay={1}
-            hideDayNames={false}
-            enableSwipeMonths={true}
-          />
-          <View style={styles.calendarList}>
-          {this._renderEventsList()}
+          <View style={[styles.fill, styles.calendarView]}>
+            <Calendar
+              theme={Constants.styles.calendarTheme}
+              onDayPress={(day) => {console.log('selected day', day)}}
+              onDayLongPress={(day) => {console.log('selected day', day)}}
+              monthFormat={'MMMM yyyy'}
+              onMonthChange={(date) => this._loadEvents(date)}
+              hideExtraDays={true}
+              markingType={'custom'}
+              markedDates={this.props.events.eventsCalendarMarkers}
+              firstDay={1}
+              hideDayNames={false}
+              enableSwipeMonths={true}
+            />
+            <View style={styles.calendarList}>
+              {this._renderEventsList()}
+            </View>
           </View>
       </AsyncOperationStatusIndicator>
      )
@@ -196,6 +198,7 @@ class EventsScreen extends Component {
       <FlatList
         data={this.props.events.eventsByYearMonth[currentMonth]}
         keyExtractor={(item) => item.title}
+        contentContainerStyle={styles.content}
         renderItem={({ item }) => this._renderEventsListItem(item)}
         style={styles.listContent}
       />
@@ -224,7 +227,7 @@ class EventsScreen extends Component {
     const { render } = this.state;
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader iconTintColor="#24467C" />
+        <ConnectedHeader iconTintColor={Colors.colorScreen5} />
         {render && this._renderContent()}
       </View>
     )
@@ -252,13 +255,21 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
   },
+  content: {
+    paddingBottom:20
+  },
   listContent: {
-    paddingHorizontal: 17
+    paddingHorizontal: 17,
+    flex: 1
   },
   calendarList: {
     marginTop: 10,
-    marginBottom: 100,
+    flex: 1
   },
+  calendarView: {
+    display: "flex",
+    flexDirection: "column"
+  }
 });
 
 

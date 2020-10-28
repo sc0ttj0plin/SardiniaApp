@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { 
   View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
-  StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
+  StyleSheet, BackHandler, Platform, ScrollView, Animated } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   // CategoryListItem, 
@@ -71,7 +71,8 @@ class ExtraScreen extends Component {
       entity: item,
       relatedPlaces: [], 
       relatedItineraries: [], 
-      relatedEvents: []
+      relatedEvents: [],
+      scrollY: new Animated.Value(0)
     };
       
   }
@@ -156,7 +157,8 @@ class ExtraScreen extends Component {
 
 
   /********************* Render methods go down here *********************/
-  
+  /* Horizontal spacing for Header items */
+  _renderHorizontalSeparator = () => <View style={{ width: 5, flex: 1 }}></View>;
 
   _renderRelatedList = (title, relatedList, listType) => {
     return (
@@ -165,13 +167,15 @@ class ExtraScreen extends Component {
         data={relatedList ? relatedList : []} 
         extraData={this.props.locale}
         keyExtractor={item => item.nid.toString()}
-        contentContainerStyle={styles.listContainerHeader}
+        contentContainerStyle={styles.relatedListContent}
+        ItemSeparatorComponent={this._renderHorizontalSeparator}
         showsHorizontalScrollIndicator={false}
         locale={this.props.locale}
         onPressItem={this._openRelatedEntity}
         listType={listType}
         listTitle={title}
         listTitleStyle={styles.sectionTitle}
+        itemStyle={styles.relatedListItem}
       />
     )
   }
@@ -206,9 +210,14 @@ class ExtraScreen extends Component {
     
     const { orientation } = this.state;
     const isFavourite = favourites.places[uuid];
-     return (
+    const iconRotation = this.state.scrollY.interpolate({
+      inputRange: [0, 600],
+      outputRange: ['0deg', '360deg']
+    });
+    return (
       <View style={styles.fill}>
-        <ScrollView style={styles.fill}>
+        <Animated.ScrollView style={styles.fill}
+          onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }],{useNativeDriver: true})}>
           <TopMedia urlVideo={sampleVideoUrl} urlImage={entity.image} />
           {this._renderFab(entity.nid, title, coordinates, socialUrl)}   
           <View style={[styles.headerContainer]}> 
@@ -216,16 +225,14 @@ class ExtraScreen extends Component {
           </View>
           <View style={[styles.container]}>
             <EntityAbstract abstract={abstract}/>
-            <View style={styles.virtualLink}>
-              <Text>3D IMAGE LINK HERE</Text>
-            </View>
+            <EntityVirtualTour rotation={iconRotation}/>
             <EntityGallery images={gallery} title={galleryTitle}/>
             <View style={styles.separator}/>
-            {this._renderRelatedList(canBeOfInterest, relatedPlaces, Constants.ENTITY_TYPES.places)}
-            {this._renderRelatedList("", relatedItineraries, Constants.ENTITY_TYPES.itineraries)}
-            {this._renderRelatedList("", relatedEvents, Constants.ENTITY_TYPES.events)}
+            {this._renderRelatedList("Luoghi", relatedPlaces, Constants.ENTITY_TYPES.places)}
+            {this._renderRelatedList("Itinerari", relatedItineraries, Constants.ENTITY_TYPES.itineraries)}
+            {this._renderRelatedList("Eventi", relatedEvents, Constants.ENTITY_TYPES.events)}
           </View>
-        </ScrollView>
+        </Animated.ScrollView>
       </View>
      )
   }
@@ -235,7 +242,7 @@ class ExtraScreen extends Component {
     const { render } = this.state;
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader iconTintColor="#24467C" />
+        <ConnectedHeader iconTintColor={Colors.black} />
         {render && this._renderContent()}
       </View>
     )
@@ -291,21 +298,20 @@ const styles = StyleSheet.create({
   listContainerHeader: {
     paddingLeft: 10,
   },
+  relatedListContent: {
+    marginRight: 20,
+    marginLeft: 20,
+  },
   separator: {
     width: "100%",
     height: 8,
     backgroundColor: "#F2F2F2",
     marginVertical: 32
   },
-  virtualLink: {
-    flex: 1, 
-    height: 200, 
-    marginTop: 10, 
-    marginBottom: 10, 
-    backgroundColor: Colors.greyTransparent, 
-    alignItems: 'center', 
-    justifyContent: 'center'
-  },
+  relatedListItem: {
+    marginLeft: 0,
+    marginBottom: 10,
+  }
 });
 
 

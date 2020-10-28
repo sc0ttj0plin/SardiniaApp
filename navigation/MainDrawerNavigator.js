@@ -11,7 +11,7 @@ import {useRoute} from '@react-navigation/native';
 import TabBarIcon from '../components/TabBarIcon';
 import PlacesScreen from '../screens/Places/Places';
 import PlaceScreen from '../screens/Places/Place';
-import InspirersScreen from '../screens/Inspirers/Inspirers';
+// import InspirersScreen from '../screens/Inspirers/Inspirers';
 import EventsScreen from '../screens/Events/Events';
 import EventScreen from '../screens/Events/Event';
 import ExtrasScreen from '../screens/Extras/Extras';
@@ -199,9 +199,9 @@ function TabNavigator() {
       animationEnabled={true}>
       {/* <BottomTabNavigator.Screen name={"Boilerplate"} component={Boilerplate} options={placesNavigationOptions} label="Boilerplate"/> */}
       {/* <BottomTabNavigator.Screen name={NavExtrasScreen} component={ExtraStackScreen} options={extrasNavigationOptions} /> */}
+      <BottomTabNavigator.Screen name={NavPlacesScreen} component={PlacesScreen} options={placesNavigationOptions}/>
       <BottomTabNavigator.Screen name={NavExtrasScreen} component={ExtrasScreen} options={extrasNavigationOptions}/>
       <BottomTabNavigator.Screen name={NavEventsScreen} component={EventsScreen} options={eventsNavigationOptions}/>
-      <BottomTabNavigator.Screen name={NavPlacesScreen} component={PlacesScreen} options={placesNavigationOptions}/>
       {/* <BottomTabNavigator.Screen name={NavInspirersScreen} component={InspirersScreen} options={inspirersNavigationOptions} /> */}
       {/* <BottomTabNavigator.Screen name={NavExperiencesItinerariesScreen} component={ExperiencesItinerariesScreen} options={itinerariesNavigationOptions} /> */}
     </BottomTabNavigator.Navigator>

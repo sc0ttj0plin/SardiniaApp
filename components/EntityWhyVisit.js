@@ -17,7 +17,7 @@ export default class EntityWhyVisit extends PureComponent {
 
     return (
       <>
-        { show &&(
+        { text != "" && text &&(
           <View style={[Constants.styles.innerText, styles.container]}>
             <Text style={styles.title}>{title}</Text>
             {/* <View style={styles.borderLine}></View> */}

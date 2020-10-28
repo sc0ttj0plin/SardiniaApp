@@ -133,11 +133,11 @@ class EventScreen extends Component {
 
   /********************* Render methods go down here *********************/
 
-  _renderFab = (nid, title, shareLink) => {
+  _renderFab = (nid, title, coordinates, shareLink) => {
     return (
       <View style={styles.fab}>
         <ConnectedFab 
-          color={Colors.orange}
+          color={Colors.colorScreen5}
           nid={nid}
           title={title}
           shareLink={shareLink}
@@ -189,7 +189,7 @@ class EventScreen extends Component {
             <EntityHeader title={title} term={entity.term.name} borderColor={Colors.orange}/>
           </View>
           <View style={[styles.container]}>
-            <EntityDescription title={descriptionTitle} text={description}/>
+            <EntityDescription title={descriptionTitle} text={description} color={Colors.colorScreen5}/>
             <EntityStages />
             <View style={styles.separator}/>
             {this._renderRelatedList(canBeOfInterest, relatedEntities, Constants.ENTITY_TYPES.events)}
@@ -205,7 +205,7 @@ class EventScreen extends Component {
     const { render } = this.state;
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader iconTintColor="#24467C" />
+        <ConnectedHeader iconTintColor={Colors.colorScreen5} />
         {render && this._renderContent()}
       </View>
     )

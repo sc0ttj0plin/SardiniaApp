@@ -97,7 +97,7 @@ class ExtrasScreen extends Component {
           <LLEntitiesFlatlist 
             horizontal={false} 
             numColumns={1} 
-            itemStyle={styles.itemFlatlist} 
+            itemStyle={styles.item} 
             style={styles.listStyle} 
             bodyContainerStyle={styles.listContainer}/>}
         >
@@ -141,6 +141,11 @@ const styles = StyleSheet.create({
   },
   container: {
     padding: 10,
+  },
+  item: {
+    height: 450,
+    width: "100%",
+    marginBottom: 2,
   },
 });
 

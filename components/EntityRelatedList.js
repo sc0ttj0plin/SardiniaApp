@@ -28,6 +28,8 @@ export default class EntityRelatedList extends PureComponent {
                 place={`${place}`}
                 image={`${item.image}`}
                 distance={this.state.isCordsInBound && item.distance}
+                style={this.props.itemStyle}
+                horizontal={this.props.horizontal}
             />
         )
     }
@@ -72,8 +74,7 @@ export default class EntityRelatedList extends PureComponent {
                         keyExtractor={item => item.uuid}
                         data={data}
                         renderItem={({item, index}) => this._renderPoiListItem(item, index)}
-                        style={styles.fill}
-                        ItemSeparatorComponent={this._renderHorizontalSeparator}
+                        style={[styles.fill]}
                         contentContainerStyle={contentContainerStyle}
                         showsHorizontalScrollIndicator={showsHorizontalScrollIndicator || true}
                         initialNumToRender={2} // Reduce initial render amount

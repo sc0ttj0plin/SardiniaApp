@@ -20,50 +20,21 @@ class ExtraItem extends PureComponent{
     const { title, image, imageStyle, onPress, btnTitle } = this.props;
     return (
       <View style={styles.container} onLayout={(event) => { this.setState({ width: event.nativeEvent.layout.width }); }}>
-          <Image 
-            source={{ uri: image }} 
-            style={[styles.image, { width: this.state.width, height: this.state.height }, imageStyle]} 
-            PlaceholderContent={<ActivityIndicator style={styles.spinner} color={"white"} />}
-            >
-        <View style={{
-            width: "100%",
-            backgroundColor: "transparent",
-            justifyContent: "center",
-            alignItems: "center"
-        }}>
-          <Text style={{
-                color: "white",
-                textTransform: "uppercase",
-                fontWeight: "bold",
-                fontSize: 28,
-                lineHeight: 26,
-                alignSelf: "center",
-                width: 200,
-                textAlign: "center",
-                marginBottom: 30,
-            }}>
-                {title}
-            </Text>
+        <Image 
+          source={{ uri: image }} 
+          style={[styles.image, { width: this.state.width, height: this.state.height }, imageStyle]} 
+          PlaceholderContent={<ActivityIndicator style={styles.spinner} color={"white"} />}
+          >
+        <View style={styles.imageOverlay}>
+          <Text style={styles.itemTitle}>
+            {title || "text"}
+          </Text>
             <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={onPress ? onPress : () => {}}
-                style={{
-                    justifyContent: "center",
-                    alignSelf: "center",
-                    backgroundColor: "#00000055",
-                    marginTop: 100
-                }}>
-                    <Text style={{
-                        color: "white",
-                        borderColor: "white",
-                        borderWidth: 2,
-                        padding: 5,
-                        paddingHorizontal: 15,
-                        fontWeight: "bold"
-                    }}>{btnTitle}</Text>
+                style={styles.itemButton}>
+                    <Text style={styles.itemButtonText}>{btnTitle}</Text>
             </TouchableOpacity>
-
-
         </View>
           </Image>
       </View>
@@ -72,6 +43,37 @@ class ExtraItem extends PureComponent{
 }
 
 const styles = StyleSheet.create({ 
+    imageOverlay: {
+      width: "100%",
+      backgroundColor: "transparent",
+      justifyContent: "center",
+      alignItems: "center"
+    },
+    itemTitle: {
+      color: "white",
+      textTransform: "uppercase",
+      fontWeight: "bold",
+      fontSize: 28,
+      lineHeight: 26,
+      alignSelf: "center",
+      width: 200,
+      textAlign: "center",
+      marginBottom: 30,
+    },
+    itemButton: {
+      justifyContent: "center",
+      alignSelf: "center",
+      backgroundColor: "#00000055",
+      marginTop: 100
+    },
+    itemButtonText: {
+      color: "white",
+      borderColor: "white",
+      borderWidth: 2,
+      padding: 5,
+      paddingHorizontal: 15,
+      fontWeight: "bold"
+    },
     spinner: {
       marginTop: 40
     },

@@ -7,6 +7,7 @@ import { Platform, StatusBar, StyleSheet, View, LogBox } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { Fontisto } from '@expo/vector-icons';
 import { Provider } from 'react-redux'
 import AppNavigator from './navigation/AppNavigator';
 import { PersistGate } from 'redux-persist/lib/integration/react';
@@ -57,6 +58,7 @@ export default class App extends Component {
         ...Ionicons.font,
         ...FontAwesome.font,
         ...FontAwesome5.font,
+        ...Fontisto.font,
         'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
       })
     ]);
