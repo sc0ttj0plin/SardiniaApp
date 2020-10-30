@@ -1,0 +1,45 @@
+{
+  "expo": {
+    "name": "Visit Sardinia",
+    "slug": "visitsardinia",
+    "privacy": "unlisted",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "splash": {
+      "image": "./assets/images/splash_mare.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "bundleIdentifier": "crs4.sinnos.visitsardinia",
+      "supportsTablet": true,
+      "config": {
+        "googleMapsApiKey": "AIzaSyA5YkfcNGR6dX062bFqhaZ1Asdr2uaNFJo"
+      }
+    },
+    "android": {
+      "permissions": [
+        "INTERNET"
+      ],
+      "package": "crs4.sinnos.visitsardinia",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyC3hjqoVRcqCUSh66BNXgeI_LBpgJTi4j0"
+        }
+      }
+    },
+    "description": ""
+  }
+}

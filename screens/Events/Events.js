@@ -41,6 +41,7 @@ import Colors from '../../constants/Colors';
 import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
 
 import { FETCH_NUM_MONTHS_FORWARD, FETCH_NUM_MONTHS_BACKWARDS } from '../../constants';
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 //Example calendar: https://github.com/wix/react-native-calendars/blob/master/example/src/screens/calendars.js
 const USE_DR = false;
@@ -158,8 +159,30 @@ class EventsScreen extends Component {
   _isLoadingData  = () => false;   /* e.g. this.props.pois.loading; */
   _isErrorData    = () => null;    /* e.g. this.props.pois.error; */
 
+
+  _openMap = () => {
+    const { currentMonth } = this.state;
+    let events = this.props.events.eventsByYearMonth[currentMonth];
+    this.props.navigation.navigate(Constants.NAVIGATION.NavEventsMapScreen, {events});
+  }
   
   /********************* Render methods go down here *********************/
+
+  _renderBottomToast = () => {
+    return(
+      <View style={styles.toastContainer}>
+        <View style={styles.toastInnerContainer}>
+          <Text style={styles.toastText}>Vuoi vedere gli eventi sulla mappa</Text>
+          <TouchableOpacity 
+            style={styles.toastButton}
+            activeOpacity={0.7}
+            onPress={this._openMap}>
+            <Text style={styles.toastButtonText}>VAI</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    )
+  }
 
   _renderContent = () => {
     const { lan } = this.props.locale;
@@ -187,6 +210,7 @@ class EventsScreen extends Component {
             <View style={styles.calendarList}>
               {this._renderEventsList()}
             </View>
+            {this._renderBottomToast()}
           </View>
       </AsyncOperationStatusIndicator>
      )
@@ -269,6 +293,44 @@ const styles = StyleSheet.create({
   calendarView: {
     display: "flex",
     flexDirection: "column"
+  },
+  toastContainer: {
+    position: "absolute",
+    bottom: 10,
+    left: 0,
+    width: "100%",
+    height: 48,
+    paddingHorizontal: 16
+    // marginHorizontal: 16,
+  },
+  toastInnerContainer: {
+    width: "100%",
+    height: 48,
+    paddingVertical: 16,
+    backgroundColor: "#000000",
+    borderRadius: 4,
+    paddingLeft: 13,
+    paddingRight: 29,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  toastText: {
+    fontSize: 13,
+    color: "white",
+    flex: 1,
+  },
+  toastButton: {
+    flex: 1,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  toastButtonText: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#D9531E",
+    textAlign: "right"
   }
 });
 

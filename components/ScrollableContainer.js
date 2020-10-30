@@ -30,6 +30,21 @@ export default class ScrollableContainer extends PureComponent {
   
   }
 
+  componentDidUpdate(prevProps){
+    if(prevProps.initialSnapIndex !== this.props.initialSnapIndex){
+      console.log("snap point", this.props.initialSnapIndex)
+      if(this.props.initialSnapIndex == 2){
+        let timeout = setTimeout( () => {
+          this._scrollable.snapTo(this.props.initialSnapIndex)
+          clearTimeout(timeout)
+        }, 100)
+      }
+      else
+        this._scrollable.snapTo(this.props.initialSnapIndex)
+
+    }
+  }
+
   _renderHandle = () =>
     <View style={styles.header}>
       <View style={styles.panelHandle} />
@@ -55,7 +70,9 @@ export default class ScrollableContainer extends PureComponent {
           ref={(ref)=>this._scrollable = ref}
           ListHeaderComponent={this.props.ListHeaderComponent || null}
           animatedPosition={this._translateAnim}
-          contentContainerStyle={styles.contentContainerStyle}>
+          contentContainerStyle={[styles.contentContainerStyle, {
+            flex:  this.props.data && this.props.data.length == 0 ? 1 : null
+          }]}>
         </ScrollBottomSheet>
       </View>
     )
@@ -80,16 +97,16 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    backgroundColor: '#F3F4F9',
+    backgroundColor: 'white',
     paddingVertical: 20,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 32
   },
   panelHandle: {
-    width: 40,
-    height: 2,
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    borderRadius: 4
+    width: 32,
+    height: 4,
+    backgroundColor: "#0000001A",
+    borderRadius: 2,
   },
   item: {
     padding: 20,

@@ -25,14 +25,14 @@ class GeoRefHListItem extends PureComponent{
               ellipsizeMode='tail'
               style={styles.title}>{this.props.title}
               </Text>
-              { this.props.place != "" && this.props.place &&
+              { this.props.place != null && this.props.place != "" &&
                 <Text 
                 numberOfLines={1}
                 ellipsizeMode='tail'
                 style={styles.place}>{this.props.place}
                 </Text>
               }
-              { this.props.distance != "" && this.props.distance &&
+              { this.props.distance != "" && this.props.distance != undefined &&
                 (
                   <Text 
                     numberOfLines={1}

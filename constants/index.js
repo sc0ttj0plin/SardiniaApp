@@ -102,6 +102,7 @@ export const NAVIGATION = {
   NavItineraryScreen: "ItineraryScreen",
   NavEventsScreen: "ExperiencesEventsScreen",
   NavEventScreen: "EventScreen",
+  NavEventsMapScreen: "EventsMapScreen",
   NavExploreScreen: "ExploreScreen",
   NavVirtualTourScreen: "VirtualTourScreen",
   NavPlaceScreen: "PlaceScreen",

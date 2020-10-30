@@ -14,6 +14,8 @@ import PlaceScreen from '../screens/Places/Place';
 // import InspirersScreen from '../screens/Inspirers/Inspirers';
 import EventsScreen from '../screens/Events/Events';
 import EventScreen from '../screens/Events/Event';
+import EventsMapScreen from '../screens/Events/Map';
+
 import ExtrasScreen from '../screens/Extras/Extras';
 import ExtraScreen from '../screens/Extras/Extra';
 // import MapScreen from '../screens/Others/MapScreen';
@@ -36,7 +38,7 @@ import * as Constants from '../constants';
 const {
   NavPlacesScreen, NavInspirersScreen ,NavMapScreen, 
   NavExperiencesItinerariesScreen, 
-  NavItineraryScreen, NavEventsScreen, NavEventScreen, NavExploreScreen, 
+  NavItineraryScreen, NavEventsScreen, NavEventScreen, NavEventsMapScreen, NavExploreScreen, 
   NavVirtualTourScreen, NavPlaceScreen, NavInspirerScreen,
   NavExtrasScreen, NavExtraScreen, NavTabNavigator, NavSearchScreen, NavSearchStackScreen, 
   NavMainStackScreen, NavVideoScreen, NavFavouritesScreen, NavFavouritesStackScreen 
@@ -222,7 +224,7 @@ function MainStackScreen() {
       <MainStack.Screen name={NavPlaceScreen} component={PlaceScreen}/>
       <MainStack.Screen name={NavEventScreen} component={EventScreen} />
       <MainStack.Screen name={NavExtraScreen} component={ExtraScreen} />
-      {/* <MainStack.Screen name={NavMapScreen} component={MapScreen} options={{...FromTopTransition}} /> */}
+      <MainStack.Screen name={NavEventsMapScreen} component={EventsMapScreen} options={{...FromTopTransition}} />
       {/* <MainStack.Screen name={NavPlacesScreen} component={PlacesScreen}/> */}
       {/* <MainStack.Screen name={NavVideoScreen} component={VideoScreen}/> */}
       {/* <MainStack.Screen name={NavVirtualTourScreen} component={VirtualTourScreen}/> */}

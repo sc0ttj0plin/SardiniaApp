@@ -147,6 +147,10 @@ class EventScreen extends Component {
     )
   }
 
+  /* Horizontal spacing for Header items */
+  _renderHorizontalSeparator = () => <View style={{ width: 5, flex: 1 }}></View>;
+
+
   _renderRelatedList = (title, relatedList, listType) => {
     return (
         <EntityRelatedList
@@ -155,6 +159,7 @@ class EventScreen extends Component {
           extraData={this.props.locale}
           keyExtractor={item => item.nid.toString()}
           contentContainerStyle={styles.listContainerHeader}
+          ItemSeparatorComponent={this._renderHorizontalSeparator}
           showsHorizontalScrollIndicator={false}
           locale={this.props.locale}
           onPressItem={this._openRelatedEntity}
@@ -193,7 +198,7 @@ class EventScreen extends Component {
             <EntityStages />
             <View style={styles.separator}/>
             {this._renderRelatedList(canBeOfInterest, relatedEntities, Constants.ENTITY_TYPES.events)}
-            <EntityAccomodations horizontal/>
+            <View style={{marginBottom: 30}}></View>
           </View>
          </ScrollView>
        </View>
