@@ -215,6 +215,7 @@ class EventsMapScreen extends PureComponent {
         showsUserLocation={ true }
         showsIndoorLevelPicker={true}
         showsCompass={false}
+        clusterColor={Colors.colorScreen5}
         style={{flex: 1}}
         onPress={() => this._selectMarker(null)}
         onRegionChangeComplete={this._onRegionChangeComplete}
