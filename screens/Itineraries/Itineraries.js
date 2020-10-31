@@ -40,7 +40,7 @@ import { PROVIDER_GOOGLE } from 'react-native-maps';
  */
 
 const USE_DR = false;
-class EventsMapScreen extends PureComponent {
+class ItinerariesScreen extends PureComponent {
 
   constructor(props) {
     super(props);
@@ -49,17 +49,16 @@ class EventsMapScreen extends PureComponent {
     this._onFocus = null;
     this._refs = {};
 
-    const events = _.get(props.route, "params.events", []);
+    const itineraries = _.get(props, "itineraries.data", []);
 
-    // console.log("events", props.route.params.events.length, events.length)
     this.state = {
       render: USE_DR ? false : true,
-      events: events,
+      itineraries: itineraries,
       tid: -1,
       coords: {},
       poisLimit: Constants.PAGINATION.poisLimit,
       region: Constants.MAP.defaultRegion,
-      selectedEvent: null
+      selectedItinerary: null
     };
       
   }
@@ -75,6 +74,7 @@ class EventsMapScreen extends PureComponent {
     if(this.state.tid < 0){
       // this.props.actions.getCategories({ vid: Constants.VIDS.poisCategories });
     }
+    this.props.actions.getItineraries();
     this._initGeolocation();
     
     this._onFocus = this.props.navigation.addListener('focus', () => {
@@ -82,13 +82,16 @@ class EventsMapScreen extends PureComponent {
         this._onUpdateCoords(this.state.coords);
       }
     });
-    // console.log("events", this.props.route.params)
+    // console.log("itinerarys", this.props.route.params)
   }
 
   componentDidUpdate(prevProps) {
-    // if(prevProps.others.placesTerms !== this.props.others.placesTerms) {
-    //   this._loadMorePois();
-    // }
+    if(prevProps.itineraries !== this.props.itineraries) {
+      // console.log("itineraries updated", this.props.itineraries.data.length)
+      this.setState({
+        itineraries: this.props.itineraries.data
+      })
+    }
   }
 
   componentWillUnmount() {
@@ -177,7 +180,7 @@ class EventsMapScreen extends PureComponent {
    * @param {*} item: item list
    */
   _openItem = (item) => {
-    this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item });
+    // this.props.navigation.navigate(Constants.NAVIGATION.NavitineraryScreen, { item });
   }
 
   /**
@@ -188,9 +191,9 @@ class EventsMapScreen extends PureComponent {
     this.state.region = region;
   }
 
-  _selectMarker = (event) => {
+  _selectMarker = (itinerary) => {
     this.setState({
-      selectedEvent: event
+      selectedItinerary: itinerary
     })
   }
 
@@ -206,7 +209,7 @@ class EventsMapScreen extends PureComponent {
   
   /* Renders the topmost component: a map in our use case */
   _renderTopComponent = () => {
-    const { coords, region, selectedEvent } = this.state;
+    const { coords, region } = this.state;
     return (
       <>
       <MapView
@@ -217,7 +220,7 @@ class EventsMapScreen extends PureComponent {
         showsUserLocation={ true }
         showsIndoorLevelPicker={true}
         showsCompass={false}
-        clusterColor={Colors.colorScreen5}
+        clusterColor={Colors.colorScreen4}
         style={{flex: 1}}
         onPress={() => this._selectMarker(null)}
         onRegionChangeComplete={this._onRegionChangeComplete}
@@ -230,33 +233,33 @@ class EventsMapScreen extends PureComponent {
   }
 
   _renderMarkers = () => {
-    return this.state.events.map( event => {
-      return this._renderMarker(event)
+    return this.state.itineraries.map( itinerary => {
+      return this._renderMarker(itinerary)
     })
   }
 
-  _renderMarker = (event) => {
-    const coordinates = _.get(event, ["itinerary", 0], null)
+  _renderMarker = (itinerary) => {
+    const coordinates = _.get(itinerary, ["stages", 0, "poi", "georef", "coordinates"], null)
     if(coordinates){
-      const lat = _.get(coordinates, "lat", null)
-      const long = _.get(coordinates, "lon", null)
-      const selected = this.state.selectedEvent == event;
+      const lat = _.get(coordinates, [1], null)
+      const long = _.get(coordinates, [0], null)
+      const selected = this.state.selectedItinerary == itinerary;
       const width = 32;
 
       return(
         lat && long && (
         <Marker.Animated
           coordinate={{ longitude: parseFloat(long),  latitude: parseFloat(lat) }}
-          onPress={() => this._selectMarker(event)}
+          onPress={() => this._selectMarker(itinerary)}
           tracksViewChanges={true}
           style={{width: 42, height: 42, zIndex: 1}}>
             <View style={[styles.markerContainer, {
-              backgroundColor: selected ? "rgba(217, 83, 30, 0.5)" : "transparent"
+              backgroundColor: selected ? "rgba(93, 127, 32, 0.5)" : "transparent"
             }]}>
               <View
                 style={[styles.marker]}>
                 <Ionicons
-                  name={Constants.RELATED_LIST_TYPES.events.iconName}
+                  name={Constants.RELATED_LIST_TYPES.itineraries.iconName}
                   size={19}
                   color={"#ffffff"}
                   style={{
@@ -284,7 +287,7 @@ class EventsMapScreen extends PureComponent {
           width: "100%",
           marginBottom: 40
         }}>
-          <Text style={styles.sectionTitle}>Esplora Eventi</Text>
+          <Text style={styles.sectionTitle}>Esplora itinerari</Text>
         </View>
       )
   }
@@ -301,20 +304,23 @@ class EventsMapScreen extends PureComponent {
     return (
       <EntityItem 
         keyItem={item.nid}
-        listType={Constants.ENTITY_TYPES.events}
+        listType={Constants.ENTITY_TYPES.itineraries}
         onPress={() => this._openItem(item)}
         title={`${title}`}
         image={`${image}`}
         place={" "}
-        style={styles.eventsListItem}
+        style={styles.itinerariesListItem}
       />
   )}
 
   /* Render content */
   _renderContent = () => {
-    const { selectedEvent, events } = this.state;
-    let data = selectedEvent ? [selectedEvent] : events;
-    let snapIndex = selectedEvent ? 1 : 2
+    const { selectedItinerary, itineraries } = this.state;
+    let data = selectedItinerary ? [selectedItinerary] : itineraries;
+    // console.log("length", data.length)
+    if(!data.length)
+      data = []
+    let snapIndex = selectedItinerary ? 1 : 2
     return (
       <ScrollableContainer 
         topComponent={this._renderTopComponent}
@@ -334,8 +340,7 @@ class EventsMapScreen extends PureComponent {
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
         <ConnectedHeader 
-          iconTintColor={Colors.colorScreen5}  
-          backButtonVisible={true}
+          iconTintColor={Colors.colorScreen4}
         />
         {render && this._renderContent()}
       </View>
@@ -345,8 +350,8 @@ class EventsMapScreen extends PureComponent {
 }
 
 
-EventsMapScreen.navigationOptions = {
-  title: 'EventsMapScreen',
+ItinerariesScreen.navigationOptions = {
+  title: 'ItinerariesScreen',
 };
 
 
@@ -409,7 +414,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: Colors.colorScreen5,
+    backgroundColor: Colors.colorScreen4,
     borderRadius: 21
   },
   markerContainer: {
@@ -418,7 +423,7 @@ const styles = StyleSheet.create({
     padding: 6,
     borderRadius: 21
   },
-  eventsListItem: {
+  itinerariesListItem: {
     marginBottom: 10,
     borderWidth: 1,
     borderColor: "#0000001A",
@@ -427,12 +432,12 @@ const styles = StyleSheet.create({
 });
 
 
-function EventsMapScreenContainer(props) {
+function ItinerariesScreenContainer(props) {
   const navigation = useNavigation();
   const route = useRoute();
   const store = useStore();
 
-  return <EventsMapScreen 
+  return <ItinerariesScreen 
     {...props}
     navigation={navigation}
     route={route}
@@ -447,7 +452,8 @@ const mapStateToProps = state => {
     //language
     locale: state.localeState,
     //graphql
-    categories: state.categoriesState,
+    // categories: state.categoriesState,
+    itineraries: state.itinerariesState,
   };
 };
 
@@ -463,4 +469,4 @@ export default connect(mapStateToProps, mapDispatchToProps, (stateProps, dispatc
     actions: dispatchProps,
     ...props
   }
-})(EventsMapScreenContainer)
+})(ItinerariesScreenContainer)

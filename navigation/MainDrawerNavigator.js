@@ -15,6 +15,7 @@ import PlaceScreen from '../screens/Places/Place';
 import EventsScreen from '../screens/Events/Events';
 import EventScreen from '../screens/Events/Event';
 import EventsMapScreen from '../screens/Events/Map';
+import ItinerariesScreen from '../screens/Itineraries/Itineraries';
 
 import ExtrasScreen from '../screens/Extras/Extras';
 import ExtraScreen from '../screens/Extras/Extra';
@@ -203,9 +204,9 @@ function TabNavigator() {
       {/* <BottomTabNavigator.Screen name={NavExtrasScreen} component={ExtraStackScreen} options={extrasNavigationOptions} /> */}
       <BottomTabNavigator.Screen name={NavPlacesScreen} component={PlacesScreen} options={placesNavigationOptions}/>
       <BottomTabNavigator.Screen name={NavExtrasScreen} component={ExtrasScreen} options={extrasNavigationOptions}/>
+      <BottomTabNavigator.Screen name={NavExperiencesItinerariesScreen} component={ItinerariesScreen} options={itinerariesNavigationOptions} />
       <BottomTabNavigator.Screen name={NavEventsScreen} component={EventsScreen} options={eventsNavigationOptions}/>
       {/* <BottomTabNavigator.Screen name={NavInspirersScreen} component={InspirersScreen} options={inspirersNavigationOptions} /> */}
-      {/* <BottomTabNavigator.Screen name={NavExperiencesItinerariesScreen} component={ExperiencesItinerariesScreen} options={itinerariesNavigationOptions} /> */}
     </BottomTabNavigator.Navigator>
   );
 }
