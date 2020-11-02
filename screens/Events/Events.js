@@ -168,14 +168,14 @@ class EventsScreen extends Component {
   }
   
   /**
-   * 
+   * Navigate to subset of events (in this case of the day)
    * @param {*} dateString: "2020-11-14"
    */
   _onDatePress = (dateString) => {
     const { eventsByYearMonthDay } = this.props.events;
     const eventsSubset = eventsByYearMonthDay[dateString];
     if (eventsSubset)
-      this.props.navigation.navigate(Constants.NAVIGATION.NavEventsSubset, { eventsSubset });
+      this.props.navigation.navigate(Constants.NAVIGATION.NavEventsSubset, { dateString, dateHeaderFormat: "DD MMMM", eventsSubset });
   }
 
   /********************* Render methods go down here *********************/

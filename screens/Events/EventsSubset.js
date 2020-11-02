@@ -40,6 +40,7 @@ import {
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
+import moment from 'moment';
 import Layout from '../../constants/Layout';
 import { greedyArrayFinder, getEntityInfo, getCoordinates, getSampleVideoIndex, getGalleryImages } from '../../helpers/utils';
 import { apolloQuery } from '../../apollo/queries';
@@ -59,11 +60,12 @@ class EventsSubsetScreen extends Component {
     super(props);
 
     /* Get props from navigation */
-    let { eventsSubset } = props.route.params; 
+    let { dateString, dateHeaderFormat, eventsSubset } = props.route.params; 
 
     this.state = {
       render: USE_DR ? false : true,
       //
+      headerDate: moment(dateString).format(dateHeaderFormat),
       eventsSubset,
     };
       
@@ -120,6 +122,7 @@ class EventsSubsetScreen extends Component {
   _renderContent = () => {
      return (
       <View style={styles.calendarList}>
+        <Text>{this.state.headerDate}</Text>
         {this._renderEventsList()}
       </View>
      )
