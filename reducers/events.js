@@ -9,6 +9,9 @@ import _ from 'lodash';
  */
 const INITIAL_STATE = {
   //events
+  eventsSuccess: false, 
+  eventsError: null,
+  eventsLoading: false,
   eventsById: {},
   eventsByYearMonth: {},
   eventsByYearMonthDay: {},
@@ -17,11 +20,8 @@ const INITIAL_STATE = {
   eventsCalendarMarkers: { 
     [moment().format(Constants.DATE_FORMAT)]: Constants.SCREENS.events.calendar.todayMarkerDefaultConf 
   },
-  eventsSuccess: false, 
   eventsFiltersByType: {},
   eventsMonthsStatuses: {},
-  eventsError: null,
-  eventsLoading: false,
   // timeMin: null,
   // timeMax: null,
   //eventsById

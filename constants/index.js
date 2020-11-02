@@ -125,6 +125,7 @@ export const NAVIGATION = {
   NavMainStackScreen: "MainStackScreen",
   NavFavouritesScreen: "FavouritesScreen",
   NavFavouritesStackScreen: "FavouritesStackScreen",
+  NavEventsSubset: "EventsSubsetScreen",
   NavBoilerPlate: "Boilerplate"
 }
 
@@ -174,6 +175,7 @@ export const SCREENS = {
     calendar: {
       //Prevent having too many copies of the same object (this) in calendar dates reducer 
       // for other props see: https://github.com/wix/react-native-calendars
+      //Marked dates
       markedDatesDefaultConf: {
         marked: true, 
         customStyles: {
@@ -182,6 +184,7 @@ export const SCREENS = {
           }
         }
       },
+      //Today color
       todayMarkerDefaultConf: {
         marked: true, 
         customStyles: {
@@ -290,8 +293,8 @@ export const styles = {
     agendaTodayColor: "black",
     agendaDayTextColor: "black",
     arrowColor: 'black',
-    selectedDayBackgroundColor: "red",
-    selectedDayTextColor: Colors.colorScreen5,
+    selectedDayBackgroundColor: Colors.salmon,
+    selectedDayTextColor: 'black',
     dayTextColor: "black",
     monthTextColor: "black",
     color: "black",
@@ -299,20 +302,21 @@ export const styles = {
     textMonthFontWeight: "bold",
     textDisabledColor: "#ECECEC",
     todayTextColor: "white",
-    dotColor: "white" ,
+    dotColor: Colors.salmon,
+    // selectedDotColor: 'white',
+    // disabledDotColor: 'black',
+    dotStyle: {marginTop: -2},
     textSectionTitleDisabledColor: '#d9e1e8',
     selectedDotColor: '#ffffff',
     disabledArrowColor: '#d9e1e8',
     indicatorColor: 'blue',
-    // textDayFontFamily: 'space-mono',
-    // textMonthFontFamily: 'space-mono',
-    // textDayHeaderFontFamily: 'space-mono',
     textDayFontWeight: 'bold',
     textMonthFontWeight: 'bold',
     textDayHeaderFontWeight: '300',
     textDayFontSize: 16,
     textMonthFontSize: 16,
-    textDayHeaderFontSize: 16
+    textDayHeaderFontSize: 16,
+    // textDayStyle: {marginTop: Platform.OS === 'android' ? 2 : 4},
   },
 }
 

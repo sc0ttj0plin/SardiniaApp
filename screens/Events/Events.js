@@ -33,13 +33,13 @@ import moment from "moment";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
-import { Calendar, LocaleConfig, CalendarList } from 'react-native-calendars';
+import { Calendar, LocaleConfig, CalendarList, ExpandableCalendar, CalendarProvider } from 'react-native-calendars';
 import Layout from '../../constants/Layout';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
 import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
-
+import * as Animatable from 'react-native-animatable';
 import { FETCH_NUM_MONTHS_FORWARD, FETCH_NUM_MONTHS_BACKWARDS } from '../../constants';
 import { TouchableOpacity } from "react-native-gesture-handler";
 
@@ -59,7 +59,7 @@ class EventsScreen extends Component {
       LocaleConfig.locales[language] = Constants.SCREENS.events.agendaLocale[language];
     LocaleConfig.defaultLocale = props.locale.lan;
 
-    this._refs = {};
+    this._refs = { calendarView: null };
     this._queriedMonths = {};
 
     /* The upper and lower bound for date fetcher: use to load more months */
@@ -101,6 +101,8 @@ class EventsScreen extends Component {
   }
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
+
+  handleCalendarViewRef = ref => this._refs.calendarView = ref;
 
   /**
    * Load events for the current month
@@ -154,10 +156,9 @@ class EventsScreen extends Component {
     });
   }
 
-
-  _isSuccessData  = () => true;    /* e.g. this.props.pois.success; */
-  _isLoadingData  = () => false;   /* e.g. this.props.pois.loading; */
-  _isErrorData    = () => null;    /* e.g. this.props.pois.error; */
+  _isSuccessData  = () => this.props.events.eventsSuccess;    /* e.g. this.props.pois.success; */
+  _isLoadingData  = () => this.props.events.eventsLoading;   /* e.g. this.props.pois.loading; */
+  _isErrorData    = () => this.props.events.eventsError;    /* e.g. this.props.pois.error; */
 
 
   _openMap = () => {
@@ -166,6 +167,17 @@ class EventsScreen extends Component {
     this.props.navigation.navigate(Constants.NAVIGATION.NavEventsMapScreen, {events});
   }
   
+  /**
+   * 
+   * @param {*} dateString: "2020-11-14"
+   */
+  _onDatePress = (dateString) => {
+    const { eventsByYearMonthDay } = this.props.events;
+    const eventsSubset = eventsByYearMonthDay[dateString];
+    if (eventsSubset)
+      this.props.navigation.navigate(Constants.NAVIGATION.NavEventsSubset, { eventsSubset });
+  }
+
   /********************* Render methods go down here *********************/
 
   _renderBottomToast = () => {
@@ -184,22 +196,21 @@ class EventsScreen extends Component {
     )
   }
 
+  /** Pan Gesture Calendar */
   _renderContent = () => {
     const { lan } = this.props.locale;
     LocaleConfig.defaultLocale = lan;
      return (
-      <AsyncOperationStatusIndicator
-        loading={this._isLoadingData()}
-        success={this._isSuccessData()}
-        error={this._isErrorData()}
-        loadingLayout={<Text>NOW LOADING</Text>}>
-          <View style={[styles.fill, styles.calendarView]}>
-            <Calendar
+        <View style={[styles.fill, styles.calendarView]}>
+          <CalendarProvider
+            onDateChanged={(date) => this._onDatePress(date)}
+            onMonthChange={(date) => this._loadEvents(date)}
+          >
+            <ExpandableCalendar
               theme={Constants.styles.calendarTheme}
               onDayPress={(day) => {console.log('selected day', day)}}
               onDayLongPress={(day) => {console.log('selected day', day)}}
               monthFormat={'MMMM yyyy'}
-              onMonthChange={(date) => this._loadEvents(date)}
               hideExtraDays={true}
               markingType={'custom'}
               markedDates={this.props.events.eventsCalendarMarkers}
@@ -207,12 +218,18 @@ class EventsScreen extends Component {
               hideDayNames={false}
               enableSwipeMonths={true}
             />
+            <AsyncOperationStatusIndicator
+              loading={this._isLoadingData()}
+              success={this._isSuccessData()}
+              error={this._isErrorData()}
+              loadingLayout={<LLEntitiesFlatlist numColumns={1} itemStyle={styles.eventListItemLoadingLayout} />}>
             <View style={styles.calendarList}>
               {this._renderEventsList()}
             </View>
-            {this._renderBottomToast()}
-          </View>
-      </AsyncOperationStatusIndicator>
+            </AsyncOperationStatusIndicator>
+          </CalendarProvider>
+          {this._renderBottomToast()}
+        </View>
      )
   }
 
@@ -260,6 +277,7 @@ class EventsScreen extends Component {
 }
 
 
+
 EventsScreen.navigationOptions = {
   title: 'Calendar',
 };
@@ -275,6 +293,12 @@ const styles = StyleSheet.create({
     margin: 5,
     color: Colors.red,
     fontWeight: 'bold'
+  },
+  eventListItemLoadingLayout: {
+    width: "100%",
+    height: 78,
+    borderRadius: 5,
+    marginBottom: 13,
   },
   container: {
     padding: 10,

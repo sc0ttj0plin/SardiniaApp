@@ -49,11 +49,10 @@ class ItinerariesScreen extends PureComponent {
     this._onFocus = null;
     this._refs = {};
 
-    const itineraries = _.get(props, "itineraries.data", []);
 
     this.state = {
       render: USE_DR ? false : true,
-      itineraries: itineraries,
+      itineraries: [],
       tid: -1,
       coords: {},
       poisLimit: Constants.PAGINATION.poisLimit,
@@ -82,12 +81,10 @@ class ItinerariesScreen extends PureComponent {
         this._onUpdateCoords(this.state.coords);
       }
     });
-    // console.log("itinerarys", this.props.route.params)
   }
 
   componentDidUpdate(prevProps) {
     if(prevProps.itineraries !== this.props.itineraries) {
-      // console.log("itineraries updated", this.props.itineraries.data.length)
       this.setState({
         itineraries: this.props.itineraries.data
       })
@@ -117,15 +114,6 @@ class ItinerariesScreen extends PureComponent {
     );
   }
 
-  /**
-   * Invoked whenever the coordinates get updated (either on initial load or when the user moves)
-   *  Pois: fetches new nearest pois and clusters.
-   *  PoisCategories: if there are no more nested categories then, instead of loading subcategories load just pois (leaf)
-   *  TODO PERFORMANCE ISSUE: 
-   *    - if we don't set a threshold on min number of meters there's the risk that this method will be invoked many times!
-   *    - it is invoked too many times also when pushing a new screen
-   * @param {*} newCoords: the new user's coordinates
-   */
   _onUpdateCoords(newCoords) {
     // const { coords, term } = this.state;
     const { coords } = this.state;
@@ -134,46 +122,10 @@ class ItinerariesScreen extends PureComponent {
       // Are coordinates within sardinia's area? fetch the updated pois list
       if (isCordsInBound) {
         this.setState({ isCordsInBound, coords: newCoords, nearPoisRefreshing: true });
-        // this._fetchNearestPois(newCoords).then(() => {
-        //   this.setState({ nearPoisRefreshing: false });
-        // });
       }
     }
-    // Update list of pois if we are at the bottom of the category tree
-    // if(this._isPoiList()){
-    //   this._loadMorePois();
-    // } 
   }
 
-  /**
-   * Get more pois when the user changes position and/or 
-   * we reach the end of the category tree . 
-   * Pois are loaded in order of distance from the user and are "categorized"
-   * to load pois in the bottom scrollable container list (not header)
-   * uuids controls the category of the pois
-   */
-  _loadMorePois = () => {
-    const { childUuids } = this._getCurrentTerm();
-    var { coords } = this.state;
-    if(coords && this._isPoiList() && !this.state.poisRefreshing){
-      this.setState({
-        poisRefreshing: true
-      }, () => {
-        apolloQuery(actions.getNearestPois({
-          limit: this.state.poisLimit,
-          offset: this.state.pois ? this.state.pois.length : 0,
-          x: coords.longitude,
-          y: coords.latitude,
-          uuids: childUuids
-        })).then((pois) => {
-          this.setState({
-            pois: this.state.pois ? [...this.state.pois, ...pois] : pois,
-            poisRefreshing: false
-          });
-        })
-      });
-    }
-  }
 
   /**
    * Open single poi screen

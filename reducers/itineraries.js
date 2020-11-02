@@ -6,7 +6,8 @@ import _ from 'lodash';
  */
 const INITIAL_STATE = {
   //itineraries
-  data: {},
+  data: [],
+  dataById: {},
   success: false, 
   error: null,
   loading: false,
@@ -26,8 +27,8 @@ export default function reducer(state = INITIAL_STATE, action) {
       return { 
         ...state, 
         success: true,
-        data: [...action.payload.data ],
-        dataByKey: { ...state.data, ...action.payload.dataByKey },
+        data: [ ...action.payload.data ],
+        dataById: { ...state.data, ...action.payload.dataById },
         error: null, 
         loading: false
       };

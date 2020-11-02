@@ -27,7 +27,6 @@ import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
 import { Button } from "react-native-paper";
 import { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
-import { PROVIDER_GOOGLE } from 'react-native-maps';
 
 /**
  * Map:             Clusters + pois that update with user map's interaction

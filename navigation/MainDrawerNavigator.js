@@ -15,6 +15,7 @@ import PlaceScreen from '../screens/Places/Place';
 import EventsScreen from '../screens/Events/Events';
 import EventScreen from '../screens/Events/Event';
 import EventsMapScreen from '../screens/Events/Map';
+import EventsSubset from '../screens/Events/EventsSubset';
 import ItinerariesScreen from '../screens/Itineraries/Itineraries';
 
 import ExtrasScreen from '../screens/Extras/Extras';
@@ -39,7 +40,7 @@ import * as Constants from '../constants';
 const {
   NavPlacesScreen, NavInspirersScreen ,NavMapScreen, 
   NavExperiencesItinerariesScreen, 
-  NavItineraryScreen, NavEventsScreen, NavEventScreen, NavEventsMapScreen, NavExploreScreen, 
+  NavItineraryScreen, NavEventsScreen, NavEventScreen, NavEventsMapScreen, NavEventsSubset, NavExploreScreen, 
   NavVirtualTourScreen, NavPlaceScreen, NavInspirerScreen,
   NavExtrasScreen, NavExtraScreen, NavTabNavigator, NavSearchScreen, NavSearchStackScreen, 
   NavMainStackScreen, NavVideoScreen, NavFavouritesScreen, NavFavouritesStackScreen 
@@ -202,10 +203,10 @@ function TabNavigator() {
       animationEnabled={true}>
       {/* <BottomTabNavigator.Screen name={"Boilerplate"} component={Boilerplate} options={placesNavigationOptions} label="Boilerplate"/> */}
       {/* <BottomTabNavigator.Screen name={NavExtrasScreen} component={ExtraStackScreen} options={extrasNavigationOptions} /> */}
+      <BottomTabNavigator.Screen name={NavEventsScreen} component={EventsScreen} options={eventsNavigationOptions}/>
       <BottomTabNavigator.Screen name={NavPlacesScreen} component={PlacesScreen} options={placesNavigationOptions}/>
       <BottomTabNavigator.Screen name={NavExtrasScreen} component={ExtrasScreen} options={extrasNavigationOptions}/>
       <BottomTabNavigator.Screen name={NavExperiencesItinerariesScreen} component={ItinerariesScreen} options={itinerariesNavigationOptions} />
-      <BottomTabNavigator.Screen name={NavEventsScreen} component={EventsScreen} options={eventsNavigationOptions}/>
       {/* <BottomTabNavigator.Screen name={NavInspirersScreen} component={InspirersScreen} options={inspirersNavigationOptions} /> */}
     </BottomTabNavigator.Navigator>
   );
@@ -225,6 +226,7 @@ function MainStackScreen() {
       <MainStack.Screen name={NavPlaceScreen} component={PlaceScreen}/>
       <MainStack.Screen name={NavEventScreen} component={EventScreen} />
       <MainStack.Screen name={NavExtraScreen} component={ExtraScreen} />
+      <MainStack.Screen name={NavEventsSubset} component={EventsSubset} />
       <MainStack.Screen name={NavEventsMapScreen} component={EventsMapScreen} options={{...FromTopTransition}} />
       {/* <MainStack.Screen name={NavPlacesScreen} component={PlacesScreen}/> */}
       {/* <MainStack.Screen name={NavVideoScreen} component={VideoScreen}/> */}
