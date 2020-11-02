@@ -193,7 +193,8 @@ const apolloMiddleware = client => {
               //TODO: temporary fix: add fake pois to "pois" key
               itineraries.forEach((e) => _tmpAddMockPois(e));
               //END_TODO
-              dispatch.payload = itineraries.reduce((acc, curr) => ({ ...acc, [curr.nid]: curr}), {});;
+              dispatch.payload.dataByKey = itineraries.reduce((acc, curr) => ({ ...acc, [curr.nid]: curr}), {});;
+              dispatch.payload.data = itineraries;
             }
             store.dispatch(dispatch);
           }).catch((e) => {
