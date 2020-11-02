@@ -25,7 +25,7 @@ import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
 import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
 import { Button } from "react-native-paper";
-import { Marker } from 'react-native-maps';
+import { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
 
 /**
@@ -188,9 +188,8 @@ class EventsMapScreen extends PureComponent {
   }
 
   _selectMarker = (event) => {
-    this.setState({
-      selectedEvent: event
-    })
+    if (event)
+      this.setState({ selectedEvent: event });
   }
 
   // _backButtonPress = () => this.props.actions.popCurrentCategoryPlaces();
@@ -211,6 +210,7 @@ class EventsMapScreen extends PureComponent {
       <MapView
         coords={coords}
         initialRegion={region}
+        provider={ PROVIDER_GOOGLE }
         mapType='standard'
         showsUserLocation={ true }
         showsIndoorLevelPicker={true}
@@ -247,19 +247,15 @@ class EventsMapScreen extends PureComponent {
           coordinate={{ longitude: parseFloat(long),  latitude: parseFloat(lat) }}
           onPress={() => this._selectMarker(event)}
           tracksViewChanges={true}
-          style={{width: 42, height: 42, zIndex: 1}}>
-            <View style={[styles.markerContainer, {
-              backgroundColor: selected ? "rgba(217, 83, 30, 0.5)" : "transparent"
-            }]}>
+          style={styles.markerAnimated}>
+            <View style={[styles.markerContainer, { backgroundColor: selected ? "rgba(217, 83, 30, 0.5)" : "transparent"}]}>
               <View
                 style={[styles.marker]}>
                 <Ionicons
                   name={Constants.RELATED_LIST_TYPES.events.iconName}
                   size={19}
                   color={"#ffffff"}
-                  style={{
-                    paddingTop: Platform.OS === 'ios' ? 3 : 0
-                  }}
+                  style={styles.markerIcon}
                 />
               </View>
             </View>
@@ -275,13 +271,7 @@ class EventsMapScreen extends PureComponent {
   _renderListHeader = () => {
     const { nearToYou, whereToGo } = this.props.locale.messages;
       return (
-        <View style={{ 
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100%",
-          marginBottom: 40
-        }}>
+        <View style={styles.listHeader}>
           <Text style={styles.sectionTitle}>Esplora Eventi</Text>
         </View>
       )
@@ -358,6 +348,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
     flex: 1,
   },
+  listHeader: { 
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    marginBottom: 40
+  },
   sectionTitle: {
       fontSize: 16,
       color: "black",
@@ -374,6 +371,14 @@ const styles = StyleSheet.create({
   listStyle: {
     paddingHorizontal: 10,
     paddingBottom: 25,
+  },
+  markerAnimated: {
+    width: 42, 
+    height: 42, 
+    zIndex: 1
+  },
+  markerIcon: {
+    paddingTop: Platform.OS === 'ios' ? 3 : 0
   },
   listPois: {
     backgroundColor: Colors.colorScreen1,

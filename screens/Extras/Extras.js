@@ -73,7 +73,7 @@ class ExtrasScreen extends Component {
 
   /********************* Render methods go down here *********************/
   _renderItem = (item , index) => {
-    const { lan } = this.props.locale.lan;
+    const { lan } = this.props.locale;
     const { findOutMore } = this.props.locale.messages;
     const title = _.get(item.title, [lan, 0, "value"], null);
     return(
