@@ -29,6 +29,7 @@
     "apollo-client": "^2.6.10",
     "apollo-link-http": "^1.5.17",
     "axios": "^0.19.2",
+    "create-hmac": "^1.1.7",
     "expo": "^39.0.3",
     "expo-asset": "~8.2.0",
     "expo-av": "~8.6.0",

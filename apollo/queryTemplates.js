@@ -187,8 +187,10 @@ query {
 			title
 			body
       poi {
+        uuid
         nid
-      	georef
+        georef
+        image: legacy(path: "field_immagine_top.und[0].uri")
       }
 		}
   }
