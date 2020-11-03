@@ -63,8 +63,6 @@ class InspirersScreen extends Component {
 
     this.state = {
       render: USE_DR ? false : true,
-      //
-      tid: -1,
     };
       
   }
@@ -118,7 +116,6 @@ class InspirersScreen extends Component {
   _loadMorePois = () => {
     const { childUuids } = this._getCurrentTerm();
     const { inspirers } = this.props;
-    // const { poisRefreshing, pois } = this.state;
     if (this._isPoiList()) {
       this.props.actions.getInspirers({ 
         limit: Constants.PAGINATION.poisLimit, 

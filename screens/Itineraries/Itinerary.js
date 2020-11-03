@@ -50,7 +50,6 @@ class ItineraryScreen extends Component {
     super(props);
 
     const { uuid } = props.route.params;
-    console.log("constructor", uuid)
     this.state = {
       render: USE_DR ? false : true,
       //
@@ -98,7 +97,6 @@ class ItineraryScreen extends Component {
   _fetchRelatedNodes = async () => {
     try {
       const relatedEntities = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.itineraries, offset: Math.ceil(Math.random()*100), limit: 5}))
-      console.log("related list length", relatedEntities.length)
       this.setState({ relatedEntities })
     } catch(error){
       console.log(error)
