@@ -184,9 +184,6 @@ class ItineraryStagesMapScreen extends Component {
               />
               <View style={styles.cardTextContainer}>
                 <Text numberOfLines={1} style={styles.cardtitle}>{marker.title}</Text>
-                {/* <Text numberOfLines={1} style={styles.cardDescription}>
-                  {marker.abstract}
-                </Text> */}
               </View>
             </TouchableOpacity>
           ))}
