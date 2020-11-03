@@ -6,7 +6,8 @@ import _ from 'lodash';
  * Inspirers are a generic term used to identify events, itineraries and articles
  */
 const INITIAL_STATE = {
-  data: {},
+  data: [],
+  dataById: {},
   success: false,
   error: null,
   loading: false,
@@ -24,7 +25,8 @@ export default function reducer(state = INITIAL_STATE, action) {
     case Constants.GET_INSPIRERS_SUCCESS:
       return { 
         ...state, 
-        data: {...state.data, ...action.payload }, 
+        data: [ ...state.data, ...action.payload.data ],
+        dataById: { ...state.dataById, ...action.payload.dataById }, 
         success: true,
         error: null,
         loading: false,

@@ -19,10 +19,11 @@ import EventsSubset from '../screens/Events/EventsSubset';
 import ItinerariesScreen from '../screens/Itineraries/Itineraries';
 import ItineraryScreen from '../screens/Itineraries/Itinerary';
 import ItineraryStagesMapScreen from '../screens/Itineraries/ItineraryStagesMap';
-
-
+import InspirersScreen from '../screens/Inspirers/Inspirers';
+import InspirerScreen from '../screens/Inspirers/Inspirer';
 import ExtrasScreen from '../screens/Extras/Extras';
 import ExtraScreen from '../screens/Extras/Extra';
+import SearchScreen from '../screens/Search/Search';
 // import MapScreen from '../screens/Others/MapScreen';
 // import ExploreScreen from '../screens/Others/ExploreScreen';
 // import ExtrasScreen from '../screens/Others/ExtrasScreen';
@@ -42,7 +43,7 @@ import { ConnectedText, ConnectedLanguageList, TabBar } from '../components';
 import * as Constants from '../constants';
 const {
   NavPlacesScreen, NavInspirersScreen ,NavMapScreen, 
-  NavExperiencesItinerariesScreen, 
+  NavItinerariesScreen, 
   NavItineraryScreen, NavEventsScreen, NavEventScreen, NavItineraryStagesMapScreen,NavEventsMapScreen, NavEventsSubset, NavExploreScreen, 
   NavVirtualTourScreen, NavPlaceScreen, NavInspirerScreen,
   NavExtrasScreen, NavExtraScreen, NavTabNavigator, NavSearchScreen, NavSearchStackScreen, 
@@ -54,7 +55,7 @@ import Colors from '../constants/Colors';
 import Place from '../screens/Places/Place';
 
 /**
- * App navigation hyerarchy is as follows
+ * App navigation hyerarchy is as follows (TODO: revise)
  * 
  *  Drawer (drawer)
  *    Favourites (stack)
@@ -106,7 +107,7 @@ var ConnectedTextEvents = <ConnectedText languageKey="tabEvents"/>;
 const eventsNavigationOptions = {
   languageKey: "tabEvents",
   name: NavEventsScreen,
-  backgroundActiveColor: Colors.colorScreen5, 
+  backgroundActiveColor: Colors.colorEventsScreen, 
   icon: Platform.OS === 'ios' ? 'ios-calendar' : 'md-calendar',
   iconSourceDefault: require("../assets/icons/events_default.png"),
   iconSourceActive: require("../assets/icons/events_active.png"),
@@ -118,8 +119,8 @@ const eventsNavigationOptions = {
 
 const itinerariesNavigationOptions = {
   languageKey: "tabItineraries",
-  name: NavExperiencesItinerariesScreen, 
-  backgroundActiveColor: Colors.colorScreen4,
+  name: NavItinerariesScreen, 
+  backgroundActiveColor: Colors.colorItinerariesScreen,
   icon: Platform.OS === 'ios' ? 'md-analytics': 'md-analytics',
   iconSourceDefault: require("../assets/icons/itineraries_default.png"),
   iconSourceActive: require("../assets/icons/itineraries_active.png"), 
@@ -132,7 +133,7 @@ const itinerariesNavigationOptions = {
 const extrasNavigationOptions = {
   languageKey: "tabExtras",
   name: NavExtrasScreen, 
-  backgroundActiveColor: Colors.colorScreen3, 
+  backgroundActiveColor: Colors.colorExtrasScreen, 
   icon: Platform.OS === 'ios' ? 'ios-star' : 'ios-star',
   iconSourceDefault: require("../assets/icons/central_icon.png"),
   tabBarLabel: ConnectedTextExtras,
@@ -144,7 +145,7 @@ const extrasNavigationOptions = {
 const inspirersNavigationOptions = {
   languageKey: "tabWhatToDo",
   name: NavInspirersScreen, 
-  backgroundActiveColor: Colors.colorScreen2, 
+  backgroundActiveColor: Colors.colorInspirersScreen, 
   icon: Platform.OS === 'ios' ? 'ios-compass' : 'md-compass',
   iconSourceDefault: require("../assets/icons/whatToDo_default.png"),
   iconSourceActive: require("../assets/icons/whatToDo_active.png"),
@@ -159,7 +160,7 @@ const inspirersNavigationOptions = {
 const placesNavigationOptions = {
   languageKey: "tabWhereToGo",
   name: NavPlacesScreen, 
-  backgroundActiveColor: Colors.colorScreen1, 
+  backgroundActiveColor: Colors.colorPlacesScreen, 
   icon: Platform.OS === 'ios' ? 'ios-map' : 'md-map',
   iconSourceDefault: require("../assets/icons/whereToGo_default.png"),
   iconSourceActive: require("../assets/icons/whereToGo_active.png"),
@@ -172,21 +173,6 @@ const placesNavigationOptions = {
 };
 
 
-/**
- * Extras Stack (level: 3, parent: BottomTabNavigator)
- * Extras are inspirers with predetermined categories
- */
-var ExtraStack = createStackNavigator();
-
-function ExtraStackScreen() {
-  return (
-    <ExtraStack.Navigator headerMode="none">
-      {/* <ExtraStack.Screen name={NavExtrasScreen} component={ExtrasScreen} /> */}
-      {/* <ExtraStack.Screen name={NavExtraScreen} component={ExtraScreen} /> */}
-      {/* <ExtraStack.Screen name={NavPlaceScreen} component={PlaceScreen} /> */}
-    </ExtraStack.Navigator>
-  );
-}
 
 /**
  * Tab navigator (level: 2, parent: MainStack)
@@ -204,14 +190,11 @@ function TabNavigator() {
       swipeEnabled={false}
       tabBar={props => <TabBar {...props} navOptions={[placesNavigationOptions, inspirersNavigationOptions, extrasNavigationOptions, itinerariesNavigationOptions, eventsNavigationOptions]}/>}
       animationEnabled={true}>
-      {/* <BottomTabNavigator.Screen name={"Boilerplate"} component={Boilerplate} options={placesNavigationOptions} label="Boilerplate"/> */}
-      {/* <BottomTabNavigator.Screen name={NavExtrasScreen} component={ExtraStackScreen} options={extrasNavigationOptions} /> */}
       <BottomTabNavigator.Screen name={NavPlacesScreen} component={PlacesScreen} options={placesNavigationOptions}/>
-      <BottomTabNavigator.Screen name={NavEventsScreen} component={EventsScreen} options={eventsNavigationOptions}/>
+      <BottomTabNavigator.Screen name={NavInspirersScreen} component={InspirersScreen} options={inspirersNavigationOptions} />
       <BottomTabNavigator.Screen name={NavExtrasScreen} component={ExtrasScreen} options={extrasNavigationOptions}/>
-      <BottomTabNavigator.Screen name={NavExperiencesItinerariesScreen} component={ItinerariesScreen} options={itinerariesNavigationOptions} />
+      <BottomTabNavigator.Screen name={NavItinerariesScreen} component={ItinerariesScreen} options={itinerariesNavigationOptions} />
       <BottomTabNavigator.Screen name={NavEventsScreen} component={EventsScreen} options={eventsNavigationOptions}/>
-      {/* <BottomTabNavigator.Screen name={NavInspirersScreen} component={InspirersScreen} options={inspirersNavigationOptions} /> */}
     </BottomTabNavigator.Navigator>
   );
 }
@@ -234,13 +217,7 @@ function MainStackScreen() {
       <MainStack.Screen name={NavEventsMapScreen} component={EventsMapScreen} options={{...FromTopTransition}} />
       <MainStack.Screen name={NavItineraryScreen} component={ItineraryScreen}  />
       <MainStack.Screen name={NavItineraryStagesMapScreen} component={ItineraryStagesMapScreen}  />
-      {/* <MainStack.Screen name={NavPlacesScreen} component={PlacesScreen}/> */}
-      {/* <MainStack.Screen name={NavVideoScreen} component={VideoScreen}/> */}
-      {/* <MainStack.Screen name={NavVirtualTourScreen} component={VirtualTourScreen}/> */}
-      {/* <MainStack.Screen name={NavInspirersScreen} component={InspirersScreen}/> */}
-      {/* <MainStack.Screen name={NavInspirerScreen} component={InspirerScreen}/> */}
-      {/* Itineraries */}
-      {/* Events */}
+      <MainStack.Screen name={NavInspirerScreen} component={InspirerScreen}/>
     </MainStack.Navigator>
     </>
   );
@@ -273,11 +250,11 @@ var SearchStack = createStackNavigator();
 function SearchStackScreen() {
   return (
     <SearchStack.Navigator headerMode="none" initialRouteName={NavPlacesScreen}>
-      {/* <SearchStack.Screen name={NavSearchScreen} component={SearchScreen} /> */}
-      {/* <SearchStack.Screen name={NavPlaceScreen} component={PlaceScreen}/> */}
+      <SearchStack.Screen name={NavSearchScreen} component={SearchScreen} />
+      <SearchStack.Screen name={NavPlaceScreen} component={PlaceScreen}/>
+      <SearchStack.Screen name={NavEventScreen} component={EventScreen} />
       {/* <SearchStack.Screen name={NavVideoScreen} component={VideoScreen}/> */}
       {/* <SearchStack.Screen name={NavVirtualTourScreen} component={VirtualTourScreen}/> */}
-      {/* <SearchStack.Screen name={NavEventScreen} component={EventScreen} /> */}
     </SearchStack.Navigator>
   );
 }
@@ -319,7 +296,7 @@ function DrawerNavigator() {
   return (
     <Drawer.Navigator
       drawerStyle={{
-        backgroundColor: Colors.blueTransparent,
+        backgroundColor: Colors.blue,
         paddingTop: 50,
         paddingLeft: 30,
       }}
@@ -327,7 +304,7 @@ function DrawerNavigator() {
       drawerContent={(props) => <CustomDrawerContent {...props} />}
     >
       <Drawer.Screen name={NavMainStackScreen} component={MainStackScreen} options={{ drawerLabel: ConnectedTextTabName }} />
-      {/* <Drawer.Screen name={NavSearchStackScreen} component={SearchStackScreen} options={{ drawerLabel: ConnectedTextSearch }} /> */}
+      <Drawer.Screen name={NavSearchStackScreen} component={SearchStackScreen} options={{ drawerLabel: ConnectedTextSearch }} />
       {/* <Drawer.Screen name={NavExploreScreen} component={ExploreScreen} options={{ drawerLabel: ConnectedTextGallery }} /> */}
       {/* <Drawer.Screen name={NavFavouritesStackScreen} component={FavouritesStackScreen} options={{ drawerLabel: ConnectedFavourites }} /> */}
     </Drawer.Navigator>

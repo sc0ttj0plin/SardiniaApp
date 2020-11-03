@@ -268,7 +268,7 @@ class EventsScreen extends Component {
     const { render } = this.state;
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader iconTintColor={Colors.colorScreen5} />
+        <ConnectedHeader iconTintColor={Colors.colorEventsScreen} />
         {render && this._renderContent()}
       </View>
     )

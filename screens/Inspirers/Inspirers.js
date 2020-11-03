@@ -4,7 +4,7 @@ import {
   StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
-  // CategoryListItem, 
+  CategoryListItem, 
   // GeoRefHListItem, 
   // GridGallery, 
   // GridGalleryImage, 
@@ -12,6 +12,17 @@ import {
   // ScrollableHeader,
   // TabBarIcon, 
   // CalendarListItem, 
+  // EntityAbstract,
+  // EntityDescription,
+  // EntityGallery,
+  // EntityHeader,
+  EntityItem,
+  // EventListItem,
+  // EntityMap,
+  // EntityRelatedList,
+  // EntityVirtualTour,
+  // EntityWhyVisit,
+  // TopMedia,
   AsyncOperationStatusIndicator, 
   // AsyncOperationStatusIndicatorPlaceholder,
   // Webview, 
@@ -30,9 +41,11 @@ import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 import Layout from '../../constants/Layout';
+import { greedyArrayFinder, getEntityInfo, getCoordinates, getSampleVideoIndex, getGalleryImages } from '../../helpers/utils';
+import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';
-import Colors from '../../constants/Colors';
 import * as Constants from '../../constants';
+import Colors from '../../constants/Colors';
 import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
 
 /* Deferred rendering to speedup page inital load: 
@@ -50,14 +63,14 @@ class InspirersScreen extends Component {
 
     this.state = {
       render: USE_DR ? false : true,
+      //
+      tid: -1,
     };
       
   }
 
-  /**
-   * Use this function to perform data fetching
-   * e.g. this.props.actions.getPois();
-   */
+  /********************* React.[Component|PureComponent] methods go down here *********************/
+
   componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
@@ -69,78 +82,162 @@ class InspirersScreen extends Component {
    * or to post-process data once it changes
    */
   componentDidUpdate(prevProps) {
-    /**
-     * Is the former props different from the newly propagated prop (redux)? perform some action
-     * if(prevProps.xxx !== this.props.xxx)
-     *  doStuff();
-     */
+    // If currently selected categories (terms) differ from the previous ones fetch other pois for those categories
+    if(prevProps.others.inspirersTerms !== this.props.others.inspirersTerms) {
+      this._loadMorePois();
+    }
   }
 
   /**
-   * If the reducer embeds a single data type then e.g. only pois:
-   *    Data is stored in this.props.pois.data
-   *    Success state is stored in this.props.pois.success
-   *    Loading state is stored in this.props.pois.loading
-   *    Error state is stored in this.props.pois.error
-   * If the reducer embeds multiple data types then (e.g. search + autocomplete):
-   *    Data is stored in this.props.searchAutocomplete.search
-   *    Success state is stored in this.props.searchAutocomplete.searchSuccess
-   *    Loading state is stored in this.props.searchAutocomplete.searchLoading
-   *    Error state is stored in this.props.searchAutocomplete.searchError
+   * Use this function to unsubscribe or clear any event hooks
    */
-  _isSuccessData  = () => false;    /* e.g. this.props.pois.success; */
-  _isLoadingData  = () => true;   /* e.g. this.props.pois.loading; */
-  _isErrorData    = () => null;    /* e.g. this.props.pois.error; */
-
-
-  _renderCategoryList = () => {
-    // var {categories} = this.props;
-    // var {term} = this.state;
-    // var currentCategories = term ? term.terms ? term.terms : [] : categories;
-
-    return (
-        <AsyncOperationStatusIndicator
-          loading={this._isLoadingData()}
-          success={this._isSuccessData()}
-          error={this._isErrorData()}
-          loadingLayout={
-            <LLEntitiesFlatlist 
-              horizontal={false} 
-              numColumns={1} 
-              itemStyle={styles.itemFlatlist} 
-              style={styles.listStyle} 
-              bodyContainerStyle={styles.listContainer}/>}
-        >
-          <Text>CIAO</Text>
-          {/* <FlatList
-            data={currentCategories}
-            renderItem={({item}) => this._renderCategoryListItem(item)}
-            keyExtractor={item => item.tid.toString()}
-            style={styles.listStyle}
-            bodyContainerStyle={styles.listContainer}
-            initialNumToRender={3} // Reduce initial render amount
-            maxToRenderPerBatch={2}
-            updateCellsBatchingPeriod={400} // Increase time between renders
-            windowSize={5} // Reduce the window size
-            /> */}
-        </AsyncOperationStatusIndicator>
-    );
+  componentWillUnmount() {
   }
 
-  _renderContent = () => {
+  /********************* Non React.[Component|PureComponent] methods go down here *********************/
+
+  /**
+   * Get current term (category) and its child uuids, 
+   *   if fallbackToCategories is true fallbacks to initial categories
+   */
+  _getCurrentTerm = (fallbackToCategories=false) => {
+    let term = this.props.others.inspirersTerms[this.props.others.inspirersTerms.length - 1];
+    if (fallbackToCategories)
+      term = term ? (term.terms ? term.terms : []) : this.props.categories.data[Constants.VIDS.inspirersCategories];
+    const childUuids = term ? term.childUuids : null;
+    return { term, childUuids };
+  }
+
+  /**
+   * Get more pois when the user changes position and/or 
+   * we reach the end of the category tree . 
+   * Pois are loaded in order of distance from the user and are "categorized"
+   * to load pois in the bottom scrollable container list (not header)
+   * uuids controls the category of the pois
+   */
+  _loadMorePois = () => {
+    const { childUuids } = this._getCurrentTerm();
+    const { inspirers } = this.props;
+    // const { poisRefreshing, pois } = this.state;
+    if (this._isPoiList()) {
+      this.props.actions.getInspirers({ 
+        limit: Constants.PAGINATION.poisLimit, 
+        offset: Object.values(inspirers.data).length,
+        uuids: childUuids
+      });
+    }
+  }
+
+  /**
+   * Opens category item on click, push a new screen 
+   * @param {*} item: list item clicked
+   */
+  _selectCategory = (item) => {
+    this.props.actions.pushCurrentCategoryInspirers(item);
+  }
+
+  /**
+   * Open single inspirer screen
+   * @param {*} item: item list
+   */
+  _openPoi = (item) => {
+    this.props.navigation.navigate(Constants.NAVIGATION.NavInspirerScreen, { item });
+  }
+
+  /**
+   * Is poi list returns true if we reached the end of the three (no more sub categories)
+   */
+  _isPoiList = () => {
+    const { term } = this._getCurrentTerm();
+    return term && (!term.terms || term.terms.length == 0);
+  }
+
+  _backButtonPress = () => this.props.actions.popCurrentCategoryInspirers();
+
+  _isSuccessData  = () => this.props.categories.success || this.props.inspirers.success; 
+  _isLoadingData  = () => this.props.categories.loading || this.props.inspirers.loading; 
+  _isErrorData    = () => this.props.inspirers.error;   
+
+
+  /********************* Render methods go down here *********************/
+
+  /* Renders a poi in Header */
+  _renderPoiListItem = (item) => {
+    const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
     return (
-      <>
-        {this._renderCategoryList()}
-      </>
-    )
+      <EntityItem 
+        keyItem={item.nid}
+        backgroundTopLeftCorner={"white"}
+        listType={Constants.ENTITY_TYPES.inspirers}
+        iconColor={Colors.colorInspirersScreen}
+        onPress={() => this._openPoi(item)}
+        title={`${title}`}
+        place={`${item.term.name}`}
+        image={`${item.image}`}
+        style={{marginBottom: 10}}
+      />
+  )}
+
+  /* Renders categories list */
+  _renderCategoryListItem = (item) => 
+      <CategoryListItem onPress={() => this._selectCategory(item)} image={item.image} title={item.name} />;
+
+
+  _renderContent = () => {
+    const { term } = this._getCurrentTerm(true);
+    const { inspirers } = this.props;
+    const isPoiList = this._isPoiList();
+    let flatListData = [];
+    let renderItem = null;
+    let numColums = 1; //One for categories, two for pois
+    //if no more nested categories renders pois
+    if (isPoiList) {
+      flatListData = Object.values(inspirers.data);
+      renderItem = ({ item }) => this._renderPoiListItem(item);
+      numColums = 2;
+    } else {
+      //initially term is null so we get terms from redux, then term is populated with nested terms (categories) 
+      flatListData = term;
+      renderItem = ({ item }) => this._renderCategoryListItem(item);
+    }
+
+    return (
+      <AsyncOperationStatusIndicator
+      loading={this._isLoadingData()}
+      success={this._isSuccessData()}
+      error={this._isErrorData()}
+      loadingLayout={
+        <LLEntitiesFlatlist 
+          horizontal={false} 
+          numColumns={1} 
+          itemStyle={styles.itemFlatlist} 
+          style={styles.listStyle} 
+          bodyContainerStyle={styles.listContainer}/>}>
+        <FlatList
+          data={flatListData}
+          renderItem={renderItem}
+          keyExtractor={item => item.uuid}
+          style={styles.listStyle}
+          bodyContainerStyle={styles.listContainer}
+          initialNumToRender={3} // Reduce initial render amount
+          maxToRenderPerBatch={2}
+          updateCellsBatchingPeriod={400} // Increase time between renders
+          windowSize={5} // Reduce the window size
+          />
+      </AsyncOperationStatusIndicator>
+    );
   }
 
 
   render() {
     const { render } = this.state;
     return (
-      <View style={styles.fill}>
-        <ConnectedHeader iconTintColor="#24467C" />
+      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
+        <ConnectedHeader 
+          backOnPress={this._backButtonPress}
+          iconTintColor={Colors.colorInspirersScreen}  
+          backButtonVisible={this.props.others.inspirersTerms.length > 0}
+        />
         {render && this._renderContent()}
       </View>
     )
@@ -150,27 +247,26 @@ class InspirersScreen extends Component {
 
 
 InspirersScreen.navigationOptions = {
-  title: 'Inspirers',
+  title: 'Boilerplate',
 };
 
 
 const styles = StyleSheet.create({
   fill: {
+    flex: 1,
+    backgroundColor: "white"
+  },
+  header: {
+    backgroundColor: "white"
   },
   container: {
-    backgroundColor: Colors.colorScreen2,
-    flex: 1,
+    padding: 10,
   },
-  sectionTitle: {
-      fontSize: 16,
-      color: 'white',
-      fontWeight: "bold",
-      margin: 10
-  },
+  //loading layout
   listContainer: {
     marginTop: 0,
     paddingTop: 0,
-    backgroundColor: Colors.colorScreen2,
+    backgroundColor: Colors.colorInspirersScreen,
 
   },
   listContainerHeader: {
@@ -181,30 +277,9 @@ const styles = StyleSheet.create({
   },
   listStyle: {
     paddingTop: 10, 
-    backgroundColor: Colors.colorScreen2,
+    backgroundColor: Colors.colorInspirersScreen,
     paddingHorizontal: 10,
     height: "100%",
-  },
-  listStyle2: {
-    paddingTop: 10, 
-    backgroundColor: Colors.colorScreen2,
-    paddingLeft: 20,
-    paddingRight: 10,
-    paddingBottom: 25,
-    marginBottom: 20,
-    marginTop: 10,
-  },
-  headerComponentStyle: {
-    marginTop: 0,
-    paddingTop: 0,
-    top: -15
-  },
-  listTitleStyle: {
-    fontSize: 16,
-    color: 'white',
-    fontWeight: "bold",
-    marginBottom: 10,
-    flex: 1
   },
   itemFlatlist: {
     height: 240, 
@@ -229,20 +304,15 @@ function InspirersScreenContainer(props) {
 
 const mapStateToProps = state => {
   return {
-    restState: state.restState,
     //mixed state
-    othersState: state.othersState,
+    others: state.othersState,
     //language
     locale: state.localeState,
     //favourites
     favourites: state.favouritesState,
     //graphql
     categories: state.categoriesState,
-    events: state.eventsState,
     inspirers: state.inspirersState,
-    itineraries: state.itinerariesState,
-    nodes: state.nodesState,
-    pois: state.poisState,
     searchAutocomplete: state.searchAutocompleteState,
   };
 };

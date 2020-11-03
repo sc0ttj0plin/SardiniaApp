@@ -42,14 +42,14 @@ class ItineraryScreen extends Component {
     const { showText } = this.state;
     return (
       <View style={{position: "absolute", zIndex: 9, top: 130, right: -10}}>
-        <ConnectedFab color={Colors.colorScreen4} direction={"down"}>
+        <ConnectedFab color={Colors.colorItinerariesScreen} direction={"down"}>
           <Button 
-            style={{ backgroundColor: Colors.colorScreen4 }} 
+            style={{ backgroundColor: Colors.colorItinerariesScreen }} 
             onPress={() => Linking.openURL("https://www.sardegnaturismo.it")}>
             <Icon name={"share"} size={20} type="font-awesome" color="white" /> 
           </Button>
           <Button 
-            style={{ backgroundColor: Colors.colorScreen4 }} 
+            style={{ backgroundColor: Colors.colorItinerariesScreen }} 
             onPress={() => this.props.actions.toggleFavourite({ type: "itineraries", id: nid })}>
             <Icon name={isFavourite ? "heart" : "heart-o"} size={20} type="font-awesome" color="white" /> 
           </Button>
@@ -70,7 +70,7 @@ class ItineraryScreen extends Component {
     return (
       <View style={styles.fill}>
         <ConnectedHeader 
-        iconTintColor={Colors.colorScreen4}
+        iconTintColor={Colors.colorItinerariesScreen}
         containerStyle={{
           paddingTop: 0,
           height: Layout.header.height,
@@ -105,14 +105,14 @@ class ItineraryScreen extends Component {
               description={description}
               category={"Itinerario"}
               urlAlias={this._entity.url_alias}
-              categoryColor={Colors.colorScreen4}
+              categoryColor={Colors.colorItinerariesScreen}
               toggleFavourite={() => { this.props.actions.toggleFavourite({ type: "itineraries", id: nid })}}
               isFavourite={this.props.favourites.itineraries[nid]}
             />
           }
           <Button
             buttonStyle={styles.fabStyle}
-            containerStyle={styles.fabContainerFav, {position: "absolute", right: 10, top: 10, backgroundColor: Colors.colorScreen4 }}
+            containerStyle={styles.fabContainerFav, {position: "absolute", right: 10, top: 10, backgroundColor: Colors.colorItinerariesScreen }}
             onPress={() => this.setState({ showText: !showText })}
             icon={<Icon name={ showText ? "map" : "text-fields" } size={25} color="white" />}>
           </Button>
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
   fabStyle: {
     height: 50,
     width: 50,
-    backgroundColor: Colors.colorScreen4,
+    backgroundColor: Colors.colorItinerariesScreen,
     borderRadius: 50
   },
   fabContainerMap: {

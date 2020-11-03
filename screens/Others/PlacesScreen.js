@@ -161,7 +161,7 @@ class PlacesScreen extends Component {
           marginTop: 0,
           height: Layout.header.height
         }}
-        iconTintColor={Colors.colorScreen1} 
+        iconTintColor={Colors.colorPlacesScreen} 
         backButtonVisible={typeof this.state.term !== "undefined"}/>
     )
   } 
@@ -272,7 +272,7 @@ class PlacesScreen extends Component {
         headerComponentStyle={{
           marginTop: Layout.statusbarHeight
         }}
-        listItemStyle={{ backgroundColor: Colors.colorScreen1 }}
+        listItemStyle={{ backgroundColor: Colors.colorPlacesScreen }}
         scrollView={FlatList}
         data={currentCategories}
         renderItem={({item}) => this._renderCategoryListItem(item)}
@@ -301,7 +301,7 @@ class PlacesScreen extends Component {
       <PoiItem 
         keyItem={item.nid}
         backgroundTopLeftCorner={"white"}
-        iconColor={Colors.colorScreen1}
+        iconColor={Colors.colorPlacesScreen}
         iconName={Platform.OS === 'ios' ? 'ios-map' : 'md-map'}
         onPress={() => this._openPoi(item)}
         title={`${title}`}
@@ -322,7 +322,7 @@ class PlacesScreen extends Component {
           headerComponentStyle={{
             marginTop: Layout.statusbarHeight
           }}
-          listItemStyle={{ backgroundColor: Colors.colorScreen1 }}
+          listItemStyle={{ backgroundColor: Colors.colorPlacesScreen }}
           scrollView={FlatList}
           extraData={this.props.locale}
           onEndReached={this._loadMorePois.bind(this)}
@@ -427,7 +427,7 @@ PlacesScreen.navigationOptions = {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.colorScreen1,
+    backgroundColor: Colors.colorPlacesScreen,
     borderTopWidth: 0,
     borderBottomWidth: 0,
     flex: 1,
@@ -439,7 +439,7 @@ const styles = StyleSheet.create({
       margin: 10
   },
   listContainer: {
-    backgroundColor: Colors.colorScreen1,
+    backgroundColor: Colors.colorPlacesScreen,
     height: "100%"
   },
   listContainerHeader: {

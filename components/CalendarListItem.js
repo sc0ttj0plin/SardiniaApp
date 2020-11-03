@@ -26,11 +26,11 @@ class CalendarListItem extends PureComponent {
           source={{uri: image}}
           PlaceholderContent={<ActivityIndicator />}>
           <BoxWithText 
-            extraStyle={{color: Colors.colorScreen5}}
+            extraStyle={{color: Colors.colorEventsScreen}}
             title={title}
             opacityBackground={0.98}
             backgroundColor={"#ffffff"}
-            titleStyle={{color: Colors.colorScreen5}}/>
+            titleStyle={{color: Colors.colorEventsScreen}}/>
         </Image>
       </TouchableOpacity>
     );

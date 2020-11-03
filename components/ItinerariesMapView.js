@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     paddingVertical: 10,
-    backgroundColor: Color.colorScreen4
+    backgroundColor: Color.colorItinerariesScreen
   },
   card: {
     elevation: 2,
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 50,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
-    backgroundColor: Color.colorScreen4,
+    backgroundColor: Color.colorItinerariesScreen,
     borderColor: 'white',
     borderWidth: 1,
     justifyContent: 'center',

@@ -27,7 +27,7 @@ export default class PoiItemsList extends PureComponent {
           <PoiItem 
             keyItem={item.nid}
             backgroundTopLeftCorner={this.props.cornerColor ? this.props.cornerColor: "white"}
-            iconColor={this.props.cornerIconColor ? this.props.cornerIconColor : Colors.colorScreen1}
+            iconColor={this.props.cornerIconColor ? this.props.cornerIconColor : Colors.colorPlacesScreen}
             iconName={cornerIconName ? cornerIconName : ""}
             onPress={ () => this.props.onPressItem(item)}
             title={`${title}`}

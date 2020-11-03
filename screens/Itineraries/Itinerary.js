@@ -172,7 +172,7 @@ class ItineraryScreen extends Component {
     return (
       <View style={styles.fab}>
         <ConnectedFab 
-          color={Colors.colorScreen4}
+          color={Colors.colorItinerariesScreen}
           nid={nid}
           title={title}
           coordinates={coordinates}
@@ -224,12 +224,12 @@ class ItineraryScreen extends Component {
           <TopMedia urlImage={entity.image} />
           {this._renderFab(entity.nid, title, coordinates, socialUrl)}   
           <View style={[styles.headerContainer]}> 
-            <EntityHeader title={title} borderColor={Colors.colorScreen4}/>
+            <EntityHeader title={title} borderColor={Colors.colorItinerariesScreen}/>
           </View>
           <View style={[styles.container]}>
             <EntityAbstract abstract={abstract} />
             <EntityMap coordinates={stagesMarkers} hasMarkers uuid={uuid}/>
-            <EntityDescription title={descriptionTitle} text={description} color={Colors.colorScreen4}/>
+            <EntityDescription title={descriptionTitle} text={description} color={Colors.colorItinerariesScreen}/>
             <EntityStages type="itinerary" stages={stages}/>
             <View style={styles.separator}/>
             {this._renderRelatedList(canBeOfInterest, relatedEntities, Constants.ENTITY_TYPES.itineraries)}
@@ -245,7 +245,7 @@ class ItineraryScreen extends Component {
     const { render } = this.state;
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader iconTintColor={Colors.colorScreen4} />
+        <ConnectedHeader iconTintColor={Colors.colorItinerariesScreen} />
         {render && this._renderContent()}
       </View>
     )

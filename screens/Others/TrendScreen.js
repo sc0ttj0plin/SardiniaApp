@@ -281,23 +281,23 @@ class TrendsScreen extends Component {
     const isFavourite = this.props.favourites.places[nid];
     return (
       <View style={{position: "absolute", zIndex: 1, top: 25, right: 20, height: 50, width: 50}}>
-        <ConnectedFab color={Colors.colorScreen1} direction="down">
+        <ConnectedFab color={Colors.colorPlacesScreen} direction="down">
           <TouchableOpacity
             activeOpacity={0.7} 
-            style={{ backgroundColor: Colors.colorScreen1, padding: 8, borderRadius: 50, marginBottom: 10 }} 
+            style={{ backgroundColor: Colors.colorPlacesScreen, padding: 8, borderRadius: 50, marginBottom: 10 }} 
             onPressIn={() => Linking.openURL("https://www.sardegnaturismo.it")}>
             <Icon name={"share"} size={20} type="font-awesome" color="white" /> 
           </TouchableOpacity>
           <TouchableOpacity
             activeOpacity={0.7} 
-            style={{ backgroundColor: Colors.colorScreen1, padding: 8, borderRadius: 50, marginBottom: 10 }} 
+            style={{ backgroundColor: Colors.colorPlacesScreen, padding: 8, borderRadius: 50, marginBottom: 10 }} 
             onPress={() => this.props.actions.toggleFavourite({ type: "places", id: nid })}>
             <Icon name={isFavourite ? "heart" : "heart-o"} size={20} type="font-awesome" color="white" /> 
           </TouchableOpacity>
           {coordinates && (
             <TouchableOpacity
               activeOpacity={0.7}
-              style={{ backgroundColor: Colors.colorScreen1, padding: 8, borderRadius: 50, marginBottom: 10 }} 
+              style={{ backgroundColor: Colors.colorPlacesScreen, padding: 8, borderRadius: 50, marginBottom: 10 }} 
               onPress={() => this._openNavigator(title, coordinates)}>
               <Icon name="map" size={25} color="white" />
             </TouchableOpacity>
@@ -409,15 +409,15 @@ class TrendsScreen extends Component {
                           return image;}))
                   )}
                   {this.state.relatedPois && (
-                    this._renderRelatedList("Luoghi in evidenza", this.state.relatedPois, Colors.colorScreen1, "white", Platform.OS === 'ios' ? 'ios-map' : 'md-map')
+                    this._renderRelatedList("Luoghi in evidenza", this.state.relatedPois, Colors.colorPlacesScreen, "white", Platform.OS === 'ios' ? 'ios-map' : 'md-map')
                   )}
 
                   {this.state.relatedItineraries && (
-                    this._renderRelatedList("Itinerari", this.state.relatedItineraries, Colors.colorScreen4, "white", Platform.OS === 'ios' ? 'ios-analytics' : 'md-analytics')
+                    this._renderRelatedList("Itinerari", this.state.relatedItineraries, Colors.colorItinerariesScreen, "white", Platform.OS === 'ios' ? 'ios-analytics' : 'md-analytics')
                   )}
 
                   {this.state.relatedEvents && (
-                    this._renderRelatedList("Eventi", this.state.relatedEvents, Colors.colorScreen5, "white", Platform.OS === 'ios' ? 'ios-calendar' : "md-calendar")
+                    this._renderRelatedList("Eventi", this.state.relatedEvents, Colors.colorEventsScreen, "white", Platform.OS === 'ios' ? 'ios-calendar' : "md-calendar")
                   )}
                   <View style={{
                     height: 40

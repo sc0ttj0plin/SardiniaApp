@@ -51,10 +51,7 @@ class PlacesScreen extends PureComponent {
       pois: [],
       nearPois: [],
       nearPoisRefreshing: false,
-      tid: -1,
-      prevTerm: null,
       coords: {},
-      poisLimit: Constants.PAGINATION.poisLimit,
       region: Constants.MAP.defaultRegion,
     };
       
@@ -68,9 +65,8 @@ class PlacesScreen extends PureComponent {
   componentDidMount() {
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
     //If it's the first mount gets pois categories ("art and archeology...")
-    if(this.state.tid < 0){
-      this.props.actions.getCategories({ vid: Constants.VIDS.poisCategories });
-    }
+    this.props.actions.getCategories({ vid: Constants.VIDS.poisCategories });
+
     this._initGeolocation();
     
     this._onFocus = this.props.navigation.addListener('focus', () => {
@@ -80,7 +76,12 @@ class PlacesScreen extends PureComponent {
     });
   }
 
+  /**
+   * Update component based on prev props
+   * @param {*} prevProps
+   */
   componentDidUpdate(prevProps) {
+    // If currently selected categories (terms) differ from the previous ones fetch other pois for those categories
     if(prevProps.others.placesTerms !== this.props.others.placesTerms) {
       this._loadMorePois();
     }
@@ -176,29 +177,32 @@ class PlacesScreen extends PureComponent {
    */
   _loadMorePois = () => {
     const { childUuids } = this._getCurrentTerm();
-    var { coords } = this.state;
-    if(coords && this._isPoiList() && !this.state.poisRefreshing){
+    const { poisRefreshing, pois, coords } = this.state;
+    if(coords && this._isPoiList() && !poisRefreshing){
       this.setState({
         poisRefreshing: true
       }, () => {
         apolloQuery(actions.getNearestPois({
-          limit: this.state.poisLimit,
-          offset: this.state.pois ? this.state.pois.length : 0,
+          limit: Constants.PAGINATION.poisLimit,
+          offset: pois ? pois.length : 0,
           x: coords.longitude,
           y: coords.latitude,
           uuids: childUuids
         })).then((pois) => {
           this.setState({
-            pois: this.state.pois ? [...this.state.pois, ...pois] : pois,
+            pois: pois ? [...pois, ...pois] : pois,
             poisRefreshing: false
           });
-        })
+        }).catch(e => {
+          this.setState({ poisRefreshing: false });
+        });
       });
     }
   }
 
   /**
-   * Opens category item on click, push a new screen 
+   * Opens category item on click, enter a subcategory pushing in the stack
+   * (triggers componentDidUpdate => _loadMorePois)
    * @param {*} item: list item clicked
    */
   _selectCategory = (item) => {
@@ -244,9 +248,8 @@ class PlacesScreen extends PureComponent {
       <Text style={{color: 'white'}}>{item.name}</Text>
     </TouchableOpacity>
 
-  /* Renders the topmost component: a map in our use case */
+  /* Renders the topmost component: a category list + map in our case */
   _renderTopComponent = () => {
-    var { categories } = this.props;
     const { term, childUuids } = this._getCurrentTerm(true);
     const { coords, region, nearPois, clusters } = this.state;
     return (
@@ -280,7 +283,7 @@ class PlacesScreen extends PureComponent {
 
   /* Renders the Header of the scrollable container */
   _renderListHeader = () => {
-    var { nearPois } = this.state;
+    const { nearPois } = this.state;
     const { nearToYou, whereToGo } = this.props.locale.messages;
       return (
         <View style={{ marginLeft: -10, marginRight: -10 }}>
@@ -322,14 +325,14 @@ class PlacesScreen extends PureComponent {
       <EntityItem 
         keyItem={item.nid}
         backgroundTopLeftCorner={"white"}
-        iconColor={Colors.colorScreen1}
-        iconName={Platform.OS === 'ios' ? 'ios-map' : 'md-map'}
+        iconColor={Colors.colorPlacesScreen}
+        listType={Constants.ENTITY_TYPES.places}
         onPress={() => this._openPoi(item)}
         title={`${title}`}
         place={`${item.term.name}`}
         image={`${item.image}`}
         distance={this.state.isCordsInBound && item.distance}
-        extraStyle={{marginBottom: 10}}
+        style={{marginBottom: 10}}
       />
   )}
 
@@ -340,7 +343,6 @@ class PlacesScreen extends PureComponent {
 
   /* Render content */
   _renderContent = () => {
-    let { categories } = this.props;
     const { term } = this._getCurrentTerm(true);
     // const { term, coords, region, nearPois, clusters, pois } = this.state;
     const { pois } = this.state;
@@ -379,7 +381,7 @@ class PlacesScreen extends PureComponent {
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
         <ConnectedHeader 
           backOnPress={this._backButtonPress}
-          iconTintColor={Colors.colorScreen1}  
+          iconTintColor={Colors.colorPlacesScreen}  
           backButtonVisible={this.props.others.placesTerms.length > 0}
         />
         {render && this._renderContent()}
@@ -400,19 +402,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    backgroundColor: Colors.colorScreen1,
+    backgroundColor: Colors.colorPlacesScreen,
     borderTopWidth: 0,
     borderBottomWidth: 0,
     flex: 1,
   },
   sectionTitle: {
       fontSize: 16,
-      color: Colors.colorScreen1,
+      color: Colors.colorPlacesScreen,
       fontWeight: "bold",
       margin: 10
   },
   listContainer: {
-    backgroundColor: Colors.colorScreen1,
+    backgroundColor: Colors.colorPlacesScreen,
     height: "100%"
   },
   listContainerHeader: {
@@ -423,7 +425,7 @@ const styles = StyleSheet.create({
     paddingBottom: 25,
   },
   listPois: {
-    backgroundColor: Colors.colorScreen1,
+    backgroundColor: Colors.colorPlacesScreen,
     height: "100%",
     paddingHorizontal: 10,
   },

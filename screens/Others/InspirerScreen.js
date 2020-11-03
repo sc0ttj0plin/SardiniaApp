@@ -126,7 +126,7 @@ class InspirerScreen extends Component {
     return (
       <PoiItem 
         keyItem={item.nid}
-        backgroundTopLeftCorner={Colors.colorScreen1}
+        backgroundTopLeftCorner={Colors.colorPlacesScreen}
         iconColor={"white"}
         iconName={Platform.OS === 'ios' ? 'ios-map' : 'md-map'}
         onPress={() => this._openItem(item)}
@@ -285,20 +285,20 @@ class InspirerScreen extends Component {
     const isFavourite = this.props.favourites.places[nid];
     return (
       <View style={{position: "absolute", zIndex: 9, top: 30, right: -5}}>
-        <ConnectedFab color={Colors.colorScreen1} direction="down">
+        <ConnectedFab color={Colors.colorPlacesScreen} direction="down">
           <Button 
-            style={{ backgroundColor: Colors.colorScreen1 }} 
+            style={{ backgroundColor: Colors.colorPlacesScreen }} 
             onPress={() => Linking.openURL("https://www.sardegnaturismo.it")}>
             <Icon name={"share"} size={20} type="font-awesome" color="white" /> 
           </Button>
           <Button 
-            style={{ backgroundColor: Colors.colorScreen1 }} 
+            style={{ backgroundColor: Colors.colorPlacesScreen }} 
             onPress={() => this.props.actions.toggleFavourite({ type: "places", id: nid })}>
             <Icon name={isFavourite ? "heart" : "heart-o"} size={20} type="font-awesome" color="white" /> 
           </Button>
           {coordinates && (
             <Button
-              style={{ backgroundColor: Colors.colorScreen1 }} 
+              style={{ backgroundColor: Colors.colorPlacesScreen }} 
               onPress={() => this._openNavigator(title, coordinates)}>
               <Icon name="map" size={25} color="white" />
             </Button>
@@ -364,19 +364,19 @@ class InspirerScreen extends Component {
                   {entity.term && (
                     <View style={[styles.categoryContainer]}>
                       <Text style={[styles.category]}>{entity.term.name}</Text>
-                      <View style={[styles.borderLine, {backgroundColor: Colors.colorScreen2}]}></View>
+                      <View style={[styles.borderLine, {backgroundColor: Colors.colorInspirersScreen}]}></View>
                     </View>
                   )}
                   <Text style={[styles.title]}>{title}</Text>
                 </View>
                 <View style={{width: "100%", height: 30, position: "absolute", left: 0, top: 180}}>
                   <Button
-                      buttonStyle={styles.fabStyle, {position: "absolute", top: 5, left: 10, borderRadius: 50, backgroundColor: Colors.colorScreen2 }}
+                      buttonStyle={styles.fabStyle, {position: "absolute", top: 5, left: 10, borderRadius: 50, backgroundColor: Colors.colorInspirersScreen }}
                       onPress={() => {}/*() => this.props.actions.toggleFavourite({ type: "inspirers", id: nid })*/}
                       icon={<Icon name={isFavourite ? "heart" : "heart-o"} size={20} type="font-awesome" color="white"/>}>
                   </Button>
                   <Button
-                    buttonStyle={styles.fabStyle, {position: "absolute", top: 5, left: Layout.window.width-45, borderRadius: 50, backgroundColor: Colors.colorScreen2 }}
+                    buttonStyle={styles.fabStyle, {position: "absolute", top: 5, left: Layout.window.width-45, borderRadius: 50, backgroundColor: Colors.colorInspirersScreen }}
                     onPress={() => this._onShare(socialUrl)}
                     icon={<Icon name={"share"} size={20} type="font-awesome" color="white" />}>
                   </Button>
@@ -443,7 +443,7 @@ class InspirerScreen extends Component {
     return (
       <View style={styles.fill}>
           <ConnectedHeader 
-            iconTintColor={Colors.colorScreen2}
+            iconTintColor={Colors.colorInspirersScreen}
             containerStyle={{
               marginTop: Layout.statusbarHeight,
               height: Layout.header.height

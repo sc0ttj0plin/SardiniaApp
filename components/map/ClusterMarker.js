@@ -28,7 +28,7 @@ export default class ClusterMarker extends PureComponent {
         onPress={this.props.onPress}
         tracksViewChanges={false}>
           <View
-            style={[styles.marker, {borderRadius: width/2, width: width, height: width, backgroundColor: Colors.colorScreen1}]}>
+            style={[styles.marker, {borderRadius: width/2, width: width, height: width, backgroundColor: Colors.colorPlacesScreen}]}>
             <Text style={[styles.markerText]}>{cluster.count}</Text>
           </View>
       </Marker.Animated>

@@ -62,7 +62,7 @@ class ConnectedFab extends PureComponent {
   render() {
     const isFavourite = this.props.favourites.places[this.state.nid];
     const { shareLink, coordinates, color, title } = this.props;
-    const backgroundColor = color || Colors.colorScreen1;
+    const backgroundColor = color || Colors.colorPlacesScreen;
     return (
       <View style={styles.fabView}>
         <TouchableOpacity 

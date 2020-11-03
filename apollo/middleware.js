@@ -63,6 +63,25 @@ const apolloMiddleware = client => {
             store.dispatch({ type: Constants.GET_INSPIRER_FAIL, payload: e });
           });
         }
+        else if (action.type === Constants.GET_INSPIRERS) {
+          client.query({
+              query: Queries.getInspirers,
+              variables: action.query
+          }).then((resp) => {
+            let dispatch = { type: Constants.GET_INSPIRERS_SUCCESS, payload: {} };
+            if (resp.data && resp.data.nodes.length > 0) {
+              let data = resp.data.nodes;
+              data.forEach((e) => processEntity(e));
+              let dataById = data.reduce((acc, curr) => ({ ...acc, [curr.uuid]: curr}), {});
+              dispatch.payload = { dataById, data };
+            }
+            store.dispatch(dispatch);
+          }).catch((e) => {
+            console.log(e);
+            //also dispatch the id which has failed
+            store.dispatch({ type: Constants.GET_INSPIRERS_FAIL, payload: e });
+          });
+        }
         else if (action.type === Constants.GET_EXTRAS) {
           client.query({
               query: Queries.getPois,
@@ -190,8 +209,6 @@ const apolloMiddleware = client => {
             if (resp.data && resp.data.itineraries.length > 0){
               let itineraries = resp.data.itineraries;
               itineraries.forEach((e) => processEntity(e));
-              //TODO: temporary fix: add fake pois to "pois" key
-              //END_TODO
               dispatch.payload.dataById = itineraries.reduce((acc, curr) => ({ ...acc, [curr.uuid]: curr}), {});;
               dispatch.payload.data = itineraries;
             }

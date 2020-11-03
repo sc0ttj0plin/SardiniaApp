@@ -152,7 +152,7 @@ class InspirersScreen extends Component {
     return (
       //<Header backButtonVisible={this.state.term} />
       <ConnectedHeader 
-        iconTintColor={Colors.colorScreen2}
+        iconTintColor={Colors.colorInspirersScreen}
         containerStyle={{
           paddingTop: 0,
           height: Layout.header.height,
@@ -261,7 +261,7 @@ class InspirersScreen extends Component {
       <FlatList
           renderHeaderBarContent={this._renderHeaderBarContent}
           
-          listItemStyle={{ backgroundColor: Colors.colorScreen2 }}
+          listItemStyle={{ backgroundColor: Colors.colorInspirersScreen }}
           headerComponentStyle={styles.headerComponentStyle}
           scrollView={FlatList}
           extraData={this.props.locale}
@@ -361,7 +361,7 @@ InspirersScreen.navigationOptions = {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.colorScreen2,
+    backgroundColor: Colors.colorInspirersScreen,
     flex: 1,
   },
   sectionTitle: {
@@ -382,13 +382,13 @@ const styles = StyleSheet.create({
   },
   listStyle: {
     paddingTop: 10, 
-    backgroundColor: Colors.colorScreen2,
+    backgroundColor: Colors.colorInspirersScreen,
     paddingHorizontal: 10,
     height: "100%",
   },
   listStyle2: {
     paddingTop: 10, 
-    backgroundColor: Colors.colorScreen2,
+    backgroundColor: Colors.colorInspirersScreen,
     paddingLeft: 20,
     paddingRight: 10,
     paddingBottom: 25,

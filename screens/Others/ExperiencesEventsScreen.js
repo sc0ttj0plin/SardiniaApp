@@ -196,8 +196,8 @@ class ExperiencesEventsScreen extends Component {
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <Text style={{ color: "black", fontWeight: "bold" }}>{item.name}</Text>
           <Switch
-            trackColor={{ false: "#ECECEC", true: Colors.colorScreen5 }}
-            thumbColor={enabled ? "#ECECEC" : Colors.colorScreen5}
+            trackColor={{ false: "#ECECEC", true: Colors.colorEventsScreen }}
+            thumbColor={enabled ? "#ECECEC" : Colors.colorEventsScreen}
             onValueChange={() => this._selectFilter(item.id)}
             value={enabled}
           />
@@ -286,16 +286,16 @@ class ExperiencesEventsScreen extends Component {
       <Agenda
         items={this.props.events}
         style={{
-          backgroundColor: Colors.colorScreen5
+          backgroundColor: Colors.colorEventsScreen
         }}
         theme={{
-          backgroundColor: Colors.colorScreen5,
-          calendarBackground: Colors.colorScreen5,
+          backgroundColor: Colors.colorEventsScreen,
+          calendarBackground: Colors.colorEventsScreen,
           agendaDayNumColor: "white",
           agendaTodayColor: "white",
           agendaDayTextColor: "white",
           selectedDayBackgroundColor: "white",
-          selectedDayTextColor: Colors.colorScreen5,
+          selectedDayTextColor: Colors.colorEventsScreen,
           dayTextColor: "white",
           monthTextColor: "white",
           color: "white",
@@ -330,7 +330,7 @@ class ExperiencesEventsScreen extends Component {
     return (
       <View style={styles.fill}>
         <ConnectedHeader
-          iconTintColor={Colors.colorScreen5}
+          iconTintColor={Colors.colorEventsScreen}
           containerStyle={{
             paddingTop: 0,
             height: Layout.header.height + 20,
@@ -370,7 +370,7 @@ ExperiencesEventsScreen.navigationOptions = {
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: Colors.colorScreen5
+    backgroundColor: Colors.colorEventsScreen
   },
   container: {
     flex: 1,
@@ -409,13 +409,13 @@ const styles = StyleSheet.create({
   },
   item: {
     flex: 1,
-    backgroundColor: Colors.colorScreen5
+    backgroundColor: Colors.colorEventsScreen
   },
   emptyDate: {
     height: 15,
     flex:1,
     paddingTop: 30,
-    backgroundColor: Colors.colorScreen5
+    backgroundColor: Colors.colorEventsScreen
   },
   dateListItemIndicator: {
     paddingTop: 12,
@@ -472,12 +472,12 @@ const styles = StyleSheet.create({
   filterButtonText: {
     textAlignVertical: "center",
     alignSelf: "center",
-    color: Colors.colorScreen5,
+    color: Colors.colorEventsScreen,
     height: 50,
     textAlign: "center"
   },
   filterButtonModal: {
-    backgroundColor: Colors.colorScreen5,
+    backgroundColor: Colors.colorEventsScreen,
     alignItems: "center",
     borderRadius: 20,
     paddingHorizontal: 20,
@@ -495,7 +495,7 @@ const styles = StyleSheet.create({
     textAlign: "center"
   },
   knobContainer: {
-    backgroundColor: Colors.colorScreen5,
+    backgroundColor: Colors.colorEventsScreen,
     width: Layout.window.width,
     borderBottomColor: "white",
     borderBottomWidth: 2

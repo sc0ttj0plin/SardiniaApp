@@ -104,28 +104,30 @@ export const processEventTypes = function(eventTypes) {
  * @param {*} coords: coordinates for that entity
  */
 export const processEntity = function(entity, coords=null) {
-  if(entity.image) {
+  if (entity.image)
       // entity.image = entity.image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST);
       entity.image = entity.image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST);
-  }
-  if(entity.marker) {
+
+  if (entity.marker) 
       // entity.marker = entity.marker.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST);
       entity.marker = entity.marker.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST);
-  }
-  if(entity.gallery) {
+
+  if (entity.gallery) 
       entity.gallery.forEach((item) => {
           // item.uri = item.uri.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST);
           item.uri = item.uri.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST);
-      })
-  }
-  if(!entity.distance && coords && entity.georef) {
+      });
+
+  if (entity.nodes_terms) 
+    entity.term = entity.nodes_terms[0].term
+
+  if (!entity.distance && coords && entity.georef) 
       entity.distance = distanceToString(distance(coords[0], coords[1], entity.georef.coordinates[0], entity.georef.coordinates[1]));
-  }
-  if (entity.stages){
+
+  if (entity.stages)
     entity.stages.forEach((el) => {
       el.poi.image = el.poi.image.replace("public://", "https://www.sardegnaturismo.it/sites/default/files/");
-  })
-  }
+    })
 }
 
 /**

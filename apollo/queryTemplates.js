@@ -28,27 +28,17 @@ query ($queryStr: String) {
 }
 `
 
+
 export const searchQuery = gql`
-query ($queryStr: String) {
-  search(args: {search: $queryStr}, order_by: {rank: desc}, where: {tid: {_is_null: true}, node: {type: {_eq: "attrattore"}}}) {
+query ($queryStr: String, $nodeTypes: [String!]) {
+  search(args: {search: $queryStr}, order_by: {rank: desc}, where: {tid: {_is_null: true}, node: {type: {_in: $nodeTypes}}}) {
     headline
     rank
     nid
-    uuid
     node {
       nid
       uuid
       title: legacy(path: "title_field")
-      #image: legacy(path: "field_immagine_top.und[0].uri")
-      #description: legacy(path: "body")
-      #abstract: legacy(path: "field_occhiello")
-      #term {
-      #  name
-      #  uuid
-      #  tid
-    	#}
-			#georef
-			#distance
     }
   }
 }
@@ -360,14 +350,14 @@ query ($limit: Int, $offset: Int, $uuids: [String!]) {
 `;
 
 export const getInspirer = gql`
-query ($uuid: String) {
+query ($uuid: String, $vid: Int) {
   nodes(where: { uuid: {_eq: $uuid} } ) {
     uuid
     nid
     type
     title: legacy(path: "title_field")
     description: legacy(path: "body")
-    nodes_terms(where: {term: {vid: {_eq:46}}}) {
+    nodes_terms(where: {term: {vid: {_eq: $vid}}}) {
       term{
         tid
         name

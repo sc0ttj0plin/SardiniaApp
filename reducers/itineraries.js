@@ -27,8 +27,8 @@ export default function reducer(state = INITIAL_STATE, action) {
       return { 
         ...state, 
         success: true,
-        data: [ ...action.payload.data ],
-        dataById: { ...state.data, ...action.payload.dataById },
+        data: [ ...state.data, ...action.payload.data ],
+        dataById: { ...state.dataById, ...action.payload.dataById },
         error: null, 
         loading: false
       };
