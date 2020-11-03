@@ -325,20 +325,20 @@ class PlaceScreen extends Component {
     const isFavourite = this.props.favourites.places[nid];
     return (
       <View style={{position: "absolute", zIndex: 9, top: 30, right: -5}}>
-        <ConnectedFab color={Colors.colorScreen1} direction="down">
+        <ConnectedFab color={Colors.colorPlacesScreen} direction="down">
           <Button 
-            style={{ backgroundColor: Colors.colorScreen1 }} 
+            style={{ backgroundColor: Colors.colorPlacesScreen }} 
             onPress={() => this._onShare("https://www.sardegnaturismo.it")}>
             <Icon name={"share"} size={20} type="font-awesome" color="white" /> 
           </Button>
           <Button 
-            style={{ backgroundColor: Colors.colorScreen1 }} 
+            style={{ backgroundColor: Colors.colorPlacesScreen }} 
             onPress={() => this.props.actions.toggleFavourite({ type: "places", id: nid })}>
             <Icon name={isFavourite ? "heart" : "heart-o"} size={20} type="font-awesome" color="white" /> 
           </Button>
           {coordinates && (
             <Button
-              style={{ backgroundColor: Colors.colorScreen1 }} 
+              style={{ backgroundColor: Colors.colorPlacesScreen }} 
               onPress={() => this._openNavigator(title, coordinates)}>
               <Icon name="map" size={25} color="white" />
             </Button>
@@ -416,19 +416,19 @@ class PlaceScreen extends Component {
 
                 <View style={{width: "100%", height: 30, position: "absolute", left: 0, top: 180}}>
                   <Button
-                      buttonStyle={styles.fabStyle, {position: "absolute", top: 5, left: 5, borderRadius: 50, backgroundColor: Colors.colorScreen1 }}
+                      buttonStyle={styles.fabStyle, {position: "absolute", top: 5, left: 5, borderRadius: 50, backgroundColor: Colors.colorPlacesScreen }}
                       containerStyle={styles.fabContainerFav}
                       onPress={() => this.props.actions.toggleFavourite({ type: "places", id: nid })}
                       icon={<Icon name={isFavourite ? "heart" : "heart-o"} size={20} type="font-awesome" color="white"/>}>
                   </Button>
                   <Button
-                    buttonStyle={styles.fabStyle, {position: "absolute", top: 5, left: Layout.window.width - 45, borderRadius: 50, backgroundColor: Colors.colorScreen1 }}
+                    buttonStyle={styles.fabStyle, {position: "absolute", top: 5, left: Layout.window.width - 45, borderRadius: 50, backgroundColor: Colors.colorPlacesScreen }}
                     containerStyle={styles.fabContainerFav}
                     onPress={() => this._onShare(socialUrl)}
                     icon={<Icon name={"share"} size={20} type="font-awesome" color="white" />}>
                   </Button>
                   <Button
-                    buttonStyle={styles.fabStyle, {borderRadius: 50, backgroundColor: Colors.colorScreen1 }}
+                    buttonStyle={styles.fabStyle, {borderRadius: 50, backgroundColor: Colors.colorPlacesScreen }}
                     containerStyle={styles.fabContainerFav, {position: "absolute", top: 5, left: Layout.window.width - 95}}
                     onPress={() => this._openNavigator(title, coordinates)}
                     icon={<Icon name="map" size={25} color="white" />}>

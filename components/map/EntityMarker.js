@@ -39,7 +39,7 @@ export default class EntityMarker extends PureComponent {
           tracksViewChanges={this.state.trackingViewChanges}
           style={{width: width, height: width, zIndex: selected ? 10 : 1}}>
             <View
-              style={[styles.marker, {borderRadius: width/2, width: width, height: width, backgroundColor: selected ? "#64a6cC" : Colors.colorScreen1}]}>
+              style={[styles.marker, {borderRadius: width/2, width: width, height: width, backgroundColor: selected ? "#64a6cC" : Colors.colorPlacesScreen}]}>
               <Ionicons
                 name={Platform.OS === 'ios' ? 'ios-map' : 'md-map'}
                 size={19}

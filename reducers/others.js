@@ -4,6 +4,7 @@ const INITIAL_STATE = {
   searchOrAutocomplete: "autocomplete",
   searchStr: "",
   placesTerms: [],
+  inspirersTerms: [],
 }
 
 
@@ -45,6 +46,26 @@ export default function reducer(state = INITIAL_STATE, action) {
       return {
         ...state,
         placesTerms: INITIAL_STATE.placesTerms
+      }
+    //INSPIRERS CATEGORIES (POP/PUSH) (scoped case to reuse var names)
+    case Constants.PUSH_CURRENT_CATEGORY_INSPIRERS: {
+      let newInspirersTerms = [...state.inspirersTerms];
+      newInspirersTerms.push(action.payload);
+      return {
+        ...state,
+        inspirersTerms: newInspirersTerms,
+      }
+    } case Constants.POP_CURRENT_CATEGORY_INSPIRERS: {
+      let newInspirersTerms = [...state.inspirersTerms];
+      newInspirersTerms.pop();
+      return {
+        ...state,
+        inspirersTerms: newInspirersTerms,
+      }
+    } case Constants.RESET_CURRENT_CATEGORY_INSPIRERS:
+      return {
+        ...state,
+        inspirersTerms: INITIAL_STATE.inspirersTerms
       }
     default:
       return state;

@@ -197,7 +197,7 @@ class ItineraryStagesMapScreen extends Component {
     const { render } = this.state;
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader iconTintColor={Colors.colorScreen4} />
+        <ConnectedHeader iconTintColor={Colors.colorItinerariesScreen} />
         {render && this._renderContent()}
       </View>
     )
@@ -276,7 +276,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 50,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
-    backgroundColor: Colors.colorScreen4,
+    backgroundColor: Colors.colorItinerariesScreen,
     borderColor: 'white',
     borderWidth: 1,
     justifyContent: 'center',

@@ -32,14 +32,14 @@ class EventScreen extends Component {
     const isFavourite = this.props.favourites.events[nid];
     return (
         <View style={{position: "absolute", zIndex: 9, top: 130, right: -10}}>
-          <ConnectedFab color={Colors.colorScreen5} direction="down">
+          <ConnectedFab color={Colors.colorEventsScreen} direction="down">
             <Button 
-              style={{ backgroundColor: Colors.colorScreen5 }} 
+              style={{ backgroundColor: Colors.colorEventsScreen }} 
               onPress={() => Linking.openURL("https://www.sardegnaturismo.it")}>
               <Icon name={"share"} size={20} type="font-awesome" color="white" /> 
             </Button>
             <Button 
-              style={{ backgroundColor: Colors.colorScreen5 }} 
+              style={{ backgroundColor: Colors.colorEventsScreen }} 
               onPress={() => this.props.actions.toggleFavourite({ type: "events", id: nid })}>
               <Icon name={isFavourite ? "heart" : "heart-o"} size={20} type="font-awesome" color="white" /> 
             </Button>
@@ -75,7 +75,7 @@ class EventScreen extends Component {
           description={description}
           urlAlias={this._entity.url_alias}
           category={"Evento"}
-          categoryColor={Colors.colorScreen5}
+          categoryColor={Colors.colorEventsScreen}
           toggleFavourite={() => { this.props.actions.toggleFavourite({ type: "events", id: nid })}}
           isFavourite={this.props.favourites.events[nid]}
           />

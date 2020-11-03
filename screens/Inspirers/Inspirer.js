@@ -51,14 +51,12 @@ import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
 
 
 const USE_DR = false;
-class PlaceScreen extends Component {
+class InspirerScreen extends Component {
 
   constructor(props) {
     super(props);
 
     const { uuid } = props.route.params.item;
-
-    console.log("uuid", uuid)
     /* Get props from navigation */
     this.state = {
       render: USE_DR ? false : true,
@@ -83,17 +81,11 @@ class PlaceScreen extends Component {
   async componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
+    const { uuid } = this.state;
     this._fetchRelatedNodes();
-    this.props.actions.getPoi({ uuid: this.state.uuid });
+    this._parseEntity(this.props.inspirers.dataById[uuid]);
   }
 
-  /* NOTE: since this screen is not */
-  componentDidUpdate(prevProps) {
-    const { uuid } = this.state;
-    if (prevProps.pois.data !== this.props.pois.data) {
-      this._parseEntity(this.props.pois.data[uuid]);
-    }
-  }
   
   componentWillUnmount() {
 
@@ -102,7 +94,7 @@ class PlaceScreen extends Component {
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
   _fetchRelatedNodes = async () => {
     try {
-      const relatedEntities = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.places, offset: Math.ceil(Math.random()*100), limit: 5}))
+      const relatedEntities = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.inspirers, offset: Math.ceil(Math.random()*100), limit: 5}))
       this.setState({ relatedEntities })
     } catch(error){
       console.log(error)
@@ -124,7 +116,7 @@ class PlaceScreen extends Component {
     var type = item.type;
     switch(type) {
       case Constants.NODE_TYPES.places:
-        this.props.navigation.push(Constants.NAVIGATION.NavPlaceScreen, { item });
+        this.props.navigation.push(Constants.NAVIGATION.NavInspirerScreen, { item });
         break;
       case Constants.NODE_TYPES.events:
         this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item });
@@ -166,7 +158,7 @@ class PlaceScreen extends Component {
     return (
       <View style={styles.fab}>
         <ConnectedFab 
-          color={Colors.blue}
+          color={Colors.colorInspirersScreen}
           nid={nid}
           title={title}
           coordinates={coordinates} 
@@ -198,16 +190,16 @@ class PlaceScreen extends Component {
           <TopMedia urlVideo={sampleVideoUrl} urlImage={entity.image} />
           {this._renderFab(entity.nid, title, coordinates, socialUrl)}   
           <View style={[styles.headerContainer]}> 
-            <EntityHeader title={title} term={entity.term.name} borderColor={Colors.blue}/>
+            <EntityHeader title={title} term={entity.term.name} borderColor={Colors.colorInspirersScreen}/>
           </View>
           <View style={[styles.container]}>
             <EntityAbstract abstract={abstract}/>
             <EntityWhyVisit title={whyVisitTitle} text={whyVisit}/>
             <EntityMap coordinates={coordinates}/>
             <EntityGallery images={gallery} title={galleryTitle}/>
-            <EntityDescription title={descriptionTitle} text={description} color={Colors.colorPlacesScreen}/>
+            <EntityDescription title={descriptionTitle} text={description} color={Colors.colorInspirersScreen}/>
             <View style={styles.separator}/>
-            {this._renderRelatedList(canBeOfInterest, relatedEntities, Constants.ENTITY_TYPES.places)}
+            {this._renderRelatedList(canBeOfInterest, relatedEntities, Constants.ENTITY_TYPES.inspirers)}
             <EntityAccomodations horizontal/>
           </View>
          </ScrollView>
@@ -220,7 +212,7 @@ class PlaceScreen extends Component {
     const { render } = this.state;
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader iconTintColor="#24467C" />
+        <ConnectedHeader iconTintColor={Colors.colorInspirersScreen} />
         {render && this._renderContent()}
       </View>
     )
@@ -229,7 +221,7 @@ class PlaceScreen extends Component {
 }
 
 
-PlaceScreen.navigationOptions = {
+InspirerScreen.navigationOptions = {
   title: 'Boilerplate',
 };
 
@@ -285,12 +277,12 @@ const styles = StyleSheet.create({
 });
 
 
-function PlaceScreenContainer(props) {
+function InspirerScreenContainer(props) {
   const navigation = useNavigation();
   const route = useRoute();
   const store = useStore();
 
-  return <PlaceScreen 
+  return <InspirerScreen 
     {...props}
     navigation={navigation}
     route={route}
@@ -305,7 +297,7 @@ const mapStateToProps = state => {
     //favourites
     favourites: state.favouritesState,
     //graphql
-    pois: state.poisState,
+    inspirers: state.inspirersState,
   };
 };
 
@@ -321,4 +313,4 @@ export default connect(mapStateToProps, mapDispatchToProps, (stateProps, dispatc
     actions: dispatchProps,
     ...props
   }
-})(PlaceScreenContainer)
+})(InspirerScreenContainer)

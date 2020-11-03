@@ -98,7 +98,7 @@ class ExperiencesItinerariesScreen extends Component {
               titleStyle={{
                 fontSize: 13,
                 fontWeight: "500",
-                color: Colors.colorScreen4
+                color: Colors.colorItinerariesScreen
               }}
               backgroundColor={"#ffffff"}/>
             </Image>
@@ -167,7 +167,7 @@ class ExperiencesItinerariesScreen extends Component {
     return (
       <View style={styles.fill}>
         <ConnectedHeader 
-          iconTintColor={Colors.colorScreen4}
+          iconTintColor={Colors.colorItinerariesScreen}
           containerStyle={{
             paddingTop: 0,
             height: Layout.header.height + 20,
@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 50,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
-    backgroundColor: Colors.colorScreen4,
+    backgroundColor: Colors.colorItinerariesScreen,
     color: "white",
     borderColor: 'white',
     borderWidth: 1,

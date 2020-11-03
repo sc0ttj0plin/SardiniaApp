@@ -5,6 +5,12 @@ import samplePois from '../constants/_samplePois';
 import sampleMarkers from '../constants/_sampleMarkers';
 import sampleImages from '../constants/_sampleImages';
 
+const IMAGE_REPLACE_SRC = "public://";
+// const IMAGE_REPLACE_DST = "https://www.sardegnaturismo.it/sites/default/files/";
+// const IMAGE_REPLACE_DST = "http://sinnos.andreamontaldo.com:81/img/400x300/";
+const IMAGE_REPLACE_DST = "http://sinnos.andreamontaldo.com:81/img/621x/"; //width only
+
+
 /**
  * Process events after fetching: normalizes date and image fields
  * Builds an object consisting of events keyed by their date: YYYY-MM-DD
@@ -20,7 +26,8 @@ export const processEvents = function(events) {
         // let dateFormatted = moment.unix(e.date1).format(Constants.DATE_FORMAT);
         let singleEvent = { 
           ...e,
-          image: e.image.replace("public://", "https://www.sardegnaturismo.it/sites/default/files/"),
+          // image: e.image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST),
+          image: e.image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST),
           date1Str: moment.unix(e.date1).format('DD MMMM YYYY'),
         };
         eventsObj[dateFormatted] = eventsObj[dateFormatted] ? [...eventsObj[dateFormatted], singleEvent] : [singleEvent] 
@@ -52,7 +59,8 @@ export const processCategories = function(categories, termsMap) {
       var c = categories[i];
       processEntity(c);
       if(c.image)
-        c.image = c.image.replace("public://", "https://www.sardegnaturismo.it/sites/default/files/");
+        // c.image = c.image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST);
+        c.image = c.image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST);
       else if(sampleImages[c.tid]) 
         c.image = sampleImages[c.tid].image;
       else
@@ -65,7 +73,8 @@ export const processCategories = function(categories, termsMap) {
           var terms = processCategories(c.terms, termsMap);   
           for(var j=0; j<terms.length; j++){
               c.childUuids = c.childUuids ? c.childUuids.concat(terms[j].childUuids) : terms[j].childUuids;
-              c.image = terms[j].image.replace("public://", "https://www.sardegnaturismo.it/sites/default/files/");
+              // c.image = terms[j].image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST);
+              c.image = terms[j].image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST);
           };
           c.terms = terms;
       }
@@ -95,25 +104,30 @@ export const processEventTypes = function(eventTypes) {
  * @param {*} coords: coordinates for that entity
  */
 export const processEntity = function(entity, coords=null) {
-  if(entity.image) {
-      entity.image = entity.image.replace("public://", "https://www.sardegnaturismo.it/sites/default/files/");
-  }
-  if(entity.marker) {
-      entity.marker = entity.marker.replace("public://", "https://www.sardegnaturismo.it/sites/default/files/");
-  }
-  if(entity.gallery) {
+  if (entity.image)
+      // entity.image = entity.image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST);
+      entity.image = entity.image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST);
+
+  if (entity.marker) 
+      // entity.marker = entity.marker.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST);
+      entity.marker = entity.marker.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST);
+
+  if (entity.gallery) 
       entity.gallery.forEach((item) => {
-          item.uri = item.uri.replace("public://", "https://www.sardegnaturismo.it/sites/default/files/");
-      })
-  }
-  if(!entity.distance && coords && entity.georef) {
+          // item.uri = item.uri.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST);
+          item.uri = item.uri.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST);
+      });
+
+  if (entity.nodes_terms) 
+    entity.term = entity.nodes_terms[0].term
+
+  if (!entity.distance && coords && entity.georef) 
       entity.distance = distanceToString(distance(coords[0], coords[1], entity.georef.coordinates[0], entity.georef.coordinates[1]));
-  }
-  if (entity.stages){
+
+  if (entity.stages)
     entity.stages.forEach((el) => {
       el.poi.image = el.poi.image.replace("public://", "https://www.sardegnaturismo.it/sites/default/files/");
-  })
-  }
+    })
 }
 
 /**

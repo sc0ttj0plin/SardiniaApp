@@ -363,7 +363,7 @@ class PlacesScreen extends Component {
       <EntityItem 
         keyItem={item.nid}
         backgroundTopLeftCorner={"white"}
-        iconColor={Colors.colorScreen1}
+        iconColor={Colors.colorPlacesScreen}
         iconName={Platform.OS === 'ios' ? 'ios-map' : 'md-map'}
         onPress={() => this._openPoi(item)}
         title={`${title}`}
@@ -417,7 +417,7 @@ class PlacesScreen extends Component {
       <View style={[styles.fill, {paddingTop: STATUSBAR_HEIGHT}]}>
         <ConnectedHeader 
           backOnPress={() => this.setState({ term: this.state.prevTerm })}
-          iconTintColor={Colors.colorScreen1} 
+          iconTintColor={Colors.colorPlacesScreen} 
           backButtonVisible={!this.state.term}
         />
         {render && this._renderContent()}
@@ -438,19 +438,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    backgroundColor: Colors.colorScreen1,
+    backgroundColor: Colors.colorPlacesScreen,
     borderTopWidth: 0,
     borderBottomWidth: 0,
     flex: 1,
   },
   sectionTitle: {
       fontSize: 16,
-      color: Colors.colorScreen1,
+      color: Colors.colorPlacesScreen,
       fontWeight: "bold",
       margin: 10
   },
   listContainer: {
-    backgroundColor: Colors.colorScreen1,
+    backgroundColor: Colors.colorPlacesScreen,
     height: "100%"
   },
   listContainerHeader: {
@@ -461,7 +461,7 @@ const styles = StyleSheet.create({
     paddingBottom: 25,
   },
   listPois: {
-    backgroundColor: Colors.colorScreen1,
+    backgroundColor: Colors.colorPlacesScreen,
     height: "100%",
     paddingHorizontal: 10,
   },

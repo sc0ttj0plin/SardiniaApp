@@ -75,6 +75,9 @@ export const TOGGLE_FAVOURITE = 'visitsardinia/favourites/TOGGLE_FAVOURITE';
 export const PUSH_CURRENT_CATEGORY_PLACES = 'visitsardinia/places/PUSH_CURRENT_CATEGORY_PLACES';
 export const POP_CURRENT_CATEGORY_PLACES = 'visitsardinia/places/POP_CURRENT_CATEGORY_PLACES';
 export const RESET_CURRENT_CATEGORY_PLACES = 'visitsardinia/places/RESET_CURRENT_CATEGORY_PLACES';
+export const PUSH_CURRENT_CATEGORY_INSPIRERS = 'visitsardinia/inspirers/PUSH_CURRENT_CATEGORY_INSPIRERS';
+export const POP_CURRENT_CATEGORY_INSPIRERS = 'visitsardinia/inspirers/POP_CURRENT_CATEGORY_INSPIRERS';
+export const RESET_CURRENT_CATEGORY_INSPIRERS = 'visitsardinia/inspirers/RESET_CURRENT_CATEGORY_INSPIRERS';
 
 // API
 export const FETCH_NUM_MONTHS_BACKWARDS = 1;
@@ -98,7 +101,7 @@ export const NAVIGATION = {
   NavExperiencesScreen: "ExperiencesScreen",
   NavItinerariesStack: "ItinerariesStack",
   NavEventsStack: "EventsStack",
-  NavExperiencesItinerariesScreen: "ExperiencesItinerariesScreen",
+  NavItinerariesScreen: "ExperiencesItinerariesScreen",
   NavItineraryScreen: "ItineraryScreen",
   NavItineraryStagesMapScreen: "ItineraryStagesMapScreen",
   NavEventsScreen: "ExperiencesEventsScreen",
@@ -247,22 +250,22 @@ export const ENTITY_TYPES = {
 /* related list options by key */
 export const RELATED_LIST_TYPES = {
   places: {
-    backgroundTopRightCorner: Colors.colorScreen1,
+    backgroundTopRightCorner: Colors.colorPlacesScreen,
     iconColor: "white",
     iconName: Platform.OS === 'ios' ? 'ios-map' : 'md-map'
   },
   inspirers: {
-    backgroundTopRightCorner: Colors.colorScreen2,
+    backgroundTopRightCorner: Colors.colorInspirersScreen,
     iconColor: "white",
     iconName: Platform.OS === 'ios' ? 'ios-map' : 'md-map'
   }, 
   itineraries: {
-    backgroundTopRightCorner: Colors.colorScreen4,
+    backgroundTopRightCorner: Colors.colorItinerariesScreen,
     iconColor: "white",
     iconName: Platform.OS === 'ios' ? 'ios-analytics' : 'md-analytics'
   },
   events: {
-    backgroundTopRightCorner: Colors.colorScreen5,
+    backgroundTopRightCorner: Colors.colorEventsScreen,
     iconColor: "white",
     iconName: Platform.OS === 'ios' ? 'ios-calendar' : "md-calendar"
   }

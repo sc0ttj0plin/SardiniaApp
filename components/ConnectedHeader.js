@@ -7,14 +7,14 @@ import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 import Layout from '../constants/Layout';
-import * as actions from '../actions';
+import actions from '../actions';
 import Colors from '../constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import * as Constants from '../constants';
 import * as utils from '../helpers/utils';
 const { NavPlacesScreen, NavInspirersScreen ,NavMapScreen, NavExperiencesScreen, 
   NavItinerariesStack, NavEventsStack, 
-  NavExperiencesItinerariesScreen, NavItineraryScreen, NavItineraryStagesMapScreen, NavEventsScreen, NavEventsMapScreen, NavBoilerPlate,
+  NavItinerariesScreen, NavItineraryScreen, NavItineraryStagesMapScreen, NavEventsScreen, NavEventsMapScreen, NavBoilerPlate,
   NavEventScreen, NavExploreScreen, NavVirtualTourScreen, NavPlaceScreen, NavInspirerScreen, NavEventsSubset, 
   NavExperiences, NavPlaces,NavInspirers ,NavExplore, NavEvents, NavTabNavigator, NavLanguageScreen1,
   NavSearchScreen, NavGalleryScreen, NavExtrasScreen, NavExtraScreen, NavFavouritesScreen } = Constants.NAVIGATION;
@@ -29,7 +29,7 @@ const HEADER_BUTTONS_PER_SCREEN = {
   [NavExperiencesScreen]: {backButtonVisible: false, searchButtonVisible: true}, 
   [NavItinerariesStack]: {backButtonVisible: false, searchButtonVisible: true}, 
   [NavEventsStack]: {backButtonVisible: false, searchButtonVisible: true}, 
-  [NavExperiencesItinerariesScreen]: {backButtonVisible: false, searchButtonVisible: true}, 
+  [NavItinerariesScreen]: {backButtonVisible: false, searchButtonVisible: true}, 
   [NavItineraryScreen]: {backButtonVisible: true, searchButtonVisible: true}, 
   [NavItineraryStagesMapScreen]: {backButtonVisible: true, searchButtonVisible: true}, 
   [NavEventsScreen]: {backButtonVisible: false, searchButtonVisible: true}, 
@@ -86,7 +86,7 @@ class ConnectedHeader extends PureComponent {
       if (this.props.others.searchOrAutocomplete !== "search")
         this.props.actions.switchSearchOrAutocomplete("search");
       let queryStr = utils.searchParser(this.props.others.searchStr);
-      this.props.actions.search({ queryStr });
+      this.props.actions.search({ queryStr, nodeTypes: Object.values(Constants.NODE_TYPES) });
     } else {
       this.props.actions.resetSearchAndAutocompleteStr();
       this.props.actions.resetSearchAndAutocompleteResults();

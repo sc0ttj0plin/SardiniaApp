@@ -17,23 +17,23 @@ export default class PoiItem extends PureComponent {
     switch(type) {
       case "attrattore":
         gui.iconName = Platform.OS === 'ios' ? 'ios-map' : 'md-map';
-        gui.backgroundTopLeftCorner = Colors.colorScreen1;
+        gui.backgroundTopLeftCorner = Colors.colorPlacesScreen;
         break;
       case "ispiratore":
         gui.iconName = 'flag-outline';
-        gui.backgroundTopLeftCorner = Colors.colorScreen2;
+        gui.backgroundTopLeftCorner = Colors.colorInspirersScreen;
         break;
       case "itinerario":
         gui.iconName = Platform.OS === 'ios' ? 'ios-analytics' : 'md-analytics';
-        gui.backgroundTopLeftCorner = Colors.colorScreen4;
+        gui.backgroundTopLeftCorner = Colors.colorItinerariesScreen;
         break;
       case "evento":
         gui.iconName = Platform.OS === 'ios' ? 'ios-calendar' : "calendar-outline";
-        gui.backgroundTopLeftCorner = Colors.colorScreen5;
+        gui.backgroundTopLeftCorner = Colors.colorEventsScreen;
         break;
       default:
         gui.iconName = Platform.OS === 'ios' ? 'ios-map' : 'md-map';
-        gui.backgroundTopLeftCorner = Colors.colorScreen1;
+        gui.backgroundTopLeftCorner = Colors.colorPlacesScreen;
     }
 
     gui.backgroundTopLeftCorner = this.props.backgroundTopLeftCorner ? this.props.backgroundTopLeftCorner : gui.backgroundTopLeftCorner;

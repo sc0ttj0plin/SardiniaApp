@@ -38,3 +38,22 @@ export function resetCurrentCategoryPlaces() {
     type: Constants.RESET_CURRENT_CATEGORY_PLACES
   }
 }
+
+export function pushCurrentCategoryInspirers(term) {
+  return {
+    type: Constants.PUSH_CURRENT_CATEGORY_INSPIRERS,
+    payload: term
+  }
+}
+
+export function popCurrentCategoryInspirers() {
+  return {
+    type: Constants.POP_CURRENT_CATEGORY_INSPIRERS
+  }
+}
+
+export function resetCurrentCategoryInspirers() {
+  return {
+    type: Constants.RESET_CURRENT_CATEGORY_INSPIRERS
+  }
+}

@@ -173,7 +173,7 @@ class ItinerariesScreen extends PureComponent {
         showsUserLocation={ true }
         showsIndoorLevelPicker={true}
         showsCompass={false}
-        clusterColor={Colors.colorScreen4}
+        clusterColor={Colors.colorItinerariesScreen}
         style={{flex: 1}}
         onPress={() => this._selectMarker(null)}
         onRegionChangeComplete={this._onRegionChangeComplete}
@@ -293,7 +293,7 @@ class ItinerariesScreen extends PureComponent {
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
         <ConnectedHeader 
-          iconTintColor={Colors.colorScreen4}
+          iconTintColor={Colors.colorItinerariesScreen}
         />
         {render && this._renderContent()}
       </View>
@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    backgroundColor: Colors.colorScreen1,
+    backgroundColor: Colors.colorPlacesScreen,
     borderTopWidth: 0,
     borderBottomWidth: 0,
     flex: 1,
@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
       margin: 10
   },
   listContainer: {
-    backgroundColor: Colors.colorScreen1,
+    backgroundColor: Colors.colorPlacesScreen,
     height: "100%"
   },
   listContainerHeader: {
@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
     paddingBottom: 25,
   },
   listPois: {
-    backgroundColor: Colors.colorScreen1,
+    backgroundColor: Colors.colorPlacesScreen,
     height: "100%",
     paddingHorizontal: 10,
   },
@@ -367,7 +367,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: Colors.colorScreen4,
+    backgroundColor: Colors.colorItinerariesScreen,
     borderRadius: 21
   },
   markerContainer: {

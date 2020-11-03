@@ -87,7 +87,7 @@ class EntityMap extends PureComponent {
       <TouchableOpacity
         activeOpacity={0.7}
         style={[styles.button, {
-          backgroundColor: Colors.colorScreen4
+          backgroundColor: Colors.colorItinerariesScreen
         }]}
         onPress={() => this._openMap(uuid)}>
         <Text style={styles.buttonText}>apri la mappa</Text>
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: Colors.colorScreen4,
+    backgroundColor: Colors.colorItinerariesScreen,
     borderRadius: 21
   },
   markerContainer: {

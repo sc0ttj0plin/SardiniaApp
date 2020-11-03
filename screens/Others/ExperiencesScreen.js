@@ -34,7 +34,7 @@ class ExperiencesScreen extends Component {
   }
 
   _openItinerary = () => {
-    this.props.navigation.navigate(Constants.NAVIGATION.NavExperiencesItinerariesScreen);
+    this.props.navigation.navigate(Constants.NAVIGATION.NavItinerariesScreen);
   }
 
   _openEvents = () => {

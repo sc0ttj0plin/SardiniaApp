@@ -368,7 +368,7 @@ class MapScreen extends Component {
             marginTop: 0,
             height: Layout.header.height
           }}
-          iconTintColor={Colors.colorScreen1}
+          iconTintColor={Colors.colorPlacesScreen}
         />
         </View>
         {this._renderFilter()}
