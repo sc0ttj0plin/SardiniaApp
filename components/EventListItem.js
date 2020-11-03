@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View, Platform, StyleSheet, ActivityIndicator, Text } from 'react-native';
-import { Image } from 'react-native-elements';
+import { View, Platform, StyleSheet, ActivityIndicator, Text, Image } from 'react-native';
 import { TouchableOpacity } from "react-native-gesture-handler"
 import Colors from '../constants/Colors';
 
@@ -18,12 +17,11 @@ export default class EventListItem extends PureComponent {
             <Image
               style={styles.imageView} 
               source={{uri: image}}
-              resizeMode="cover"
               PlaceholderContent={<ActivityIndicator style={styles.spinner} color={"white"}/>}/>
           </View>
           <View style={styles.itemDescView}>
               <Text style={styles.listItemTitle}>{title}</Text>
-              <Text style={styles.listItemTitle}>{date}</Text>
+              <Text style={styles.listItemDate}>{date}</Text>
               <Text style={styles.listItemTerm}>{term}</Text>
           </View>
         </View>
@@ -72,7 +70,9 @@ const styles = StyleSheet.create({
   },
   itemDescView: {
     paddingTop: 14,
-    paddingLeft: 10
+    paddingLeft: 10,
+    // paddingRight: 10,
+    flex: 1
   },
   listItemImage: {
     width: "100%", 
@@ -81,9 +81,13 @@ const styles = StyleSheet.create({
   },
   listItemTitle: {
     fontSize: 15,
-    fontWeight: "bold"
+    fontWeight: "bold",
+  },
+  listItemDate: {
+    fontSize: 15,
+    fontWeight: "bold",
   },
   listItemTerm: {
-    fontSize: 13
+    fontSize: 13,
   }
 });

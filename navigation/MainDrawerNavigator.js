@@ -17,6 +17,9 @@ import EventScreen from '../screens/Events/Event';
 import EventsMapScreen from '../screens/Events/Map';
 import EventsSubset from '../screens/Events/EventsSubset';
 import ItinerariesScreen from '../screens/Itineraries/Itineraries';
+import ItineraryScreen from '../screens/Itineraries/Itinerary';
+import ItineraryStagesMapScreen from '../screens/Itineraries/ItineraryStagesMap';
+
 
 import ExtrasScreen from '../screens/Extras/Extras';
 import ExtraScreen from '../screens/Extras/Extra';
@@ -40,7 +43,7 @@ import * as Constants from '../constants';
 const {
   NavPlacesScreen, NavInspirersScreen ,NavMapScreen, 
   NavExperiencesItinerariesScreen, 
-  NavItineraryScreen, NavEventsScreen, NavEventScreen, NavEventsMapScreen, NavEventsSubset, NavExploreScreen, 
+  NavItineraryScreen, NavEventsScreen, NavEventScreen, NavItineraryStagesMapScreen,NavEventsMapScreen, NavEventsSubset, NavExploreScreen, 
   NavVirtualTourScreen, NavPlaceScreen, NavInspirerScreen,
   NavExtrasScreen, NavExtraScreen, NavTabNavigator, NavSearchScreen, NavSearchStackScreen, 
   NavMainStackScreen, NavVideoScreen, NavFavouritesScreen, NavFavouritesStackScreen 
@@ -207,6 +210,7 @@ function TabNavigator() {
       <BottomTabNavigator.Screen name={NavEventsScreen} component={EventsScreen} options={eventsNavigationOptions}/>
       <BottomTabNavigator.Screen name={NavExtrasScreen} component={ExtrasScreen} options={extrasNavigationOptions}/>
       <BottomTabNavigator.Screen name={NavExperiencesItinerariesScreen} component={ItinerariesScreen} options={itinerariesNavigationOptions} />
+      <BottomTabNavigator.Screen name={NavEventsScreen} component={EventsScreen} options={eventsNavigationOptions}/>
       {/* <BottomTabNavigator.Screen name={NavInspirersScreen} component={InspirersScreen} options={inspirersNavigationOptions} /> */}
     </BottomTabNavigator.Navigator>
   );
@@ -228,13 +232,14 @@ function MainStackScreen() {
       <MainStack.Screen name={NavExtraScreen} component={ExtraScreen} />
       <MainStack.Screen name={NavEventsSubset} component={EventsSubset} />
       <MainStack.Screen name={NavEventsMapScreen} component={EventsMapScreen} options={{...FromTopTransition}} />
+      <MainStack.Screen name={NavItineraryScreen} component={ItineraryScreen}  />
+      <MainStack.Screen name={NavItineraryStagesMapScreen} component={ItineraryStagesMapScreen}  />
       {/* <MainStack.Screen name={NavPlacesScreen} component={PlacesScreen}/> */}
       {/* <MainStack.Screen name={NavVideoScreen} component={VideoScreen}/> */}
       {/* <MainStack.Screen name={NavVirtualTourScreen} component={VirtualTourScreen}/> */}
       {/* <MainStack.Screen name={NavInspirersScreen} component={InspirersScreen}/> */}
       {/* <MainStack.Screen name={NavInspirerScreen} component={InspirerScreen}/> */}
       {/* Itineraries */}
-      {/* <MainStack.Screen name={NavItineraryScreen} component={ItineraryScreen}  /> */}
       {/* Events */}
     </MainStack.Navigator>
     </>
