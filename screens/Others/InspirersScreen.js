@@ -304,6 +304,7 @@ class InspirersScreen extends Component {
   }
 
   _openCategory = (item) => {
+    console.log("item", item)
     if(item) {
       this.props.navigation.push(Constants.NAVIGATION.NavInspirersScreen,
         {

@@ -133,6 +133,8 @@ class InspirersScreen extends Component {
    * @param {*} item: list item clicked
    */
   _selectCategory = (item) => {
+    console.log("item", item)
+    
     this.props.actions.pushCurrentCategoryInspirers(item);
   }
 

@@ -222,7 +222,7 @@ class EventsScreen extends Component {
               loading={this._isLoadingData()}
               success={this._isSuccessData()}
               error={this._isErrorData()}
-              loadingLayout={<LLEntitiesFlatlist numColumns={1} itemStyle={styles.eventListItemLoadingLayout} />}>
+              loadingLayout={<LLEntitiesFlatlist style={styles.listContent} numColumns={1} itemStyle={styles.eventListItemLoadingLayout} />}>
             <View style={styles.calendarList}>
               {this._renderEventsList()}
             </View>
