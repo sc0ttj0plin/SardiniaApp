@@ -39,12 +39,15 @@ export const getCoordinates = (entity) => {
  * @param {*} path 
  */
 export const getEntityInfo = (entity, fields=[], path=["it", 0, "value"], defaultVal=null) => {
-  let returnObj = _.reduce(fields, (acc, el) => {
-    if (entity[el])
-      acc[el] = _.get(entity[el], path, defaultVal);
-    return acc;
-  }, {});
-  return returnObj;
+  if(entity){
+    let returnObj = _.reduce(fields, (acc, el) => {
+      if (entity[el])
+        acc[el] = _.get(entity[el], path, defaultVal);
+      return acc;
+    }, {});
+    return returnObj;
+  }
+  else return {}
 }
 
 /**

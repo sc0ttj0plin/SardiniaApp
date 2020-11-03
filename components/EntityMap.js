@@ -1,11 +1,16 @@
 import React, {PureComponent} from 'react';
 import { View, StyleSheet, Text, Platform, Linking, TouchableOpacity } from 'react-native';
 import * as Constants from '../constants';
-import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
+import MapView from "react-native-map-clustering";
+import { PROVIDER_GOOGLE, Marker } from "react-native-maps";
+import Colors from '../constants/Colors';
+import { useNavigation } from '@react-navigation/native';
+
 import Layout from '../constants/Layout';
+import { has } from 'lodash';
 // import { TouchableOpacity } from 'react-native-gesture-handler';
 
-export default class EntityMap extends PureComponent {  
+class EntityMap extends PureComponent {  
   
   constructor(props) {
     super(props);
@@ -26,33 +31,93 @@ export default class EntityMap extends PureComponent {
     });
     Linking.openURL(url); 
   }
-  
-  render() {
+
+  _openMap = () => {
     const { coordinates } = this.props;
+    this.props.navigation.push(Constants.NAVIGATION.NavItineraryStagesMapScreen, { markers: coordinates });
+  }
+  
+  _renderPoint = (coordinates) => <Marker coordinate={coordinates} tracksViewChanges={false} />
+
+  _renderMarkers = (markers) => {
+    return markers.map( marker => {
+      return this._renderMarker(marker)
+    })
+  }
+
+  _renderMarker = (marker) => {
+    console.log("marker", marker)
+    if(marker.coords){
+      return(
+        <Marker.Animated
+          coordinate={marker.coords}
+          tracksViewChanges={false}
+          isPreselected={true}
+          style={styles.markerView}>
+            <View style={[styles.markerContainer]}>
+              <View
+                style={[styles.marker]}>
+                <Text style={{color: "white"}}>{marker.index}</Text>
+              </View>
+            </View>
+        </Marker.Animated>
+      )
+    }
+    else
+      return null
+  }
+
+  _renderOpenNavigatorButton = () => {
+    const { coordinates } = this.props;
+
+    return(
+      <TouchableOpacity
+        activeOpacity={0.7}
+        style={styles.button}
+        onPress={() => this._openNavigator("", coordinates)}>
+        <Text style={styles.buttonText}>vai al navigatore</Text>
+      </TouchableOpacity>
+    )
+  }
+
+  _renderOpenMapButton = () => {
+    const { uuid } = this.props;
+
+    return(
+      <TouchableOpacity
+        activeOpacity={0.7}
+        style={[styles.button, {
+          backgroundColor: Colors.colorScreen4
+        }]}
+        onPress={() => this._openMap(uuid)}>
+        <Text style={styles.buttonText}>apri la mappa</Text>
+      </TouchableOpacity>
+    )
+  }
+  render() {
+    const { coordinates, hasMarkers } = this.props;
+    console.log("coordinates", coordinates)
     return (
       <>
         { coordinates && (
           <View styles={styles.fill}>
             <View 
               style={styles.mapContainer}
-              pointerEvents="none">
+              pointerEvents={hasMarkers ? "auto" : "none"}>
               <MapView
                 ref={ map => this._map = map }
                 initialRegion={Constants.REGION_SARDINIA}
                 provider={ PROVIDER_GOOGLE }
+                minZoom={14}
+                clusteringEnabled={false}
                 style={{flex: 1}}>
-                <MapView.Marker
-                  coordinate={coordinates}
-                  tracksViewChanges={false} />
+                {!hasMarkers && this._renderPoint(coordinates)}
+                {hasMarkers && this._renderMarkers(coordinates)}
               </MapView>
             </View>
             <View style={styles.openNavigatorContainer}>
-              <TouchableOpacity
-                activeOpacity={0.7}
-                style={styles.button}
-                onPress={() => this._openNavigator("", coordinates)}>
-                <Text style={styles.buttonText}>vai al navigatore</Text>
-              </TouchableOpacity>
+            {!hasMarkers && this._renderOpenNavigatorButton()}
+            {hasMarkers && this._renderOpenMapButton()}
             </View>
           </View>
         )}
@@ -64,12 +129,13 @@ export default class EntityMap extends PureComponent {
 const styles = StyleSheet.create({
   fill: {
     flex: 1,
-    position: "relative"
+    position: "relative",
   },
   mapContainer: {
     flex: 1,
     height: Layout.window.height / 3,
     marginBottom: 40,
+    marginTop: 20
   },
   openNavigatorContainer: {
     justifyContent: "center",
@@ -93,5 +159,41 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
     textTransform: "uppercase"
+  },
+  marker: {
+    // backgroundColor: "transparent",
+    // justifyContent: 'center',
+    // alignItems: 'center'
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: Colors.colorScreen4,
+    borderRadius: 21
+  },
+  markerContainer: {
+    width: 42,
+    height: 42,
+    padding: 6,
+    borderRadius: 50,
+    backgroundColor: "rgba(93, 127, 32, 0.5)"
+  },
+  markerView: {
+    width: 42, 
+    height: 42, 
+    zIndex: 1
   }
 });
+
+
+function EntityMapContainer(props) {
+  const navigation = useNavigation();
+
+  return <EntityMap 
+    {...props}
+    navigation={navigation}/>;
+}
+
+export default EntityMapContainer

@@ -132,7 +132,8 @@ class ItinerariesScreen extends PureComponent {
    * @param {*} item: item list
    */
   _openItem = (item) => {
-    // this.props.navigation.navigate(Constants.NAVIGATION.NavitineraryScreen, { item });
+    console.log("item", item.nid)
+    this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, { uuid: item.uuid, nid: item.nid });
   }
 
   /**

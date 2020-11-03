@@ -191,7 +191,6 @@ const apolloMiddleware = client => {
               let itineraries = resp.data.itineraries;
               itineraries.forEach((e) => processEntity(e));
               //TODO: temporary fix: add fake pois to "pois" key
-              itineraries.forEach((e) => _tmpAddMockPois(e));
               //END_TODO
               dispatch.payload.dataById = itineraries.reduce((acc, curr) => ({ ...acc, [curr.uuid]: curr}), {});;
               dispatch.payload.data = itineraries;

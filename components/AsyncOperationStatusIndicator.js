@@ -8,20 +8,38 @@ import { Button } from "react-native-elements";
 class AsyncOperationStatusIndicator extends PureComponent {
   constructor(props){
     super(props)
+    const { loading, success, error } = props
+    this.state = {
+      loading: loading,
+      success: success,
+      error: error
+    }
+  }
+
+  componentDidUpdate(prevProps){
+    if(prevProps.loading !== this.props.loading)
+      this.setState({loading: this.props.loading})
+    if(prevProps.success !== this.props.success){
+      this.setState({success: this.props.success})
+      console.log("success")
+    }
+    if(prevProps.error !== this.props.error)
+      this.setState({error: this.props.error})
   }
 
   render() {
-    if (this.props.loading && this.props.loadingLayout && !this.props.success){
+    const { loading, success, error } = this.state;
+    if (loading && this.props.loadingLayout && !success){
       return this.props.loadingLayout
     }
-    else if(this.props.loading && !this.props.loadingLayout)
-      return <ActivityIndicator animating={this.props.loading} size={this.props.size || "small"} color={this.props.color || 'grey'}></ActivityIndicator>
-    else if (this.props.error) {
+    else if(loading && !this.props.loadingLayout)
+      return <ActivityIndicator animating={loading} size={this.props.size || "small"} color={this.props.color || 'grey'}></ActivityIndicator>
+    else if (error) {
       if (this.props.retry || this.props.retryFun)
         return (
           <View style={styles.view}>
             {this.props.loadingLayout}
-            <Text style={[styles.text, this.props.errorStyle]}>{this.props.error}</Text>
+            <Text style={[styles.text, this.props.errorStyle]}>{error}</Text>
             <Button 
               titleStyle={[styles.btnTitle, this.props.btnTitleStyle]} 
               buttonStyle={[styles.btn, this.props.btnStyle]} 
@@ -36,12 +54,12 @@ class AsyncOperationStatusIndicator extends PureComponent {
           <View style={styles.view}>
             {this.props.loadingLayout}
             <View style={styles.errorContainer}>
-              <Text style={styles.error}>{this.props.error}</Text>
+              <Text style={styles.error}>{error}</Text>
             </View>
           </View>
         )
     }
-    else if(this.props.success){
+    else if(success){
       return(
         <>
           {this.props.children}

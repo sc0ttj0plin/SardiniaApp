@@ -109,6 +109,11 @@ export const processEntity = function(entity, coords=null) {
   if(!entity.distance && coords && entity.georef) {
       entity.distance = distanceToString(distance(coords[0], coords[1], entity.georef.coordinates[0], entity.georef.coordinates[1]));
   }
+  if (entity.stages){
+    entity.stages.forEach((el) => {
+      el.poi.image = el.poi.image.replace("public://", "https://www.sardegnaturismo.it/sites/default/files/");
+  })
+  }
 }
 
 /**

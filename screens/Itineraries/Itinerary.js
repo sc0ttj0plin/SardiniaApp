@@ -3,15 +3,8 @@ import {
   View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
   StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
+
 import { 
-  // CategoryListItem, 
-  // GeoRefHListItem, 
-  // GridGallery, 
-  // GridGalleryImage, 
-  // MapViewTop, 
-  // ScrollableHeader,
-  // TabBarIcon, 
-  // CalendarListItem, 
   AsyncOperationStatusIndicator, 
   // AsyncOperationStatusIndicatorPlaceholder,
   // Webview, 
@@ -25,6 +18,7 @@ import {
   EventListItem,
   EntityMap,
   EntityRelatedList,
+  EntityStages,
   EntityVirtualTour,
   EntityWhyVisit,
   EntityAccomodations,
@@ -33,15 +27,11 @@ import {
   // ConnectedLanguageList, 
   // BoxWithText,
   ConnectedFab, 
-  // PoiItem, 
-  // PoiItemsList, 
-  // ExtrasListItem, 
-  // MapViewItinerary
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { greedyArrayFinder, getEntityInfo, getCoordinates, getSampleVideoIndex, getGalleryImages } from '../../helpers/utils';
 import _ from 'lodash';
+import { greedyArrayFinder, getEntityInfo, getGalleryImages } from '../../helpers/utils';
 import Layout from '../../constants/Layout';
 import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';
@@ -49,30 +39,30 @@ import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
 import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
 
-
+/* Deferred rendering to speedup page inital load: 
+   deferred rendering delays the rendering reducing the initial 
+   number of components loaded when the page initially mounts.
+   Other components are loaded right after the mount */
 const USE_DR = false;
-class PlaceScreen extends Component {
+class ItineraryScreen extends Component {
 
   constructor(props) {
     super(props);
 
-    const { uuid } = props.route.params.item;
-
-    console.log("uuid", uuid)
-    /* Get props from navigation */
+    const { uuid } = props.route.params;
+    console.log("constructor", uuid)
     this.state = {
       render: USE_DR ? false : true,
-      //entity initial state
+      //
       uuid,
       entity: { term: {} },
       abstract: null, 
       title: null, 
+      coordinates: null,
+      socialUrl: null,
       description: null, 
-      whyVisit: null, 
-      coordinates: null, 
-      socialUrl: null, 
-      sampleVideoUrl: null,
-      gallery: [],
+      stages: [],
+      stagesMarkers: [],
       relatedEntities: [],
     };
       
@@ -80,44 +70,80 @@ class PlaceScreen extends Component {
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
 
-  async componentDidMount() {
+  componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
-    this._fetchRelatedNodes();
-    this.props.actions.getPoi({ uuid: this.state.uuid });
-  }
-
-  /* NOTE: since this screen is not */
-  componentDidUpdate(prevProps) {
     const { uuid } = this.state;
-    if (prevProps.pois.data !== this.props.pois.data) {
-      this._parseEntity(this.props.pois.data[uuid]);
-    }
+    this._fetchRelatedNodes();
+    this._parseEntity(this.props.itineraries.dataById[uuid]);
   }
-  
-  componentWillUnmount() {
 
+  componentDidUpdate(prevProps) {
+    /**
+     * Is the former props different from the newly propagated prop (redux)? perform some action
+     * if(prevProps.xxx !== this.props.xxx)
+     *  doStuff();
+     */
+  }
+
+  componentWillUnmount() {
   }
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
+
+  _isSuccessData  = () => false;    /* e.g. this.props.pois.success; */
+  _isLoadingData  = () => true;   /* e.g. this.props.pois.loading; */
+  _isErrorData    = () => null;    /* e.g. this.props.pois.error; */
+
   _fetchRelatedNodes = async () => {
     try {
-      const relatedEntities = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.places, offset: Math.ceil(Math.random()*100), limit: 5}))
+      const relatedEntities = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.itineraries, offset: Math.ceil(Math.random()*100), limit: 5}))
+      console.log("related list length", relatedEntities.length)
       this.setState({ relatedEntities })
     } catch(error){
       console.log(error)
     }
   }
-  
+
   _parseEntity = (entity) => {
-    const { locale } = this.props;
-    const { lan } = locale;
-    const { abstract, title, description, whyVisit } = getEntityInfo(entity, ["abstract", "title", "description", "whyVisit"], [lan, 0, "value"]);
-    const coordinates = getCoordinates(entity);
-    const socialUrl = `${Constants.WEBSITE_URL}${greedyArrayFinder(entity.url_alias, "language", lan, "alias", "")}`;
-    const sampleVideoUrl = getSampleVideoIndex(entity.nid);
-    const gallery = getGalleryImages(entity);
-    this.setState({ entity, abstract,  title,  description,  whyVisit,  coordinates,  socialUrl, sampleVideoUrl, gallery });
+    // console.log(entity)
+    if(entity){
+      const { locale } = this.props;
+      const { lan } = locale;
+      // console.log("language", lan)
+      const { abstract, title, description } = getEntityInfo(entity, ["abstract", "title", "description"], [lan, 0, "value"]);
+      const socialUrl = `${Constants.WEBSITE_URL}${greedyArrayFinder(entity.url_alias, "language", lan, "alias", "")}`;
+      const { stages, stagesMarkers } = this._getItineraryStages(entity.stages)
+      const coordinates = _.get(entity, ["stages", 0, "poi", "georef", "coordinates"], null)
+      this.setState({ entity, abstract,  title,  description, coordinates, socialUrl, stages, stagesMarkers });
+    }
+  }
+
+  _getItineraryStages = (stages) => {
+    let stages_result = []
+    let stagesMarkers = []
+    const { lan } = this.props.locale;
+    stages.map( stage => {
+      if(stage.language == lan){
+        stages_result.push(stage)
+        const coordinates = _.get(stage, ["poi", "georef", "coordinates"], null) 
+        if(coordinates){
+          let marker = {
+            coords: {
+              latitude: coordinates[1],
+              longitude: coordinates[0],
+            },
+            index: stage.index,
+            uuid: stage.poi.uuid,
+            title: stage.title,
+            image: stage.poi.image
+          }
+          stagesMarkers.push(marker)
+        }
+      }
+    })
+    // console.log("stages marker", stagesMarkers, stages)
+    return { stages: stages_result, stagesMarkers };
   }
 
   _openRelatedEntity = (item) => {
@@ -127,7 +153,7 @@ class PlaceScreen extends Component {
         this.props.navigation.push(Constants.NAVIGATION.NavPlaceScreen, { item });
         break;
       case Constants.NODE_TYPES.events:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item });
+        this.props.navigation.navigate(Constants.NAVIGATION.ItineraryScreen, { item });
         break;
       case Constants.NODE_TYPES.itineraries:
         this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, { item })
@@ -142,34 +168,14 @@ class PlaceScreen extends Component {
 
   /********************* Render methods go down here *********************/
 
-
-  _renderRelatedList = (title, relatedList, listType) => {
-    return (
-      <EntityRelatedList
-        horizontal={true}
-        data={relatedList ? relatedList : []} 
-        extraData={this.props.locale}
-        keyExtractor={item => item.nid.toString()}
-        contentContainerStyle={styles.listContainerHeader}
-        showsHorizontalScrollIndicator={false}
-        locale={this.props.locale}
-        onPressItem={this._openRelatedEntity}
-        listType={listType}
-        listTitle={title}
-        listTitleStyle={styles.sectionTitle}
-      />
-    )
-  }
-
-  
   _renderFab = (nid, title, coordinates, shareLink) => {
     return (
       <View style={styles.fab}>
         <ConnectedFab 
-          color={Colors.blue}
+          color={Colors.colorScreen4}
           nid={nid}
           title={title}
-          coordinates={coordinates} 
+          coordinates={coordinates}
           shareLink={shareLink}
           direction="down"
         /> 
@@ -177,8 +183,31 @@ class PlaceScreen extends Component {
     )
   }
 
+  /* Horizontal spacing for Header items */
+  _renderHorizontalSeparator = () => <View style={{ width: 5, flex: 1 }}></View>;
+
+
+  _renderRelatedList = (title, relatedList, listType) => {
+    return (
+        <EntityRelatedList
+          horizontal={true}
+          data={relatedList ? relatedList : []} 
+          extraData={this.props.locale}
+          keyExtractor={item => item.nid.toString()}
+          contentContainerStyle={styles.listContainerHeader}
+          ItemSeparatorComponent={this._renderHorizontalSeparator}
+          showsHorizontalScrollIndicator={false}
+          locale={this.props.locale}
+          onPressItem={this._openRelatedEntity}
+          listType={listType}
+          listTitle={title}
+          listTitleStyle={styles.sectionTitle}
+        />
+    )
+  }
+
   _renderContent = () => {
-    const { uuid, entity, abstract, title, description, whyVisit, coordinates, socialUrl, sampleVideoUrl, gallery, relatedEntities } = this.state;
+    const { uuid, entity, stages, stagesMarkers, coordinates, socialUrl, abstract, title, description, whyVisit, relatedEntities } = this.state;
     const { locale, pois, favourites, } = this.props;
     const { lan } = locale;
     const { 
@@ -188,29 +217,25 @@ class PlaceScreen extends Component {
       description: descriptionTitle,
       canBeOfInterest,
     } = locale.messages;
-    
-    const { orientation } = this.state;
-    const isFavourite = favourites.places[uuid];
 
-     return (
-       <View style={styles.fill}>
-         <ScrollView style={styles.fill}>
-          <TopMedia urlVideo={sampleVideoUrl} urlImage={entity.image} />
+    return (
+      <View style={styles.fill}>
+        <ScrollView style={styles.fill}>
+          <TopMedia urlImage={entity.image} />
           {this._renderFab(entity.nid, title, coordinates, socialUrl)}   
           <View style={[styles.headerContainer]}> 
-            <EntityHeader title={title} term={entity.term.name} borderColor={Colors.blue}/>
+            <EntityHeader title={title} borderColor={Colors.colorScreen4}/>
           </View>
           <View style={[styles.container]}>
-            <EntityAbstract abstract={abstract}/>
-            <EntityWhyVisit title={whyVisitTitle} text={whyVisit}/>
-            <EntityMap coordinates={coordinates}/>
-            <EntityGallery images={gallery} title={galleryTitle}/>
-            <EntityDescription title={descriptionTitle} text={description} color={Colors.colorScreen1}/>
+            <EntityAbstract abstract={abstract} />
+            <EntityMap coordinates={stagesMarkers} hasMarkers uuid={uuid}/>
+            <EntityDescription title={descriptionTitle} text={description} color={Colors.colorScreen4}/>
+            <EntityStages type="itinerary" stages={stages}/>
             <View style={styles.separator}/>
-            {this._renderRelatedList(canBeOfInterest, relatedEntities, Constants.ENTITY_TYPES.places)}
-            <EntityAccomodations horizontal/>
+            {this._renderRelatedList(canBeOfInterest, relatedEntities, Constants.ENTITY_TYPES.itineraries)}
+            <View style={{marginBottom: 30}}></View>
           </View>
-         </ScrollView>
+        </ScrollView>
        </View>
      );
   }
@@ -220,7 +245,7 @@ class PlaceScreen extends Component {
     const { render } = this.state;
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader iconTintColor="#24467C" />
+        <ConnectedHeader iconTintColor={Colors.colorScreen4} />
         {render && this._renderContent()}
       </View>
     )
@@ -229,8 +254,8 @@ class PlaceScreen extends Component {
 }
 
 
-PlaceScreen.navigationOptions = {
-  title: 'Boilerplate',
+ItineraryScreen.navigationOptions = {
+  title: 'Event',
 };
 
 
@@ -285,12 +310,12 @@ const styles = StyleSheet.create({
 });
 
 
-function PlaceScreenContainer(props) {
+function ItineraryScreenContainer(props) {
   const navigation = useNavigation();
   const route = useRoute();
   const store = useStore();
 
-  return <PlaceScreen 
+  return <ItineraryScreen 
     {...props}
     navigation={navigation}
     route={route}
@@ -305,7 +330,7 @@ const mapStateToProps = state => {
     //favourites
     favourites: state.favouritesState,
     //graphql
-    pois: state.poisState,
+    itineraries: state.itinerariesState,
   };
 };
 
@@ -321,4 +346,4 @@ export default connect(mapStateToProps, mapDispatchToProps, (stateProps, dispatc
     actions: dispatchProps,
     ...props
   }
-})(PlaceScreenContainer)
+})(ItineraryScreenContainer)

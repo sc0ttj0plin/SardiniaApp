@@ -1,53 +1,29 @@
 import React, {PureComponent} from 'react';
-import { View, StyleSheet, Text, Platform, Linking, TouchableOpacity, FlatList } from 'react-native';
+import { View, StyleSheet, Text, Platform, Linking, TouchableOpacity, FlatList, Image } from 'react-native';
 import * as Constants from '../constants';
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import Layout from '../constants/Layout';
+import { useNavigation } from '@react-navigation/native';
 // import { TouchableOpacity } from 'react-native-gesture-handler';
 
-export default class EntityStages extends PureComponent {  
+class EntityStages extends PureComponent {  
   
   constructor(props) {
     super(props);
     this.state = {
-      stages: [
-        {
-          title: "tappa1",
-          description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-          src: ""
-        },
-        {
-          title: "tappa2",
-          description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-          src: ""
-        },
-        {
-          title: "tappa3",
-          description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-          src: ""
-        }
-      ],
-      eventStages: [
-        {
-          title: "tappa1",
-          src: "",
-          location: "Cagliari",
-          date: "30 e 31 novembre"
-        },
-        {
-          title: "tappa2",
-          src: "",
-          location: "Cagliari",
-          date: "30 e 31 novembre"
-        },
-        {
-          title: "tappa3",
-          src: "",
-          location: "Cagliari",
-          date: "30 e 31 novembre"
-        }
-      ]
+      stages: props.stages || []
     };
+  }
+
+  componentDidUpdate(prevProps){
+    if(prevProps.stages !== this.props.stages){
+      this.setState({stages: this.props.stages})
+    }
+  }
+
+  _openPoi = (uuid) => {
+    // console.log("uuid poi", uuid)
+    this.props.navigation.push(Constants.NAVIGATION.NavPlaceScreen, { item: {uuid} });
   }
 
   _renderEventStage = (item, index) => {
@@ -86,21 +62,25 @@ export default class EntityStages extends PureComponent {
   }
 
   _renderItineraryStage = (stage, index) => {
-    const { title, description } = stage
+    const { title, body } = stage
+    const { uuid } = stage.poi || null;
+    console.log("stage", stage)
     return(
       <View style={styles.itemContainer}>
         <View style={styles.topLine}>
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.index}>{index + 1}</Text>
         </View>
-        <View style={styles.imageCircle}></View>
+        <View style={styles.imageCircle}>
+          <Image style={{flex: 1, borderRadius: 50}} source={{ uri: stage.poi.image }}/>
+        </View>
         <View style={styles.descriptionContainer}>
-          <Text style={styles.description}>{description}</Text>
+          <Text style={styles.description}>{body}</Text>
         </View>
         <View style={styles.bottomView}>
           <TouchableOpacity
             style={styles.bottomButton}
-            activeOpacity={0.7}>
+            activeOpacity={0.7} onPress={() => this._openPoi(uuid)}>
               <Text style={styles.bottomButtonText}>ESPLORA</Text>
           </TouchableOpacity>
         </View>
@@ -111,7 +91,7 @@ export default class EntityStages extends PureComponent {
     return(
       <FlatList 
         key={"itinerary-stages"}
-        keyExtractor={item => item.name}
+        keyExtractor={item => item.poi.nid}
         data={this.state.stages}
         renderItem={({item, index}) => this._renderItineraryStage(item, index)}
         style={styles.container}
@@ -167,12 +147,14 @@ const styles = StyleSheet.create({
     paddingLeft: 70,
     display: "flex",
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
+    paddingVertical: 20
   },
   title: {
     color: "white",
-    fontSize: 15,
-    textTransform: "capitalize"
+    fontSize: 13,
+    textTransform: "capitalize",
+    paddingVertical: 5
   },
   index: {
     color: "white",
@@ -185,11 +167,12 @@ const styles = StyleSheet.create({
   descriptionContainer: {
     paddingLeft: 70,
     paddingTop: 21,
-    paddingRight: 15
+    paddingRight: 30
   },
   description: {
     fontSize: 12,
-    fontWeight: "normal"
+    fontWeight: "normal",
+    textAlign: "justify"
   },
   imageCircle: {
     width: 51,
@@ -260,5 +243,24 @@ const styles = StyleSheet.create({
   },
   eventStageDate: {
     fontSize: 16,
+  },
+  bottomButton: {
+    backgroundColor: "transparent",
+    width: 70,
+    height: 25,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "flex-end"
   }
 });
+
+
+function EntityStagesContainer(props) {
+  const navigation = useNavigation();
+
+  return <EntityStages 
+    {...props}
+    navigation={navigation}/>;
+}
+
+export default EntityStagesContainer

@@ -15,6 +15,13 @@ export default class EntityRelatedList extends PureComponent {
         }
     }
 
+    componentDidUpdate(prevProps){
+        if(prevProps.data !== this.props.data){
+            console.log("loaded", this.props.listTitle, this.props.data.length)
+            this.setState({data: this.props.data})
+        }
+    }
+
     _renderPoiListItem = (item) => {
         const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
         const {listType} = this.props
@@ -32,13 +39,6 @@ export default class EntityRelatedList extends PureComponent {
                 horizontal={this.props.horizontal}
             />
         )
-    }
-
-    componentDidUpdate(prevProps){
-        if(prevProps.data !== this.props.data){
-            console.log("loaded", this.props.listTitle)
-            this.setState({data: this.props.data})
-        }
     }
 
     _renderHorizontalSeparator = () => {
@@ -73,6 +73,7 @@ export default class EntityRelatedList extends PureComponent {
                         extraData={extraData}
                         keyExtractor={item => item.uuid}
                         data={data}
+                        ItemSeparatorComponent={this._renderHorizontalSeparator}
                         renderItem={({item, index}) => this._renderPoiListItem(item, index)}
                         style={[styles.fill]}
                         contentContainerStyle={contentContainerStyle}

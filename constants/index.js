@@ -100,6 +100,7 @@ export const NAVIGATION = {
   NavEventsStack: "EventsStack",
   NavExperiencesItinerariesScreen: "ExperiencesItinerariesScreen",
   NavItineraryScreen: "ItineraryScreen",
+  NavItineraryStagesMapScreen: "ItineraryStagesMapScreen",
   NavEventsScreen: "ExperiencesEventsScreen",
   NavEventScreen: "EventScreen",
   NavEventsMapScreen: "EventsMapScreen",
