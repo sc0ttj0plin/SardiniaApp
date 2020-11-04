@@ -1,36 +1,75 @@
 import React, { Component } from "react";
-import { View, Text, FlatList, ActivityIndicator, TouchableOpacity, StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
-import { List, ListItem, SearchBar, Button } from "react-native-elements";
-import MapView from 'react-native-maps';
-import { NavigationEvents, useNavigation, useRoute } from '@react-navigation/native';
-import { GeoRefHListItem, CategoryListItem, ScrollableHeader, Header, AsyncOperationStatusIndicator} from "../components";
+import { 
+  View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
+  StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { 
+  // CategoryListItem, 
+  // GeoRefHListItem, 
+  // GridGallery, 
+  // GridGalleryImage, 
+  // MapViewTop, 
+  // ScrollableHeader,
+  // TabBarIcon, 
+  // CalendarListItem, 
+  // EntityAbstract,
+  // EntityDescription,
+  // EntityGallery,
+  // EntityHeader,
+  // EntityItem,
+  // EventListItem,
+  // EntityMap,
+  // EntityRelatedList,
+  // EntityVirtualTour,
+  // EntityWhyVisit,
+  // TopMedia,
+  AsyncOperationStatusIndicator, 
+  // AsyncOperationStatusIndicatorPlaceholder,
+  // Webview, 
+  // ConnectedText, 
+  ConnectedHeader, 
+  HeaderFullscreen
+  // ImageGridItem, 
+  // ConnectedLanguageList, 
+  // BoxWithText,
+  // ConnectedFab, 
+  // PoiItem, 
+  // PoiItemsList, 
+  // ExtrasListItem, 
+  // MapViewItinerary
+ } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
-import Layout from '../constants/Layout';
-import * as graphqlActions from '../actions/graphql';
-import * as restActions from '../actions/rest';
-import * as localeActions from '../actions/locale';
-import Colors from '../constants/Colors';
-import { Ionicons } from '@expo/vector-icons';
-// import { ScreenOrientation } from 'expo';
+import Layout from '../../constants/Layout';
+import { greedyArrayFinder, getEntityInfo, getCoordinates, getSampleVideoIndex, getGalleryImages } from '../../helpers/utils';
+import { apolloQuery } from '../../apollo/queries';
+import actions from '../../actions';
+import * as Constants from '../../constants';
+import Colors from '../../constants/Colors';
+import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
 import * as ScreenOrientation from 'expo-screen-orientation'
 import { Video } from 'expo-av';
-import HeaderFullscreen from '../components/HeaderFullscreen'
-import { timezone } from "expo-localization";
 
 const { OrientationLock } = ScreenOrientation;
 
+/* Deferred rendering to speedup page inital load: 
+   deferred rendering delays the rendering reducing the initial 
+   number of components loaded when the page initially mounts.
+   Other components are loaded right after the mount */
+const USE_DR = false;
 class VideoScreen extends Component {
 
   constructor(props) {
     super(props);
 
-    //let { someNavProps } = props.route.params; 
+    /* Get props from navigation */ 
     const { source } = this.props.route.params;
     this._vPlayer = null;
     this._refs = {};
     this.state = {
+      render: USE_DR ? false : true,
+      //
       source: source,
       isVideoEnded: false,
       isVideoLoaded: false,
@@ -41,20 +80,43 @@ class VideoScreen extends Component {
       
   }
 
+  /********************* React.[Component|PureComponent] methods go down here *********************/
 
+  /**
+   * Use this function to perform data fetching
+   * e.g. this.props.actions.getPois();
+   */
   async componentDidMount() {
-    // Screen orientation (unlock & callback) for video playing
+    //Deferred rendering to make the page load faster and render right after
+    {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
     const { orientation } = await ScreenOrientation.getOrientationAsync();
     this.setState({ orientation });
     await ScreenOrientation.unlockAsync();
     ScreenOrientation.addOrientationChangeListener(this._onOrientationChange);
-  } 
+  }
 
+  /**
+   * Use this function to update state based on external props 
+   * or to post-process data once it changes
+   */
+  componentDidUpdate(prevProps) {
+    /**
+     * Is the former props different from the newly propagated prop (redux)? perform some action
+     * if(prevProps.xxx !== this.props.xxx)
+     *  doStuff();
+     */
+  }
+
+  /**
+   * Use this function to unsubscribe or clear any event hooks
+   */
   async componentWillUnmount() {
     // Screen orientation (lock & remove callback) for video playing
     await ScreenOrientation.lockAsync(OrientationLock.PORTRAIT);
     ScreenOrientation.removeOrientationChangeListeners();
   }
+
+  /********************* Non React.[Component|PureComponent] methods go down here *********************/
 
   _isOrientationLandscape = (orientation) => 
      orientation === OrientationLock.LANDSCAPE || orientation === OrientationLock.LANDSCAPE_RIGHT || orientation === OrientationLock.LANDSCAPE_LEFT;
@@ -66,14 +128,13 @@ class VideoScreen extends Component {
     this.setState({ orientation });
 
     // console.log(orientation, this._isOrientationPortrait(orientation), this._isOrientationLandscape(orientation));
-
+    console.log("orientation", orientation)
     //Note: using player embedded fullscreen capabilities
     if (this._vPlayer && this._isOrientationLandscape(orientation)){
       await this._vPlayer.presentFullscreenPlayer();
       console.log("go to landscape");
     }
     else if(this._vPlayer && this._isOrientationPortrait(orientation)){
-      await this._vPlayer.dismissFullscreenPlayer();
       await this._vPlayer.dismissFullscreenPlayer();
       console.log("go to portrait");
     }
@@ -110,6 +171,36 @@ class VideoScreen extends Component {
       });
     }
   }
+
+  /**
+   * If the reducer embeds a single data type then e.g. only pois:
+   *    Data is stored in this.props.pois.data
+   *    Success state is stored in this.props.pois.success
+   *    Loading state is stored in this.props.pois.loading
+   *    Error state is stored in this.props.pois.error
+   * If the reducer embeds multiple data types then (e.g. search + autocomplete):
+   *    Data is stored in this.props.searchAutocomplete.search
+   *    Success state is stored in this.props.searchAutocomplete.searchSuccess
+   *    Loading state is stored in this.props.searchAutocomplete.searchLoading
+   *    Error state is stored in this.props.searchAutocomplete.searchError
+   */
+  _isSuccessData  = () => false;    /* e.g. this.props.pois.success; */
+  _isLoadingData  = () => true;   /* e.g. this.props.pois.loading; */
+  _isErrorData    = () => null;    /* e.g. this.props.pois.error; */
+
+
+  /********************* Render methods go down here *********************/
+
+  _renderContent = () => {
+    return (
+      <View style={styles.mainView}>
+        {this.state.source && 
+          this._renderVideo(this.state.source)
+        }
+      </View>
+    );
+  }
+
   _renderVideo = (url) => {
     return (
       <Video
@@ -125,26 +216,12 @@ class VideoScreen extends Component {
     );
   }
 
-  _renderContent = () => {
-    return (
-      <View style={styles.mainView}>
-        {this.state.source && 
-          this._renderVideo(this.state.source)
-        }
-      </View>
-    );
-  }
-
   render() {
+    const { render } = this.state;
     return (
-      <View style={styles.fill}>
-        {/* <View style={[styles.header, {paddingTop: 0, height: 0 }]}>
-            <Header backButtonVisible={true} searchButtonVisible={false}/>
-        </View> */}
-        {this._renderContent()}
-        <HeaderFullscreen
-          goBackPressed={() => {this.props.navigation.goBack()}}
-          ></HeaderFullscreen>
+      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
+        <HeaderFullscreen goBackPressed={() => {this.props.navigation.goBack()}}/>
+        {render && this._renderContent()}
       </View>
     )
   }
@@ -153,7 +230,7 @@ class VideoScreen extends Component {
 
 
 VideoScreen.navigationOptions = {
-  title: 'Video',
+  title: 'Boilerplate',
 };
 
 
@@ -217,18 +294,14 @@ function VideoScreenContainer(props) {
 
 const mapStateToProps = state => {
   return {
-    // someState: state.graphqlState.someState,
-    // someStateError: state.graphqlState.someStateError,
-    // someStateLoading: state.graphqlState.someStateLoading,
+    //language
     locale: state.localeState,
-    // error: state.restState.error,
-    // loading: state.restState.loading
   };
 };
 
 
 const mapDispatchToProps = dispatch => {
-  return {...bindActionCreators({ ...graphqlActions, ...restActions, ...localeActions}, dispatch)};
+  return {...bindActionCreators({ ...actions }, dispatch)};
 };
 
 

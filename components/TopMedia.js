@@ -4,6 +4,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Image } from 'react-native-elements';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import ShimmerWrapper from "./ShimmerWrapper"
+import * as Constants from "../constants"
 class TopMedia extends PureComponent {  
   
   constructor(props) {
@@ -27,7 +28,7 @@ class TopMedia extends PureComponent {
         <TouchableOpacity
           style={styles.playButton}
           activeOpacity={0.7}
-          onPress={ () => this.props.navigation.navigate("VideoScreen", { source: urlVideo })}>
+          onPress={ () => this.props.navigation.navigate(Constants.NAVIGATION.NavVideoScreen, { source: urlVideo })}>
             <ImageBackground source={require("../assets/icons/play_bg.png")} style={styles.backgroundPlayImage}>
               <Image 
                 source={require("../assets/icons/play.png")} style={styles.playImage}>  

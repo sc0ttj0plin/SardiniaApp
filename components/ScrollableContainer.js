@@ -4,6 +4,7 @@ import ScrollBottomSheet from 'react-native-scroll-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import MapView from 'react-native-maps';
 const windowHeight = Dimensions.get('window').height;
+import Layout from '../constants/Layout';
 
 import { call, useCode, useAnimatedStyle, useSharedValue} from 'react-native-reanimated'
 import { PanGestureHandler, State } from "react-native-gesture-handler";
@@ -17,6 +18,9 @@ export default class ScrollableContainer extends PureComponent {
   constructor(props){
     super(props);
     // Scrollable refernce
+    this.state = {
+      data: props.data
+    }
     this._scrollable = {}
     //Drag 
     this._dragX = new Value(0);
@@ -25,23 +29,30 @@ export default class ScrollableContainer extends PureComponent {
     this._translateAnim = new Value(0);
     this._translateAnimY = interpolate(this._translateAnim, {
       inputRange: [0, 1],
-      outputRange: [0, -windowHeight/2],
+      outputRange: [0, -Layout.window.height/2],
     });
-  
+    
+    this._snapPoints = [5, Layout.window.height - 390, Layout.window.height - 180]
   }
 
   componentDidUpdate(prevProps){
-    if(prevProps.initialSnapIndex !== this.props.initialSnapIndex){
-      console.log("snap point", this.props.initialSnapIndex)
-      if(this.props.initialSnapIndex == 2){
-        let timeout = setTimeout( () => {
-          this._scrollable.snapTo(this.props.initialSnapIndex)
-          clearTimeout(timeout)
-        }, 100)
-      }
-      else
-        this._scrollable.snapTo(this.props.initialSnapIndex)
+    if(prevProps.snapIndex !== this.props.snapIndex){
+      console.log("snap point", this.props.snapIndex)
+      this._scrollable.snapTo(this.props.snapIndex)
+      // let timeout = setTimeout( () => {
+      //   clearTimeout(timeout)
+      // }, 300)
+    }
+    if(prevProps.data !== this.props.data){
+      console.log("data updated")
+      this.setState({
+        data: []
+      }, () => {
+        this.setState({
+          data: this.props.data
+        })
 
+      })
     }
   }
 
@@ -58,13 +69,12 @@ export default class ScrollableContainer extends PureComponent {
         </Animated.View>
         
         <ScrollBottomSheet
-          {...this.props} 
           componentType="FlatList"
           numColumns={this.props.numColumns || 1}
-          snapPoints={[5, windowHeight - 390, windowHeight - 180]}
-          initialSnapIndex={this.props.initialSnapIndex >=0 ? this.props.initialSnapIndex : 2}
+          snapPoints={this.props.snapPoints || this._snapPoints}
+          initialSnapIndex={this.props.initialSnapIndex >=0 ? this.props.initialSnapIndex : 0}
           renderHandle={this._renderHandle}
-          data={this.props.data || []}
+          data={this.state.data || []}
           keyExtractor={this.props.keyExtractor}
           renderItem={this.props.renderItem}
           ref={(ref)=>this._scrollable = ref}

@@ -321,6 +321,7 @@ class PlacesScreen extends PureComponent {
   /* Renders a poi in Header */
   _renderPoiListItem = (item) => {
     const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
+    const termName = _.get(item, "term.name", "")
     return (
       <EntityItem 
         keyItem={item.nid}
@@ -329,9 +330,9 @@ class PlacesScreen extends PureComponent {
         listType={Constants.ENTITY_TYPES.places}
         onPress={() => this._openPoi(item)}
         title={`${title}`}
-        place={`${item.term.name}`}
+        place={`${termName}`}
         image={`${item.image}`}
-        distance={this.state.isCordsInBound && item.distance}
+        distance={this.state.isCordsInBound ? item.distance : ""}
         style={{marginBottom: 10}}
       />
   )}
@@ -347,6 +348,7 @@ class PlacesScreen extends PureComponent {
     // const { term, coords, region, nearPois, clusters, pois } = this.state;
     const { pois } = this.state;
     const isPoiList = this._isPoiList();
+    console.log("term", term ? term.length : term, isPoiList)
     let data = [];
     let renderItem = null;
     let numColums = 1; //One for categories, two for pois

@@ -113,7 +113,7 @@ class ExtraScreen extends Component {
   _fetchRelatedNodes = async () => {
     try {
       const relatedPlaces = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.places, offset: Math.ceil(Math.random()*100), limit: 5}))
-      const relatedItineraries = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.itineraries, offset: Math.ceil(Math.random()*100), limit: 5}))
+      const relatedItineraries = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.itineraries, offset: 0, limit: 5}))
       const relatedEvents = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.events, offset: Math.ceil(Math.random()*100), limit: 5}))
       this.setState({ relatedPlaces, relatedItineraries, relatedEvents });
     } catch(error){

@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { 
   View, Text, ActivityIndicator, TouchableOpacity, 
-  StyleSheet, BackHandler, Platform, ScrollView, NativeModules } from "react-native";
+  StyleSheet, BackHandler, Platform, ScrollView, NativeModules, Dimensions, StatusBar } from "react-native";
 
 import { FlatList } from "react-native-gesture-handler"
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -28,6 +28,8 @@ import { Button } from "react-native-paper";
 import { Marker } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
 import { PROVIDER_GOOGLE } from 'react-native-maps';
+const screenHeight = Dimensions.get('screen').height;
+const windowHeight = Dimensions.get('window').height;
 
 /**
  * Map:             Clusters + pois that update with user map's interaction
@@ -48,7 +50,7 @@ class ItinerariesScreen extends PureComponent {
     this._watchID = null; /* navigation watch hook */
     this._onFocus = null;
     this._refs = {};
-
+    this._map = null
 
     this.state = {
       render: USE_DR ? false : true,
@@ -173,6 +175,7 @@ class ItinerariesScreen extends PureComponent {
         showsUserLocation={ true }
         showsIndoorLevelPicker={true}
         showsCompass={false}
+        ref={(ref) => this._map = ref}
         clusterColor={Colors.colorItinerariesScreen}
         style={{flex: 1}}
         onPress={() => this._selectMarker(null)}
@@ -204,7 +207,7 @@ class ItinerariesScreen extends PureComponent {
         <Marker.Animated
           coordinate={{ longitude: parseFloat(long),  latitude: parseFloat(lat) }}
           onPress={() => this._selectMarker(itinerary)}
-          tracksViewChanges={false}
+          tracksViewChanges={true}
           style={{width: 42, height: 42, zIndex: 1}}>
             <View style={[styles.markerContainer, {
               backgroundColor: selected ? "rgba(93, 127, 32, 0.5)" : "transparent"
@@ -270,16 +273,18 @@ class ItinerariesScreen extends PureComponent {
   _renderContent = () => {
     const { selectedItinerary, itineraries } = this.state;
     let data = selectedItinerary ? [selectedItinerary] : itineraries;
-    // console.log("length", data.length)
+    console.log("length", screenHeight, windowHeight, this._map)
     if(!data.length)
       data = []
-    let snapIndex = selectedItinerary ? 1 : 2
+    let snapIndex = selectedItinerary ? 1 : 1
     return (
       <ScrollableContainer 
         topComponent={this._renderTopComponent}
-        ListHeaderComponent={this._renderListHeader}
+        ListHeaderComponent={this._renderListHeader} 
         data={data}
-        initialSnapIndex={snapIndex}
+        initialSnapIndex={2}
+        snapPoints={[5, Layout.window.height - 20, "60%"]}
+        snapIndex={snapIndex}
         numColums={1}
         renderItem={this._renderListItem}
         keyExtractor={item => item.uuid}

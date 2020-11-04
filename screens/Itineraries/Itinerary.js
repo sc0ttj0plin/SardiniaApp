@@ -96,7 +96,7 @@ class ItineraryScreen extends Component {
 
   _fetchRelatedNodes = async () => {
     try {
-      const relatedEntities = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.itineraries, offset: Math.ceil(Math.random()*100), limit: 5}))
+      const relatedEntities = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.itineraries, offset: 0, limit: 5}))
       this.setState({ relatedEntities })
     } catch(error){
       console.log(error)

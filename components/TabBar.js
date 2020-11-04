@@ -56,7 +56,7 @@ const TabBar = props => {
     }
 
   return (
-    <Scaler style={[Styles.container, {height: 63+insets.bottom, paddingBottom: insets.bottom}]}>
+    <View style={[Styles.container, {height: 63, marginBottom: insets.bottom}]}>
       {newRoutes.map((route, routeIndex) => {
         const isRouteActive = routeIndex === activeRouteIndex
         return (
@@ -100,7 +100,7 @@ const TabBar = props => {
           </TouchableOpacity>
         )
       })}
-    </Scaler>
+    </View>
   )
 }
  

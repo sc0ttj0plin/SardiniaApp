@@ -12,6 +12,8 @@ export AsyncOperationStatusIndicator from './AsyncOperationStatusIndicator';
 // export Webview from './Webview';
 export ConnectedText from './ConnectedText';
 export ConnectedHeader from './ConnectedHeader';
+export HeaderFullscreen from './HeaderFullscreen';
+
 // export ImageGridItem from './ImageGridItem';
 // export ConnectedLanguageList from './ConnectedLanguageList';
 // export BoxWithText from './BoxWithText';

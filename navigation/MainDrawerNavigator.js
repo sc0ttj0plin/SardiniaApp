@@ -24,6 +24,8 @@ import InspirerScreen from '../screens/Inspirers/Inspirer';
 import ExtrasScreen from '../screens/Extras/Extras';
 import ExtraScreen from '../screens/Extras/Extra';
 import SearchScreen from '../screens/Search/Search';
+import VideoScreen from '../screens/Others/VideoScreen';
+
 // import MapScreen from '../screens/Others/MapScreen';
 // import ExploreScreen from '../screens/Others/ExploreScreen';
 // import ExtrasScreen from '../screens/Others/ExtrasScreen';
@@ -218,6 +220,7 @@ function MainStackScreen() {
       <MainStack.Screen name={NavItineraryScreen} component={ItineraryScreen}  />
       <MainStack.Screen name={NavItineraryStagesMapScreen} component={ItineraryStagesMapScreen}  />
       <MainStack.Screen name={NavInspirerScreen} component={InspirerScreen}/>
+      <MainStack.Screen name={NavVideoScreen} component={VideoScreen}/>
     </MainStack.Navigator>
     </>
   );

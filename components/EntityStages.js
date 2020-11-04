@@ -64,7 +64,7 @@ class EntityStages extends PureComponent {
   _renderItineraryStage = (stage, index) => {
     const { title, body } = stage
     const { uuid } = stage.poi || null;
-    console.log("stage", stage)
+    // console.log("stage", stage)
     return(
       <View style={styles.itemContainer}>
         <View style={styles.topLine}>
@@ -154,7 +154,8 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 13,
     textTransform: "capitalize",
-    paddingVertical: 5
+    paddingVertical: Platform.OS === "ios" ? 0 : 5,
+    flex: 4
   },
   index: {
     color: "white",
@@ -203,7 +204,8 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    marginBottom: 40
+    marginBottom: 40,
+    marginTop: 20
   },
   eventStagesTitle: {
     fontSize: 19,
@@ -214,7 +216,7 @@ const styles = StyleSheet.create({
   eventStageView: {
     display: "flex",
     flexDirection: "column",
-    alignItems: "center"
+    alignItems: "center",
   },
   stageVerticalLine: {
     width: 2,
@@ -251,6 +253,8 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "flex-end"
+  },
+  eventContainer: {
   }
 });
 
