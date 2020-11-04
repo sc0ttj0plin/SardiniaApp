@@ -19,7 +19,6 @@ const { NavPlacesScreen, NavInspirersScreen ,NavMapScreen, NavExperiencesScreen,
   NavExperiences, NavPlaces,NavInspirers ,NavExplore, NavEvents, NavTabNavigator, NavLanguageScreen1,
   NavSearchScreen, NavGalleryScreen, NavExtrasScreen, NavExtraScreen, NavFavouritesScreen } = Constants.NAVIGATION;
  
-const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
 
 //backButtonVisible == true: shows backButton, if set to false shows drawer menù icon
 const HEADER_BUTTONS_PER_SCREEN = {
@@ -55,7 +54,6 @@ const HEADER_BUTTONS_PER_SCREEN = {
   ["default"]: {backButtonVisible: false, searchButtonVisible: true}
 }
 
-
 /**
  * Header component that is connected to redux and determines which buttons
  * are visible in each screen through the above mapping. 
@@ -77,7 +75,7 @@ class ConnectedHeader extends PureComponent {
 
   }
 
- 
+  
   _searchButtonPressed = () => {
     //If we are on the search screen perform the actual search, 
     //otherwise navigate to search screen resetting search str and results
@@ -86,7 +84,10 @@ class ConnectedHeader extends PureComponent {
       if (this.props.others.searchOrAutocomplete !== "search")
         this.props.actions.switchSearchOrAutocomplete("search");
       let queryStr = utils.searchParser(this.props.others.searchStr);
-      this.props.actions.search({ queryStr, nodeTypes: Object.values(Constants.NODE_TYPES) });
+      this.props.actions.search({ 
+        queryStr, 
+        nodeTypes: [Constants.NODE_TYPES.places, Constants.NODE_TYPES.events, Constants.NODE_TYPES.inspirers, Constants.NODE_TYPES.itineraries] 
+      });
     } else {
       this.props.actions.resetSearchAndAutocompleteStr();
       this.props.actions.resetSearchAndAutocompleteResults();
@@ -104,7 +105,12 @@ class ConnectedHeader extends PureComponent {
   _updateSearch = search => {
     if (this.props.others.searchOrAutocomplete !== "autocomplete")
       this.props.actions.switchSearchOrAutocomplete("autocomplete");
-    this.props.actions.autocomplete({ queryStr: search });
+      //Returns: Nodes OR Categories (terms)
+      this.props.actions.autocomplete({ 
+        queryStr: search, 
+        vidsInclude: [Constants.VIDS.poisCategories, Constants.VIDS.pois, Constants.VIDS.inspirersCategories, Constants.VIDS.events],
+        typesExclude: [Constants.NODE_TYPES.events]
+      });
     this.props.actions.setSearchOrAutocomplete(search);
   };
 

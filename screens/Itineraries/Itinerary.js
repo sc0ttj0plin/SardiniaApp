@@ -49,10 +49,13 @@ class ItineraryScreen extends Component {
   constructor(props) {
     super(props);
 
-    const { uuid } = props.route.params;
+    const { uuid } = props.route.params.item;
+    const { mustFetch } = props.route.params;
+
     this.state = {
       render: USE_DR ? false : true,
       //
+      mustFetch,
       uuid,
       entity: { term: {} },
       abstract: null, 
@@ -72,17 +75,19 @@ class ItineraryScreen extends Component {
   componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
-    const { uuid } = this.state;
+    const { uuid, mustFetch } = this.state;
     this._fetchRelatedNodes();
-    this._parseEntity(this.props.itineraries.dataById[uuid]);
+
+    if (mustFetch)
+      this.props.actions.getItinerariesById({ uuids: [uuid] });
+    else 
+      this._parseEntity(this.props.itineraries.dataById[uuid]);
   }
 
   componentDidUpdate(prevProps) {
-    /**
-     * Is the former props different from the newly propagated prop (redux)? perform some action
-     * if(prevProps.xxx !== this.props.xxx)
-     *  doStuff();
-     */
+    const { uuid } = this.state;
+    if (prevProps.itineraries.dataById !== this.props.itineraries.dataById)
+      this._parseEntity(this.props.itineraries.dataById[uuid]);
   }
 
   componentWillUnmount() {

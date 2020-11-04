@@ -49,10 +49,12 @@ class EventScreen extends Component {
     super(props);
 
     const { uuid } = props.route.params.item;
+    const { mustFetch } = props.route.params;
 
     this.state = {
       render: USE_DR ? false : true,
       //
+      mustFetch,
       uuid,
       entity: { term: {} },
       abstract: null, 
@@ -70,17 +72,19 @@ class EventScreen extends Component {
   async componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
-    const { uuid } = this.state;
+    const { uuid, mustFetch } = this.state;
     this._fetchRelatedNodes();
-    this._parseEntity(this.props.events.eventsById[uuid]);
+
+    if (mustFetch)
+      this.props.actions.getEventsById({ uuids :[uuid] });
+    else
+      this._parseEntity(this.props.events.eventsById[uuid]);
   }
 
   componentDidUpdate(prevProps) {
-    /**
-     * Is the former props different from the newly propagated prop (redux)? perform some action
-     * if(prevProps.xxx !== this.props.xxx)
-     *  doStuff();
-     */
+    const { uuid } = this.state;
+    if (prevProps.events.eventsById !== this.props.events.eventsById)
+      this._parseEntity(this.props.events.eventsById[uuid]);
   }
 
   componentWillUnmount() {
@@ -102,7 +106,6 @@ class EventScreen extends Component {
   }
 
   _parseEntity = (entity) => {
-    console.log(entity)
     const { locale } = this.props;
     const { lan } = locale;
     const { abstract, title, description } = getEntityInfo(entity, ["abstract", "title", "description"], [lan, 0, "value"]);

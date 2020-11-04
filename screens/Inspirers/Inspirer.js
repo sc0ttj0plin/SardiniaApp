@@ -57,10 +57,12 @@ class InspirerScreen extends Component {
     super(props);
 
     const { uuid } = props.route.params.item;
-    /* Get props from navigation */
+    const { mustFetch } = props.route.params;
+
     this.state = {
       render: USE_DR ? false : true,
-      //entity initial state
+      //
+      mustFetch,
       uuid,
       entity: { term: {} },
       abstract: null, 
@@ -81,11 +83,20 @@ class InspirerScreen extends Component {
   async componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
-    const { uuid } = this.state;
+    const { uuid, mustFetch } = this.state;
     this._fetchRelatedNodes();
-    this._parseEntity(this.props.inspirers.dataById[uuid]);
+
+    if (mustFetch)
+      this.props.actions.getInspirersById({ uuids: [uuid], vid: Constants.VIDS.inspirersCategories });
+    else 
+      this._parseEntity(this.props.inspirers.dataById[uuid]);
   }
 
+  componentDidUpdate(prevProps) {
+    const { uuid } = this.state;
+    if (prevProps.inspirers.dataById !== this.props.inspirers.dataById)
+      this._parseEntity(this.props.inspirers.dataById[uuid]);
+  }
   
   componentWillUnmount() {
 

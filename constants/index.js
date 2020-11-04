@@ -38,6 +38,9 @@ export const GET_NODES_FAIL = 'visitsardinia/nodes/LOAD_FAIL';
 export const GET_INSPIRERS = 'visitsardinia/inspirers/LOAD';
 export const GET_INSPIRERS_SUCCESS = 'visitsardinia/inspirers/LOAD_SUCCESS';
 export const GET_INSPIRERS_FAIL = 'visitsardinia/inspirers/LOAD_FAIL';
+export const GET_INSPIRERS_BY_ID = 'visitsardinia/inspirersById/LOAD';
+export const GET_INSPIRERS_BY_ID_SUCCESS = 'visitsardinia/inspirersById/LOAD_SUCCESS';
+export const GET_INSPIRERS_BY_ID_FAIL = 'visitsardinia/inspirersById/LOAD_FAIL';
 export const GET_INSPIRER = 'visitsardinia/inspirer/LOAD';
 export const GET_INSPIRER_SUCCESS = 'visitsardinia/inspirer/LOAD_SUCCESS';
 export const GET_INSPIRER_FAIL = 'visitsardinia/inspirer/LOAD_FAIL';
@@ -59,6 +62,9 @@ export const GET_EVENT_TYPES_FAIL = 'visitsardinia/eventtypes/LOAD_FAIL';
 export const GET_ITINERARIES = 'visitsardinia/itineraries/LOAD';
 export const GET_ITINERARIES_SUCCESS = 'visitsardinia/itineraries/LOAD_SUCCESS';
 export const GET_ITINERARIES_FAIL = 'visitsardinia/itineraries/LOAD_FAIL';
+export const GET_ITINERARIES_BY_ID = 'visitsardinia/itinerariesById/LOAD';
+export const GET_ITINERARIES_BY_ID_SUCCESS = 'visitsardinia/itinerariesById/LOAD_SUCCESS';
+export const GET_ITINERARIES_BY_ID_FAIL = 'visitsardinia/itinerariesById/LOAD_FAIL';
 export const SEARCH = 'visitsardinia/search/LOAD';
 export const SEARCH_SUCCESS = 'visitsardinia/search/LOAD_SUCCESS';
 export const SEARCH_FAIL = 'visitsardinia/search/LOAD_FAIL';
@@ -134,14 +140,30 @@ export const NAVIGATION = {
 }
 
 /**
- * Vocabulary ids:
- *  inspirers, pois, events
+ * (backend) Categories of Nodes: 
+ * Vocabulary ids used for queries
  */
 export const VIDS = {
   events: 4,
   pois: 14,
   inspirersCategories: 46,
   poisCategories: 36,
+}
+
+/* (backend) Nodes types: used for queries */
+export const NODE_TYPES = {
+  places: "attrattore",
+  inspirers: "ispiratore",
+  itineraries: "itinerario",
+  events: "evento",
+  turisticLocation: "localit_turistica",
+}
+
+export const ENTITY_TYPES = {
+  places: "places",
+  inspirers: "inspirers",
+  itineraries: "itineraries",
+  events: "events",
 }
 
 /* SCREENS CONFIGURATIONS */
@@ -240,43 +262,78 @@ export const NAVIGATOR = {
   } 
 }
 
-export const ENTITY_TYPES = {
-  places: "places",
-  inspirers: "inspirers",
-  itineraries: "itineraries",
-  events: "events",
-}
+
 
 /* related list options by key */
-export const RELATED_LIST_TYPES = {
-  places: {
+export const VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS = {
+  //Vids (categories, terms)
+  [VIDS.pois]: {
+    backgroundTopRightCorner: Colors.colorPlacesScreen,
+    iconColor: Colors.colorPlacesScreen,
+    iconName: Platform.OS === 'ios' ? 'ios-map' : 'md-map'
+  },
+  [VIDS.poisCategories]: {
+    backgroundTopRightCorner: Colors.colorPlacesScreen,
+    iconColor: Colors.colorPlacesScreen,
+    iconName: Platform.OS === 'ios' ? 'ios-map' : 'md-map'
+  },
+  [VIDS.inspirersCategories]: {
+    backgroundTopRightCorner: Colors.colorInspirersScreen,
+    iconColor: Colors.colorInspirersScreen,
+    iconName: Platform.OS === 'ios' ? 'ios-flag' : 'md-flag'
+  }, 
+  [VIDS.events]: {
+    backgroundTopRightCorner: Colors.colorEventsScreen,
+    iconColor: Colors.colorEventsScreen,
+    iconName: Platform.OS === 'ios' ? 'ios-calendar' : "md-calendar"
+  },
+  // Node types
+  [NODE_TYPES.places]: {
+    backgroundTopRightCorner: Colors.colorPlacesScreen,
+    iconColor: Colors.colorPlacesScreen, 
+    iconName: Platform.OS === 'ios' ? 'ios-map' : 'md-map'
+  },
+  [NODE_TYPES.inspirers]: {
+    backgroundTopRightCorner: Colors.colorInspirersScreen,
+    iconColor: Colors.colorInspirersScreen,
+    iconName: Platform.OS === 'ios' ? 'ios-flag' : 'md-flag'
+  }, 
+  [NODE_TYPES.itineraries]: {
+    backgroundTopRightCorner: Colors.colorItinerariesScreen,
+    iconColor: Colors.colorItinerariesScreen,
+    iconName: Platform.OS === 'ios' ? 'ios-analytics' : 'md-analytics'
+  },
+  [NODE_TYPES.events]: {
+    backgroundTopRightCorner: Colors.colorEventsScreen,
+    iconColor: Colors.colorEventsScreen,
+    iconName: Platform.OS === 'ios' ? 'ios-calendar' : "md-calendar"
+  },
+  [NODE_TYPES.turisticLocation]: {
+    backgroundTopRightCorner: Colors.colorPlacesScreen,
+    iconColor: Colors.colorPlacesScreen, 
+    iconName: Platform.OS === 'ios' ? 'ios-map' : 'md-map'
+  },
+  //Entity types
+  [ENTITY_TYPES.places]: {
     backgroundTopRightCorner: Colors.colorPlacesScreen,
     iconColor: "white",
     iconName: Platform.OS === 'ios' ? 'ios-map' : 'md-map'
   },
-  inspirers: {
+  [ENTITY_TYPES.inspirers]: {
     backgroundTopRightCorner: Colors.colorInspirersScreen,
     iconColor: "white",
-    iconName: Platform.OS === 'ios' ? 'ios-map' : 'md-map'
+    iconName: Platform.OS === 'ios' ? 'ios-flag' : 'md-flag'
   }, 
-  itineraries: {
+  [ENTITY_TYPES.itineraries]: {
     backgroundTopRightCorner: Colors.colorItinerariesScreen,
     iconColor: "white",
     iconName: Platform.OS === 'ios' ? 'ios-analytics' : 'md-analytics'
   },
-  events: {
+  [ENTITY_TYPES.events]: {
     backgroundTopRightCorner: Colors.colorEventsScreen,
     iconColor: "white",
     iconName: Platform.OS === 'ios' ? 'ios-calendar' : "md-calendar"
   }
-}
-
-/* Nodes types: used for queries */
-export const NODE_TYPES = {
-  places: "attrattore",
-  inspirers: "ispiratore",
-  itineraries: "itinerario",
-  events: "evento",
 }
 
 export const styles = {

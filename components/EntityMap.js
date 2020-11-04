@@ -46,7 +46,6 @@ class EntityMap extends PureComponent {
   }
 
   _renderMarker = (marker) => {
-    console.log("marker", marker)
     if(marker.coords){
       return(
         <Marker.Animated
@@ -96,7 +95,6 @@ class EntityMap extends PureComponent {
   }
   render() {
     const { coordinates, hasMarkers } = this.props;
-    console.log("coordinates", coordinates)
     return (
       <>
         { coordinates && (

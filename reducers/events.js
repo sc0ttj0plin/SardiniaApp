@@ -25,7 +25,6 @@ const INITIAL_STATE = {
   // timeMin: null,
   // timeMax: null,
   //eventsById
-  eventsById: {},
   eventsByIdSuccess: false, 
   eventsByIdError: null,
   eventsByIdLoading: false,
@@ -48,10 +47,11 @@ export default function reducer(state = INITIAL_STATE, action) {
         eventsByIdLoading: true,
       };
     case Constants.GET_EVENTS_BY_ID_SUCCESS:
+      console.log("EvetsBYID SUCCESS", action.payload)
       return {
         ...state,
         //NOTE: also updated by GET_EVENTS_SUCCESS to store events from another action
-        eventsById: {...state.eventsById, ...action.payload},
+        eventsById: { ...state.eventsById, ...action.payload },
         eventsByIdSuccess: true, 
         eventsByIdError: null,
         eventsByIdLoading: false,

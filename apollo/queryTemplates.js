@@ -1,16 +1,17 @@
 import { gql } from 'apollo-boost';
 
+
+
 export const autocompleteQuery = gql`
-query ($queryStr: String) {
+query ($queryStr: String, $vidsInclude: [Int!], $typesExclude: [String!]) {
   autocomplete(args: {search: $queryStr},
     order_by: {rank: desc},
     limit: 20,
-    where: { _or: [{ _and: [ {nid: {_is_null: true}}, {term: {vid: {_in: [4, 14]}}}]},
-          {_and: [{nid: {_is_null: false}}, {node: {type: {_nin: ["evento"]}}} ]}]}){
+    where: { _or: [{ _and: [ {nid: {_is_null: true}}, {term: {vid: {_in: $vidsInclude}}}]},
+          {_and: [{nid: {_is_null: false}}, {node: {type: {_nin: $typesExclude}}} ]}]}){
     keywords
     rank
     nid
-    uuid
     tid
     term {
       uuid
@@ -20,6 +21,7 @@ query ($queryStr: String) {
       }
     }
     node {
+      type
       nid
       uuid
       title: legacy(path: "title_field")
@@ -28,14 +30,21 @@ query ($queryStr: String) {
 }
 `
 
-
 export const searchQuery = gql`
 query ($queryStr: String, $nodeTypes: [String!]) {
   search(args: {search: $queryStr}, order_by: {rank: desc}, where: {tid: {_is_null: true}, node: {type: {_in: $nodeTypes}}}) {
     headline
     rank
     nid
+    term {
+      uuid
+      vid
+      vocabulary {
+        name
+      }
+    }
     node {
+      type
       nid
       uuid
       title: legacy(path: "title_field")
@@ -186,6 +195,42 @@ query {
   }
 }
 `;
+
+export const getItinerariesById = gql`
+    query ($uuids: [String!]) {
+      itineraries: nodes(where: {type: {_eq: "itinerario"}, uuid: {_in: $uuids}}) {
+        nid
+        uuid
+        type
+        title: legacy(path: "title_field")
+        abstract: legacy(path: "field_occhiello")
+        subtitle: legacy(path: "field_citazione_iniziale")
+        description: legacy(path: "body")
+        term {
+          tid
+          name
+          uuid
+        }
+        image: legacy(path: "field_immagine_top.und[0].uri")
+        gallery: legacy(path: "field_galleria_multimediale.und")
+        url_alias: legacy(path: "url_alias")
+        relatedPois: legacy(path: "field_attrattori_citati")
+        seeMorePois: legacy(path: "field_vedi_anche")
+        stages(order_by: {index: asc}) {
+          language
+          index
+          title
+          body
+          poi {
+            uuid
+            nid
+            georef
+            image: legacy(path: "field_immagine_top.und[0].uri")
+          }
+        }
+      }
+    }
+`
 
 
 export const getEventTypes = gql`
@@ -352,6 +397,31 @@ query ($limit: Int, $offset: Int, $uuids: [String!]) {
 export const getInspirer = gql`
 query ($uuid: String, $vid: Int) {
   nodes(where: { uuid: {_eq: $uuid} } ) {
+    uuid
+    nid
+    type
+    title: legacy(path: "title_field")
+    description: legacy(path: "body")
+    nodes_terms(where: {term: {vid: {_eq: $vid}}}) {
+      term{
+        tid
+        name
+        uuid
+      }
+    }
+    image: legacy(path: "field_immagine_top.und[0].uri")
+    summary
+    abstract: legacy(path: "field_occhiello")
+    whyVisit: legacy(path: "field_why_visit")
+    gallery: legacy(path: "field_galleria_multimediale.und")
+    url_alias: legacy(path: "url_alias")
+  }
+}
+`;
+
+export const getInspirersById = gql`
+query ($uuids: [String!], $vid: Int) {
+  nodes(where: { uuid: {_in: $uuids} } ) {
     uuid
     nid
     type

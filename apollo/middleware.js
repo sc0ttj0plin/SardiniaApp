@@ -82,6 +82,25 @@ const apolloMiddleware = client => {
             store.dispatch({ type: Constants.GET_INSPIRERS_FAIL, payload: e });
           });
         }
+        else if (action.type === Constants.GET_INSPIRERS_BY_ID) {
+          client.query({
+              query: Queries.getInspirersById,
+              variables: action.query
+          }).then((resp) => {
+            let dispatch = { type: Constants.GET_INSPIRERS_BY_ID_SUCCESS, payload: {} };
+            if (resp.data && resp.data.nodes.length > 0) {
+              let data = resp.data.nodes;
+              data.forEach((e) => processEntity(e));
+              let dataById = data.reduce((acc, curr) => ({ ...acc, [curr.uuid]: curr}), {});
+              dispatch.payload = { dataById, data };
+            }
+            store.dispatch(dispatch);
+          }).catch((e) => {
+            console.log(e);
+            //also dispatch the id which has failed
+            store.dispatch({ type: Constants.GET_INSPIRERS_BY_ID_FAIL, payload: e });
+          });
+        }
         else if (action.type === Constants.GET_EXTRAS) {
           client.query({
               query: Queries.getPois,
@@ -170,7 +189,7 @@ const apolloMiddleware = client => {
               events = resp.data.events;
               events.forEach((e) => processEntity(e));
               //key by nid
-              events = events.reduce((acc, curr) => ({ ...acc, [curr.nid]: curr}), {});
+              events = events.reduce((acc, curr) => ({ ...acc, [curr.uuid]: curr}), {});
               dispatch.payload = events;
             }
             store.dispatch(dispatch);
@@ -205,7 +224,7 @@ const apolloMiddleware = client => {
             query: Queries.getItineraries,
             variables: action.query
           }).then((resp) => {
-            let dispatch = { type: Constants.GET_ITINERARIES_SUCCESS, payload: { itineraries: [] } };
+            let dispatch = { type: Constants.GET_ITINERARIES_SUCCESS, payload: { } };
             if (resp.data && resp.data.itineraries.length > 0){
               let itineraries = resp.data.itineraries;
               itineraries.forEach((e) => processEntity(e));
@@ -217,6 +236,27 @@ const apolloMiddleware = client => {
             console.log(e);
             store.dispatch({ 
               type: Constants.GET_ITINERARIES_FAIL,
+              payload: e
+            });
+          });
+        }
+        else if (action.type === Constants.GET_ITINERARIES_BY_ID) {
+          client.query({
+            query: Queries.getItinerariesById,
+            variables: action.query
+          }).then((resp) => {
+            let dispatch = { type: Constants.GET_ITINERARIES_BY_ID_SUCCESS, payload: { } };
+            if (resp.data && resp.data.itineraries.length > 0){
+              let itineraries = resp.data.itineraries;
+              itineraries.forEach((e) => processEntity(e));
+              dispatch.payload.dataById = itineraries.reduce((acc, curr) => ({ ...acc, [curr.uuid]: curr}), {});;
+              dispatch.payload.data = itineraries;
+            }
+            store.dispatch(dispatch);
+          }).catch((e) => {
+            console.log(e);
+            store.dispatch({ 
+              type: Constants.GET_ITINERARIES_BY_ID_FAIL,
               payload: e
             });
           });

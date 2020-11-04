@@ -44,7 +44,6 @@ export default class ScrollableContainer extends PureComponent {
       // }, 300)
     }
     if(prevProps.data !== this.props.data){
-      console.log("data updated")
       this.setState({
         data: []
       }, () => {

@@ -17,6 +17,7 @@ export default function reducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     // ITINERARIES
     case Constants.GET_ITINERARIES:
+    case Constants.GET_ITINERARIES_BY_ID:
       return { 
         ...state, 
         success: false,
@@ -24,6 +25,7 @@ export default function reducer(state = INITIAL_STATE, action) {
         loading: true 
       };
     case Constants.GET_ITINERARIES_SUCCESS:
+    case Constants.GET_ITINERARIES_BY_ID_SUCCESS:
       return { 
         ...state, 
         success: true,
@@ -33,6 +35,7 @@ export default function reducer(state = INITIAL_STATE, action) {
         loading: false
       };
     case Constants.GET_ITINERARIES_FAIL:
+    case Constants.GET_ITINERARIES_BY_ID_FAIL:
       return { 
         ...state, 
         success: false,

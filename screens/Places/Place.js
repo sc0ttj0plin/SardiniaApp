@@ -57,13 +57,14 @@ class PlaceScreen extends Component {
     super(props);
 
     const { uuid } = props.route.params.item;
+    const { mustFetch } = props.route.params; /* no effect since place fetches anyway */
 
-    console.log("uuid", uuid)
     /* Get props from navigation */
     this.state = {
       render: USE_DR ? false : true,
       //entity initial state
       uuid,
+      mustFetch,
       entity: { term: {} },
       abstract: null, 
       title: null, 

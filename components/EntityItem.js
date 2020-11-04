@@ -9,7 +9,7 @@ export default class EntityItem extends PureComponent {
   render() {
     const { onPress, keyItem, title, place, image, distance, listType, horizontal } = this.props;
 
-    let entityOptions = Constants.RELATED_LIST_TYPES[listType] || Constants.RELATED_LIST_TYPES.places
+    let entityIconOpts = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[listType] || Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.places
     let marginRight = horizontal ? 0 : 0
     return (
         <BottomSheetTouchable 
@@ -25,13 +25,13 @@ export default class EntityItem extends PureComponent {
                 distance={distance}
                 style={styles.fill} />
             <View style={[styles.corner, {
-              borderTopColor: entityOptions.backgroundTopRightCorner,
+              borderTopColor: entityIconOpts.backgroundTopRightCorner,
             }]}>
               <Ionicons
-                  name={entityOptions.iconName}
+                  name={entityIconOpts.iconName}
                   size={13}
                   style={styles.cornerIcon}
-                  color={entityOptions.iconColor}
+                  color={entityIconOpts.iconColor}
               />
             </View>
       </BottomSheetTouchable>

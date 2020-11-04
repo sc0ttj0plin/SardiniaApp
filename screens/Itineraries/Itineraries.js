@@ -135,7 +135,7 @@ class ItinerariesScreen extends PureComponent {
    */
   _openItem = (item) => {
     console.log("item", item.nid)
-    this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, { uuid: item.uuid, nid: item.nid });
+    this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, { item });
   }
 
   /**
@@ -215,7 +215,7 @@ class ItinerariesScreen extends PureComponent {
               <View
                 style={[styles.marker]}>
                 <Ionicons
-                  name={Constants.RELATED_LIST_TYPES.itineraries.iconName}
+                  name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.itineraries.iconName}
                   size={19}
                   color={"#ffffff"}
                   style={{
@@ -273,7 +273,6 @@ class ItinerariesScreen extends PureComponent {
   _renderContent = () => {
     const { selectedItinerary, itineraries } = this.state;
     let data = selectedItinerary ? [selectedItinerary] : itineraries;
-    console.log("length", screenHeight, windowHeight, this._map)
     if(!data.length)
       data = []
     let snapIndex = selectedItinerary ? 1 : 1

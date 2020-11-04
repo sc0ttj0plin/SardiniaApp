@@ -16,6 +16,7 @@ const INITIAL_STATE = {
 export default function reducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case Constants.GET_INSPIRERS: 
+    case Constants.GET_INSPIRERS_BY_ID: 
       return { 
         ...state, 
         success: false,
@@ -23,6 +24,7 @@ export default function reducer(state = INITIAL_STATE, action) {
         loading: true,
       };
     case Constants.GET_INSPIRERS_SUCCESS:
+    case Constants.GET_INSPIRERS_BY_ID_SUCCESS:
       return { 
         ...state, 
         data: [ ...state.data, ...action.payload.data ],
@@ -32,6 +34,7 @@ export default function reducer(state = INITIAL_STATE, action) {
         loading: false,
       };
     case Constants.GET_INSPIRERS_FAIL:
+    case Constants.GET_INSPIRERS_BY_ID_FAIL:
       return { 
         ...state,
         success: false,

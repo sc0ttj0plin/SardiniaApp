@@ -253,7 +253,7 @@ class EventsMapScreen extends PureComponent {
               <View
                 style={[styles.marker]}>
                 <Ionicons
-                  name={Constants.RELATED_LIST_TYPES.events.iconName}
+                  name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.events.iconName}
                   size={19}
                   color={"#ffffff"}
                   style={styles.markerIcon}

@@ -48,12 +48,24 @@ import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
 import * as utils from '../../helpers/utils';
-import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
+import { Ionicons } from '@expo/vector-icons';
 
-/* Deferred rendering to speedup page inital load: 
-   deferred rendering delays the rendering reducing the initial 
-   number of components loaded when the page initially mounts.
-   Other components are loaded right after the mount */
+/**
+ * Search working mechanism
+ * We can autocomplete/search both for terms (categories) and nodes
+ * If the returned element is a category then it will have the "term" field and "node" field to null set with its category e.g.:
+ *       "term": {
+ *         "uuid": "93cb5320-a3b3-40a7-877e-f296a6e2381f",
+ *         "vid": 36, => Constants.VIDS 
+ *       },
+ *       "node": null,
+ * If the returned element is a node then it will have the "term" field to null  and "node" field 
+ *       "term": null,
+ *       "node": {
+ *         "nid": 19883,
+ *         "uuid": "fa9ddc59-df47-488d-ae14-6fc189e9f192",
+ *         "type": "ispiratore", => Constants.NODE_TYPES
+ */ 
 const USE_DR = false;
 class SearchScreen extends Component {
 
@@ -62,7 +74,6 @@ class SearchScreen extends Component {
 
     /* Get props from navigation */
     //let { someNavProps } = props.route.params; 
-    console.log(props)
     this.state = {
       render: USE_DR ? false : true,
       //
@@ -73,36 +84,39 @@ class SearchScreen extends Component {
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
 
-  /**
-   * Use this function to perform data fetching
-   * e.g. this.props.actions.getPois();
-   */
   componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
   }
 
-  /**
-   * Use this function to update state based on external props 
-   * or to post-process data once it changes
-   */
   componentDidUpdate(prevProps) {
-    /**
-     * Is the former props different from the newly propagated prop (redux)? perform some action
-     * if(prevProps.xxx !== this.props.xxx)
-     *  doStuff();
-     */
   }
 
-  /**
-   * Use this function to unsubscribe or clear any event hooks
-   */
   componentWillUnmount() {
   }
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
+
+  _getNavScreenFromType = (type) => {
+    const { places, inspirers, itineraries, events, turisticLocation } = Constants.NODE_TYPES;
+    const { NavItineraryScreen, NavEventScreen, NavPlaceScreen, NavInspirerScreen, } = Constants.NAVIGATION;
+    switch(type) {
+      case places:
+        return NavPlaceScreen;
+      case turisticLocation:
+        return NavPlaceScreen;
+      case inspirers:
+        return NavInspirerScreen;
+      case itineraries:
+        return NavItineraryScreen;
+      case events:
+        return NavEventScreen;
+      default:
+        return NavPlaceScreen;
+    }
+  }
  
-  _listItemOnPress = (el) => {
+  _listItemOnPress = (el, elType) => {
     const { searchOrAutocomplete } = this.props.others;
     // If autocomplete and has node or is search, navigate directly, otw fill the search box
     if (searchOrAutocomplete === "autocomplete" && !el.node) {
@@ -112,7 +126,10 @@ class SearchScreen extends Component {
       let queryStr = utils.searchParser(el.keywords);
       this.props.actions.search({ queryStr });
     } else {
-      this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item: el.node }); 
+      // Navigate to node screen
+      const navScreen = this._getNavScreenFromType(elType);
+      console.log("NAVIGATEEEEE", elType, navScreen)
+      this.props.navigation.navigate(navScreen, { item: el.node, mustFetch: true }); 
     }
   }
 
@@ -121,18 +138,6 @@ class SearchScreen extends Component {
     return searchOrAutocomplete === "autocomplete" && el.node;
   }
 
-  /**
-   * If the reducer embeds a single data type then e.g. only pois:
-   *    Data is stored in this.props.pois.data
-   *    Success state is stored in this.props.pois.success
-   *    Loading state is stored in this.props.pois.loading
-   *    Error state is stored in this.props.pois.error
-   * If the reducer embeds multiple data types then (e.g. search + autocomplete):
-   *    Data is stored in this.props.searchAutocomplete.search
-   *    Success state is stored in this.props.searchAutocomplete.searchSuccess
-   *    Loading state is stored in this.props.searchAutocomplete.searchLoading
-   *    Error state is stored in this.props.searchAutocomplete.searchError
-   */
   _isSuccessData  = () => this.props.others.searchOrAutocomplete === "search" ? this.props.searchAutocomplete.searchSuccess : this.props.searchAutocomplete.autocompleteSuccess;
   _isLoadingData  = () => this.props.searchAutocomplete.searchLoading || this.props.searchAutocomplete.autocompleteLoading;
   _isErrorData    = () => this.props.searchAutocomplete.searchError || this.props.searchAutocomplete.autocompleteError;
@@ -144,37 +149,25 @@ class SearchScreen extends Component {
     const { searchOrAutocomplete } = this.props.others;
     const { lan } = this.props.locale;
     const title = searchOrAutocomplete === "autocomplete" ? el.keywords : _.get(el.node.title, [lan, 0, "value"], "?");
+    const isNode = el.term === null && el.node !== null; /* is node or category? */
+    const elType = isNode ? el.node.type : el.term.vid;
+    let entityIconOpts = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[elType] || {};
     return (
-      <ListItem
-        key={index}
-        title={title}
-        titleStyle={this._isNavigableItem(el) ? { fontWeight: 'bold' } : undefined}
-        bottomDivider
-        onPress={() => this._listItemOnPress(el)}
-      />
+      <TouchableOpacity 
+        key={index} 
+        onPress={() => this._listItemOnPress(el, elType)} 
+        style={styles.listItem}>
+        <Ionicons
+          name={entityIconOpts.iconName}
+          size={20}
+          style={styles.listItemIcon}
+          color={entityIconOpts.iconColor}
+        />
+        <Text style={this._isNavigableItem(el) ? styles.boldText : styles.normalText}>{title}</Text>
+      </TouchableOpacity>
     );
   }
 
-
-  _renderContent = () => {
-    const { searchOrAutocomplete } = this.props.others;
-    const data = searchOrAutocomplete === "autocomplete" ? this.props.autocomplete : this.props.search;
-    if (this._isSuccessData()) {
-      return (
-        <View>
-          <FlatList
-            key={1}
-            keyExtractor={(item, index) => index.toString()}
-            data={data}
-            renderItem={({item, index}) => this._renderItem(item, index)}
-            style={styles.scrollView}
-          />
-        </View>
-      );
-    } else {
-      return null;
-    }
-  }
 
   _renderContent = () => {
     const { searchOrAutocomplete } = this.props.others;
@@ -185,13 +178,7 @@ class SearchScreen extends Component {
         success={this._isSuccessData()}
         error={this._isErrorData()}
         retryFun={() => {}} 
-        loadingLayout={
-          <LLEntitiesFlatlist 
-            horizontal={false} 
-            numColumns={1} 
-            itemStyle={styles.itemFlatlist} 
-            style={styles.listStyle} 
-            bodyContainerStyle={styles.listContainer}/>}
+        loadingLayout={<ActivityIndicator animating={true} size={"large"} color={"grey"} />}
         >
         <FlatList
           key={1}
@@ -228,12 +215,37 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white"
   },
+  center: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center"
+  },
   header: {
     backgroundColor: "white"
   },
   container: {
     padding: 10,
   },
+  listItem: {
+    flex: 1, 
+    alignItems: "center", 
+    flexDirection: 'row', 
+    marginTop: 10, 
+    marginBottom: 10, 
+    borderBottomColor: 'grey', 
+    borderBottomWidth: 0.5
+  },
+  listItemIcon: { 
+    marginLeft: 20, 
+    marginRight: 20 
+  },
+  normalText: {
+    fontSize: 20
+  },
+  boldText: {
+    fontSize: 20,
+    fontWeight: 'bold' 
+  }
 });
 
 
