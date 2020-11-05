@@ -21,15 +21,15 @@ class ConnectedFab extends PureComponent {
     this.state = {
       active: false,
       direction: props.direction ? props.direction : "up",
-      nid: props.nid,
-      isFavourite: props.favourites.places[props.nid]
+      uuid: props.uuid,
+      isFavourite: props.favourites.places[props.uuid]
     };
   }
 
   componentDidUpdate(prevProps){
-    if(prevProps.nid !== this.props.nid){
+    if(prevProps.uuid !== this.props.uuid){
       this.setState({
-        nid: this.props.nid
+        uuid: this.props.uuid
       })
     }
   }
@@ -60,7 +60,7 @@ class ConnectedFab extends PureComponent {
   }
 
   render() {
-    const isFavourite = this.props.favourites.places[this.state.nid];
+    const isFavourite = this.props.favourites.[this.props.type][this.state.uuid];
     const { shareLink, coordinates, color, title } = this.props;
     const backgroundColor = color || Colors.colorPlacesScreen;
     return (
@@ -76,8 +76,8 @@ class ConnectedFab extends PureComponent {
             { shareLink != "" && shareLink &&
               this._renderButton(backgroundColor, "share-alt", () => Linking.openURL(shareLink))
             }
-            { this.state.nid != "" && this.state.nid &&
-              this._renderButton(backgroundColor, isFavourite ? "heart" : "heart-o", () => this.props.actions.toggleFavourite({ type: "places", id: this.state.nid }))
+            { this.state.uuid != "" && this.state.uuid &&
+              this._renderButton(backgroundColor, isFavourite ? "heart" : "heart-o", () => this.props.actions.toggleFavourite({ type: this.props.type, id: this.state.uuid }))
             }
             {coordinates && (
               this._renderButton(backgroundColor, "location-arrow", () => this._openNavigator(title, coordinates))

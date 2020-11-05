@@ -319,11 +319,12 @@ class PlacesScreen extends PureComponent {
   _renderHorizontalSeparator = () => <View style={{ width: 5, flex: 1 }}></View>;
 
   /* Renders a poi in Header */
-  _renderPoiListItem = (item) => {
+  _renderPoiListItem = (item, index) => {
     const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
     const termName = _.get(item, "term.name", "")
     return (
       <EntityItem 
+        index={index}
         keyItem={item.nid}
         backgroundTopLeftCorner={"white"}
         iconColor={Colors.colorPlacesScreen}
@@ -334,6 +335,8 @@ class PlacesScreen extends PureComponent {
         image={`${item.image}`}
         distance={this.state.isCordsInBound ? item.distance : ""}
         style={{marginBottom: 10}}
+        horizontal={false}
+        sideMargins={20}
       />
   )}
 
@@ -351,12 +354,12 @@ class PlacesScreen extends PureComponent {
     console.log("term", term ? term.length : term, isPoiList)
     let data = [];
     let renderItem = null;
-    let numColums = 1; //One for categories, two for pois
+    let numColumns = 1; //One for categories, two for pois
     //if no more nested categories renders pois
     if (isPoiList) {
       data = pois;
-      renderItem = ({ item }) => this._renderPoiListItem(item);
-      numColums = 2;
+      renderItem = ({ item, index }) => this._renderPoiListItem(item, index);
+      numColumns = 2;
     } else {
       //initially term is null so we get terms from redux, then term is populated with nested terms (categories) 
       data = term;
@@ -369,7 +372,8 @@ class PlacesScreen extends PureComponent {
         ListHeaderComponent={this._renderListHeader}
         data={data}
         initialSnapIndex={1}
-        numColums={numColums}
+        key={"scrollable-" + numColumns}
+        numColumns={numColumns}
         renderItem={renderItem}
         keyExtractor={item => item.uuid}
       />

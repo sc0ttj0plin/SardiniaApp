@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import { 
   View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
   StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
@@ -58,7 +58,7 @@ const { OrientationLock } = ScreenOrientation;
    number of components loaded when the page initially mounts.
    Other components are loaded right after the mount */
 const USE_DR = false;
-class VideoScreen extends Component {
+class VideoScreen extends PureComponent {
 
   constructor(props) {
     super(props);

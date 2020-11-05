@@ -22,7 +22,7 @@ export default class EntityHeader extends PureComponent {
     return (
       <>
         {/* { link &&( */}
-          <TouchableOpacity style={styles.virtualLink} activeOpacity={0.8}>
+          <TouchableOpacity style={styles.virtualLink} activeOpacity={0.8} onPress={this.props.onPress}>
             <Animated.View style={{
               transform: [{rotate: this.state.rotation}]
             }}>

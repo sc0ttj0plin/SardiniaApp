@@ -22,21 +22,23 @@ export default class EntityRelatedList extends PureComponent {
         }
     }
 
-    _renderPoiListItem = (item) => {
+    _renderPoiListItem = (item, index) => {
         const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
         const {listType} = this.props
         let place = item && item.term ? item.term.name : "";
         return (
             <EntityItem 
+                index={index}
                 keyItem={item.nid}
                 listType={listType}
-                onPress={ () => this.props.onPressItem(item)}
+                onPress={ () => this.props.onPressItem(item, listType)}
                 title={`${title}`}
                 place={`${place}`}
                 image={`${item.image}`}
                 distance={this.state.isCordsInBound && item.distance}
                 style={this.props.itemStyle}
                 horizontal={this.props.horizontal}
+                sideMargins={this.props.sideMargins}
             />
         )
     }
@@ -55,7 +57,10 @@ export default class EntityRelatedList extends PureComponent {
             listTitleStyle, 
             horizontal, 
             extraData,
-            showsHorizontalScrollIndicator  
+            showsHorizontalScrollIndicator,
+            numColumns,
+            sideMargins,
+            itemStyle
         } = this.props; 
         const {data} = this.state
         return (
@@ -63,7 +68,18 @@ export default class EntityRelatedList extends PureComponent {
                 loading={true}
                 success={data && data.length > 0}
                 error={false}
-                loadingLayout={<LLEntitiesFlatlist horizontal={true} style={contentContainerStyle} title={listTitle} titleStyle={listTitleStyle} error={false}/>}>
+                loadingLayout={
+                    <LLEntitiesFlatlist 
+                        itemStyle={itemStyle} 
+                        numColumns={numColumns} 
+                        sideMargins={sideMargins} 
+                        horizontal={horizontal} 
+                        style={[styles.fill, this.props.style]} 
+                        contentContainerStyle={contentContainerStyle} 
+                        title={listTitle} 
+                        titleStyle={listTitleStyle} 
+                        error={false}/>
+                }>
                 <View style={{flex: 1}}>   
                     <Text style={listTitleStyle}>{listTitle}</Text>
                     <FlatList 
@@ -75,7 +91,7 @@ export default class EntityRelatedList extends PureComponent {
                         data={data}
                         ItemSeparatorComponent={this._renderHorizontalSeparator}
                         renderItem={({item, index}) => this._renderPoiListItem(item, index)}
-                        style={[styles.fill]}
+                        style={[styles.fill, this.props.style]}
                         contentContainerStyle={contentContainerStyle}
                         showsHorizontalScrollIndicator={showsHorizontalScrollIndicator || true}
                         initialNumToRender={2} // Reduce initial render amount

@@ -38,10 +38,10 @@ export default class ScrollableContainer extends PureComponent {
   componentDidUpdate(prevProps){
     if(prevProps.snapIndex !== this.props.snapIndex){
       console.log("snap point", this.props.snapIndex)
-      this._scrollable.snapTo(this.props.snapIndex)
-      // let timeout = setTimeout( () => {
-      //   clearTimeout(timeout)
-      // }, 300)
+      let timeout = setTimeout( () => {
+        this._scrollable.snapTo(this.props.snapIndex)
+        clearTimeout(timeout)
+      }, 300)
     }
     if(prevProps.data !== this.props.data){
       this.setState({

@@ -29,7 +29,8 @@ export default class EntityWidgetInMapView extends PureComponent {
   }
 
   componentDidMount() {
-    this._fetchPoi(this.state.entity.nid);
+    this._fetchPoi(this.state.entity.term);
+
   }
 
   componentDidUpdate(prevProps) {
@@ -41,18 +42,20 @@ export default class EntityWidgetInMapView extends PureComponent {
       this.setState({
         entity: entity
       })
-      this._fetchPoi(cluster.terms_objs[0].nid);
     }
   }
 
-  _fetchPoi(nid) {
+  _fetchPoi(uuid) {
+      console.log("data", uuid)
+
       apolloQuery(actions.getPoi({ 
-        nid 
+        uuid 
       })).then((data) => {
-        var entity = {...this.state.entity, ...data[0]};
-        this.setState({
-            entity: entity
-        });
+        // var entity = {...this.state.entity, ...data[0]};
+        // this.setState({
+        //     entity: entity
+        // });
+        console.log("data", data)
       });
   }
 

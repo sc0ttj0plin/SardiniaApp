@@ -38,7 +38,7 @@ import Layout from '../../constants/Layout';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
+import { LLVerticalItemsFlatlist } from "../../components/loadingLayouts";
 import * as Animatable from 'react-native-animatable';
 import { FETCH_NUM_MONTHS_FORWARD, FETCH_NUM_MONTHS_BACKWARDS } from '../../constants';
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -222,7 +222,7 @@ class EventsScreen extends Component {
               loading={this._isLoadingData()}
               success={this._isSuccessData()}
               error={this._isErrorData()}
-              loadingLayout={<LLEntitiesFlatlist style={styles.listContent} numColumns={1} itemStyle={styles.eventListItemLoadingLayout} />}>
+              loadingLayout={<LLVerticalItemsFlatlist style={styles.listContent} numColumns={1} itemStyle={styles.eventListItemLoadingLayout} />}>
             <View style={styles.calendarList}>
               {this._renderEventsList()}
             </View>

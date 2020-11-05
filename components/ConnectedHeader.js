@@ -17,7 +17,7 @@ const { NavPlacesScreen, NavInspirersScreen ,NavMapScreen, NavExperiencesScreen,
   NavItinerariesScreen, NavItineraryScreen, NavItineraryStagesMapScreen, NavEventsScreen, NavEventsMapScreen, NavBoilerPlate,
   NavEventScreen, NavExploreScreen, NavVirtualTourScreen, NavPlaceScreen, NavInspirerScreen, NavEventsSubset, 
   NavExperiences, NavPlaces,NavInspirers ,NavExplore, NavEvents, NavTabNavigator, NavLanguageScreen1,
-  NavSearchScreen, NavGalleryScreen, NavExtrasScreen, NavExtraScreen, NavFavouritesScreen } = Constants.NAVIGATION;
+  NavSearchScreen, NavFavouritesListScreen, NavGalleryScreen, NavExtrasScreen, NavExtraScreen, NavFavouritesScreen } = Constants.NAVIGATION;
  
 
 //backButtonVisible == true: shows backButton, if set to false shows drawer menù icon
@@ -50,7 +50,9 @@ const HEADER_BUTTONS_PER_SCREEN = {
   [NavLanguageScreen1]: {backButtonVisible: false, searchButtonVisible: true},
   [NavSearchScreen]: {backButtonVisible: true, searchButtonVisible: true},
   [NavFavouritesScreen]: {backButtonVisible: true, searchButtonVisible: true},
+  [NavFavouritesListScreen]: {backButtonVisible: true, searchButtonVisible: true},
   [NavBoilerPlate]: {backButtonVisible: true, searchButtonVisible: true},
+
   ["default"]: {backButtonVisible: false, searchButtonVisible: true}
 }
 

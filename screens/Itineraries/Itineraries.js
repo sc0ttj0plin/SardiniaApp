@@ -252,13 +252,14 @@ class ItinerariesScreen extends PureComponent {
   _renderHorizontalSeparator = () => <View style={{ width: 5, flex: 1 }}></View>;
 
   /* Renders a poi in Header */
-  _renderListItem = ({item}) => {
+  _renderListItem = ({item, index}) => {
     const { lan } = this.props.locale;
     const title = _.get(item.title, [lan, 0, "value"], null);
     const image = item.image;
     // console.log("title", item)
     return (
       <EntityItem 
+        index={index}
         keyItem={item.nid}
         listType={Constants.ENTITY_TYPES.itineraries}
         onPress={() => this._openItem(item)}
@@ -266,6 +267,10 @@ class ItinerariesScreen extends PureComponent {
         image={`${image}`}
         place={" "}
         style={styles.itinerariesListItem}
+        horizontal={true}
+        style={{
+          marginBottom: 10
+        }}
       />
   )}
 
@@ -275,16 +280,16 @@ class ItinerariesScreen extends PureComponent {
     let data = selectedItinerary ? [selectedItinerary] : itineraries;
     if(!data.length)
       data = []
-    let snapIndex = selectedItinerary ? 1 : 1
+    let snapIndex = selectedItinerary ? 1 : 2
+    let numColumns = selectedItinerary ? 1 : 2
     return (
       <ScrollableContainer 
         topComponent={this._renderTopComponent}
         ListHeaderComponent={this._renderListHeader} 
         data={data}
         initialSnapIndex={2}
-        snapPoints={[5, Layout.window.height - 20, "60%"]}
+        snapPoints={[5, "45%", "70%"]}
         snapIndex={snapIndex}
-        numColums={1}
         renderItem={this._renderListItem}
         keyExtractor={item => item.uuid}
       />

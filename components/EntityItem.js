@@ -1,22 +1,41 @@
 import React, { PureComponent } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import GeoRefHListItem from "../components/GeoRefHListItem";
 import BottomSheetTouchable from "../components/BottomSheetTouchable";
 import { Ionicons } from '@expo/vector-icons';
 import * as Constants from '../constants';
+import Layout from "../constants/Layout"
 
 export default class EntityItem extends PureComponent {
-  render() {
-    const { onPress, keyItem, title, place, image, distance, listType, horizontal } = this.props;
+  constructor(props){
+    super(props)
+    // console.log("props", props)
+  }
 
+  render() {
+    const { onPress, keyItem, title, place, image, distance, listType, horizontal, index, sideMargins } = this.props;
+    let margins = sideMargins || 20
+    let itemWidth = ((Layout.window.width - (margins*2))/2) - 5;
+    let width = !horizontal ? itemWidth : "100%";
+    let height = width;
+    let space = (Layout.window.width - (margins*2) - (width*2))/ 2;
     let entityIconOpts = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[listType] || Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.places
-    let marginRight = horizontal ? 0 : 0
+    const marginRight = 0;
+    const marginLeft = !horizontal && index && index%2 != 0 ? space*2 : 0;
+    const marginBottom = !horizontal ? 16 : 10
+    // console.log("horizontal index", horizontal, index, marginRight, marginLeft, space)
     return (
         <BottomSheetTouchable 
             key={keyItem}  
             onPress={onPress}
             activeOpacity={0.7}
-            style={[styles.fill, this.props.style]}
+            style={[styles.fill, this.props.style, {
+              marginRight,
+              marginLeft,
+              marginBottom,
+              width,
+              height
+            }]}
         >
             <GeoRefHListItem
                 title={`${title}`}

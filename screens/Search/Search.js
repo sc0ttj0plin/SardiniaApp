@@ -128,7 +128,7 @@ class SearchScreen extends Component {
     } else {
       // Navigate to node screen
       const navScreen = this._getNavScreenFromType(elType);
-      console.log("NAVIGATEEEEE", elType, navScreen)
+      // console.log("NAVIGATEEEEE", elType, navScreen)
       this.props.navigation.navigate(navScreen, { item: el.node, mustFetch: true }); 
     }
   }

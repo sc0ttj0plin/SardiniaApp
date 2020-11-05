@@ -44,14 +44,14 @@ export default function reducer(state = INITIAL_STATE, action) {
             places: newPlaces
           };
         case "inspirers":
-          let newInspirers = { ...state.places };
+          let newInspirers = { ...state.inspirers };
           if (newInspirers[action.payload.id])
             delete newInspirers[action.payload.id];
           else 
           newInspirers[action.payload.id] = true;
           return { 
             ...state, 
-            places: newInspirers
+            inspirers: newInspirers
           };
       }
     default:

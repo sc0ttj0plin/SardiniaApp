@@ -3,7 +3,7 @@ import { View, Image, Text, FlatList, ScrollView, StyleSheet, Dimensions} from '
 import Colors from '../../constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import { Marker } from 'react-native-maps';
-
+import * as Constants from "../../constants"
 /**
  * EntityMarker is the component that renders typed marker
  * each marker type has a different icon
@@ -17,7 +17,7 @@ export default class EntityMarker extends PureComponent {
         cluster: this.props.cluster,
         term: this.props.term && this.props.term,
         image: this.props.term && this.props.term.marker,
-        trackingViewChanges: false,
+        trackingViewChanges: this.props.selected,
         selected: this.props.selected
     }
   }
@@ -37,18 +37,22 @@ export default class EntityMarker extends PureComponent {
           coordinate={{ longitude: cluster.centroid.coordinates[0],  latitude: cluster.centroid.coordinates[1] }}
           onPress={this.props.onPress}
           tracksViewChanges={this.state.trackingViewChanges}
-          style={{width: width, height: width, zIndex: selected ? 10 : 1}}>
-            <View
-              style={[styles.marker, {borderRadius: width/2, width: width, height: width, backgroundColor: selected ? "#64a6cC" : Colors.colorPlacesScreen}]}>
-              <Ionicons
-                name={Platform.OS === 'ios' ? 'ios-map' : 'md-map'}
-                size={19}
-                color={"#ffffff"}
-                style={{
-                  paddingTop: Platform.OS === 'ios' ? 3 : 0
-                }}
-              />
-            </View>
+          style={{width: 42, height: 42, zIndex: 1}}>
+            <View style={[styles.markerContainer, {
+              backgroundColor: selected ? "rgba(23, 74, 124, 0.5)" : "transparent"
+            }]}>
+              <View
+                style={[styles.marker]}>
+                <Ionicons
+                  name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.places.iconName}
+                  size={19}
+                  color={"#ffffff"}
+                  style={{
+                    paddingTop: Platform.OS === 'ios' ? 3 : 0
+                  }}
+                />
+              </View>
+          </View>
         </Marker.Animated>
     );
   }
@@ -56,15 +60,19 @@ export default class EntityMarker extends PureComponent {
 
 const styles = StyleSheet.create({
   marker: {
-    backgroundColor: "transparent",
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  markerImage: {
     width: "100%",
-    height: "100%"
+    height: "100%",
+    backgroundColor: "blue",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: Colors.colorPlacesScreen,
+    borderRadius: 21
   },
-  markerText: {
-    fontSize: 16
+  markerContainer: {
+    width: 42,
+    height: 42,
+    padding: 6,
+    borderRadius: 21
   },
 });

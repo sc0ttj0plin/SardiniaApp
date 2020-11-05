@@ -116,7 +116,7 @@ export const NAVIGATION = {
   NavExploreScreen: "ExploreScreen",
   NavVirtualTourScreen: "VirtualTourScreen",
   NavPlaceScreen: "PlaceScreen",
-  NavVideoScreen: "VideoScreen",
+  NavMediaScreen: "MediaScreen",
   NavInspirerScreen: "InspirerScreen",
   NavExtrasScreen: "ExtrasScreen",
   NavExperiences: "Experiences",
@@ -134,6 +134,7 @@ export const NAVIGATION = {
   NavSearchStackScreen: "SearchStackScreen",
   NavMainStackScreen: "MainStackScreen",
   NavFavouritesScreen: "FavouritesScreen",
+  NavFavouritesListScreen: "FavouritesListScreen",
   NavFavouritesStackScreen: "FavouritesStackScreen",
   NavEventsSubset: "EventsSubsetScreen",
   NavBoilerPlate: "Boilerplate"
@@ -317,24 +318,30 @@ export const VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS = {
   [ENTITY_TYPES.places]: {
     backgroundTopRightCorner: Colors.colorPlacesScreen,
     iconColor: "white",
+    backgroundColor: Colors.colorPlacesScreen,
     iconName: Platform.OS === 'ios' ? 'ios-map' : 'md-map'
   },
   [ENTITY_TYPES.inspirers]: {
     backgroundTopRightCorner: Colors.colorInspirersScreen,
     iconColor: "white",
+    backgroundColor: Colors.colorInspirersScreen,
     iconName: Platform.OS === 'ios' ? 'ios-flag' : 'md-flag'
   }, 
   [ENTITY_TYPES.itineraries]: {
     backgroundTopRightCorner: Colors.colorItinerariesScreen,
     iconColor: "white",
+    backgroundColor: Colors.colorItinerariesScreen,
     iconName: Platform.OS === 'ios' ? 'ios-analytics' : 'md-analytics'
   },
   [ENTITY_TYPES.events]: {
     backgroundTopRightCorner: Colors.colorEventsScreen,
     iconColor: "white",
+    backgroundColor: Colors.colorEventsScreen,
     iconName: Platform.OS === 'ios' ? 'ios-calendar' : "md-calendar"
   }
 }
+
+export const FAVOURITES_MAX_ITEMS_ON_LIST = 6;
 
 export const styles = {
   html: {

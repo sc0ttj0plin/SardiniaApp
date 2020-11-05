@@ -63,6 +63,8 @@ class InspirersScreen extends Component {
 
     this.state = {
       render: USE_DR ? false : true,
+      //
+      inspirers: props.inspirers.data || []
     };
       
   }
@@ -81,9 +83,12 @@ class InspirersScreen extends Component {
    */
   componentDidUpdate(prevProps) {
     // If currently selected categories (terms) differ from the previous ones fetch other pois for those categories
-    if(prevProps.others.inspirersTerms !== this.props.others.inspirersTerms) {
+    if(prevProps.others.inspirersTerms !== this.props.others.inspirersTerms && this._isPoiList()) {
       this._loadMorePois();
     }
+    // if(prevProps.inspirers.data !== this.props.inspirers.data && this._isPoiList() && this.state.inspirers.length == 0) {
+    //   this.setState({inspirers: this.props.inspirers.data})
+    // }
   }
 
   /**
@@ -115,11 +120,11 @@ class InspirersScreen extends Component {
    */
   _loadMorePois = () => {
     const { childUuids } = this._getCurrentTerm();
-    const { inspirers } = this.props;
+    const { inspirers } = this.state;
     if (this._isPoiList()) {
       this.props.actions.getInspirers({ 
         limit: Constants.PAGINATION.poisLimit, 
-        offset: Object.values(inspirers.data).length,
+        offset: inspirers.length,
         uuids: childUuids
       });
     }
@@ -130,7 +135,7 @@ class InspirersScreen extends Component {
    * @param {*} item: list item clicked
    */
   _selectCategory = (item) => {
-    console.log("item", item)
+    // console.log("item", item)
     
     this.props.actions.pushCurrentCategoryInspirers(item);
   }
@@ -153,7 +158,7 @@ class InspirersScreen extends Component {
 
   _backButtonPress = () => this.props.actions.popCurrentCategoryInspirers();
 
-  _isSuccessData  = () => this.props.categories.success || this.props.inspirers.success; 
+  _isSuccessData  = () => this.props.categories.success || this.props.inspirers.success;
   _isLoadingData  = () => this.props.categories.loading || this.props.inspirers.loading; 
   _isErrorData    = () => this.props.inspirers.error;   
 
@@ -161,10 +166,11 @@ class InspirersScreen extends Component {
   /********************* Render methods go down here *********************/
 
   /* Renders a poi in Header */
-  _renderPoiListItem = (item) => {
+  _renderPoiListItem = (item, index) => {
     const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
     return (
       <EntityItem 
+        index={index}
         keyItem={item.nid}
         backgroundTopLeftCorner={"white"}
         listType={Constants.ENTITY_TYPES.inspirers}
@@ -174,6 +180,8 @@ class InspirersScreen extends Component {
         place={`${item.term.name}`}
         image={`${item.image}`}
         style={{marginBottom: 10}}
+        horizontal={false}
+        sideMargins={20}
       />
   )}
 
@@ -188,15 +196,16 @@ class InspirersScreen extends Component {
     const isPoiList = this._isPoiList();
     let flatListData = [];
     let renderItem = null;
-    let numColums = 1; //One for categories, two for pois
+    // console.log("term", this._isSuccessData())
+    let numColumns = 1; //One for categories, two for pois
     //if no more nested categories renders pois
     if (isPoiList) {
-      flatListData = Object.values(inspirers.data);
-      renderItem = ({ item }) => this._renderPoiListItem(item);
-      numColums = 2;
+      flatListData = inspirers.data || [];
+      renderItem = ({ item, index }) => this._renderPoiListItem(item, index);
+      numColumns = 2;
     } else {
       //initially term is null so we get terms from redux, then term is populated with nested terms (categories) 
-      flatListData = term;
+      flatListData = term || [];
       renderItem = ({ item }) => this._renderCategoryListItem(item);
     }
 
@@ -208,21 +217,26 @@ class InspirersScreen extends Component {
       loadingLayout={
         <LLEntitiesFlatlist 
           horizontal={false} 
-          numColumns={1} 
+          numColumns={numColumns}
+          key={"shimmer-layout" + numColumns} 
           itemStyle={styles.itemFlatlist} 
           style={styles.listStyle} 
           bodyContainerStyle={styles.listContainer}/>}>
-        <FlatList
-          data={flatListData}
-          renderItem={renderItem}
-          keyExtractor={item => item.uuid}
-          style={styles.listStyle}
-          bodyContainerStyle={styles.listContainer}
-          initialNumToRender={3} // Reduce initial render amount
-          maxToRenderPerBatch={2}
-          updateCellsBatchingPeriod={400} // Increase time between renders
-          windowSize={5} // Reduce the window size
-          />
+        <View style={styles.listView}> 
+          <FlatList
+            data={flatListData}
+            renderItem={renderItem}
+            numColumns={numColumns}
+            key={"flatlist-layout" + numColumns} 
+            onEndReached={this._loadMorePois}
+            keyExtractor={item => item.uuid}
+            initialNumToRender={3} // Reduce initial render amount
+            maxToRenderPerBatch={2}
+            style={styles.list}
+            updateCellsBatchingPeriod={400} // Increase time between renders
+            windowSize={5} // Reduce the window size
+            />
+          </View>   
       </AsyncOperationStatusIndicator>
     );
   }
@@ -255,6 +269,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white"
   },
+  list: {
+    marginBottom: 50,
+    width: "100%",
+    paddingHorizontal: 20
+  },
+  listView: {
+    width: "100%",
+  },
   header: {
     backgroundColor: "white"
   },
@@ -265,7 +287,8 @@ const styles = StyleSheet.create({
   listContainer: {
     marginTop: 0,
     paddingTop: 0,
-    backgroundColor: Colors.colorInspirersScreen,
+    backgroundColor: "transparent",
+    marginHorizontal: 20
 
   },
   listContainerHeader: {
@@ -276,8 +299,8 @@ const styles = StyleSheet.create({
   },
   listStyle: {
     paddingTop: 10, 
-    backgroundColor: Colors.colorInspirersScreen,
-    paddingHorizontal: 10,
+    backgroundColor: "transparent",
+    marginHorizontal: 10,
     height: "100%",
   },
   itemFlatlist: {

@@ -24,7 +24,7 @@ import InspirerScreen from '../screens/Inspirers/Inspirer';
 import ExtrasScreen from '../screens/Extras/Extras';
 import ExtraScreen from '../screens/Extras/Extra';
 import SearchScreen from '../screens/Search/Search';
-import VideoScreen from '../screens/Others/VideoScreen';
+import MediaScreen from '../screens/Media/Media';
 
 // import MapScreen from '../screens/Others/MapScreen';
 // import ExploreScreen from '../screens/Others/ExploreScreen';
@@ -32,8 +32,10 @@ import VideoScreen from '../screens/Others/VideoScreen';
 // import ExtraScreen from '../screens/Others/Extra/ExtraScreen';
 // import PlaceScreen from '../screens/Others/PlaceScreen';
 // import InspirerScreen from '../screens/Others/InspirerScreen';
-// import VideoScreen from '../screens/Others/VideoScreen';
-// import FavouritesScreen from '../screens/Others/FavouritesScreen';
+// import MediaScreen from '../screens/Others/MediaScreen';
+import FavouritesScreen from '../screens/Favourites/Favourites';
+import FavouritesListScreen from '../screens/Favourites/FavouritesList';
+
 // import ExperiencesEventsScreen from '../screens/Others/ExperiencesEventsScreen';
 // import ExperiencesItinerariesScreen from '../screens/Others/ExperiencesItinerariesScreen';
 // import EventScreen from '../screens/Others/EventScreen';
@@ -49,7 +51,7 @@ const {
   NavItineraryScreen, NavEventsScreen, NavEventScreen, NavItineraryStagesMapScreen,NavEventsMapScreen, NavEventsSubset, NavExploreScreen, 
   NavVirtualTourScreen, NavPlaceScreen, NavInspirerScreen,
   NavExtrasScreen, NavExtraScreen, NavTabNavigator, NavSearchScreen, NavSearchStackScreen, 
-  NavMainStackScreen, NavVideoScreen, NavFavouritesScreen, NavFavouritesStackScreen 
+  NavMainStackScreen, NavMediaScreen, NavFavouritesScreen, NavFavouritesListScreen, NavFavouritesStackScreen 
 } = Constants.NAVIGATION;
 
 import {FromTopTransition} from './transitions'
@@ -220,7 +222,7 @@ function MainStackScreen() {
       <MainStack.Screen name={NavItineraryScreen} component={ItineraryScreen}  />
       <MainStack.Screen name={NavItineraryStagesMapScreen} component={ItineraryStagesMapScreen}  />
       <MainStack.Screen name={NavInspirerScreen} component={InspirerScreen}/>
-      <MainStack.Screen name={NavVideoScreen} component={VideoScreen}/>
+      <MainStack.Screen name={NavMediaScreen} component={MediaScreen}/>
     </MainStack.Navigator>
     </>
   );
@@ -235,10 +237,11 @@ var FavouritesStack = createStackNavigator();
 function FavouritesStackScreen() {
   return (
     <FavouritesStack.Navigator headerMode="none" initialRouteName={NavFavouritesScreen}>
-      {/* <FavouritesStack.Screen name={NavFavouritesScreen} component={FavouritesScreen} /> */}
-      {/* <FavouritesStack.Screen name={NavPlaceScreen} component={PlaceScreen}/> */}
-      {/* <FavouritesStack.Screen name={NavEventScreen} component={EventScreen}/> */}
-      {/* <FavouritesStack.Screen name={NavItineraryScreen} component={ItineraryScreen}/> */}
+      <FavouritesStack.Screen name={NavFavouritesScreen} component={FavouritesScreen} />
+      <FavouritesStack.Screen name={NavFavouritesListScreen} component={FavouritesListScreen} />
+      <FavouritesStack.Screen name={NavPlaceScreen} component={PlaceScreen}/>
+      <FavouritesStack.Screen name={NavEventScreen} component={EventScreen}/>
+      <FavouritesStack.Screen name={NavItineraryScreen} component={ItineraryScreen}/>
     </FavouritesStack.Navigator>
   )
 }
@@ -256,7 +259,7 @@ function SearchStackScreen() {
       <SearchStack.Screen name={NavSearchScreen} component={SearchScreen} />
       <SearchStack.Screen name={NavPlaceScreen} component={PlaceScreen}/>
       <SearchStack.Screen name={NavEventScreen} component={EventScreen} />
-      {/* <SearchStack.Screen name={NavVideoScreen} component={VideoScreen}/> */}
+      {/* <SearchStack.Screen name={NavMediaScreen} component={MediaScreen}/> */}
       {/* <SearchStack.Screen name={NavVirtualTourScreen} component={VirtualTourScreen}/> */}
     </SearchStack.Navigator>
   );
@@ -281,7 +284,7 @@ function CustomDrawerContent(props) {
 
   return (
     <DrawerContentScrollView {...props}>
-      {/* <DrawerItemList state={newState} {...rest} /> */}
+      <DrawerItemList state={newState} {...rest} />
       {/* <ConnectedLanguageList /> */}
     </DrawerContentScrollView>
   );
@@ -309,7 +312,7 @@ function DrawerNavigator() {
       <Drawer.Screen name={NavMainStackScreen} component={MainStackScreen} options={{ drawerLabel: ConnectedTextTabName }} />
       <Drawer.Screen name={NavSearchStackScreen} component={SearchStackScreen} options={{ drawerLabel: ConnectedTextSearch }} />
       {/* <Drawer.Screen name={NavExploreScreen} component={ExploreScreen} options={{ drawerLabel: ConnectedTextGallery }} /> */}
-      {/* <Drawer.Screen name={NavFavouritesStackScreen} component={FavouritesStackScreen} options={{ drawerLabel: ConnectedFavourites }} /> */}
+      <Drawer.Screen name={NavFavouritesStackScreen} component={FavouritesStackScreen} options={{ drawerLabel: ConnectedFavourites }} />
     </Drawer.Navigator>
   );
 }

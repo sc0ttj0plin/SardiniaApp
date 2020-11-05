@@ -125,16 +125,16 @@ class PlaceScreen extends Component {
     var type = item.type;
     switch(type) {
       case Constants.NODE_TYPES.places:
-        this.props.navigation.push(Constants.NAVIGATION.NavPlaceScreen, { item });
+        this.props.navigation.push(Constants.NAVIGATION.NavPlaceScreen, { item, mustFetch: true });
         break;
       case Constants.NODE_TYPES.events:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item });
+        this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item, mustFetch: true });
         break;
       case Constants.NODE_TYPES.itineraries:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, { item })
+        this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, { item, mustFetch: true })
         break;
       case Constants.NODE_TYPES.inspirers:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavInspirerScreen, { item })
+        this.props.navigation.navigate(Constants.NAVIGATION.NavInspirerScreen, { item, mustFetch: true })
         break;
       default:
         break;
@@ -163,13 +163,14 @@ class PlaceScreen extends Component {
   }
 
   
-  _renderFab = (nid, title, coordinates, shareLink) => {
+  _renderFab = (uuid, title, coordinates, shareLink) => {
     return (
       <View style={styles.fab}>
         <ConnectedFab 
           color={Colors.blue}
-          nid={nid}
+          uuid={uuid}
           title={title}
+          type={Constants.ENTITY_TYPES.places}
           coordinates={coordinates} 
           shareLink={shareLink}
           direction="down"
@@ -197,7 +198,7 @@ class PlaceScreen extends Component {
        <View style={styles.fill}>
          <ScrollView style={styles.fill}>
           <TopMedia urlVideo={sampleVideoUrl} urlImage={entity.image} />
-          {this._renderFab(entity.nid, title, coordinates, socialUrl)}   
+          {this._renderFab(entity.uuid, title, coordinates, socialUrl)}   
           <View style={[styles.headerContainer]}> 
             <EntityHeader title={title} term={entity.term.name} borderColor={Colors.blue}/>
           </View>

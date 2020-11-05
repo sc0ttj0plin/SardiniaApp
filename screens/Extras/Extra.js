@@ -135,20 +135,27 @@ class ExtraScreen extends Component {
     var type = item.type;
     switch(type) {
       case Constants.NODE_TYPES.places:
-        this.props.navigation.push(Constants.NAVIGATION.NavPlaceScreen, { item });
+        this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item, mustFetch: true });
         break;
       case Constants.NODE_TYPES.events:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item });
+        this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item, mustFetch: true });
         break;
       case Constants.NODE_TYPES.itineraries:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, { item })
+        this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, { item, mustFetch: true })
         break;
       case Constants.NODE_TYPES.inspirers:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavInspirerScreen, { item })
+        this.props.navigation.navigate(Constants.NAVIGATION.NavInspirerScreen, { item, mustFetch: true })
         break;
       default:
         break;
     }
+  }
+
+  _openVRContent = () => {
+    this.props.navigation.navigate(Constants.NAVIGATION.NavMediaScreen, {
+        source: "https://sketchfab.com/models/0569f020894644b18d0c20eae09bd54c/embed?preload=1&amp;ui_controls=1&amp;ui_infos=1&amp;ui_inspector=1&amp;ui_stop=1&amp;ui_watermark=1&amp;ui_watermark_link=1",
+        type: "virtualTour"
+    });
   }
 
   _isSuccessData  = () => false;    /* e.g. this.props.pois.success; */
@@ -166,7 +173,7 @@ class ExtraScreen extends Component {
         horizontal={true}
         data={relatedList ? relatedList : []} 
         extraData={this.props.locale}
-        keyExtractor={item => item.nid.toString()}
+        keyExtractor={item => item.uuid.toString()}
         contentContainerStyle={styles.relatedListContent}
         ItemSeparatorComponent={this._renderHorizontalSeparator}
         showsHorizontalScrollIndicator={false}
@@ -180,13 +187,14 @@ class ExtraScreen extends Component {
     )
   }
 
-  _renderFab = (nid, title, coordinates, shareLink) => {
+  _renderFab = (uuid, title, coordinates, shareLink) => {
     return (
       <View style={styles.fab}>
         <ConnectedFab 
           color={Colors.black}
-          nid={nid}
+          uuid={uuid}
           title={title}
+          type={Constants.ENTITY_TYPES.inspirers}
           coordinates={coordinates} 
           shareLink={shareLink}
           direction="down"
@@ -208,8 +216,6 @@ class ExtraScreen extends Component {
       canBeOfInterest,
     } = locale.messages;
     
-    const { orientation } = this.state;
-    const isFavourite = favourites.places[uuid];
     const iconRotation = this.state.scrollY.interpolate({
       inputRange: [0, 600],
       outputRange: ['0deg', '360deg']
@@ -219,13 +225,13 @@ class ExtraScreen extends Component {
         <Animated.ScrollView style={styles.fill}
           onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }],{useNativeDriver: true})}>
           <TopMedia urlVideo={sampleVideoUrl} urlImage={entity.image} />
-          {this._renderFab(entity.nid, title, coordinates, socialUrl)}   
+          {this._renderFab(entity.uuid, title, coordinates, socialUrl)}   
           <View style={[styles.headerContainer]}> 
             <EntityHeader title={title} borderColor={Colors.black}/>
           </View>
           <View style={[styles.container]}>
             <EntityAbstract abstract={abstract}/>
-            <EntityVirtualTour rotation={iconRotation}/>
+            <EntityVirtualTour rotation={iconRotation} onPress={this._openVRContent}/>
             <EntityGallery images={gallery} title={galleryTitle}/>
             <View style={styles.separator}/>
             {this._renderRelatedList("Luoghi", relatedPlaces, Constants.ENTITY_TYPES.places)}

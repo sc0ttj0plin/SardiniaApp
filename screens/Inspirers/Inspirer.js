@@ -105,7 +105,7 @@ class InspirerScreen extends Component {
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
   _fetchRelatedNodes = async () => {
     try {
-      const relatedEntities = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.inspirers, offset: Math.ceil(Math.random()*100), limit: 5}))
+      const relatedEntities = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.inspirers, offset: 0, limit: 5}))
       this.setState({ relatedEntities })
     } catch(error){
       console.log(error)
@@ -127,16 +127,16 @@ class InspirerScreen extends Component {
     var type = item.type;
     switch(type) {
       case Constants.NODE_TYPES.places:
-        this.props.navigation.push(Constants.NAVIGATION.NavInspirerScreen, { item });
+        this.props.navigation.push(Constants.NAVIGATION.NavInspirerScreen, { item, mustFetch: true });
         break;
       case Constants.NODE_TYPES.events:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item });
+        this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item, mustFetch: true });
         break;
       case Constants.NODE_TYPES.itineraries:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, { item })
+        this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, { item, mustFetch: true })
         break;
       case Constants.NODE_TYPES.inspirers:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavInspirerScreen, { item })
+        this.props.navigation.push(Constants.NAVIGATION.NavInspirerScreen, { item, mustFetch: true })
         break;
       default:
         break;
@@ -152,7 +152,7 @@ class InspirerScreen extends Component {
         horizontal={true}
         data={relatedList ? relatedList : []} 
         extraData={this.props.locale}
-        keyExtractor={item => item.nid.toString()}
+        keyExtractor={item => item.uuid.toString()}
         contentContainerStyle={styles.listContainerHeader}
         showsHorizontalScrollIndicator={false}
         locale={this.props.locale}
@@ -165,12 +165,13 @@ class InspirerScreen extends Component {
   }
 
   
-  _renderFab = (nid, title, coordinates, shareLink) => {
+  _renderFab = (uuid, title, coordinates, shareLink) => {
     return (
       <View style={styles.fab}>
         <ConnectedFab 
           color={Colors.colorInspirersScreen}
-          nid={nid}
+          uuid={uuid}
+          type={Constants.ENTITY_TYPES.inspirers}
           title={title}
           coordinates={coordinates} 
           shareLink={shareLink}
@@ -199,7 +200,7 @@ class InspirerScreen extends Component {
        <View style={styles.fill}>
          <ScrollView style={styles.fill}>
           <TopMedia urlVideo={sampleVideoUrl} urlImage={entity.image} />
-          {this._renderFab(entity.nid, title, coordinates, socialUrl)}   
+          {this._renderFab(entity.uuid, title, coordinates, socialUrl)}   
           <View style={[styles.headerContainer]}> 
             <EntityHeader title={title} term={entity.term.name} borderColor={Colors.colorInspirersScreen}/>
           </View>

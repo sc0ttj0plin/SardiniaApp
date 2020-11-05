@@ -78,7 +78,6 @@ class GalleryScreen extends Component {
             </View>
         )}
       </View>
-
     );
   }
 }

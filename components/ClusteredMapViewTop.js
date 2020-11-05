@@ -170,10 +170,10 @@ class ClusteredMapViewTop extends PureComponent {
    * @param {*} item: poi
    */
   _openEntity(item) {
-    console.log("GOTO ENTITY!", item);
-    // this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, {
-    //   place: item.terms_objs[0]
-    // })
+    // console.log("GOTO ENTITY!", item);
+    this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, {
+      item: item.terms_objs[0], mustBeFech: true
+    })
   }
 
   /**
@@ -203,6 +203,7 @@ class ClusteredMapViewTop extends PureComponent {
    * Render single poi on bottom of mapview (outside scrollableContainer)
    */
   _renderEntityWidget() {
+    console.log("selected poi", this.state.selectedCluster)
     return (
       <View style={[styles.entityWidget]}>
         <TouchableOpacity
@@ -356,7 +357,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 180,
     position: "absolute",
-    bottom: 0,
+    bottom: 50,
     left: 0,
     padding: 10
   }

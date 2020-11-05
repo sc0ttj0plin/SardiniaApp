@@ -25,9 +25,10 @@ export default function reducer(state = INITIAL_STATE, action) {
       };
     case Constants.GET_INSPIRERS_SUCCESS:
     case Constants.GET_INSPIRERS_BY_ID_SUCCESS:
+      console.log("inspirers entered")
       return { 
         ...state, 
-        data: [ ...state.data, ...action.payload.data ],
+        data: [ ...action.payload.data ],
         dataById: { ...state.dataById, ...action.payload.dataById }, 
         success: true,
         error: null,

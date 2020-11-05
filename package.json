@@ -75,6 +75,7 @@
     "react-native-svg": "12.1.0",
     "react-native-svg-uri": "^1.2.3",
     "react-native-tab-view": "^2.14.2",
+    "react-native-vector-icons": "^7.1.0",
     "react-native-video": "^4.4.5",
     "react-native-web": "~0.13.7",
     "react-native-webview": "10.7.0",

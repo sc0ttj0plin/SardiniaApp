@@ -47,7 +47,7 @@ export default function reducer(state = INITIAL_STATE, action) {
         eventsByIdLoading: true,
       };
     case Constants.GET_EVENTS_BY_ID_SUCCESS:
-      console.log("EvetsBYID SUCCESS", action.payload)
+      // console.log("EvetsBYID SUCCESS", action.payload)
       return {
         ...state,
         //NOTE: also updated by GET_EVENTS_SUCCESS to store events from another action

@@ -70,11 +70,14 @@ const apolloMiddleware = client => {
           }).then((resp) => {
             let dispatch = { type: Constants.GET_INSPIRERS_SUCCESS, payload: {} };
             if (resp.data && resp.data.nodes.length > 0) {
-              let data = resp.data.nodes;
+              let data = resp.data.nodes || [];
               data.forEach((e) => processEntity(e));
               let dataById = data.reduce((acc, curr) => ({ ...acc, [curr.uuid]: curr}), {});
               dispatch.payload = { dataById, data };
             }
+            else
+              dispatch.payload = { dataById: {}, data: [] };
+
             store.dispatch(dispatch);
           }).catch((e) => {
             console.log(e);
