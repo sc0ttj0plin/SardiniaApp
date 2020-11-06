@@ -188,8 +188,7 @@ class EventsMapScreen extends PureComponent {
   }
 
   _selectMarker = (event) => {
-    if (event)
-      this.setState({ selectedEvent: event });
+    this.setState({ selectedEvent: event });
   }
 
   // _backButtonPress = () => this.props.actions.popCurrentCategoryPlaces();
@@ -201,6 +200,9 @@ class EventsMapScreen extends PureComponent {
       <Text style={{color: 'white'}}>{item.name}</Text>
     </TouchableOpacity>
 
+  _renderCluster = (cluster) => {
+    console.log("cluster", cluster)
+  }
   
   /* Renders the topmost component: a map in our use case */
   _renderTopComponent = () => {
@@ -216,12 +218,14 @@ class EventsMapScreen extends PureComponent {
         showsUserLocation={ true }
         showsIndoorLevelPicker={true}
         showsCompass={false}
+        clusteringEnabled={true}
         clusterColor={Colors.colorEventsScreen}
         style={{flex: 1}}
         onPress={() => this._selectMarker(null)}
         onRegionChangeComplete={this._onRegionChangeComplete}
       >
         {this._renderMarkers()}
+        {/* {this.state.selectedEvent && this._renderMarker(this.state.selectedEvent, true)} */}
       </MapView>
       </>
     )
@@ -230,11 +234,11 @@ class EventsMapScreen extends PureComponent {
 
   _renderMarkers = () => {
     return this.state.events.map( event => {
-      return this._renderMarker(event)
+      return this._renderMarker(event, false)
     })
   }
 
-  _renderMarker = (event) => {
+  _renderMarker = (event, selected) => {
     const coordinates = _.get(event, ["itinerary", 0], null)
     if(coordinates){
       const lat = _.get(coordinates, "lat", null)
@@ -296,6 +300,7 @@ class EventsMapScreen extends PureComponent {
         image={`${image}`}
         place={" "}
         style={styles.eventsListItem}
+        horizontal={true}
       />
   )}
 
@@ -304,12 +309,15 @@ class EventsMapScreen extends PureComponent {
     const { selectedEvent, events } = this.state;
     let data = selectedEvent ? [selectedEvent] : events;
     let snapIndex = selectedEvent ? 1 : 2
+
     return (
       <ScrollableContainer 
         topComponent={this._renderTopComponent}
         ListHeaderComponent={this._renderListHeader}
         data={data}
-        initialSnapIndex={snapIndex}
+        initialSnapIndex={2}
+        snapPoints={[5, "55%", "80%"]}
+        snapIndex={snapIndex}
         numColums={1}
         renderItem={this._renderListItem}
         keyExtractor={item => item.uuid}

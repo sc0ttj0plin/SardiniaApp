@@ -156,13 +156,16 @@ class SearchScreen extends Component {
       <TouchableOpacity 
         key={index} 
         onPress={() => this._listItemOnPress(el, elType)} 
-        style={styles.listItem}>
-        <Ionicons
-          name={entityIconOpts.iconName}
-          size={20}
-          style={styles.listItemIcon}
-          color={entityIconOpts.iconColor}
-        />
+        style={[styles.listItem]}>
+        <View style={[styles.icon, {
+          backgroundColor: entityIconOpts.iconColor,
+        }]}>
+          <Ionicons
+            name={entityIconOpts.iconName}
+            size={13}
+            color={"white"}
+          />
+        </View>
         <Text style={this._isNavigableItem(el) ? styles.boldText : styles.normalText}>{title}</Text>
       </TouchableOpacity>
     );
@@ -196,7 +199,7 @@ class SearchScreen extends Component {
     const { render } = this.state;
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader iconTintColor={Colors.blue} />
+        <ConnectedHeader />
         {render && this._renderContent()}
       </View>
     )
@@ -229,22 +232,31 @@ const styles = StyleSheet.create({
   listItem: {
     flex: 1, 
     alignItems: "center", 
-    flexDirection: 'row', 
-    marginTop: 10, 
-    marginBottom: 10, 
-    borderBottomColor: 'grey', 
-    borderBottomWidth: 0.5
+    flexDirection: 'row',
+    borderBottomColor: '#f2f2f2', 
+    borderBottomWidth: 1,
+    paddingVertical: 10
   },
   listItemIcon: { 
-    marginLeft: 20, 
-    marginRight: 20 
+    // marginLeft: 20, 
+    // marginRight: 20 
+  },
+  icon: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 8,
+    marginLeft: 15
   },
   normalText: {
-    fontSize: 20
+    fontSize: 15,
   },
   boldText: {
-    fontSize: 20,
-    fontWeight: 'bold' 
+    fontSize: 15,
+    fontWeight: "bold"
   }
 });
 

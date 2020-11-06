@@ -157,7 +157,7 @@ class FavouritesListScreen extends Component {
           showsHorizontalScrollIndicator={false}
           locale={this.props.locale}
           numColumns={2}
-          onPressItem={this._openRelatedEntity}
+          onPressItem={this._openItem}
           listType={type}
           listTitle={title}
           listTitleStyle={styles.sectionTitle}
@@ -183,7 +183,7 @@ class FavouritesListScreen extends Component {
     const { render } = this.state;
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader iconTintColor="#24467C" />
+        <ConnectedHeader />
         {render && this._renderContent()}
       </View>
     )

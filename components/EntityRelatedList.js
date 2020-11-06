@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { View, FlatList, StyleSheet, Text } from 'react-native';
 import _ from 'lodash';
-import LLEntitiesFlatlist from "./loadingLayouts/LLEntitiesFlatlist"
+import {LLEntitiesFlatlist, LLHorizontalItemsFlatlist} from "./loadingLayouts/"
 import EntityItem from './EntityItem';
 import AsyncOperationStatusIndicator from "./AsyncOperationStatusIndicator"
  
@@ -49,6 +49,44 @@ export default class EntityRelatedList extends PureComponent {
         )
     }
 
+    _renderLoadingLayout = () => {
+        const { 
+            listTitle, 
+            contentContainerStyle, 
+            listTitleStyle, 
+            horizontal, 
+            extraData,
+            showsHorizontalScrollIndicator,
+            numColumns,
+            sideMargins,
+            itemStyle
+        } = this.props; 
+        return(
+            <>
+                {!horizontal && 
+                    <LLEntitiesFlatlist 
+                        itemStyle={itemStyle} 
+                        numColumns={numColumns} 
+                        sideMargins={sideMargins} 
+                        horizontal={horizontal} 
+                        style={[styles.fill, this.props.style]} 
+                        contentContainerStyle={contentContainerStyle} 
+                        title={listTitle} 
+                        titleStyle={listTitleStyle} 
+                        error={false}/>
+                }
+                {horizontal &&
+                    <LLHorizontalItemsFlatlist 
+                        horizontal={true} 
+                        style={[styles.fill, this.props.style]}  
+                        title={listTitle} 
+                        titleStyle={listTitleStyle}
+                        contentContainerStyle={contentContainerStyle} 
+                    />
+                }
+            </>
+        )
+    }
       
     render() {
         const { 
@@ -68,18 +106,7 @@ export default class EntityRelatedList extends PureComponent {
                 loading={true}
                 success={data && data.length > 0}
                 error={false}
-                loadingLayout={
-                    <LLEntitiesFlatlist 
-                        itemStyle={itemStyle} 
-                        numColumns={numColumns} 
-                        sideMargins={sideMargins} 
-                        horizontal={horizontal} 
-                        style={[styles.fill, this.props.style]} 
-                        contentContainerStyle={contentContainerStyle} 
-                        title={listTitle} 
-                        titleStyle={listTitleStyle} 
-                        error={false}/>
-                }>
+                loadingLayout={this._renderLoadingLayout()}>
                 <View style={{flex: 1}}>   
                     <Text style={listTitleStyle}>{listTitle}</Text>
                     <FlatList 
@@ -91,7 +118,7 @@ export default class EntityRelatedList extends PureComponent {
                         data={data}
                         ItemSeparatorComponent={this._renderHorizontalSeparator}
                         renderItem={({item, index}) => this._renderPoiListItem(item, index)}
-                        style={[styles.fill, this.props.style]}
+                        style={[styles.fill, styles.flatlist, this.props.style]}
                         contentContainerStyle={contentContainerStyle}
                         showsHorizontalScrollIndicator={showsHorizontalScrollIndicator || true}
                         initialNumToRender={2} // Reduce initial render amount

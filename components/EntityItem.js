@@ -60,7 +60,8 @@ export default class EntityItem extends PureComponent {
 
 const styles = StyleSheet.create({
   fill: {
-    flex: 1
+    flex: 1,
+    backgroundColor: "white"
   },
   corner: {
     position: "absolute",

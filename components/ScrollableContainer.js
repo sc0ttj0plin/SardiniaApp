@@ -31,6 +31,11 @@ export default class ScrollableContainer extends PureComponent {
       inputRange: [0, 1],
       outputRange: [0, -Layout.window.height/2],
     });
+
+    this._translateAnimY2 = interpolate(this._translateAnim, {
+      inputRange: [0, 0.5, 0.8, 1],
+      outputRange: [10, 10, -10, -35],
+    });
     
     this._snapPoints = [5, Layout.window.height - 390, Layout.window.height - 180]
   }
@@ -66,6 +71,11 @@ export default class ScrollableContainer extends PureComponent {
         <Animated.View style={[styles.fill, { transform: [{ translateY: this._translateAnimY } ]}]}>
           {this.props.topComponent()}
         </Animated.View>
+        { this.props.extraComponent &&
+          <Animated.View style={[styles.extraComponent, { transform: [{ translateY: this._translateAnimY2 } ]}]}>
+            {this.props.extraComponent()}
+          </Animated.View>
+        }
         
         <ScrollBottomSheet
           componentType="FlatList"
@@ -124,4 +134,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 10,
   },
+  extraComponent: {
+    width: "100%",
+    height: 40,
+    position: "absolute", 
+    top: 0, 
+    left: 0, 
+    // backgroundColor: "red"
+  }
 })

@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   listItemDate: {
-    fontSize: 15,
+    fontSize: 10,
     fontWeight: "bold",
   },
   listItemTerm: {

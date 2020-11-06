@@ -49,7 +49,8 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     // opacity: 0.6,
     color: "black",
-    fontWeight: "bold"
+    fontWeight: "bold",
+    fontSize: 17
   },
   container: {
     flexDirection: "column"

@@ -2,6 +2,7 @@ const tintColor = '#2f95dc';
 
 export default {
   tintColor,
+  headerIconColor: "#666666",
   //Real mockup colors (grab from here)
   blue: '#174A7C',        //rgb(23,74,124)
   lightBlue: 'rgba(23,74,124,0.5)',
@@ -22,7 +23,7 @@ export default {
   tabIconSelected: "white",
   tabBackgroundSelected: '#2f95dc',
   tabBar: '#fefefe',
-  salmon: 'rgb(223,145,117)',
+  salmon: 'rgba(217, 83, 30, 0.5)',
   darkSalmon: 'rgb(206,62,24)',
   greenTransparent: 'rgba(80,111,46, 0.8)',
   blueTransparent: 'rgba(36,70,124, 0.7)',

@@ -284,7 +284,7 @@ function CustomDrawerContent(props) {
 
   return (
     <DrawerContentScrollView {...props}>
-      <DrawerItemList state={newState} {...rest} />
+      <DrawerItemList state={newState} {...rest}/>
       {/* <ConnectedLanguageList /> */}
     </DrawerContentScrollView>
   );
@@ -295,7 +295,8 @@ function DrawerNavigator() {
     inactiveTintColor: "white",
     activeTintColor: "white",
     labelStyle: {
-      color: "white"
+      color: "white",
+      backgroundColor: "blue"
     }
   }
 

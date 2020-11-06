@@ -50,7 +50,7 @@ class GeoRefHListItem extends PureComponent{
 
 const styles = StyleSheet.create({  
     container: {
-      backgroundColor: "#F5FCFF",
+      backgroundColor: "white",
       alignItems: "flex-start",
       borderRadius: 10,
       overflow: "hidden"
@@ -69,14 +69,17 @@ const styles = StyleSheet.create({
     image: {
       resizeMode: "cover",
       width: 160,
-      height: 160
+      height: 160,
+      backgroundColor: "white"
     },
     textContainer: {
       position: "absolute",
       bottom: 0,
-      backgroundColor: "rgba(255,255,255,0.7)",
+      backgroundColor: "rgba(255,255,255, 0.7)",
       padding: 5,
-      width: "100%"
+      width: "100%",
+      borderBottomLeftRadius: 10,
+      borderBottomRightRadius: 10
     }
 });
 

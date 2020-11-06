@@ -170,6 +170,7 @@ class EventScreen extends Component {
           listType={listType}
           listTitle={title}
           listTitleStyle={styles.sectionTitle}
+          itemStyle={styles.itemStyle}
         />
     )
   }
@@ -253,7 +254,11 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderTopLeftRadius: 0,
     borderTopRightRadius: 30, 
-    marginTop: -30
+    marginTop: -30,
+    borderTopColor: "#f2f2f2",
+    borderTopWidth: 2,
+    borderRightColor: "#f2f2f2",
+    borderRightWidth: 2
   },
   container: { 
     backgroundColor: "white",
@@ -275,6 +280,12 @@ const styles = StyleSheet.create({
     height: 8,
     backgroundColor: "#F2F2F2",
     marginVertical: 32
+  },
+  itemStyle: {
+    backgroundColor: "white",
+    borderWidth: 1,
+    borderColor: "#f2f2f2",
+    borderRadius: 10
   }
 });
 

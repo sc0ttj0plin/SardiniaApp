@@ -341,7 +341,7 @@ export const VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS = {
   }
 }
 
-export const FAVOURITES_MAX_ITEMS_ON_LIST = 6;
+export const FAVOURITES_MAX_ITEMS_IN_LIST = 6;
 
 export const styles = {
   html: {
@@ -358,7 +358,7 @@ export const styles = {
     backgroundColor: Colors.lightGrey,
     calendarBackground: Colors.lightGrey,
     agendaDayNumColor: "black",
-    agendaTodayColor: "black",
+    agendaTodayColor: "white",
     agendaDayTextColor: "black",
     arrowColor: 'black',
     selectedDayBackgroundColor: Colors.salmon,

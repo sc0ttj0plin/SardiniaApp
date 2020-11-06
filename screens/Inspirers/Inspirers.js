@@ -124,7 +124,7 @@ class InspirersScreen extends Component {
     if (this._isPoiList()) {
       this.props.actions.getInspirers({ 
         limit: Constants.PAGINATION.poisLimit, 
-        offset: inspirers.length,
+        offset: 0,
         uuids: childUuids
       });
     }
@@ -276,6 +276,7 @@ const styles = StyleSheet.create({
   },
   listView: {
     width: "100%",
+    marginTop: 16
   },
   header: {
     backgroundColor: "white"

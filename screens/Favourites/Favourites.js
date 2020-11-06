@@ -247,7 +247,7 @@ class FavouritesScreen extends Component {
       <View style={styles.listView}>
         <EntityRelatedList
           horizontal={false}
-          data={list ? list.slice(0, Constants.FAVOURITES_MAX_ITEMS_ON_LIST) : []} 
+          data={list ? list.slice(0, Constants.FAVOURITES_MAX_ITEMS_IN_LIST) : []} 
           extraData={this.props.locale}
           keyExtractor={item => item.uuid.toString()}
           contentContainerStyle={styles.listContainerHeader}
@@ -285,7 +285,7 @@ class FavouritesScreen extends Component {
     const { render } = this.state;
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader iconTintColor="#24467C" />
+        <ConnectedHeader />
         {render && this._renderContent()}
       </View>
     )

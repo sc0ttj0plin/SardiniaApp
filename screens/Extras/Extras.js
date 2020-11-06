@@ -117,7 +117,7 @@ class ExtrasScreen extends Component {
     const { render } = this.state;
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader iconTintColor="#24467C" />
+        <ConnectedHeader />
         {render && this._renderContent()}
       </View>
     )

@@ -123,82 +123,122 @@ class ConnectedHeader extends PureComponent {
       })
   }
 
-  render() {
+  _renderDrawerButton = () => {
+    return(
+      <Button
+        type="clear"
+        containerStyle={[styles.buttonContainer, this.props.buttonContainer, this.props.buttonContainer, this.props.buttonContainer]}
+        buttonStyle={styles.button}
+        onPress={() => this.props.navigation.toggleDrawer()}
+        icon={
+          <Ionicons
+            name={Platform.OS === 'ios' ? 'ios-menu' : 'md-menu'}
+            size={40}
+            color={Colors.headerIconColor}
+          />
+          }
+      />
+    )
+  }
+
+  _renderBackButton = () => {
+    return (
+      <Button
+        type="clear"
+        containerStyle={[styles.buttonContainer]}
+        buttonStyle={[styles.button, this.props.searchButton]}
+        onPress={this._backButtonPressed}
+        icon={
+          <Ionicons
+            name={Platform.OS === 'ios' ? 'ios-arrow-back' : 'md-arrow-back'}
+            size={30}
+            color={Colors.headerIconColor}
+          />
+        }
+      />
+    )
+  }
+
+  _renderSearchBar = () => {
     const { searchStr } = this.props.others;
     const { insertHere } = this.props.locale.messages;
+    
+    return(
+      <SearchBar
+        lightTheme={true}
+        placeholder={insertHere}
+        onChangeText={this._updateSearch}
+        value={searchStr}
+        containerStyle={[styles.searchBarExternalContainer, this.props.searchBarExternalContainer]}
+        inputContainerStyle={styles.searchBarInputContainer}
+        inputStyle={styles.searchBarInput}
+        platform={Platform.OS === 'ios' ? 'ios' : 'android'}
+        searchIcon={null}
+        cancelIcon={null}
+        clearIcon={null}
+      />
+    )
+  }
+
+  _renderLogoImage = () => {
+    return (
+      <Image
+        style={styles.logo} 
+        source={require('../assets/images/header-logo.png')}
+        />
+    )
+  }
+
+  _renderSearchButton = () => {
+    return (
+      <Button
+        type="clear"
+        containerStyle={[styles.buttonContainer, this.props.buttonContainer]}
+        buttonStyle={styles.button}
+        onPress={this._searchButtonPressed}
+        icon={
+          <Ionicons
+            name={Platform.OS === 'ios' ? 'ios-search' : 'md-search'}
+            size={30}
+            color={Colors.headerIconColor}
+          />
+        }
+      />
+    )
+  }
+
+  _renderBottomLine = () => 
+    <View style={[styles.bottomLine, { 
+      backgroundColor: this.props.iconTintColor || Colors.tintColor
+    }]}></View>
+
+  _renderMixedBottomLine = () => {
+    return(
+      <View style={[styles.mixedBottomLine]}>
+        <View style={[styles.mixedBottomLineItem, {backgroundColor: Colors.colorPlacesScreen}]}/>
+        <View style={[styles.mixedBottomLineItem, {backgroundColor: Colors.colorInspirersScreen}]}/>
+        <View style={[styles.mixedBottomLineItem, {backgroundColor: Colors.colorItinerariesScreen}]}/>
+        <View style={[styles.mixedBottomLineItem, {backgroundColor: Colors.colorEventsScreen}]}/>
+      </View>
+    )
+  }
+
+  render() {
 
     return (
+      <>
       <View style={[styles.container,this.props.containerStyle, {height: Layout.header.height}]}>
-        {this.state.backButtonVisible && (
-        <Button
-          type="clear"
-          containerStyle={[styles.buttonContainer]}
-          buttonStyle={[styles.button, this.props.searchButton]}
-          onPress={this._backButtonPressed}
-          icon={
-            <Ionicons
-              name={Platform.OS === 'ios' ? 'ios-arrow-back' : 'md-arrow-back'}
-              size={30}
-              color={this.props.iconTintColor ? this.props.iconTintColor : Colors.tintColor}
-            />
-          }
-        />
-        )}
-        {!this.state.backButtonVisible && (
-        <Button
-          type="clear"
-          containerStyle={[styles.buttonContainer, this.props.buttonContainer, this.props.buttonContainer, this.props.buttonContainer]}
-          buttonStyle={styles.button}
-          onPress={() => this.props.navigation.toggleDrawer()}
-          icon={
-            <Ionicons
-              name={Platform.OS === 'ios' ? 'ios-menu' : 'md-menu'}
-              size={40}
-              color={this.props.iconTintColor ? this.props.iconTintColor : Colors.tintColor}
-            />
-            }
-        />
-        )}
-      <View
-        style={[styles.searchBarContainer, this.props.style]}>
-        {this.state.searchbarVisible ? (
-        <SearchBar
-          lightTheme={true}
-          placeholder={insertHere}
-          onChangeText={this._updateSearch}
-          value={searchStr}
-          containerStyle={[styles.searchBarExternalContainer, this.props.searchBarExternalContainer]}
-          inputContainerStyle={styles.searchBarInputContainer}
-          inputStyle={styles.searchBarInput}
-          platform={Platform.OS === 'ios' ? 'ios' : 'android'}
-        />
-        ) : 
-        (
-        <Image
-          style={styles.logo} 
-          source={require('../assets/images/header-logo.png')}
-          />
-        )
-        }
+        {this.state.backButtonVisible && this._renderBackButton()}
+        {!this.state.backButtonVisible && this._renderDrawerButton()}
+        <View
+          style={[styles.searchBarContainer, this.props.style]}>
+          {this.state.searchbarVisible ? this._renderSearchBar() : this._renderLogoImage()}
         </View>
-
-      {this.state.searchButtonVisible && (
-        <Button
-          type="clear"
-          containerStyle={[styles.buttonContainer, this.props.buttonContainer]}
-          buttonStyle={styles.button}
-          onPress={this._searchButtonPressed}
-          icon={
-            <Ionicons
-              name={Platform.OS === 'ios' ? 'ios-search' : 'md-search'}
-              size={30}
-              color={this.props.iconTintColor ? this.props.iconTintColor : Colors.tintColor}
-            />
-          }
-        />
-        )}
-        
+        {this.state.searchButtonVisible && this._renderSearchButton()}
       </View>
+      { this.props.iconTintColor && this._renderBottomLine()}
+      { !this.props.iconTintColor && this._renderMixedBottomLine()}
+      </>
     );
   }
   
@@ -249,6 +289,21 @@ const styles = StyleSheet.create({
     width: "80%",
     height: "100%",
     backgroundColor: "transparent"
+  },
+  bottomLine: {
+    width: "100%",
+    height: 12,
+    marginBottom: 0,
+  },
+  mixedBottomLine: {
+    width: "100%",
+    height: 12,
+    marginBottom: 0,
+    display: "flex",
+    flexDirection: "row",
+  },
+  mixedBottomLineItem: {
+    flex: 1
   }
 });
 

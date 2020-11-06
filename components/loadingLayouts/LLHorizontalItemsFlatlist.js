@@ -10,34 +10,33 @@ class LLHorizontalItemsFlatlist extends PureComponent {
         super(props);
     }
 
-    _renderItem = ({ item }) => {
+    _renderItem = ({ item, index }) => {
         return(
-            <ShimmerWrapper style={styles.item} shimmerStyle={styles.item}/>
+            <ShimmerWrapper style={[styles.item]} shimmerStyle={[styles.item, this.props.itemStyle]}/>
         )
     }
 
     render(){
-        const { nearToYou } = this.props.locale.messages;
-
-        let listTitle = this.props.title ? this.props.title : nearToYou;
+        let listTitle = this.props.title ? this.props.title : null;
         return (
-            <View style={{
-                flex: 1,
-                width: "100%",
-                minHeight: 160
-            }}> 
-                <Text style={[styles.sectionTitle, this.props.titleStyle]}>{listTitle}</Text>
+            <> 
+                { listTitle &&
+                    <Text style={[styles.sectionTitle, this.props.titleStyle]}>{listTitle}</Text>
+                }
                 { !this.props.error &&
                     <FlatList 
-                        horizontal={true}
+                        horizontal={this.props.horizontal ? this.props.horizontal : false}
                         data={Array.from({ length: 5 }).map((_, i) => String(i))}
                         keyExtractor={i => i}
+                        numColumns={this.props.numColumns ? this.props.numColumns : 1}
+                        bodyContainerStyle={this.props.bodyContainerStyle ? this.props.bodyContainerStyle : 1}
                         renderItem={this._renderItem}
                         showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={[styles.container, this.props.style]}>
+                        style={this.props.style}
+                        contentContainerStyle={[styles.container]}>
                     </FlatList>
                 }
-            </View>
+            </>
         )
     }
 }

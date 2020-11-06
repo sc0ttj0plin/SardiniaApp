@@ -1,9 +1,9 @@
 import React, { PureComponent } from "react";
 import { 
-  View, Text, ActivityIndicator, TouchableOpacity, 
+  View, Text, ActivityIndicator, 
   StyleSheet, BackHandler, Platform, ScrollView, NativeModules } from "react-native";
 
-import { FlatList } from "react-native-gesture-handler"
+import { FlatList, TouchableOpacity } from "react-native-gesture-handler"
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   CategoryListItem, 
@@ -23,8 +23,9 @@ import Layout from '../../constants/Layout';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
+import { LLHorizontalItemsFlatlist } from "../../components/loadingLayouts";
 import { Button } from "react-native-paper";
+import { Ionicons } from '@expo/vector-icons';
 
 /**
  * Map:             Clusters + pois that update with user map's interaction
@@ -244,8 +245,16 @@ class PlacesScreen extends PureComponent {
   /********************* Render methods go down here *********************/
 
   _renderTopComponentCategorySelector = (item) => 
-    <TouchableOpacity style={styles.categorySelectorBtn} onPress={() => this._selectCategory(item)}>
-      <Text style={{color: 'white'}}>{item.name}</Text>
+    <TouchableOpacity style={styles.categorySelectorBtn} onPress={() => this._selectCategory(item)} activeOpacity={0.7}>
+      <View style={styles.icon}>
+          <Ionicons
+            name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS["places"].iconName}
+            size={13}
+            style={styles.cornerIcon}
+            color={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS["places"].iconColor}
+          />
+      </View>
+      <Text style={styles.categorySelectorBtnText}>{item.name}</Text>
     </TouchableOpacity>
 
   /* Renders the topmost component: a category list + map in our case */
@@ -254,17 +263,6 @@ class PlacesScreen extends PureComponent {
     const { coords, region, nearPois, clusters } = this.state;
     return (
       <>
-      <FlatList
-        horizontal={true}
-        renderItem={({item}) => this._renderTopComponentCategorySelector(item)}
-        data={term}
-        extraData={this.props.locale}
-        keyExtractor={item => item.uuid}
-        style={styles.filtersList}
-        ItemSeparatorComponent={this._renderHorizontalSeparator}
-        contentContainerStyle={styles.listContainerHeader}
-        showsHorizontalScrollIndicator={false}
-      />
       <ClusteredMapViewTop
         term={term}
         coords={coords}
@@ -290,7 +288,7 @@ class PlacesScreen extends PureComponent {
           <AsyncOperationStatusIndicator
             loading={true}
             success={nearPois && nearPois.length > 0}
-            loadingLayout={<LLEntitiesFlatlist horizontal={true} style={styles.listContainerHeader} title={nearToYou} titleStyle={styles.sectionTitle}/>}
+            loadingLayout={<LLHorizontalItemsFlatlist horizontal={true} style={styles.listContainerHeader} title={nearToYou} titleStyle={styles.sectionTitle}/>}
           >
             <View>  
               <Text style={styles.sectionTitle}>{nearToYou}</Text>
@@ -344,6 +342,23 @@ class PlacesScreen extends PureComponent {
   _renderCategoryListItem = (item) => 
       <CategoryListItem onPress={() => this._selectCategory(item)} image={item.image} title={item.name} />;
 
+  _renderFiltersList = () => {
+    const { term } = this._getCurrentTerm(true);
+
+    return(
+      <FlatList
+        horizontal={true}
+        renderItem={({item}) => this._renderTopComponentCategorySelector(item)}
+        data={term}
+        extraData={this.props.locale}
+        keyExtractor={item => item.uuid}
+        style={styles.filtersList}
+        ItemSeparatorComponent={this._renderHorizontalSeparator}
+        contentContainerStyle={styles.listContainerHeader}
+        showsHorizontalScrollIndicator={false}
+      />
+    )
+  }
 
   /* Render content */
   _renderContent = () => {
@@ -369,6 +384,7 @@ class PlacesScreen extends PureComponent {
     return (
       <ScrollableContainer 
         topComponent={this._renderTopComponent}
+        extraComponent={this._renderFiltersList}
         ListHeaderComponent={this._renderListHeader}
         data={data}
         initialSnapIndex={1}
@@ -436,21 +452,35 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   categorySelectorBtn: {
-    height: 30, 
-    padding: 5, 
-    backgroundColor: Colors.blue, 
-    alignItems: 'center', 
-    justifyContent: 'center', 
-    borderRadius: 10
+    height: 32, 
+    paddingVertical: 7, 
+    backgroundColor: "white", 
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 16,
+    paddingRight: 15,
+    paddingLeft: 5
+  },
+  categorySelectorBtnText: {
+    color: "#000000DE",
+    fontSize: 14
   },
   filtersList: {
-    position: "absolute", 
-    top: 10, 
-    left: 0, 
     width: "100%", 
     height: 40,
-    zIndex: 2, 
-    backgroundColor: "transparent"
+    zIndex: 0, 
+    // backgroundColor: "red"
+  },
+  icon: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: Colors.colorPlacesScreen,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 8
   }
 });
 

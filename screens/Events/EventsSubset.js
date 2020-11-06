@@ -122,7 +122,7 @@ class EventsSubsetScreen extends Component {
   _renderContent = () => {
      return (
       <View style={styles.calendarList}>
-        <Text>{this.state.headerDate}</Text>
+        <Text style={styles.calendarListTitle}>{this.state.headerDate}</Text>
         {this._renderEventsList()}
       </View>
      )
@@ -166,9 +166,17 @@ const styles = StyleSheet.create({
     flex: 1
   },
   calendarList: {
-    marginTop: 10,
     flex: 1
   },
+  calendarListTitle: {
+    backgroundColor: "#F2F2F2",
+    height: 60,
+    textAlign: "center",
+    textAlignVertical: "center",
+    color: "#000000E6",
+    fontWeight: "bold",
+    marginBottom: 16
+  }
 });
 
 
