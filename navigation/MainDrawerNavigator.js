@@ -281,8 +281,8 @@ const Drawer = createDrawerNavigator();
 function CustomDrawerContent(props) {
   const { state, ...rest } = props;
   const newState = { ...state};
-  const excludedScreens = ['SearchStackScreen'];
-  newState.routes = newState.routes.filter(item => excludedScreens.indexOf(item.name) < 0);
+  // const excludedScreens = ['SearchStackScreen'];
+  // newState.routes = newState.routes.filter(item => excludedScreens.indexOf(item.name) < 0);
 
   return (
     <DrawerContentScrollView {...props}>

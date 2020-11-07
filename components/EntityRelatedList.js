@@ -17,7 +17,6 @@ export default class EntityRelatedList extends PureComponent {
 
     componentDidUpdate(prevProps){
         if(prevProps.data !== this.props.data){
-            console.log("loaded", this.props.listTitle, this.props.data.length)
             this.setState({data: this.props.data})
         }
     }

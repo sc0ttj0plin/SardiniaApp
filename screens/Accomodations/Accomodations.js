@@ -10,6 +10,7 @@ import {
   ConnectedHeader, 
   ScrollableContainer,
   EntityItem,
+  AccomodationItem,
  } from "../../components";
  import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
 import { Ionicons } from '@expo/vector-icons';
@@ -129,7 +130,6 @@ class AccomodationsScreen extends Component {
       // Are coordinates within sardinia's area? fetch the updated pois list
       if (isCordsInBound) {
         this.setState({ isCordsInBound, coords: newCoords, nearPoisRefreshing: true });
-        //HERE
         this._fetchNearestPois(newCoords).then(() => {
           this.setState({ nearPoisRefreshing: false });
         });
@@ -169,7 +169,7 @@ class AccomodationsScreen extends Component {
   _loadMorePois = () => {
     const { childUuids } = this._getCurrentTerm();
     const { poisRefreshing, pois: statePois, coords } = this.state;
-    console.log(childUuids);
+
     if(coords && this._isPoiList() && !poisRefreshing){
       this.setState({
         poisRefreshing: true
@@ -313,20 +313,12 @@ class AccomodationsScreen extends Component {
     const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
     const termName = _.get(item, "term.name", "")
     return (
-      <EntityItem 
-        index={index}
-        keyItem={item.nid}
-        backgroundTopLeftCorner={"white"}
-        iconColor={Colors.colorAccomodationsScreen}
-        listType={Constants.ENTITY_TYPES.accomodations}
-        onPress={() => this._openPoi(item)}
-        title={`${title}`}
-        place={`${termName}`}
-        image={`${item.image}`}
-        distance={this.state.isCordsInBound ? item.distance : ""}
-        style={{marginBottom: 10}}
-        horizontal={false}
-        sideMargins={20}
+      <AccomodationItem 
+        title={title}
+        term={termName}
+        stars={item.stars}
+        location={item.location}
+        distance={item.distanceStr}
       />
   )}
 

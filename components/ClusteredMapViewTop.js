@@ -211,7 +211,6 @@ class ClusteredMapViewTop extends PureComponent {
    * Render single poi on bottom of mapview (outside scrollableContainer)
    */
   _renderEntityWidget() {
-    console.log("selected poi", this.state.selectedCluster)
     return (
       <View style={[styles.entityWidget]}>
         <TouchableOpacity

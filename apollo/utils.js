@@ -120,9 +120,19 @@ export const processEntity = function(entity, coords=null) {
 
   if (entity && entity.nodes_terms && entity.nodes_terms[0]) 
     entity.term = entity.nodes_terms[0].term
+  
+  // if (!coords && entity.distance) 
+  //   entity.distance = distanceToString(entity.distance, "m");
+  
+  
+  if (entity.distance)
+    entity.distanceStr = distanceToString(entity.distance * 100);
 
-  if (!entity.distance && coords && entity.georef) 
-      entity.distance = distanceToString(distance(coords[0], coords[1], entity.georef.coordinates[0], entity.georef.coordinates[1]));
+
+  if (!entity.distance && coords && entity.georef) {
+    entity.distance = distanceToString(distance(coords[0], coords[1], entity.georef.coordinates[0], entity.georef.coordinates[1]));
+    console.log(">>", entity.distance)
+  }
 
   if (entity.stages)
     entity.stages.forEach((el) => {

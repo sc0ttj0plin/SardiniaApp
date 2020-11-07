@@ -159,7 +159,6 @@ class PlacesScreen extends PureComponent {
    */
   _fetchNearestPois = (coords) => {
     const { term, childUuids } = this._getCurrentTerm();
-    console.log("CI", childUuids);
     return apolloQuery(actions.getNearestPois({
       limit: Constants.PAGINATION.poisLimit,
       x: coords.longitude,
@@ -328,23 +327,22 @@ class PlacesScreen extends PureComponent {
     const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
     const termName = _.get(item, "term.name", "")
     return (
-        <EntityItem 
-          index={index}
-          keyItem={item.nid}
-          backgroundTopLeftCorner={"white"}
-          iconColor={Colors.colorPlacesScreen}
-          listType={Constants.ENTITY_TYPES.places}
-          onPress={() => this._openPoi(item)}
-          title={`${title}`}
-          place={`${termName}`}
-          image={`${item.image}`}
-          distance={this.state.isCordsInBound ? item.distance : ""}
-          style={{marginBottom: 10}}
-          horizontal={false}
-          sideMargins={20}
-        />
-    )
-}
+      <EntityItem 
+        index={index}
+        keyItem={item.nid}
+        backgroundTopLeftCorner={"white"}
+        iconColor={Colors.colorPlacesScreen}
+        listType={Constants.ENTITY_TYPES.places}
+        onPress={() => this._openPoi(item)}
+        title={`${title}`}
+        place={`${termName}`}
+        image={`${item.image}`}
+        distance={this.state.isCordsInBound ? item.distanceStr : ""}
+        style={{marginBottom: 10}}
+        horizontal={false}
+        sideMargins={20}
+      />
+  )}
 
   /* Renders categories list */
   _renderCategoryListItem = (item) => 
