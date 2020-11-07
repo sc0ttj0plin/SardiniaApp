@@ -121,9 +121,6 @@ export const processEntity = function(entity, coords=null) {
   if (entity && entity.nodes_terms && entity.nodes_terms[0]) 
     entity.term = entity.nodes_terms[0].term
   
-  // if (!coords && entity.distance) 
-  //   entity.distance = distanceToString(entity.distance, "m");
-  
   
   if (entity.distance)
     entity.distanceStr = distanceToString(entity.distance * 100);

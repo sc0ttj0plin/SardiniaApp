@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 35,
     borderRightWidth: 0,
     borderTopRightRadius: 10,
-    borderTopColor: "#1FCBD9"
+    borderTopColor: Colors.colorAccomodationsScreen
   },
   distanceView: {
     width: 150,

@@ -74,6 +74,8 @@ class AccomodationsScreen extends Component {
   componentDidUpdate(prevProps) {
     // If currently selected categories (terms) differ from the previous ones fetch other pois for those categories
     if(prevProps.others.accomodationsTerms !== this.props.others.accomodationsTerms) {
+      /* update also the header pois based on current cat */
+      // this.setState({ nearPois: [] }, () => this._fetchNearestPois(this.state.coords)); 
       this._loadMorePois();
     }
   }
@@ -147,14 +149,15 @@ class AccomodationsScreen extends Component {
    * @param {*} coords: the coordinates for which to load new pois
    */
   _fetchNearestPois = (coords) => {
-    const { term, childUuids } = this._getCurrentTerm();
+    const { nearPois } = this.state;
     return apolloQuery(actions.getNearestAccomodations({ 
-      limit: Constants.PAGINATION.poisLimit,
+      limit: Constants.PAGINATION.accomodationsLimit,
       x: coords.longitude,
       y: coords.latitude,
-      uuids: childUuids,
+      // uuids: childUuids, /* no need to specify the category since we get random pois */
+      offset: nearPois.length,
     })).then((pois) => {
-      this.setState({ nearPois: pois });
+      this.setState({ nearPois: [...nearPois, ...pois] });
     });
   }
 
@@ -169,20 +172,19 @@ class AccomodationsScreen extends Component {
   _loadMorePois = () => {
     const { childUuids } = this._getCurrentTerm();
     const { poisRefreshing, pois: statePois, coords } = this.state;
-
     if(coords && this._isPoiList() && !poisRefreshing){
       this.setState({
         poisRefreshing: true
       }, () => {
-        apolloQuery(actions.getNearestPois({
-          limit: Constants.PAGINATION.poisLimit,
-          offset: pois ? pois.length : 0,
+        apolloQuery(actions.getNearestAccomodations({
+          limit: Constants.PAGINATION.accomodationsLimit,
+          offset: statePois ? statePois.length : 0,
           x: coords.longitude,
           y: coords.latitude,
           uuids: childUuids
         })).then((pois) => {
           this.setState({
-            pois: statePois ? [...statePois, ...pois] : pois,
+            pois: [...statePois, ...pois],
             poisRefreshing: false
           });
         }).catch(e => {
@@ -231,7 +233,15 @@ class AccomodationsScreen extends Component {
     return term && (!term.terms || term.terms.length == 0);
   }
 
-  _backButtonPress = () => this.props.actions.popCurrentCategoryAccomodations();
+  /**
+   * On category pop we reset current pois
+   */
+  _backButtonPress = () => { 
+    /* update also the header pois based on current cat */
+    //this.setState({ pois: [], nearPois: [] });
+    this.setState({ pois: [] });
+    this.props.actions.popCurrentCategoryAccomodations();
+  }
 
   /********************* Render methods go down here *********************/
 
@@ -273,7 +283,7 @@ class AccomodationsScreen extends Component {
 
   /* Renders the Header of the scrollable container */
   _renderListHeader = () => {
-    const { nearPois } = this.state;
+    const { nearPois, coords } = this.state;
     const { nearToYou, whereToGo } = this.props.locale.messages;
       return (
         <View style={{ marginLeft: -10, marginRight: -10 }}>
@@ -290,6 +300,8 @@ class AccomodationsScreen extends Component {
                 data={nearPois}
                 extraData={this.props.locale}
                 keyExtractor={item => item.uuid}
+                onEndReachedThreshold={0.5} 
+                onEndReached={() => this._fetchNearestPois(coords)}
                 ItemSeparatorComponent={this._renderHorizontalSeparator}
                 contentContainerStyle={styles.listContainerHeader}
                 showsHorizontalScrollIndicator={false}
@@ -370,6 +382,7 @@ class AccomodationsScreen extends Component {
         ListHeaderComponent={this._renderListHeader}
         data={data}
         initialSnapIndex={1}
+        onEndReached={this._loadMorePois}
         key={"scrollable-" + numColumns}
         numColumns={numColumns}
         renderItem={renderItem}

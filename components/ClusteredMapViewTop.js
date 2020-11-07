@@ -77,7 +77,15 @@ class ClusteredMapViewTop extends PureComponent {
    * Get current term (category) and its child uuids, 
    */
   _getCurrentTerm = () => {
-    let term = this.props.others.placesTerms[this.props.others.placesTerms.length - 1];
+    let term = null;
+
+    if (this.props.entityType === Constants.ENTITY_TYPES.places) {
+      term = this.props.others.placesTerms[this.props.others.placesTerms.length - 1];
+    } else if (this.props.entityType === Constants.ENTITY_TYPES.accomodations) {
+      term = this.props.others.accomodationsTerms[this.props.others.accomodationsTerms.length - 1];
+    } else {
+      console.error("[ClusteredMapViewTop]: not a known entity");
+    }
     const childUuids = term && term.childUuids ? term.childUuids : [];
     return { term, childUuids };
   }

@@ -101,6 +101,7 @@ export const POP_CURRENT_CATEGORY_ACCOMODATIONS = 'visitsardinia/accomodations/P
 export const RESET_CURRENT_CATEGORY_ACCOMODATIONS = 'visitsardinia/accomodations/RESET_CURRENT_CATEGORY_ACCOMODATIONS';
 
 
+
 // API
 export const FETCH_NUM_MONTHS_BACKWARDS = 1;
 export const FETCH_NUM_MONTHS_FORWARD = 0;
@@ -257,8 +258,8 @@ export const SCREENS = {
 
 /* PAGINATION */
 export const PAGINATION = {
-  poisLimit: 12,
-  accomodationsLimit: 8,
+  poisLimit: 30,
+  accomodationsLimit: 30,
 }
 
 /* MAP CONSTANTS */
@@ -344,7 +345,7 @@ export const VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS = {
   },
   [NODE_TYPES.accomodations]: {
     backgroundTopRightCorner: Colors.colorAccomodationsScreen,
-    iconColor: Colors.colorAccomodationsScreen, 
+    iconColor: "white", 
     iconName: Platform.OS === 'ios' ? 'ios-home' : 'md-home'
   },
   //Entity types
@@ -374,7 +375,7 @@ export const VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS = {
   },
   [ENTITY_TYPES.accomodations]: {
     backgroundTopRightCorner: Colors.colorAccomodationsScreen,
-    iconColor: Colors.colorAccomodationsScreen, 
+    iconColor: "white", 
     iconName: Platform.OS === 'ios' ? 'ios-home' : 'md-home'
   },
 }

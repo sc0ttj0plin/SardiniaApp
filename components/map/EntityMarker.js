@@ -19,6 +19,7 @@ export default class EntityMarker extends PureComponent {
       image: props.term && props.term.marker,
       trackingViewChanges: props.selected,
       selected: props.selected,
+      entityType: props.entityType,
       markerBackgroundColor: this._getBackgroundColor(props.entityType),
     }
   }
@@ -41,7 +42,7 @@ export default class EntityMarker extends PureComponent {
   }
 
   render() {
-    var {cluster, selected, markerBackgroundColor} = this.state;
+    var {cluster, selected, markerBackgroundColor, entityType } = this.state;
     var width = selected ? 42 : 32;
 
     return (
@@ -56,7 +57,7 @@ export default class EntityMarker extends PureComponent {
               <View
                 style={[styles.marker, {backgroundColor: markerBackgroundColor}]}>
                 <Ionicons
-                  name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.places.iconName}
+                  name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entityType].iconName}
                   size={19}
                   color={"#ffffff"}
                   style={{
