@@ -49,14 +49,18 @@ export function distance(lat1, lon1, lat2, lon2, unit = "K") {
 }
 
 export function distanceToString(distance, unit = "K") {
-    if(unit === "K") {
+    if (unit === "K") {
         if(distance > 1) {
             return distance.toFixed(1) + " km";
         } else {
             distance *= 1000;
             return distance.toFixed(1) + " m";
         }
+    } else if (unit === "m") {
+      distance *= 1000;
+      return distance.toFixed(1) + " Km";
     }
+
     return distance.toString();
 }
 

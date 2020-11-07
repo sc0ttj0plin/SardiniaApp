@@ -16,6 +16,7 @@ class GeoRefHListItem extends PureComponent{
     }
   }
   render() {
+    const { distance = 0 } = this.props;
     return (
       <View style={[styles.container, this.props.style]} onLayout={(event) => { this.setState({ width: event.nativeEvent.layout.width, height: event.nativeEvent.layout.height }) }}>
           <Image source={{ uri: this.props.image }} style={styles.image, {width: this.state.width, height: this.state.height}} PlaceholderContent={<ActivityIndicator />}>
@@ -34,11 +35,7 @@ class GeoRefHListItem extends PureComponent{
               }
               { this.props.distance != "" && this.props.distance != undefined &&
                 (
-                  <Text 
-                    numberOfLines={1}
-                    ellipsizeMode='tail'
-                    style={styles.distance}>{distanceToString(this.props.distance * 100)}
-                    </Text>
+                  <Text numberOfLines={1}ellipsizeMode='tail'style={styles.distance}>{distance}</Text>
                 )
               }
             </View>

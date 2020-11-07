@@ -158,7 +158,6 @@ class PlacesScreen extends PureComponent {
    */
   _fetchNearestPois = (coords) => {
     const { term, childUuids } = this._getCurrentTerm();
-    console.log("CI", childUuids);
     return apolloQuery(actions.getNearestPois({
       limit: Constants.PAGINATION.poisLimit,
       x: coords.longitude,
@@ -333,7 +332,7 @@ class PlacesScreen extends PureComponent {
         title={`${title}`}
         place={`${termName}`}
         image={`${item.image}`}
-        distance={this.state.isCordsInBound ? item.distance : ""}
+        distance={this.state.isCordsInBound ? item.distanceStr : ""}
         style={{marginBottom: 10}}
         horizontal={false}
         sideMargins={20}

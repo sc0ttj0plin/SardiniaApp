@@ -39,7 +39,7 @@ export default class AccomodationItem extends PureComponent {
             <Text style={styles.locationText}>{location}</Text>
           </View>
           <View style={styles.distanceView}>
-            <Text style={styles.distanceText}>Distanza {distance} km</Text>
+            <Text style={styles.distanceText}>Distanza {distance}</Text>
           </View>
         </TouchableOpacity>
     );

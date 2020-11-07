@@ -337,6 +337,12 @@ query ($x: float8, $y: float8, $limit: Int, $offset: Int, $uuids: [String!]) {
     distance
     image: legacy(path: "field_immagine_top.und[0].uri")
     gallery: legacy(path: "field_galleria_multimediale.und")
+    email: legacy(path: "field_email.und[0].email")
+    website: legacy(path: "field_sito_web_ricettive.und[0].url")
+    address: legacy(path: "field_indirizzo.und[0].value")
+    location: legacy(path: "field_localit.und[0].value")
+    stars: legacy(path: "field_numero_stelle.und[0].value")
+    phone: legacy(path: "telefono.und[0].value")
     term {
       name
       uuid
