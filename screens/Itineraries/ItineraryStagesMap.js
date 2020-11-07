@@ -24,13 +24,13 @@ class ItineraryStagesMapScreen extends Component {
   constructor(props) {
     super(props);
 
-    this._region = Constants.REGION_SARDINIA;
     const markers = _.get(props.route, "params.markers", []);
 
     this.state = {
       render: USE_DR ? false : true,
       //
-      markers
+      markers,
+      region: Constants.REGION_SARDINIA
     };
       
   }
@@ -72,8 +72,8 @@ class ItineraryStagesMapScreen extends Component {
           const coordinates = this.state.markers[index].coords;
           this.map.animateToRegion({
               ...coordinates,
-              latitudeDelta: this._region.latitudeDelta,
-              longitudeDelta: this._region.longitudeDelta,
+              latitudeDelta: this.state.region.latitudeDelta,
+              longitudeDelta: this.state.region.longitudeDelta,
             },
             350
           );
@@ -86,7 +86,7 @@ class ItineraryStagesMapScreen extends Component {
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
   
   _handleMarkerPress = (e) => {
-    this._scroll.getNode().scrollTo({x: e * Layout.map.card.width, y: 0, animated: false});
+    this._scroll.scrollTo({x: e * Layout.map.card.width, y: 0, animated: true});
   }
 
   _openRelatedEntity = (item) => {
@@ -107,6 +107,11 @@ class ItineraryStagesMapScreen extends Component {
       default:
         break;
     }
+  }
+
+  
+  _onRegionChangeComplete = (region) => {
+    this.setState({region})
   }
 
   /********************* Render methods go down here *********************/
@@ -135,7 +140,8 @@ class ItineraryStagesMapScreen extends Component {
       <View style={styles.container}>
         <MapView
           ref={ map => this.map = map }
-          initialRegion={ this._region }
+          initialRegion={ this.state.region }
+          onRegionChangeComplete={this._onRegionChangeComplete}
           provider={ PROVIDER_GOOGLE }
           style={styles.container}
           >
@@ -146,7 +152,7 @@ class ItineraryStagesMapScreen extends Component {
               <MapView.Marker
                 key={index} 
                 coordinate={coordinates}
-                tracksViewChanges={false}
+                tracksViewChanges={true}
                 onPress={() => this._handleMarkerPress(index)}
               >
                 <Animated.View style={[styles.markerWrap, opacityStyle]}>

@@ -21,7 +21,9 @@ class ItinerariesMapView extends PureComponent {
 
   constructor(props) {
     super(props);
-    this._region = props.region;
+    this.state = {
+      region: props.region
+    }
   }
 
 
@@ -47,8 +49,8 @@ class ItinerariesMapView extends PureComponent {
           const coordinate = { latitude: coordinates[1], longitude: coordinates[0] };
           this.map.animateToRegion({
               ...coordinate,
-              latitudeDelta: this._region.latitudeDelta,
-              longitudeDelta: this._region.longitudeDelta,
+              latitudeDelta: this.state.region.latitudeDelta,
+              longitudeDelta: this.state.region.longitudeDelta,
             },
             350
           );
@@ -59,6 +61,10 @@ class ItinerariesMapView extends PureComponent {
 
   _handleMarkerPress = (e) => {
     this._scroll.getNode().scrollTo({x: e * Layout.map.card.width, y: 0, animated: false});
+  }
+
+  _onRegionChangeComplete = (region) => {
+    this.setState({region})
   }
 
   render() {
@@ -85,7 +91,8 @@ class ItinerariesMapView extends PureComponent {
       <View style={styles.container}>
         <MapView
           ref={ map => this.map = map }
-          initialRegion={ this._region }
+          initialRegion={ this.state.region }
+          onRegionChangeComplete={this._onRegionChangeComplete}
           provider={ PROVIDER_GOOGLE }
           style={styles.container}
           >
@@ -96,7 +103,7 @@ class ItinerariesMapView extends PureComponent {
               <MapView.Marker
                 key={index} 
                 coordinate={coordinates}
-                tracksViewChanges={false}
+                tracksViewChanges={true}
                 title={marker.title}
                 description={marker.abstract}
                 onPress={() => this._handleMarkerPress(index)}
@@ -212,7 +219,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 50,
     backgroundColor: Color.colorItinerariesScreen,
     borderColor: 'white',
-    borderWidth: 1,
+    borderWidth: 20,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -220,7 +227,8 @@ const styles = StyleSheet.create({
     transform: [
       { rotateZ: "45deg" },  
     ],
-    alignSelf: 'center'
+    alignSelf: 'center',
+    color: "white"
   },
   ring: {
     width: 50,

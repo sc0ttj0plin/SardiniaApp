@@ -54,6 +54,7 @@ class PlacesScreen extends PureComponent {
       nearPoisRefreshing: false,
       coords: {},
       region: Constants.MAP.defaultRegion,
+      currentTerm: null
     };
       
   }
@@ -185,7 +186,7 @@ class PlacesScreen extends PureComponent {
       }, () => {
         apolloQuery(actions.getNearestPois({
           limit: Constants.PAGINATION.poisLimit,
-          offset: pois ? pois.length : 0,
+          offset: statePois ? statePois.length : 0,
           x: coords.longitude,
           y: coords.latitude,
           uuids: childUuids
@@ -213,6 +214,7 @@ class PlacesScreen extends PureComponent {
     this.setState({
       region,
       coords,
+      currentTerm: item.name
     });
   }
 
@@ -240,7 +242,10 @@ class PlacesScreen extends PureComponent {
     return term && (!term.terms || term.terms.length == 0);
   }
 
-  _backButtonPress = () => this.props.actions.popCurrentCategoryPlaces();
+  _backButtonPress = () => {
+    this.props.actions.popCurrentCategoryPlaces();
+    this.setState({currentTerm: null})
+  }
 
   /********************* Render methods go down here *********************/
 
@@ -321,22 +326,23 @@ class PlacesScreen extends PureComponent {
     const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
     const termName = _.get(item, "term.name", "")
     return (
-      <EntityItem 
-        index={index}
-        keyItem={item.nid}
-        backgroundTopLeftCorner={"white"}
-        iconColor={Colors.colorPlacesScreen}
-        listType={Constants.ENTITY_TYPES.places}
-        onPress={() => this._openPoi(item)}
-        title={`${title}`}
-        place={`${termName}`}
-        image={`${item.image}`}
-        distance={this.state.isCordsInBound ? item.distance : ""}
-        style={{marginBottom: 10}}
-        horizontal={false}
-        sideMargins={20}
-      />
-  )}
+        <EntityItem 
+          index={index}
+          keyItem={item.nid}
+          backgroundTopLeftCorner={"white"}
+          iconColor={Colors.colorPlacesScreen}
+          listType={Constants.ENTITY_TYPES.places}
+          onPress={() => this._openPoi(item)}
+          title={`${title}`}
+          place={`${termName}`}
+          image={`${item.image}`}
+          distance={this.state.isCordsInBound ? item.distance : ""}
+          style={{marginBottom: 10}}
+          horizontal={false}
+          sideMargins={20}
+        />
+    )
+}
 
   /* Renders categories list */
   _renderCategoryListItem = (item) => 
@@ -365,7 +371,7 @@ class PlacesScreen extends PureComponent {
     const { term } = this._getCurrentTerm(true);
     const { pois } = this.state;
     const isPoiList = this._isPoiList();
-    console.log("term", term ? term.length : term, isPoiList)
+    // console.log("term", term ? term.length : term, isPoiList, term.name)
     let data = [];
     let renderItem = null;
     let numColumns = 1; //One for categories, two for pois

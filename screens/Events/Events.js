@@ -250,7 +250,7 @@ class EventsScreen extends Component {
     // console.log(item.title)
     const { lan } = this.props.locale;
     const title = _.get(item.title, [lan, 0, "value"], null);
-    const term = item.term.name;
+    const term = _.get(item, "term.name", null);
     const image = item.image;
     const date = item.date1render;
     return(

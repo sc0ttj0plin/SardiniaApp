@@ -166,6 +166,8 @@ const apolloMiddleware = client => {
               // dispatch.payload.eventsById = eventsById;
               dispatch.payload.events = resp.data.events;
             }
+            else
+              dispatch.payload.events = []
             //dispatch empty events but still success cause we need to fill empty dates in reducer
             store.dispatch(dispatch);
           }).catch((e) => {

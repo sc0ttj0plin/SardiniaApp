@@ -85,7 +85,7 @@ export default function reducer(state = INITIAL_STATE, action) {
       let eventsByYearMonth = {};
       let eventsByYearMonthDay = {};
       let eventsCalendarMarkers = {};
-
+      console.log("events", action.payload.events.length)
       action.payload.events.forEach((event) => { 
         const eventDate = moment.unix(event.date1).add(1,"year");
         // let dateFormatted = moment.unix(e.date1).format(Constants.DATE_FORMAT); //TODO: temporary fix to show events

@@ -123,21 +123,24 @@ class ClusteredMapViewTop extends PureComponent {
    */
   _onPoiPress(item, e) {
     e.stopPropagation();
-    
-    if(item.count == 1) {
-      let animationToPoi = Platform.OS === "android" ? true : false;
-      this.setState({
-        selectedCluster: item,
-        animationToPoi: animationToPoi
-      })
-    } else {
-      let region = this._region;
-      region.latitude = item.centroid.coordinates[1];
-      region.longitude = item.centroid.coordinates[0];
-      region.longitudeDelta = region.longitudeDelta/2;
-      region.latitudeDelta = region.latitudeDelta/2;
-      this._mapRef.animateToRegion(region);
-    }
+    this.setState({
+      selectedCluster: null,
+    }, () => {
+      if(item.count == 1) {
+        let animationToPoi = Platform.OS === "android" ? true : false;
+        this.setState({
+          selectedCluster: item,
+          animationToPoi: animationToPoi
+        })
+      } else {
+        let region = this._region;
+        region.latitude = item.centroid.coordinates[1];
+        region.longitude = item.centroid.coordinates[0];
+        region.longitudeDelta = region.longitudeDelta/2;
+        region.latitudeDelta = region.latitudeDelta/2;
+        this._mapRef.animateToRegion(region);
+      }
+    })
   }
 
   /**

@@ -28,6 +28,7 @@ import { Button } from "react-native-paper";
 import { Marker } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
 import { PROVIDER_GOOGLE } from 'react-native-maps';
+import Itinerary from "./Itinerary";
 
 
 const USE_DR = false;
@@ -128,9 +129,20 @@ class ItinerariesScreen extends PureComponent {
 
 
   _selectMarker = (itinerary) => {
-    this.setState({
-      selectedItinerary: itinerary
-    })
+    if(itinerary){
+      this.setState({
+        selectedItinerary: null
+      }, () => {
+        this.setState({
+          selectedItinerary: itinerary
+        })
+      })
+    }
+    else{
+      this.setState({
+        selectedItinerary: null
+      })
+    }
   }
 
   /********************* Render methods go down here *********************/
@@ -179,7 +191,7 @@ class ItinerariesScreen extends PureComponent {
         <Marker.Animated
           coordinate={{ longitude: parseFloat(long),  latitude: parseFloat(lat) }}
           onPress={() => this._selectMarker(itinerary)}
-          tracksViewChanges={false}
+          tracksViewChanges={this.state.selectedItinerary != null}
           style={{width: 42, height: 42, zIndex: 1}}>
             <View style={[styles.markerContainer, {
               backgroundColor: selected ? Colors.greenTransparent : "transparent"
