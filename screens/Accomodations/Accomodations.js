@@ -4,10 +4,12 @@ import {
   StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
+  CategoryListItem, 
+  AsyncOperationStatusIndicator, 
+  ClusteredMapViewTop,
+  ConnectedHeader, 
   ScrollableContainer,
   EntityItem,
-  AsyncOperationStatusIndicator, 
-  ConnectedHeader, 
  } from "../../components";
  import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
 import MapView from "react-native-map-clustering";
@@ -23,7 +25,7 @@ import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
+import { LLHorizontalItemsFlatlist } from "../../components/loadingLayouts";
 
 const USE_DR = false;
 const ACCOMODATION_LIMIT = Constants.PAGINATION.accomodationsLimit;
@@ -147,11 +149,11 @@ class AccomodationsScreen extends Component {
    */
   _fetchNearestPois(coords) {
     const { term, childUuids } = this._getCurrentTerm();
-    return apolloQuery(actions.getNearestPois({
+    return apolloQuery(actions.getNearestAccomodations({ 
       limit: Constants.PAGINATION.poisLimit,
       x: coords.longitude,
       y: coords.latitude,
-      uuids: childUuids, //this.state.uuids.length > 0 ? this.state.uuids : null
+      uuids: childUuids,
     })).then((pois) => {
       this.setState({ nearPois: pois });
     });
@@ -168,6 +170,7 @@ class AccomodationsScreen extends Component {
   _loadMorePois = () => {
     const { childUuids } = this._getCurrentTerm();
     const { poisRefreshing, pois: statePois, coords } = this.state;
+    console.log(childUuids);
     if(coords && this._isPoiList() && !poisRefreshing){
       this.setState({
         poisRefreshing: true
@@ -198,7 +201,7 @@ class AccomodationsScreen extends Component {
   _selectCategory = (item) => {
     // const { region, coords, term } = this.state;
     const { region, coords } = this.state;
-    this.props.actions.pushCurrentCategoryPlaces(item);
+    this.props.actions.pushCurrentCategoryAccomodations(item);
     this.setState({
       region,
       coords,
@@ -229,7 +232,7 @@ class AccomodationsScreen extends Component {
     return term && (!term.terms || term.terms.length == 0);
   }
 
-  _backButtonPress = () => this.props.actions.popCurrentCategoryPlaces();
+  _backButtonPress = () => this.props.actions.popCurrentCategoryAccomodations();
 
   /********************* Render methods go down here *********************/
 
@@ -237,10 +240,10 @@ class AccomodationsScreen extends Component {
     <TouchableOpacity style={styles.categorySelectorBtn} onPress={() => this._selectCategory(item)} activeOpacity={0.7}>
       <View style={styles.icon}>
           <Ionicons
-            name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS["places"].iconName}
+            name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[Constants.ENTITY_TYPES.accomodations].iconName}
             size={13}
             style={styles.cornerIcon}
-            color={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS["places"].iconColor}
+            color={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[Constants.ENTITY_TYPES.accomodations].iconColor}
           />
       </View>
       <Text style={styles.categorySelectorBtnText}>{item.name}</Text>
@@ -314,8 +317,8 @@ class AccomodationsScreen extends Component {
         index={index}
         keyItem={item.nid}
         backgroundTopLeftCorner={"white"}
-        iconColor={Colors.colorPlacesScreen}
-        listType={Constants.ENTITY_TYPES.places}
+        iconColor={Colors.colorAccomodationsScreen}
+        listType={Constants.ENTITY_TYPES.accomodations}
         onPress={() => this._openPoi(item)}
         title={`${title}`}
         place={`${termName}`}
@@ -354,7 +357,6 @@ class AccomodationsScreen extends Component {
     const { term } = this._getCurrentTerm(true);
     const { pois } = this.state;
     const isPoiList = this._isPoiList();
-    console.log("term", term ? term.length : term, isPoiList)
     let data = [];
     let renderItem = null;
     let numColumns = 1; //One for categories, two for pois
@@ -391,7 +393,7 @@ class AccomodationsScreen extends Component {
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
         <ConnectedHeader 
           backOnPress={this._backButtonPress}
-          iconTintColor={Colors.colorPlacesScreen}  
+          iconTintColor={Colors.colorAccomodationsScreen}  
           backButtonVisible={this.props.others.accomodationsTerms.length > 0}
         />
         {render && this._renderContent()}
@@ -410,30 +412,66 @@ AccomodationsScreen.navigationOptions = {
 const styles = StyleSheet.create({
   fill: {
     flex: 1,
-    backgroundColor: "white"
-  },
-  header: {
-    backgroundColor: "white"
   },
   container: {
-    padding: 10,
+    backgroundColor: Colors.colorAccomodationsScreen,
+    borderTopWidth: 0,
+    borderBottomWidth: 0,
+    flex: 1,
   },
-  marker: {
-    width: "100%",
+  sectionTitle: {
+      fontSize: 16,
+      color: Colors.colorAccomodationsScreen,
+      fontWeight: "bold",
+      margin: 10
+  },
+  listContainer: {
+    backgroundColor: Colors.colorAccomodationsScreen,
+    height: "100%"
+  },
+  listContainerHeader: {
+    paddingLeft: 10,
+  },
+  listStyle: {
+    paddingHorizontal: 10,
+    paddingBottom: 25,
+  },
+  listPois: {
+    backgroundColor: Colors.colorAccomodationsScreen,
     height: "100%",
-    backgroundColor: "blue",
+    paddingHorizontal: 10,
+  },
+  categorySelectorBtn: {
+    height: 32, 
+    paddingVertical: 7, 
+    backgroundColor: "white", 
+    display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
+    borderRadius: 16,
+    paddingRight: 15,
+    paddingLeft: 5
+  },
+  categorySelectorBtnText: {
+    color: "#000000DE",
+    fontSize: 14
+  },
+  filtersList: {
+    width: "100%", 
+    height: 40,
+    zIndex: 0, 
+    // backgroundColor: "red"
+  },
+  icon: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
     backgroundColor: Colors.colorAccomodationsScreen,
-    borderRadius: 21
-  },
-  markerContainer: {
-    width: 42,
-    height: 42,
-    padding: 6,
-    borderRadius: 21
-  },
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 8
+  }
 });
 
 
@@ -459,6 +497,7 @@ const mapStateToProps = state => {
     //favourites
     favourites: state.favouritesState,
     //graphql
+    categories: state.categoriesState,
     accomodations: state.accomodationsState,
   };
 };

@@ -8,8 +8,15 @@ export function getClusters(query, props) {
   };
 }
 
+export function getNearestAccomodations(query, tid) {
+  return {
+    type: Constants.GET_NEARESTACCOMODATIONSIMAGES,
+    query: query,
+    tid: tid
+  };
+}
 
-export function getNearestPoisImages(query, tid) {
+export function getNearestAccomodationsImages(query, tid) {
   return {
     type: Constants.GET_NEARESTACCOMODATIONSIMAGES,
     query: query,

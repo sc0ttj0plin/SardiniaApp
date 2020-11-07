@@ -307,43 +307,6 @@ query ($polygon: geometry!, $uuids: [String!]) {
  }
 `;
 
-export const getNearestPoisImages = gql`
-query ($x: float8, $y: float8, $uuids: [String!], $limit: Int!, $offset: Int! ) {
-  nearest_neighbour_no_limits(args: {x: $x, y: $y}, where: {nodes_terms: {term: {uuid: {_in: $uuids}}}, type: {_eq: "${Constants.NODE_TYPES.places}"}}, limit: $limit, offset: $offset, order_by: {distance: asc}) {
-    uuid
-    nid
-    georef
-    title: legacy(path: "title_field")
-    distance
-    image: legacy(path: "field_immagine_top.und[0].uri")
-    gallery: legacy(path: "field_galleria_multimediale.und")
-    term {
-      name
-      uuid
-      tid
-    }
-  }
-}
-`;
-
-export const getNearestAccomodationsImages = gql`
-query ($x: float8, $y: float8, $uuids: [String!], $limit: Int!, $offset: Int! ) {
-  nearest_neighbour_no_limits(args: {x: $x, y: $y}, where: {nodes_terms: {term: {uuid: {_in: $uuids}}}, type: {_eq: "${Constants.NODE_TYPES.accomodations}"}}, limit: $limit, offset: $offset, order_by: {distance: asc}) {
-    uuid
-    nid
-    georef
-    title: legacy(path: "title_field")
-    distance
-    image: legacy(path: "field_immagine_top.und[0].uri")
-    gallery: legacy(path: "field_galleria_multimediale.und")
-    term {
-      name
-      uuid
-      tid
-    }
-  }
-}
-`;
 
 export const getNearestPois = gql`
 query ($x: float8, $y: float8, $limit: Int, $offset: Int, $uuids: [String!]) {
@@ -354,6 +317,7 @@ query ($x: float8, $y: float8, $limit: Int, $offset: Int, $uuids: [String!]) {
     title: legacy(path: "title_field")
     distance
     image: legacy(path: "field_immagine_top.und[0].uri")
+    gallery: legacy(path: "field_galleria_multimediale.und")
     term {
       name
       uuid
@@ -362,6 +326,26 @@ query ($x: float8, $y: float8, $limit: Int, $offset: Int, $uuids: [String!]) {
   }
 }
 `;
+
+export const getNearestAccomodations = gql`
+query ($x: float8, $y: float8, $limit: Int, $offset: Int, $uuids: [String!]) {
+  nearest_neighbour_no_limits(args: {x: $x, y: $y}, where: {nodes_terms: {term: {uuid: {_in: $uuids}}}, type: {_eq: "${Constants.NODE_TYPES.accomodations}"}}, offset: $offset, limit: $limit, order_by: {distance: asc}) {
+    uuid
+    nid
+    georef
+    title: legacy(path: "title_field")
+    distance
+    image: legacy(path: "field_immagine_top.und[0].uri")
+    gallery: legacy(path: "field_galleria_multimediale.und")
+    term {
+      name
+      uuid
+      tid
+    }
+  }
+}
+`;
+
 
 export const getPois = gql`
 query ($uuids: [String!]) {

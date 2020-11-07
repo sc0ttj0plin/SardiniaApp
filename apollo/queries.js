@@ -27,15 +27,15 @@ export function apolloQuery(action) {
           pois.forEach((e) => processEntity(e, action.coords));
           return pois;
       })
-  } else if (action.type === Constants.GET_NEARESTPOISIMAGES) {
-      return apolloClient.query({
-          query: Queries.getNearestPoisImages,
-          variables: action.query
-      }).then((resp) => {
-          var pois = resp.data.nearest_neighbour_no_limits;
-          pois.forEach((e) => processEntity(e, action.coords));
-          return pois;
-      })
+  } else if (action.type === Constants.GET_NEARESTACCOMODATIONS) {
+    return apolloClient.query({
+        query: Queries.getNearestAccomodations,
+        variables: action.query
+    }).then((resp) => {
+        var pois = resp.data.nearest_neighbour_no_limits;
+        pois.forEach((e) => processEntity(e, action.coords));
+        return pois;
+    })
   } else if (action.type === Constants.GET_POIS) {
       return apolloClient.query({
           query: Queries.getPois,

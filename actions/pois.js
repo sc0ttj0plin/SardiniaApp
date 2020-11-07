@@ -16,13 +16,6 @@ export function getNearestPois(query, tid) {
     };
 }
 
-export function getNearestPoisImages(query, tid) {
-  return {
-    type: Constants.GET_NEARESTPOISIMAGES,
-    query: query,
-    tid: tid
-  };
-}
 
 export function getNearPois(query, tid) {
   return {
