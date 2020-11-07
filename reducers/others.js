@@ -69,21 +69,21 @@ export default function reducer(state = INITIAL_STATE, action) {
         inspirersTerms: INITIAL_STATE.inspirersTerms
       }
     //ACCOMODATIONS CATEGORIES (POP/PUSH) (scoped case to reuse var names)
-    case Constants.PUSH_CURRENT_CATEGORY_INSPIRERS: {
+    case Constants.PUSH_CURRENT_CATEGORY_ACCOMODATIONS: {
       let newAccomodationsTerms = [...state.accomodationsTerms];
       newAccomodationsTerms.push(action.payload);
       return {
         ...state,
         accomodationsTerms: newAccomodationsTerms,
       }
-    } case Constants.POP_CURRENT_CATEGORY_INSPIRERS: {
+    } case Constants.POP_CURRENT_CATEGORY_ACCOMODATIONS: {
       let newAccomodationsTerms = [...state.accomodationsTerms];
       newAccomodationsTerms.pop();
       return {
         ...state,
         accomodationsTerms: newAccomodationsTerms,
       }
-    } case Constants.RESET_CURRENT_CATEGORY_INSPIRERS:
+    } case Constants.RESET_CURRENT_CATEGORY_ACCOMODATIONS:
       return {
         ...state,
         accomodationsTerms: INITIAL_STATE.accomodationsTerms

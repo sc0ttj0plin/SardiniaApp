@@ -66,6 +66,7 @@ export default class ScrollableContainer extends PureComponent {
     </View>;
 
   render() {
+    const { onEndReached = ()=>{} } = this.props;
     return (
       <View style={[styles.fill, {backgroundColor: "transparent", zIndex: -1,}]}>
         <Animated.View style={[styles.fill, { transform: [{ translateY: this._translateAnimY } ]}]}>
@@ -89,6 +90,10 @@ export default class ScrollableContainer extends PureComponent {
           ref={(ref)=>this._scrollable = ref}
           ListHeaderComponent={this.props.ListHeaderComponent || null}
           animatedPosition={this._translateAnim}
+          initialNumToRender={8}
+          maxToRenderPerBatch={2}
+          onEndReachedThreshold={0.5} 
+          onEndReached = {({distanceFromEnd})=> onEndReached()}
           contentContainerStyle={[styles.contentContainerStyle, {
             flex:  this.props.data && this.props.data.length == 0 ? 1 : null
           }]}>

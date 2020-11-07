@@ -63,19 +63,19 @@ export function resetCurrentCategoryInspirers() {
 // Accomodations
 export function pushCurrentCategoryAccomodations(term) {
   return {
-    type: Constants.PUSH_CURRENT_CATEGORY_ACCOMODATION,
+    type: Constants.PUSH_CURRENT_CATEGORY_ACCOMODATIONS,
     payload: term
   }
 }
 
 export function popCurrentCategoryAccomodations() {
   return {
-    type: Constants.POP_CURRENT_CATEGORY_ACCOMODATION
+    type: Constants.POP_CURRENT_CATEGORY_ACCOMODATIONS
   }
 }
 
 export function resetCurrentCategoryAccomodations() {
   return {
-    type: Constants.RESET_CURRENT_CATEGORY_ACCOMODATION
+    type: Constants.RESET_CURRENT_CATEGORY_ACCOMODATIONS
   }
 }

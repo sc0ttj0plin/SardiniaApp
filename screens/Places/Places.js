@@ -85,6 +85,8 @@ class PlacesScreen extends PureComponent {
   componentDidUpdate(prevProps) {
     // If currently selected categories (terms) differ from the previous ones fetch other pois for those categories
     if(prevProps.others.placesTerms !== this.props.others.placesTerms) {
+      /* update also the header pois based on current cat */
+      // this.setState({ nearPois: [] }, () => this._fetchNearestPois(this.state.coords)); 
       this._loadMorePois();
     }
   }
@@ -158,14 +160,15 @@ class PlacesScreen extends PureComponent {
    * @param {*} coords: the coordinates for which to load new pois
    */
   _fetchNearestPois = (coords) => {
-    const { term, childUuids } = this._getCurrentTerm();
+    const { nearPois } = this.state;
     return apolloQuery(actions.getNearestPois({
       limit: Constants.PAGINATION.poisLimit,
       x: coords.longitude,
       y: coords.latitude,
-      uuids: childUuids, //this.state.uuids.length > 0 ? this.state.uuids : null
+      // uuids: childUuids, /* no need to specify the category since we get random pois */
+      offset: nearPois.length,
     })).then((pois) => {
-      this.setState({ nearPois: pois });
+      this.setState({ nearPois: [...nearPois, ...pois] });
     });
   }
 
@@ -192,7 +195,7 @@ class PlacesScreen extends PureComponent {
           uuids: childUuids
         })).then((pois) => {
           this.setState({
-            pois: statePois ? [...statePois, ...pois] : pois,
+            pois: [...statePois, ...pois],
             poisRefreshing: false
           });
         }).catch(e => {
@@ -242,9 +245,20 @@ class PlacesScreen extends PureComponent {
     return term && (!term.terms || term.terms.length == 0);
   }
 
+<<<<<<< HEAD
   _backButtonPress = () => {
     this.props.actions.popCurrentCategoryPlaces();
     this.setState({currentTerm: null})
+=======
+  /**
+   * On category pop we reset current pois
+   */
+  _backButtonPress = () => { 
+    /* update also the header pois based on current cat */
+    //this.setState({ pois: [], nearPois: [] });
+    this.setState({ pois: [] });
+    this.props.actions.popCurrentCategoryPlaces();
+>>>>>>> a083fa5f15b6816fa4fe94999b796778253c1b79
   }
 
   /********************* Render methods go down here *********************/
@@ -287,7 +301,7 @@ class PlacesScreen extends PureComponent {
 
   /* Renders the Header of the scrollable container */
   _renderListHeader = () => {
-    const { nearPois } = this.state;
+    const { nearPois, coords } = this.state;
     const { nearToYou, whereToGo } = this.props.locale.messages;
       return (
         <View style={{ marginLeft: -10, marginRight: -10 }}>
@@ -304,6 +318,8 @@ class PlacesScreen extends PureComponent {
                 data={nearPois}
                 extraData={this.props.locale}
                 keyExtractor={item => item.uuid}
+                onEndReachedThreshold={0.5} 
+                onEndReached={() => this._fetchNearestPois(coords)}
                 ItemSeparatorComponent={this._renderHorizontalSeparator}
                 contentContainerStyle={styles.listContainerHeader}
                 showsHorizontalScrollIndicator={false}
@@ -393,6 +409,7 @@ class PlacesScreen extends PureComponent {
         ListHeaderComponent={this._renderListHeader}
         data={data}
         initialSnapIndex={1}
+        onEndReached={this._loadMorePois}
         key={"scrollable-" + numColumns}
         numColumns={numColumns}
         renderItem={renderItem}
