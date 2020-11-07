@@ -23,7 +23,6 @@ export default function reducer(state = INITIAL_STATE, action) {
         loading: true 
       };
     case Constants.GET_CATEGORIES_SUCCESS:
-      // console.log("CATEGORIES", action.payload, "END CATEGORIES");
       return { 
         ...state, 
         success: true,

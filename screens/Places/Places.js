@@ -157,8 +157,9 @@ class PlacesScreen extends PureComponent {
    * uuids controls the category of the pois
    * @param {*} coords: the coordinates for which to load new pois
    */
-  _fetchNearestPois(coords) {
+  _fetchNearestPois = (coords) => {
     const { term, childUuids } = this._getCurrentTerm();
+    console.log("CI", childUuids);
     return apolloQuery(actions.getNearestPois({
       limit: Constants.PAGINATION.poisLimit,
       x: coords.longitude,
@@ -273,6 +274,7 @@ class PlacesScreen extends PureComponent {
         coords={coords}
         region={region}
         pois={nearPois}
+        entityType={Constants.ENTITY_TYPES.places}
         types={[Constants.NODE_TYPES.places]}
         uuids={childUuids}
         style={{flex: 1}}

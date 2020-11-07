@@ -14,11 +14,23 @@ export default class EntityMarker extends PureComponent {
     super(props);
 
     this.state = {
-        cluster: this.props.cluster,
-        term: this.props.term && this.props.term,
-        image: this.props.term && this.props.term.marker,
-        trackingViewChanges: this.props.selected,
-        selected: this.props.selected
+      cluster: props.cluster,
+      term: props.term && props.term,
+      image: props.term && props.term.marker,
+      trackingViewChanges: props.selected,
+      selected: props.selected,
+      markerBackgroundColor: this._getBackgroundColor(props.entityType),
+    }
+  }
+
+  _getBackgroundColor = (entityType) => {
+    switch(entityType) {
+      case Constants.ENTITY_TYPES.places:
+        return Colors.colorPlacesScreen;
+      case Constants.ENTITY_TYPES.accomodations:
+        return Colors.colorAccomodationsScreen;
+      default:
+        return Colors.colorPlacesScreen;
     }
   }
 
@@ -29,7 +41,7 @@ export default class EntityMarker extends PureComponent {
   }
 
   render() {
-    var {cluster, selected} = this.state;
+    var {cluster, selected, markerBackgroundColor} = this.state;
     var width = selected ? 42 : 32;
 
     return (
@@ -42,7 +54,7 @@ export default class EntityMarker extends PureComponent {
               backgroundColor: selected ? "rgba(23, 74, 124, 0.5)" : "transparent"
             }]}>
               <View
-                style={[styles.marker]}>
+                style={[styles.marker, {backgroundColor: markerBackgroundColor}]}>
                 <Ionicons
                   name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.places.iconName}
                   size={19}
@@ -66,7 +78,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: Colors.colorPlacesScreen,
     borderRadius: 21
   },
   markerContainer: {

@@ -228,7 +228,7 @@ class ClusteredMapViewTop extends PureComponent {
    * @param {*} item 
    */
   _renderEntityMarker(item) {
-    var {term} = this.props;
+    var {term, entityType} = this.props;
     var cluster = item;
     item.centroid = {
       coordinates: item.georef.coordinates
@@ -237,6 +237,7 @@ class ClusteredMapViewTop extends PureComponent {
       <EntityMarker
         cluster={cluster}
         key={item.uuid}
+        entityType={entityType}
         onPress={(e) => this._onPoiPress(cluster, e)}
         term={term && term[item.term.uuid]}
         selected={false}
@@ -249,12 +250,13 @@ class ClusteredMapViewTop extends PureComponent {
    * @param {*} clusters 
    */
   _renderClustersOrPoi = (clusters) => {
-    const {term} = this.props;
+    const {term, entityType} = this.props;
     if (clusters)
       return (clusters.map((cluster, idx) => 
           cluster.count > 1 ? (
             <ClusterMarker
               cluster={cluster}
+              entityType={entityType}
               key={this._clusterKeyExtractor(cluster)}
               onPress={(e) => this._onPoiPress(cluster, e)}
             />
@@ -262,6 +264,7 @@ class ClusteredMapViewTop extends PureComponent {
           (
             <EntityMarker
               cluster={cluster}
+              entityType={entityType}
               key={this._clusterKeyExtractor(cluster)}
               onPress={(e) => this._onPoiPress(cluster, e)}
               term={term && term[cluster.terms_objs[0].term]}
@@ -278,11 +281,12 @@ class ClusteredMapViewTop extends PureComponent {
    * @param {*} selectedPoi 
    */
   _renderSelectedPoi = (selectedPoi) => {
-    const {term} = this.props;
+    const {term, entityType} = this.props;
     if (selectedPoi)
       return (
         <EntityMarker
           cluster={selectedPoi}
+          entityType={entityType}
           key={this._clusterKeyExtractor(selectedPoi)+"_selected"}
           onPress={(e) => this._onPoiPress(selectedPoi, e)}
           term={term && term[selectedPoi.terms_objs[0].term]}

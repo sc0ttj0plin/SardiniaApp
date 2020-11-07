@@ -2,6 +2,7 @@ import React, {PureComponent} from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Marker } from 'react-native-maps';
 import Colors from '../../constants/Colors';
+import * as Constants from '../../constants';
 
 /**
  * ClusterMarker renders a set of close markers that are grouped depending 
@@ -13,12 +14,25 @@ export default class ClusterMarker extends PureComponent {
     super(props);
 
     this.state = {
-      cluster: this.props.cluster
+      cluster: this.props.cluster,
+      clusterBackgroundColor: this._getBackgroundColor(props.entityType),
+    }
+  }
+
+  _getBackgroundColor = (entityType) => {
+    switch(entityType) {
+      case Constants.ENTITY_TYPES.places:
+        return Colors.colorPlacesScreen;
+      case Constants.ENTITY_TYPES.accomodations:
+        return Colors.colorAccomodationsScreen;
+      default:
+        return Colors.colorPlacesScreen;
     }
   }
 
   render() {
-    var {cluster} = this.state;
+    var {cluster, clusterBackgroundColor} = this.state;
+
     var length = cluster.count.toString().length;
     var width = length * 20 + 10;
 
@@ -28,7 +42,7 @@ export default class ClusterMarker extends PureComponent {
         onPress={this.props.onPress}
         tracksViewChanges={false}>
           <View
-            style={[styles.marker, {borderRadius: width/2, width: width, height: width, backgroundColor: Colors.colorPlacesScreen}]}>
+            style={[styles.marker, {borderRadius: width/2, width: width, height: width, backgroundColor: clusterBackgroundColor}]}>
             <Text style={[styles.markerText]}>{cluster.count}</Text>
           </View>
       </Marker.Animated>
