@@ -23,6 +23,9 @@ export const GET_NEARESTPOIS_FAIL = 'visitsardinia/nearestpois/LOAD_FAIL';
 export const GET_NEARESTPOISIMAGES = 'visitsardinia/nearestpoisimages/LOAD';
 export const GET_NEARESTPOISIMAGES_SUCCESS = 'visitsardinia/nearestpoisimages/LOAD_SUCCESS';
 export const GET_NEARESTPOISIMAGES_FAIL = 'visitsardinia/nearestpoisimages/LOAD_FAIL';
+export const GET_NEARESTACCOMODATIONS = 'visitsardinia/nearestaccomodations/LOAD';
+export const GET_NEARESTACCOMODATIONS_SUCCESS = 'visitsardinia/nearestaccomodations/LOAD_SUCCESS';
+export const GET_NEARESTACCOMODATIONS_FAIL = 'visitsardinia/nearestaccomodations/LOAD_FAIL';
 export const GET_NEARESTACCOMODATIONSIMAGES = 'visitsardinia/nearestaccomodationsimages/LOAD';
 export const GET_NEARESTACCOMODATIONSIMAGES_SUCCESS = 'visitsardinia/nearestaccomodationsimages/LOAD_SUCCESS';
 export const GET_NEARESTACCOMODATIONSIMAGES_FAIL = 'visitsardinia/nearestaccomodationsimages/LOAD_FAIL';
@@ -307,6 +310,11 @@ export const VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS = {
     backgroundTopRightCorner: Colors.colorEventsScreen,
     iconColor: Colors.colorEventsScreen,
     iconName: Platform.OS === 'ios' ? 'ios-calendar' : "md-calendar"
+  },
+  [VIDS.accomodations]: {
+    backgroundTopRightCorner: Colors.colorAccomodationsScreen,
+    iconColor: Colors.colorAccomodationsScreen, 
+    iconName: Platform.OS === 'ios' ? 'ios-home' : 'md-home'
   },
   // Node types
   [NODE_TYPES.places]: {
