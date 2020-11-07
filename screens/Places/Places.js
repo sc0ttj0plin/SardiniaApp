@@ -253,10 +253,10 @@ class PlacesScreen extends PureComponent {
     <TouchableOpacity style={styles.categorySelectorBtn} onPress={() => this._selectCategory(item)} activeOpacity={0.7}>
       <View style={styles.icon}>
           <Ionicons
-            name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[Constants.ENTITY_TYPES.places].iconName}
+            name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS["places"].iconName}
             size={13}
             style={styles.cornerIcon}
-            color={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[Constants.ENTITY_TYPES.places].iconColor}
+            color={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS["places"].iconColor}
           />
       </View>
       <Text style={styles.categorySelectorBtnText}>{item.name}</Text>

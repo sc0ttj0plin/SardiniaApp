@@ -198,16 +198,16 @@ class FavouritesScreen extends Component {
   _openItem = (item, type) => {
     switch(type) {
       case Constants.ENTITY_TYPES.places:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item, mustFetch: true});
+        this.props.navigation.push(Constants.NAVIGATION.NavPlaceScreen, { item, mustFetch: true});
         break;
       case Constants.ENTITY_TYPES.events:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item, mustFetch: true });
+        this.props.navigation.push(Constants.NAVIGATION.NavEventScreen, { item, mustFetch: true });
         break;
       case Constants.ENTITY_TYPES.places.itineraries:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, { item, mustFetch: true })
+        this.props.navigation.push(Constants.NAVIGATION.NavItineraryScreen, { item, mustFetch: true })
         break;
       case Constants.ENTITY_TYPES.places.inspirers:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavInspirerScreen, { item, mustFetch: true })
+        this.props.navigation.push(Constants.NAVIGATION.NavInspirerScreen, { item, mustFetch: true })
         break;
       default:
         break;
