@@ -312,8 +312,8 @@ function DrawerNavigator() {
       drawerContentOptions={drawerContentOptions}
       drawerContent={(props) => <CustomDrawerContent {...props} />}
     >
-      <Drawer.Screen name={NavAccomodationsStackScreen} component={AccomodationStackScreen} options={{ drawerLabel: ConnectedTextAccomodations }}/>
       <Drawer.Screen name={NavMainStackScreen} component={MainStackScreen} options={{ drawerLabel: ConnectedTextTabName }} />
+      <Drawer.Screen name={NavAccomodationsStackScreen} component={AccomodationStackScreen} options={{ drawerLabel: ConnectedTextAccomodations }}/>
       <Drawer.Screen name={NavSearchStackScreen} component={SearchStackScreen} options={{ drawerLabel: ConnectedTextSearch }} />
       <Drawer.Screen name={NavFavouritesStackScreen} component={FavouritesStackScreen} options={{ drawerLabel: ConnectedFavourites }} />
     </Drawer.Navigator>

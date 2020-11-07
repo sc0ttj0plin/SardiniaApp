@@ -245,11 +245,6 @@ class PlacesScreen extends PureComponent {
     return term && (!term.terms || term.terms.length == 0);
   }
 
-<<<<<<< HEAD
-  _backButtonPress = () => {
-    this.props.actions.popCurrentCategoryPlaces();
-    this.setState({currentTerm: null})
-=======
   /**
    * On category pop we reset current pois
    */
@@ -258,7 +253,6 @@ class PlacesScreen extends PureComponent {
     //this.setState({ pois: [], nearPois: [] });
     this.setState({ pois: [] });
     this.props.actions.popCurrentCategoryPlaces();
->>>>>>> a083fa5f15b6816fa4fe94999b796778253c1b79
   }
 
   /********************* Render methods go down here *********************/
