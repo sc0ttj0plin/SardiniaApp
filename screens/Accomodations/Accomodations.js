@@ -12,8 +12,6 @@ import {
   EntityItem,
  } from "../../components";
  import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
-import MapView from "react-native-map-clustering";
-import { Marker } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
 import { PROVIDER_GOOGLE } from 'react-native-maps';
 import { connect, useStore } from 'react-redux';
@@ -131,6 +129,7 @@ class AccomodationsScreen extends Component {
       // Are coordinates within sardinia's area? fetch the updated pois list
       if (isCordsInBound) {
         this.setState({ isCordsInBound, coords: newCoords, nearPoisRefreshing: true });
+        //HERE
         this._fetchNearestPois(newCoords).then(() => {
           this.setState({ nearPoisRefreshing: false });
         });
@@ -147,7 +146,7 @@ class AccomodationsScreen extends Component {
    * uuids controls the category of the pois
    * @param {*} coords: the coordinates for which to load new pois
    */
-  _fetchNearestPois(coords) {
+  _fetchNearestPois = (coords) => {
     const { term, childUuids } = this._getCurrentTerm();
     return apolloQuery(actions.getNearestAccomodations({ 
       limit: Constants.PAGINATION.poisLimit,
@@ -260,6 +259,7 @@ class AccomodationsScreen extends Component {
         coords={coords}
         region={region}
         pois={nearPois}
+        entityType={Constants.ENTITY_TYPES.accomodations}
         types={[Constants.NODE_TYPES.accomodations]}
         uuids={childUuids}
         style={{flex: 1}}
