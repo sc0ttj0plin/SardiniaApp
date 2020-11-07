@@ -25,13 +25,16 @@ class ClusteredMapViewTop extends PureComponent {
   constructor(props) {
     super(props);
 
-    var { region, coords } = props;
+    var { region, coords, types = [] } = props; /* cluster type is like an array of Constants.NODE_TYPES */
 
     this._watchID = null; /* navigation watch hook */
+
+    const typesForQuery = `{${types.join(",")}}`; /* needs a list like: {"attrattori","strutture_ricettive", ...} */
 
     this.state = {
       initRegion: region,
       clusters: [],
+      types: typesForQuery,
       animationToPoi: false, 
       selectedCluster: null, /* currently selected cluster/poi */
     };
@@ -85,6 +88,7 @@ class ClusteredMapViewTop extends PureComponent {
    */
   _fetchClusters() {
     const { term, childUuids } = this._getCurrentTerm();
+    const { types } = this.state;
     let region = this._region;
     
     let km = regionDiagonalKm(region);
@@ -103,7 +107,8 @@ class ClusteredMapViewTop extends PureComponent {
     apolloQuery(actions.getClusters({
       polygon: regionString,
       cats: uuidString,
-      dbscan_eps: dEps
+      dbscan_eps: dEps,
+      types,
     })).then((clusters) => {
       this.setState({ clusters });
     });

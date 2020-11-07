@@ -8,7 +8,21 @@ import * as nodesActions from './nodes';
 import * as othersActions from './others';
 import * as poisActions from './pois';
 import * as restActions from './rest';
+import * as accomodationsActions from './accomodations';
 import * as searchAutocompleteActions from './searchAutocomplete';
 
-const allActions = { ...categoriesActions, ...eventsActions, ...favouritesActions, ...inspirersActions, ...itinerariesActions, ...localeActions, ...nodesActions, ...othersActions, ...poisActions, ...restActions, ...searchAutocompleteActions, }
+const allActions = { 
+   ...categoriesActions,
+   ...eventsActions,
+   ...favouritesActions,
+   ...inspirersActions,
+   ...itinerariesActions,
+   ...localeActions,
+   ...nodesActions,
+   ...othersActions,
+   ...poisActions,
+   ...restActions,
+   ...accomodationsActions,
+   ...searchAutocompleteActions,
+ }
 export default allActions;

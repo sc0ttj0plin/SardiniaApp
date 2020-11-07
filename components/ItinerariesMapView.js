@@ -96,7 +96,7 @@ class ItinerariesMapView extends PureComponent {
               <MapView.Marker
                 key={index} 
                 coordinate={coordinates}
-                tracksViewChanges={true}
+                tracksViewChanges={false}
                 title={marker.title}
                 description={marker.abstract}
                 onPress={() => this._handleMarkerPress(index)}

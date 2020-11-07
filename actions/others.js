@@ -20,6 +20,7 @@ export function resetSearchAndAutocompleteStr() {
   };
 }
 
+//Places
 export function pushCurrentCategoryPlaces(term) {
   return {
     type: Constants.PUSH_CURRENT_CATEGORY_PLACES,
@@ -39,6 +40,7 @@ export function resetCurrentCategoryPlaces() {
   }
 }
 
+//Inspirers
 export function pushCurrentCategoryInspirers(term) {
   return {
     type: Constants.PUSH_CURRENT_CATEGORY_INSPIRERS,
@@ -55,5 +57,25 @@ export function popCurrentCategoryInspirers() {
 export function resetCurrentCategoryInspirers() {
   return {
     type: Constants.RESET_CURRENT_CATEGORY_INSPIRERS
+  }
+}
+
+// Accomodations
+export function pushCurrentCategoryAccomodations(term) {
+  return {
+    type: Constants.PUSH_CURRENT_CATEGORY_ACCOMODATION,
+    payload: term
+  }
+}
+
+export function popCurrentCategoryAccomodations() {
+  return {
+    type: Constants.POP_CURRENT_CATEGORY_ACCOMODATION
+  }
+}
+
+export function resetCurrentCategoryAccomodations() {
+  return {
+    type: Constants.RESET_CURRENT_CATEGORY_ACCOMODATION
   }
 }

@@ -1,5 +1,5 @@
 import { gql } from 'apollo-boost';
-
+import * as Constants from '../constants';
 
 
 export const autocompleteQuery = gql`
@@ -98,8 +98,8 @@ query ($vid: Int) {
  `;
 
 export const getClusters = gql`
-query ($cats: _text, $polygon: String, $dbscan_eps: float8) {
-  clusters: get_cluster_terms(args: {cats: $cats, dbscan_eps: $dbscan_eps, within_polygon: $polygon}) {
+query ($cats: _text, $polygon: String, $dbscan_eps: float8, $types: _text) {
+  clusters: get_cluster_terms(args: {cats: $cats, dbscan_eps: $dbscan_eps, within_polygon: $polygon, types: $types}) {
     centroid
     cluster
     count
@@ -111,7 +111,7 @@ query ($cats: _text, $polygon: String, $dbscan_eps: float8) {
 
 export const getEvents = gql`
 query ($start: Int, $end: Int, $types: [Int!]) {
-  events: nodes(where: {type: {_eq: "evento"}, term: {tid: {_in: $types}}, date1: {_gte: $start, _lte: $end}}, order_by: {date1: asc}) {
+  events: nodes(where: {type: {_eq: "${Constants.NODE_TYPES.events}"}, term: {tid: {_in: $types}}, date1: {_gte: $start, _lte: $end}}, order_by: {date1: asc}) {
     title: legacy(path: "title_field")
     description: legacy(path: "body")
     type
@@ -162,7 +162,7 @@ query ($uuids: [String!]) {
 
 export const getItineraries = gql`
 query {
-  itineraries: nodes(where: {type: {_eq: "itinerario"}}) {
+  itineraries: nodes(where: {type: {_eq: "${Constants.NODE_TYPES.itineraries}"}}) {
     nid
     uuid
     type
@@ -198,7 +198,7 @@ query {
 
 export const getItinerariesById = gql`
     query ($uuids: [String!]) {
-      itineraries: nodes(where: {type: {_eq: "itinerario"}, uuid: {_in: $uuids}}) {
+      itineraries: nodes(where: {type: {_eq: "${Constants.NODE_TYPES.itineraries}"}, uuid: {_in: $uuids}}) {
         nid
         uuid
         type
@@ -235,7 +235,7 @@ export const getItinerariesById = gql`
 
 export const getEventTypes = gql`
 query {
-  eventTypes: nodes_terms_aggregate(where: {node: {type: {_eq: "evento"}}, field: {_eq: "field_tipo_di_evento"}}, distinct_on: term_uuid) {
+  eventTypes: nodes_terms_aggregate(where: {node: {type: {_eq: "${Constants.NODE_TYPES.events}"}}, field: {_eq: "field_tipo_di_evento"}}, distinct_on: term_uuid) {
     nodes {
       uuid
       term_uuid
@@ -289,7 +289,7 @@ query ($polygon: geometry!, $uuids: [String!]) {
        term: { 
          nodes_terms: {term: {uuid: {_in: $uuids}}},
        },
-       type: {_eq: "attrattore"},
+       type: {_eq: "${Constants.NODE_TYPES.places}"},
        mobile: {_eq: true}
      }) {
      uuid
@@ -309,7 +309,26 @@ query ($polygon: geometry!, $uuids: [String!]) {
 
 export const getNearestPoisImages = gql`
 query ($x: float8, $y: float8, $uuids: [String!], $limit: Int!, $offset: Int! ) {
-  nearest_neighbour_no_limits(args: {x: $x, y: $y}, where: {nodes_terms: {term: {uuid: {_in: $uuids}}}, type: {_eq: "attrattore"}}, limit: $limit, offset: $offset, order_by: {distance: asc}) {
+  nearest_neighbour_no_limits(args: {x: $x, y: $y}, where: {nodes_terms: {term: {uuid: {_in: $uuids}}}, type: {_eq: "${Constants.NODE_TYPES.places}"}}, limit: $limit, offset: $offset, order_by: {distance: asc}) {
+    uuid
+    nid
+    georef
+    title: legacy(path: "title_field")
+    distance
+    image: legacy(path: "field_immagine_top.und[0].uri")
+    gallery: legacy(path: "field_galleria_multimediale.und")
+    term {
+      name
+      uuid
+      tid
+    }
+  }
+}
+`;
+
+export const getNearestAccomodationsImages = gql`
+query ($x: float8, $y: float8, $uuids: [String!], $limit: Int!, $offset: Int! ) {
+  nearest_neighbour_no_limits(args: {x: $x, y: $y}, where: {nodes_terms: {term: {uuid: {_in: $uuids}}}, type: {_eq: "${Constants.NODE_TYPES.accomodations}"}}, limit: $limit, offset: $offset, order_by: {distance: asc}) {
     uuid
     nid
     georef
@@ -328,7 +347,7 @@ query ($x: float8, $y: float8, $uuids: [String!], $limit: Int!, $offset: Int! ) 
 
 export const getNearestPois = gql`
 query ($x: float8, $y: float8, $limit: Int, $offset: Int, $uuids: [String!]) {
-  nearest_neighbour_no_limits(args: {x: $x, y: $y}, where: {nodes_terms: {term: {uuid: {_in: $uuids}}}, type: {_eq: "attrattore"}}, offset: $offset, limit: $limit, order_by: {distance: asc}) {
+  nearest_neighbour_no_limits(args: {x: $x, y: $y}, where: {nodes_terms: {term: {uuid: {_in: $uuids}}}, type: {_eq: "${Constants.NODE_TYPES.places}"}}, offset: $offset, limit: $limit, order_by: {distance: asc}) {
     uuid
     nid
     georef
@@ -488,6 +507,51 @@ query ($limit: Int, $offset: Int, $type: String) {
       }
     }
     image: legacy(path: "field_immagine_top.und[0].uri")
+  }
+}
+`;
+
+
+
+
+export const getAccomodations = gql`
+query ($limit: Int, $offset: Int) {
+  nodes(where: {type: {_eq: "${Constants.NODE_TYPES.accomodations}"}}, offset: $offset, limit: $limit) {
+    nid
+    uuid
+    type
+    title
+    georef
+    email: legacy(path: "field_email.und[0].email")
+    sito_web: legacy(path: "field_sito_web_ricettive.und[0].url")
+    indirizzo: legacy(path: "field_indirizzo.und[0].value")
+    localita: legacy(path: "field_localit.und[0].value")
+    stelle: legacy(path: "field_numero_stelle.und[0].value")
+    telefono: legacy(path: "telefono.und[0].value")
+    term {
+      name
+    }
+  }
+}
+`;
+
+export const getAccomodationsById = gql`
+query ($uuids: [String!]) {
+  nodes(where: {type: {_eq: "${Constants.NODE_TYPES.accomodations}"}, uuid: {_in: $uuids} }) {
+    nid
+    uuid
+    type
+    title
+    georef
+    email: legacy(path: "field_email.und[0].email")
+    sito_web: legacy(path: "field_sito_web_ricettive.und[0].url")
+    indirizzo: legacy(path: "field_indirizzo.und[0].value")
+    localita: legacy(path: "field_localit.und[0].value")
+    stelle: legacy(path: "field_numero_stelle.und[0].value")
+    telefono: legacy(path: "telefono.und[0].value")
+    term {
+      name
+    }
   }
 }
 `;

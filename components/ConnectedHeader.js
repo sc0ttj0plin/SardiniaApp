@@ -12,46 +12,41 @@ import Colors from '../constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import * as Constants from '../constants';
 import * as utils from '../helpers/utils';
-const { NavPlacesScreen, NavInspirersScreen ,NavMapScreen, NavExperiencesScreen, 
-  NavItinerariesStack, NavEventsStack, 
-  NavItinerariesScreen, NavItineraryScreen, NavItineraryStagesMapScreen, NavEventsScreen, NavEventsMapScreen, NavBoilerPlate,
-  NavEventScreen, NavExploreScreen, NavVirtualTourScreen, NavPlaceScreen, NavInspirerScreen, NavEventsSubset, 
-  NavExperiences, NavPlaces,NavInspirers ,NavExplore, NavEvents, NavTabNavigator, NavLanguageScreen1,
-  NavSearchScreen, NavFavouritesListScreen, NavGalleryScreen, NavExtrasScreen, NavExtraScreen, NavFavouritesScreen } = Constants.NAVIGATION;
- 
 
 //backButtonVisible == true: shows backButton, if set to false shows drawer menù icon
 const HEADER_BUTTONS_PER_SCREEN = {
-  [NavPlacesScreen]: {backButtonVisible: false, searchButtonVisible: true},
-  [NavInspirersScreen]: {backButtonVisible: false, searchButtonVisible: true},
-  [NavMapScreen]: {backButtonVisible: true, searchButtonVisible: true}, 
-  [NavExperiencesScreen]: {backButtonVisible: false, searchButtonVisible: true}, 
-  [NavItinerariesStack]: {backButtonVisible: false, searchButtonVisible: true}, 
-  [NavEventsStack]: {backButtonVisible: false, searchButtonVisible: true}, 
-  [NavItinerariesScreen]: {backButtonVisible: false, searchButtonVisible: true}, 
-  [NavItineraryScreen]: {backButtonVisible: true, searchButtonVisible: true}, 
-  [NavItineraryStagesMapScreen]: {backButtonVisible: true, searchButtonVisible: true}, 
-  [NavEventsScreen]: {backButtonVisible: false, searchButtonVisible: true}, 
-  [NavEventScreen]: {backButtonVisible: true, searchButtonVisible: true}, 
-  [NavEventsSubset]: {backButtonVisible: true, searchButtonVisible: true},
-  [NavEventsMapScreen]: {backButtonVisible: true, searchButtonVisible: true}, 
-  [NavExploreScreen]: {backButtonVisible: true, searchButtonVisible: true}, 
-  [NavVirtualTourScreen]: {backButtonVisible: false, searchButtonVisible: true}, 
-  [NavPlaceScreen]: {backButtonVisible: true, searchButtonVisible: true},
-  [NavInspirerScreen]: {backButtonVisible: true, searchButtonVisible: true}, 
-  [NavExtrasScreen]: {backButtonVisible: false, searchButtonVisible: true}, 
-  [NavExtraScreen]: {backButtonVisible: true, searchButtonVisible: true}, 
-  [NavExperiences]: {backButtonVisible: false, searchButtonVisible: true}, 
-  [NavPlaces]: {backButtonVisible: false, searchButtonVisible: true},
-  [NavInspirers]: {backButtonVisible: false, searchButtonVisible: true}, 
-  [NavExplore]: {backButtonVisible: false, searchButtonVisible: true}, 
-  [NavEvents]: {backButtonVisible: false, searchButtonVisible: true}, 
-  [NavTabNavigator]: {backButtonVisible: false, searchButtonVisible: true}, 
-  [NavLanguageScreen1]: {backButtonVisible: false, searchButtonVisible: true},
-  [NavSearchScreen]: {backButtonVisible: true, searchButtonVisible: true},
-  [NavFavouritesScreen]: {backButtonVisible: true, searchButtonVisible: true},
-  [NavFavouritesListScreen]: {backButtonVisible: true, searchButtonVisible: true},
-  [NavBoilerPlate]: {backButtonVisible: true, searchButtonVisible: true},
+  [Constants.NAVIGATION.NavPlacesScreen]: {backButtonVisible: false, searchButtonVisible: true},
+  [Constants.NAVIGATION.NavInspirersScreen]: {backButtonVisible: false, searchButtonVisible: true},
+  [Constants.NAVIGATION.NavMapScreen]: {backButtonVisible: true, searchButtonVisible: true}, 
+  [Constants.NAVIGATION.NavExperiencesScreen]: {backButtonVisible: false, searchButtonVisible: true}, 
+  [Constants.NAVIGATION.NavItinerariesStack]: {backButtonVisible: false, searchButtonVisible: true}, 
+  [Constants.NAVIGATION.NavEventsStack]: {backButtonVisible: false, searchButtonVisible: true}, 
+  [Constants.NAVIGATION.NavItinerariesScreen]: {backButtonVisible: false, searchButtonVisible: true}, 
+  [Constants.NAVIGATION.NavItineraryScreen]: {backButtonVisible: true, searchButtonVisible: true}, 
+  [Constants.NAVIGATION.NavItineraryStagesMapScreen]: {backButtonVisible: true, searchButtonVisible: true}, 
+  [Constants.NAVIGATION.NavEventsScreen]: {backButtonVisible: false, searchButtonVisible: true}, 
+  [Constants.NAVIGATION.NavEventScreen]: {backButtonVisible: true, searchButtonVisible: true}, 
+  [Constants.NAVIGATION.NavEventsSubset]: {backButtonVisible: true, searchButtonVisible: true},
+  [Constants.NAVIGATION.NavEventsMapScreen]: {backButtonVisible: true, searchButtonVisible: true}, 
+  [Constants.NAVIGATION.NavExploreScreen]: {backButtonVisible: true, searchButtonVisible: true}, 
+  [Constants.NAVIGATION.NavVirtualTourScreen]: {backButtonVisible: false, searchButtonVisible: true}, 
+  [Constants.NAVIGATION.NavPlaceScreen]: {backButtonVisible: true, searchButtonVisible: true},
+  [Constants.NAVIGATION.NavInspirerScreen]: {backButtonVisible: true, searchButtonVisible: true}, 
+  [Constants.NAVIGATION.NavExtrasScreen]: {backButtonVisible: false, searchButtonVisible: true}, 
+  [Constants.NAVIGATION.NavExtraScreen]: {backButtonVisible: true, searchButtonVisible: true}, 
+  [Constants.NAVIGATION.NavExperiences]: {backButtonVisible: false, searchButtonVisible: true}, 
+  [Constants.NAVIGATION.NavPlaces]: {backButtonVisible: false, searchButtonVisible: true},
+  [Constants.NAVIGATION.NavInspirers]: {backButtonVisible: false, searchButtonVisible: true}, 
+  [Constants.NAVIGATION.NavExplore]: {backButtonVisible: false, searchButtonVisible: true}, 
+  [Constants.NAVIGATION.NavEvents]: {backButtonVisible: false, searchButtonVisible: true}, 
+  [Constants.NAVIGATION.NavTabNavigator]: {backButtonVisible: false, searchButtonVisible: true}, 
+  [Constants.NAVIGATION.NavLanguageScreen1]: {backButtonVisible: false, searchButtonVisible: true},
+  [Constants.NAVIGATION.NavSearchScreen]: {backButtonVisible: true, searchButtonVisible: true},
+  [Constants.NAVIGATION.NavFavouritesScreen]: {backButtonVisible: true, searchButtonVisible: true},
+  [Constants.NAVIGATION.NavFavouritesListScreen]: {backButtonVisible: true, searchButtonVisible: true},
+  [Constants.NAVIGATION.NavAccomodationsScreen]: {backButtonVisible: false, searchButtonVisible: true},
+  [Constants.NAVIGATION.NavAccomodationScreen]: {backButtonVisible: true, searchButtonVisible: true},
+  [Constants.NAVIGATION.NavBoilerPlate]: {backButtonVisible: true, searchButtonVisible: true},
 
   ["default"]: {backButtonVisible: false, searchButtonVisible: true}
 }
@@ -70,7 +65,7 @@ class ConnectedHeader extends PureComponent {
 
     this.state = {
       routeName,
-      searchbarVisible: routeName == NavSearchScreen ? true : false,
+      searchbarVisible: routeName == Constants.NAVIGATION.NavSearchScreen ? true : false,
       backButtonVisible: props.backButtonVisible ? props.backButtonVisible : HEADER_BUTTONS_PER_SCREEN[routeName].backButtonVisible,
       searchButtonVisible: props.searchButtonVisible ? props.searchButtonVisible : HEADER_BUTTONS_PER_SCREEN[routeName].searchButtonVisible,
     };
@@ -81,7 +76,7 @@ class ConnectedHeader extends PureComponent {
   _searchButtonPressed = () => {
     //If we are on the search screen perform the actual search, 
     //otherwise navigate to search screen resetting search str and results
-    if (this.state.routeName == NavSearchScreen) {
+    if (this.state.routeName == Constants.NAVIGATION.NavSearchScreen) {
       this.setState({ searchbarVisible: true });
       if (this.props.others.searchOrAutocomplete !== "search")
         this.props.actions.switchSearchOrAutocomplete("search");

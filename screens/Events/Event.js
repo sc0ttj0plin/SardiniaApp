@@ -196,7 +196,7 @@ class EventScreen extends Component {
           <TopMedia urlVideo={sampleVideoUrl} urlImage={entity.image} />
           {this._renderFab(entity.uuid, title, coordinates, socialUrl)}   
           <View style={[styles.headerContainer]}> 
-            <EntityHeader title={title} term={entity.term.name} borderColor={Colors.orange}/>
+            <EntityHeader title={title} term={entity.term ? entity.term.name : ""} borderColor={Colors.orange}/>
           </View>
           <View style={[styles.container]}>
             <EntityDescription title={descriptionTitle} text={description} color={Colors.colorEventsScreen}/>

@@ -200,7 +200,7 @@ class PlaceScreen extends Component {
           <TopMedia urlVideo={sampleVideoUrl} urlImage={entity.image} />
           {this._renderFab(entity.uuid, title, coordinates, socialUrl)}   
           <View style={[styles.headerContainer]}> 
-            <EntityHeader title={title} term={entity.term.name} borderColor={Colors.blue}/>
+            <EntityHeader title={title} term={entity.term ? entity.term.name : ""} borderColor={Colors.blue}/>
           </View>
           <View style={[styles.container]}>
             <EntityAbstract abstract={abstract}/>

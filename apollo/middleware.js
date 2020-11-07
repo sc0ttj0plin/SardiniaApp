@@ -301,6 +301,47 @@ const apolloMiddleware = client => {
             });
           });
         }
+        else if (action.type === Constants.GET_ACCOMODATIONS) {
+          client.query({
+              query: Queries.getAccomodations,
+              variables: action.query
+          }).then((resp) => {
+            let dispatch = { type: Constants.GET_ACCOMODATIONS_SUCCESS, payload: {} };
+            if (resp.data && resp.data.nodes.length > 0) {
+              let data = resp.data.nodes || [];
+              data.forEach((e) => processEntity(e));
+              let dataById = data.reduce((acc, curr) => ({ ...acc, [curr.uuid]: curr}), {});
+              dispatch.payload = { dataById, data };
+            }
+            else
+              dispatch.payload = { dataById: {}, data: [] };
+
+            store.dispatch(dispatch);
+          }).catch((e) => {
+            console.log(e);
+            //also dispatch the id which has failed
+            store.dispatch({ type: Constants.GET_ACCOMODATIONS_FAIL, payload: e });
+          });
+        }
+        else if (action.type === Constants.GET_ACCOMODATIONS_BY_ID) {
+          client.query({
+              query: Queries.getAccomodationsById,
+              variables: action.query
+          }).then((resp) => {
+            let dispatch = { type: Constants.GET_ACCOMODATIONS_BY_ID_SUCCESS, payload: {} };
+            if (resp.data && resp.data.nodes.length > 0) {
+              let data = resp.data.nodes;
+              data.forEach((e) => processEntity(e));
+              let dataById = data.reduce((acc, curr) => ({ ...acc, [curr.uuid]: curr}), {});
+              dispatch.payload = { dataById, data };
+            }
+            store.dispatch(dispatch);
+          }).catch((e) => {
+            console.log(e);
+            //also dispatch the id which has failed
+            store.dispatch({ type: Constants.GET_ACCOMODATIONS_BY_ID_FAIL, payload: e });
+          });
+        }
         next(action);
     }
 };

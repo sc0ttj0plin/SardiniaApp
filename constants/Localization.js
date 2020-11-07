@@ -46,6 +46,7 @@ const dict = {
     drawerSearch: "Cerca",
     insertHere: "Inserisci qui...",
     favourites: "Preferiti",
+    accomodations: "Strutture Ricettive",
     //LANGUAGES
     lanItalian: '🇮🇹 Italiano',
     lanEnglish: '🇬🇧 Inglese',
@@ -96,6 +97,7 @@ const dict = {
     drawerSearch: "Search",
     insertHere: "Type here...",
     favourites: "Favourites",
+    accomodations: "Accomodations",
     //LANGUAGES
     lanItalian: '🇮🇹 Italian',
     lanEnglish: '🇬🇧 English'

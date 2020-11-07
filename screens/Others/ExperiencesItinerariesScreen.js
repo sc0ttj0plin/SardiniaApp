@@ -132,7 +132,7 @@ class ExperiencesItinerariesScreen extends Component {
           <MapView.Marker
             key={index} 
             coordinate={coordinates}
-            tracksViewChanges={true}
+            tracksViewChanges={false}
             title={marker.title}
             description={marker.abstract}
             onPress={() => this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { place: marker })}

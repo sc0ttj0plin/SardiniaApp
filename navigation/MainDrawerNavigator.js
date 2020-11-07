@@ -21,33 +21,21 @@ import ItineraryScreen from '../screens/Itineraries/Itinerary';
 import ItineraryStagesMapScreen from '../screens/Itineraries/ItineraryStagesMap';
 import InspirersScreen from '../screens/Inspirers/Inspirers';
 import InspirerScreen from '../screens/Inspirers/Inspirer';
+import AccomodationsScreen from '../screens/Accomodations/Accomodations';
+import AccomodationScreen from '../screens/Accomodations/Accomodation';
 import ExtrasScreen from '../screens/Extras/Extras';
 import ExtraScreen from '../screens/Extras/Extra';
 import SearchScreen from '../screens/Search/Search';
 import MediaScreen from '../screens/Media/Media';
-
-// import MapScreen from '../screens/Others/MapScreen';
-// import ExploreScreen from '../screens/Others/ExploreScreen';
-// import ExtrasScreen from '../screens/Others/ExtrasScreen';
-// import ExtraScreen from '../screens/Others/Extra/ExtraScreen';
-// import PlaceScreen from '../screens/Others/PlaceScreen';
-// import InspirerScreen from '../screens/Others/InspirerScreen';
-// import MediaScreen from '../screens/Others/MediaScreen';
 import FavouritesScreen from '../screens/Favourites/Favourites';
 import FavouritesListScreen from '../screens/Favourites/FavouritesList';
-
-// import ExperiencesEventsScreen from '../screens/Others/ExperiencesEventsScreen';
-// import ExperiencesItinerariesScreen from '../screens/Others/ExperiencesItinerariesScreen';
-// import EventScreen from '../screens/Others/EventScreen';
-// import ItineraryScreen from '../screens/Others/ItineraryScreen';
-// import SearchScreen from '../screens/Others/SearchScreen';
 import Boilerplate from '../screens/Boilerplates/Boilerplate';
 import { ConnectedText, ConnectedLanguageList, TabBar } from '../components';
 // import VirtualTourScreen from '../screens/Others/VirtualTourScreen';
 import * as Constants from '../constants';
 const {
   NavPlacesScreen, NavInspirersScreen ,NavMapScreen, 
-  NavItinerariesScreen, 
+  NavItinerariesScreen, NavAccomodationsScreen, NavAccomodationScreen, NavAccomodationsStackScreen,
   NavItineraryScreen, NavEventsScreen, NavEventScreen, NavItineraryStagesMapScreen,NavEventsMapScreen, NavEventsSubset, NavExploreScreen, 
   NavVirtualTourScreen, NavPlaceScreen, NavInspirerScreen,
   NavExtrasScreen, NavExtraScreen, NavTabNavigator, NavSearchScreen, NavSearchStackScreen, 
@@ -98,11 +86,12 @@ import Place from '../screens/Places/Place';
  /**
   * Navigation Translations (mainly for BottomTabNavigator)
   */
-var ConnectedTextPlaces = <ConnectedText languageKey="tabWhereToGo" />;
-var ConnectedTextExperiences = <ConnectedText languageKey="tabWhatToDo"/>;
-var ConnectedTextExtras = <ConnectedText languageKey="tabExtras" />;
-var ConnectedTextItineraries = <ConnectedText languageKey="tabItineraries" />;
-var ConnectedTextEvents = <ConnectedText languageKey="tabEvents"/>;
+let ConnectedTextPlaces = <ConnectedText languageKey="tabWhereToGo" />;
+let ConnectedTextExperiences = <ConnectedText languageKey="tabWhatToDo"/>;
+let ConnectedTextExtras = <ConnectedText languageKey="tabExtras" />;
+let ConnectedTextItineraries = <ConnectedText languageKey="tabItineraries" />;
+let ConnectedTextEvents = <ConnectedText languageKey="tabEvents"/>;
+
 
 /**
  * Navigation options for bottom tab navigator rendering
@@ -259,17 +248,30 @@ function SearchStackScreen() {
       <SearchStack.Screen name={NavSearchScreen} component={SearchScreen} />
       <SearchStack.Screen name={NavPlaceScreen} component={PlaceScreen}/>
       <SearchStack.Screen name={NavEventScreen} component={EventScreen} />
-      {/* <SearchStack.Screen name={NavMediaScreen} component={MediaScreen}/> */}
-      {/* <SearchStack.Screen name={NavVirtualTourScreen} component={VirtualTourScreen}/> */}
     </SearchStack.Navigator>
   );
 }
 
 
-var ConnectedTextTabName = () => <ConnectedText languageKey="drawerTab" textStyle={{ color: "white" }}/>;
-var ConnectedTextSearch = () => <ConnectedText languageKey="drawerSearch" textStyle={{ color: "white" }} />;
-var ConnectedTextGallery = () => <ConnectedText languageKey="gallery" textStyle={{ color: "white" }} />;
-var ConnectedFavourites = () => <ConnectedText languageKey="favourites" textStyle={{ color: "white" }} />;
+/**
+ * Accomodation Stack (level: 1, parent DrawerNavigator)
+ */
+var AccomodationStack = createStackNavigator();
+
+function AccomodationStackScreen() {
+  return (
+    <AccomodationStack.Navigator headerMode="none" initialRouteName={NavAccomodationsScreen}>
+      <AccomodationStack.Screen name={NavAccomodationsScreen} component={AccomodationsScreen} />
+      <AccomodationStack.Screen name={NavAccomodationScreen} component={AccomodationScreen}/>
+    </AccomodationStack.Navigator>
+  );
+}
+
+
+let ConnectedTextTabName = () => <ConnectedText languageKey="drawerTab" textStyle={{ color: "white" }}/>;
+let ConnectedTextSearch = () => <ConnectedText languageKey="drawerSearch" textStyle={{ color: "white" }} />;
+let ConnectedFavourites = () => <ConnectedText languageKey="favourites" textStyle={{ color: "white" }} />;
+let ConnectedTextAccomodations = () => <ConnectedText languageKey="accomodations" textStyle={{ color: "white" }} />;
 
 /**
  * Drawer navigator (level: 0)
@@ -312,7 +314,7 @@ function DrawerNavigator() {
     >
       <Drawer.Screen name={NavMainStackScreen} component={MainStackScreen} options={{ drawerLabel: ConnectedTextTabName }} />
       <Drawer.Screen name={NavSearchStackScreen} component={SearchStackScreen} options={{ drawerLabel: ConnectedTextSearch }} />
-      {/* <Drawer.Screen name={NavExploreScreen} component={ExploreScreen} options={{ drawerLabel: ConnectedTextGallery }} /> */}
+      <Drawer.Screen name={NavAccomodationsStackScreen} component={AccomodationStackScreen} options={{ drawerLabel: ConnectedTextAccomodations }}/>
       <Drawer.Screen name={NavFavouritesStackScreen} component={FavouritesStackScreen} options={{ drawerLabel: ConnectedFavourites }} />
     </Drawer.Navigator>
   );

@@ -31,7 +31,7 @@ export default function reducer(state = INITIAL_STATE, action) {
       //action.payload is an object keyed by the poi's uuid: e.g. cd07df75-9870-41dd-8bd6-5884403f9302: {...}
       return { 
         ...state, 
-        data: {...state.data, ...action.payload }, 
+        data: { ...state.data, ...action.payload }, 
         success: true,
         error: null,
         loading: false,

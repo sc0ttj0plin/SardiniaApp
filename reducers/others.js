@@ -5,6 +5,7 @@ const INITIAL_STATE = {
   searchStr: "",
   placesTerms: [],
   inspirersTerms: [],
+  accomodationsTerms: [],
 }
 
 
@@ -66,6 +67,26 @@ export default function reducer(state = INITIAL_STATE, action) {
       return {
         ...state,
         inspirersTerms: INITIAL_STATE.inspirersTerms
+      }
+    //ACCOMODATIONS CATEGORIES (POP/PUSH) (scoped case to reuse var names)
+    case Constants.PUSH_CURRENT_CATEGORY_INSPIRERS: {
+      let newAccomodationsTerms = [...state.accomodationsTerms];
+      newAccomodationsTerms.push(action.payload);
+      return {
+        ...state,
+        accomodationsTerms: newAccomodationsTerms,
+      }
+    } case Constants.POP_CURRENT_CATEGORY_INSPIRERS: {
+      let newAccomodationsTerms = [...state.accomodationsTerms];
+      newAccomodationsTerms.pop();
+      return {
+        ...state,
+        accomodationsTerms: newAccomodationsTerms,
+      }
+    } case Constants.RESET_CURRENT_CATEGORY_INSPIRERS:
+      return {
+        ...state,
+        accomodationsTerms: INITIAL_STATE.accomodationsTerms
       }
     default:
       return state;

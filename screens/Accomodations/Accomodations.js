@@ -1,44 +1,33 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import { 
-  View, Text, ActivityIndicator, 
-  StyleSheet, BackHandler, Platform, ScrollView, NativeModules } from "react-native";
-
-import { FlatList, TouchableOpacity } from "react-native-gesture-handler"
+  View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
+  StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
-  CategoryListItem, 
-  AsyncOperationStatusIndicator, 
-  ClusteredMapViewTop,
-  ConnectedHeader, 
   ScrollableContainer,
   EntityItem,
+  AsyncOperationStatusIndicator, 
+  ConnectedHeader, 
  } from "../../components";
-import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
+ import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
 import MapView from "react-native-map-clustering";
+import { Marker } from 'react-native-maps';
+import { Ionicons } from '@expo/vector-icons';
+import { PROVIDER_GOOGLE } from 'react-native-maps';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { apolloQuery } from '../../apollo/queries';
 import _ from 'lodash';
 import Layout from '../../constants/Layout';
+import { greedyArrayFinder, getEntityInfo, getCoordinates, getSampleVideoIndex, getGalleryImages } from '../../helpers/utils';
+import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-import { LLHorizontalItemsFlatlist } from "../../components/loadingLayouts";
-import { Button } from "react-native-paper";
-import { Ionicons } from '@expo/vector-icons';
-
-/**
- * Map:             Clusters + pois that update with user map's interaction
- *                    can be filtered by category *same filter of Categories&Pois (redux)
- * NearToYou:       near to the user's location (all categories) rendered in the top header
- *                    called at mount + when user changes position (_fetchNearestPois)
- * Categories&Pois: List of Categories and Pois that are in the list
- *                    called when the user reaches the end of the category tree 
- *                    using current selected category + user location (_loadMorePois)
- */
+import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
 
 const USE_DR = false;
-class PlacesScreen extends PureComponent {
+const ACCOMODATION_LIMIT = Constants.PAGINATION.accomodationsLimit;
+class AccomodationsScreen extends Component {
 
   constructor(props) {
     super(props);
@@ -66,7 +55,7 @@ class PlacesScreen extends PureComponent {
   componentDidMount() {
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
     //If it's the first mount gets pois categories ("art and archeology...")
-    this.props.actions.getCategories({ vid: Constants.VIDS.poisCategories });
+    this.props.actions.getCategories({ vid: Constants.VIDS.accomodations });
 
     this._initGeolocation();
     
@@ -83,7 +72,7 @@ class PlacesScreen extends PureComponent {
    */
   componentDidUpdate(prevProps) {
     // If currently selected categories (terms) differ from the previous ones fetch other pois for those categories
-    if(prevProps.others.placesTerms !== this.props.others.placesTerms) {
+    if(prevProps.others.accomodationsTerms !== this.props.others.accomodationsTerms) {
       this._loadMorePois();
     }
   }
@@ -116,9 +105,9 @@ class PlacesScreen extends PureComponent {
    *   if fallbackToCategories is true fallbacks to initial categories
    */
   _getCurrentTerm = (fallbackToCategories=false) => {
-    let term = this.props.others.placesTerms[this.props.others.placesTerms.length - 1];
+    let term = this.props.others.accomodationsTerms[this.props.others.accomodationsTerms.length - 1];
     if (fallbackToCategories)
-      term = term ? (term.terms ? term.terms : []) : this.props.categories.data[Constants.VIDS.poisCategories]
+      term = term ? (term.terms ? term.terms : []) : this.props.categories.data[Constants.VIDS.accomodations]
     const childUuids = term ? term.childUuids : null;
     return { term, childUuids };
   }
@@ -126,7 +115,7 @@ class PlacesScreen extends PureComponent {
   /**
    * Invoked whenever the coordinates get updated (either on initial load or when the user moves)
    *  Pois: fetches new nearest pois and clusters.
-   *  PoisCategories: if there are no more nested categories then, instead of loading subcategories load just pois (leaf)
+   *  accomodations: if there are no more nested categories then, instead of loading subcategories load just pois (leaf)
    *  TODO PERFORMANCE ISSUE: 
    *    - if we don't set a threshold on min number of meters there's the risk that this method will be invoked many times!
    *    - it is invoked too many times also when pushing a new screen
@@ -268,7 +257,7 @@ class PlacesScreen extends PureComponent {
         coords={coords}
         region={region}
         pois={nearPois}
-        types={[Constants.NODE_TYPES.places]}
+        types={[Constants.NODE_TYPES.accomodations]}
         uuids={childUuids}
         style={{flex: 1}}
         categoriesMap={term}
@@ -403,7 +392,7 @@ class PlacesScreen extends PureComponent {
         <ConnectedHeader 
           backOnPress={this._backButtonPress}
           iconTintColor={Colors.colorPlacesScreen}  
-          backButtonVisible={this.props.others.placesTerms.length > 0}
+          backButtonVisible={this.props.others.accomodationsTerms.length > 0}
         />
         {render && this._renderContent()}
       </View>
@@ -413,83 +402,47 @@ class PlacesScreen extends PureComponent {
 }
 
 
-PlacesScreen.navigationOptions = {
-  title: 'Places',
+AccomodationsScreen.navigationOptions = {
+  title: 'Accomodations',
 };
 
 
 const styles = StyleSheet.create({
   fill: {
     flex: 1,
+    backgroundColor: "white"
+  },
+  header: {
+    backgroundColor: "white"
   },
   container: {
-    backgroundColor: Colors.colorPlacesScreen,
-    borderTopWidth: 0,
-    borderBottomWidth: 0,
-    flex: 1,
+    padding: 10,
   },
-  sectionTitle: {
-      fontSize: 16,
-      color: Colors.colorPlacesScreen,
-      fontWeight: "bold",
-      margin: 10
-  },
-  listContainer: {
-    backgroundColor: Colors.colorPlacesScreen,
-    height: "100%"
-  },
-  listContainerHeader: {
-    paddingLeft: 10,
-  },
-  listStyle: {
-    paddingHorizontal: 10,
-    paddingBottom: 25,
-  },
-  listPois: {
-    backgroundColor: Colors.colorPlacesScreen,
+  marker: {
+    width: "100%",
     height: "100%",
-    paddingHorizontal: 10,
-  },
-  categorySelectorBtn: {
-    height: 32, 
-    paddingVertical: 7, 
-    backgroundColor: "white", 
-    display: "flex",
+    backgroundColor: "blue",
     flexDirection: "row",
     alignItems: "center",
-    borderRadius: 16,
-    paddingRight: 15,
-    paddingLeft: 5
-  },
-  categorySelectorBtnText: {
-    color: "#000000DE",
-    fontSize: 14
-  },
-  filtersList: {
-    width: "100%", 
-    height: 40,
-    zIndex: 0, 
-    // backgroundColor: "red"
-  },
-  icon: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: Colors.colorPlacesScreen,
-    display: "flex",
     justifyContent: "center",
-    alignItems: "center",
-    marginRight: 8
-  }
+    backgroundColor: Colors.colorAccomodationsScreen,
+    borderRadius: 21
+  },
+  markerContainer: {
+    width: 42,
+    height: 42,
+    padding: 6,
+    borderRadius: 21
+  },
 });
 
 
-function PlacesScreenContainer(props) {
+function AccomodationsScreenContainer(props) {
   const navigation = useNavigation();
   const route = useRoute();
   const store = useStore();
 
-  return <PlacesScreen 
+  return <AccomodationsScreen 
     {...props}
     navigation={navigation}
     route={route}
@@ -503,8 +456,10 @@ const mapStateToProps = state => {
     others: state.othersState,
     //language
     locale: state.localeState,
+    //favourites
+    favourites: state.favouritesState,
     //graphql
-    categories: state.categoriesState,
+    accomodations: state.accomodationsState,
   };
 };
 
@@ -520,4 +475,4 @@ export default connect(mapStateToProps, mapDispatchToProps, (stateProps, dispatc
     actions: dispatchProps,
     ...props
   }
-})(PlacesScreenContainer)
+})(AccomodationsScreenContainer)

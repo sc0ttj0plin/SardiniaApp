@@ -146,7 +146,7 @@ class ItineraryStagesMapScreen extends Component {
               <MapView.Marker
                 key={index} 
                 coordinate={coordinates}
-                tracksViewChanges={true}
+                tracksViewChanges={false}
                 onPress={() => this._handleMarkerPress(index)}
               >
                 <Animated.View style={[styles.markerWrap, opacityStyle]}>

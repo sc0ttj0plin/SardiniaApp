@@ -23,6 +23,9 @@ export const GET_NEARESTPOIS_FAIL = 'visitsardinia/nearestpois/LOAD_FAIL';
 export const GET_NEARESTPOISIMAGES = 'visitsardinia/nearestpoisimages/LOAD';
 export const GET_NEARESTPOISIMAGES_SUCCESS = 'visitsardinia/nearestpoisimages/LOAD_SUCCESS';
 export const GET_NEARESTPOISIMAGES_FAIL = 'visitsardinia/nearestpoisimages/LOAD_FAIL';
+export const GET_NEARESTACCOMODATIONSIMAGES = 'visitsardinia/nearestaccomodationsimages/LOAD';
+export const GET_NEARESTACCOMODATIONSIMAGES_SUCCESS = 'visitsardinia/nearestaccomodationsimages/LOAD_SUCCESS';
+export const GET_NEARESTACCOMODATIONSIMAGES_FAIL = 'visitsardinia/nearestaccomodationsimages/LOAD_FAIL';
 export const GET_POIS = 'visitsardinia/pois/LOAD';
 export const GET_POIS_SUCCESS = 'visitsardinia/pois/LOAD_SUCCESS';
 export const GET_POIS_FAIL = 'visitsardinia/pois/LOAD_FAIL';
@@ -35,6 +38,12 @@ export const GET_POI_FAIL = 'visitsardinia/poi/LOAD_FAIL';
 export const GET_NODES = 'visitsardinia/nodes/LOAD';
 export const GET_NODES_SUCCESS = 'visitsardinia/nodes/LOAD_SUCCESS';
 export const GET_NODES_FAIL = 'visitsardinia/nodes/LOAD_FAIL';
+export const GET_ACCOMODATIONS = 'visitsardinia/accomodations/LOAD';
+export const GET_ACCOMODATIONS_SUCCESS = 'visitsardinia/accomodations/LOAD_SUCCESS';
+export const GET_ACCOMODATIONS_FAIL = 'visitsardinia/accomodations/LOAD_FAIL';
+export const GET_ACCOMODATIONS_BY_ID = 'visitsardinia/accomodationsById/LOAD';
+export const GET_ACCOMODATIONS_BY_ID_SUCCESS = 'visitsardinia/accomodationsById/LOAD_SUCCESS';
+export const GET_ACCOMODATIONS_BY_ID_FAIL = 'visitsardinia/accomodationsById/LOAD_FAIL';
 export const GET_INSPIRERS = 'visitsardinia/inspirers/LOAD';
 export const GET_INSPIRERS_SUCCESS = 'visitsardinia/inspirers/LOAD_SUCCESS';
 export const GET_INSPIRERS_FAIL = 'visitsardinia/inspirers/LOAD_FAIL';
@@ -84,6 +93,10 @@ export const RESET_CURRENT_CATEGORY_PLACES = 'visitsardinia/places/RESET_CURRENT
 export const PUSH_CURRENT_CATEGORY_INSPIRERS = 'visitsardinia/inspirers/PUSH_CURRENT_CATEGORY_INSPIRERS';
 export const POP_CURRENT_CATEGORY_INSPIRERS = 'visitsardinia/inspirers/POP_CURRENT_CATEGORY_INSPIRERS';
 export const RESET_CURRENT_CATEGORY_INSPIRERS = 'visitsardinia/inspirers/RESET_CURRENT_CATEGORY_INSPIRERS';
+export const PUSH_CURRENT_CATEGORY_ACCOMODATIONS = 'visitsardinia/accomodations/PUSH_CURRENT_CATEGORY_ACCOMODATIONS';
+export const POP_CURRENT_CATEGORY_ACCOMODATIONS = 'visitsardinia/accomodations/POP_CURRENT_CATEGORY_ACCOMODATIONS';
+export const RESET_CURRENT_CATEGORY_ACCOMODATIONS = 'visitsardinia/accomodations/RESET_CURRENT_CATEGORY_ACCOMODATIONS';
+
 
 // API
 export const FETCH_NUM_MONTHS_BACKWARDS = 1;
@@ -137,7 +150,10 @@ export const NAVIGATION = {
   NavFavouritesListScreen: "FavouritesListScreen",
   NavFavouritesStackScreen: "FavouritesStackScreen",
   NavEventsSubset: "EventsSubsetScreen",
-  NavBoilerPlate: "Boilerplate"
+  NavAccomodationsScreen: "AccomodationsScreen",
+  NavAccomodationScreen: "AccomodationScreen",
+  NavAccomodationsStackScreen: "AccomodationsStackScreen",
+  NavBoilerPlate: "Boilerplate",
 }
 
 /**
@@ -149,6 +165,7 @@ export const VIDS = {
   pois: 14,
   inspirersCategories: 46,
   poisCategories: 36,
+  accomodations: 20,
 }
 
 /* (backend) Nodes types: used for queries */
@@ -158,13 +175,16 @@ export const NODE_TYPES = {
   itineraries: "itinerario",
   events: "evento",
   turisticLocation: "localit_turistica",
+  accomodations: "strutture_ricettive",
 }
 
+/* (frontend) Node types: used for rendering */
 export const ENTITY_TYPES = {
   places: "places",
   inspirers: "inspirers",
   itineraries: "itineraries",
   events: "events",
+  accomodations: "accomodations",
 }
 
 /* SCREENS CONFIGURATIONS */
@@ -235,7 +255,7 @@ export const SCREENS = {
 /* PAGINATION */
 export const PAGINATION = {
   poisLimit: 12,
-  poisOffset: null, //not used yet
+  accomodationsLimit: 8,
 }
 
 /* MAP CONSTANTS */
@@ -314,6 +334,11 @@ export const VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS = {
     iconColor: Colors.colorPlacesScreen, 
     iconName: Platform.OS === 'ios' ? 'ios-map' : 'md-map'
   },
+  [NODE_TYPES.accomodations]: {
+    backgroundTopRightCorner: Colors.colorAccomodationsScreen,
+    iconColor: Colors.colorAccomodationsScreen, 
+    iconName: Platform.OS === 'ios' ? 'ios-home' : 'md-home'
+  },
   //Entity types
   [ENTITY_TYPES.places]: {
     backgroundTopRightCorner: Colors.colorPlacesScreen,
@@ -338,7 +363,12 @@ export const VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS = {
     iconColor: "white",
     backgroundColor: Colors.colorEventsScreen,
     iconName: Platform.OS === 'ios' ? 'ios-calendar' : "md-calendar"
-  }
+  },
+  [ENTITY_TYPES.accomodations]: {
+    backgroundTopRightCorner: Colors.colorAccomodationsScreen,
+    iconColor: Colors.colorAccomodationsScreen, 
+    iconName: Platform.OS === 'ios' ? 'ios-home' : 'md-home'
+  },
 }
 
 export const FAVOURITES_MAX_ITEMS_IN_LIST = 6;

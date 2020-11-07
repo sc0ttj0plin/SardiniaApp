@@ -239,7 +239,7 @@ class TrendsScreen extends Component {
               style={{flex: 1}}>
               <MapView.Marker
                 coordinate={coordinates}
-                tracksViewChanges={true} />
+                tracksViewChanges={false} />
           </MapView>
           </View>
       </>

@@ -26,11 +26,12 @@ export default function reducer(state = INITIAL_STATE, action) {
       };
     case Constants.GET_ITINERARIES_SUCCESS:
     case Constants.GET_ITINERARIES_BY_ID_SUCCESS:
+      let dataById = { ...state.dataById, ...action.payload.dataById };
       return { 
         ...state, 
         success: true,
-        data: [ ...state.data, ...action.payload.data ],
-        dataById: { ...state.dataById, ...action.payload.dataById },
+        data: Object.values(dataById),
+        dataById,
         error: null, 
         loading: false
       };

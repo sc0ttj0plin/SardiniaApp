@@ -15,27 +15,26 @@ const INITIAL_STATE = {
 
 export default function reducer(state = INITIAL_STATE, action) {
   switch (action.type) {
-    case Constants.GET_INSPIRERS: 
-    case Constants.GET_INSPIRERS_BY_ID: 
+    case Constants.GET_ACCOMODATIONS: 
+    case Constants.GET_ACCOMODATIONS_BY_ID: 
       return { 
         ...state, 
         success: false,
         error: null,
         loading: true,
       };
-    case Constants.GET_INSPIRERS_SUCCESS:
-    case Constants.GET_INSPIRERS_BY_ID_SUCCESS:
-      let dataById = { ...state.dataById, ...action.payload.dataById };
+    case Constants.GET_ACCOMODATIONS_SUCCESS:
+    case Constants.GET_ACCOMODATIONS_BY_ID_SUCCESS:
       return { 
         ...state, 
-        data: Object.values(dataById),
-        dataById, 
+        data: [ ...state.data, ...action.payload.data ],
+        dataById: { ...state.dataById, ...action.payload.dataById }, 
         success: true,
         error: null,
         loading: false,
       };
-    case Constants.GET_INSPIRERS_FAIL:
-    case Constants.GET_INSPIRERS_BY_ID_FAIL:
+    case Constants.GET_ACCOMODATIONS_FAIL:
+    case Constants.GET_ACCOMODATIONS_BY_ID_FAIL:
       return { 
         ...state,
         success: false,

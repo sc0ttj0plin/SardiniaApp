@@ -28,18 +28,7 @@ import { Button } from "react-native-paper";
 import { Marker } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
 import { PROVIDER_GOOGLE } from 'react-native-maps';
-const screenHeight = Dimensions.get('screen').height;
-const windowHeight = Dimensions.get('window').height;
 
-/**
- * Map:             Clusters + pois that update with user map's interaction
- *                    can be filtered by category *same filter of Categories&Pois (redux)
- * NearToYou:       near to the user's location (all categories) rendered in the top header
- *                    called at mount + when user changes position (_fetchNearestPois)
- * Categories&Pois: List of Categories and Pois that are in the list
- *                    called when the user reaches the end of the category tree 
- *                    using current selected category + user location (_loadMorePois)
- */
 
 const USE_DR = false;
 class ItinerariesScreen extends PureComponent {
@@ -54,10 +43,9 @@ class ItinerariesScreen extends PureComponent {
 
     this.state = {
       render: USE_DR ? false : true,
+      //
       itineraries: [],
-      tid: -1,
       coords: {},
-      poisLimit: Constants.PAGINATION.poisLimit,
       region: Constants.MAP.defaultRegion,
       selectedItinerary: null
     };
@@ -71,13 +59,9 @@ class ItinerariesScreen extends PureComponent {
    */
   componentDidMount() {
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
-    //If it's the first mount gets pois categories ("art and archeology...")
-    if(this.state.tid < 0){
-      // this.props.actions.getCategories({ vid: Constants.VIDS.poisCategories });
-    }
+
     this.props.actions.getItineraries();
     this._initGeolocation();
-    
     this._onFocus = this.props.navigation.addListener('focus', () => {
       if(this.state.coords) {
         this._onUpdateCoords(this.state.coords);
@@ -87,9 +71,7 @@ class ItinerariesScreen extends PureComponent {
 
   componentDidUpdate(prevProps) {
     if(prevProps.itineraries !== this.props.itineraries) {
-      this.setState({
-        itineraries: this.props.itineraries.data
-      })
+      this.setState({ itineraries: this.props.itineraries.data });
     }
   }
 
@@ -128,16 +110,6 @@ class ItinerariesScreen extends PureComponent {
     }
   }
 
-
-  /**
-   * Open single poi screen
-   * @param {*} item: item list
-   */
-  _openItem = (item) => {
-    console.log("item", item.nid)
-    this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, { item });
-  }
-
   /**
    * When user stops dragging the map, change selected region
    * @param {*} region: region
@@ -146,21 +118,22 @@ class ItinerariesScreen extends PureComponent {
     this.state.region = region;
   }
 
+  /**
+   * Open single poi screen
+   * @param {*} item: item list
+   */
+  _openItem = (item) => {
+    this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, { item });
+  }
+
+
   _selectMarker = (itinerary) => {
     this.setState({
       selectedItinerary: itinerary
     })
   }
 
-  // _backButtonPress = () => this.props.actions.popCurrentCategoryPlaces();
-
   /********************* Render methods go down here *********************/
-
-  _renderTopComponentCategorySelector = (item) => 
-    <TouchableOpacity style={styles.categorySelectorBtn} onPress={() => this._selectCategory(item)}>
-      <Text style={{color: 'white'}}>{item.name}</Text>
-    </TouchableOpacity>
-
   
   /* Renders the topmost component: a map in our use case */
   _renderTopComponent = () => {
@@ -185,7 +158,6 @@ class ItinerariesScreen extends PureComponent {
       </MapView>
       </>
     )
-
   }
 
   _renderMarkers = () => {
@@ -207,10 +179,10 @@ class ItinerariesScreen extends PureComponent {
         <Marker.Animated
           coordinate={{ longitude: parseFloat(long),  latitude: parseFloat(lat) }}
           onPress={() => this._selectMarker(itinerary)}
-          tracksViewChanges={true}
+          tracksViewChanges={false}
           style={{width: 42, height: 42, zIndex: 1}}>
             <View style={[styles.markerContainer, {
-              backgroundColor: selected ? "rgba(93, 127, 32, 0.5)" : "transparent"
+              backgroundColor: selected ? Colors.greenTransparent : "transparent"
             }]}>
               <View
                 style={[styles.marker]}>
@@ -236,13 +208,7 @@ class ItinerariesScreen extends PureComponent {
   _renderListHeader = () => {
     const { nearToYou, whereToGo } = this.props.locale.messages;
       return (
-        <View style={{ 
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100%",
-          marginBottom: 40
-        }}>
+        <View style={styles.listHeader}>
           <Text style={styles.sectionTitle}>Esplora itinerari</Text>
         </View>
       )
@@ -280,8 +246,8 @@ class ItinerariesScreen extends PureComponent {
     let data = selectedItinerary ? [selectedItinerary] : itineraries;
     if(!data.length)
       data = []
-    let snapIndex = selectedItinerary ? 1 : 2
-    let numColumns = selectedItinerary ? 1 : 2
+    let snapIndex = selectedItinerary ? 1 : 2;
+    let numColumns = selectedItinerary ? 1 : 2;
     return (
       <ScrollableContainer 
         topComponent={this._renderTopComponent}
@@ -332,6 +298,13 @@ const styles = StyleSheet.create({
       color: "black",
       fontWeight: "bold",
       margin: 10
+  },
+  listHeader: { 
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    marginBottom: 40
   },
   listContainer: {
     backgroundColor: Colors.colorPlacesScreen,

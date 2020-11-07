@@ -15,7 +15,7 @@ export default {
   mediumGrey: '#666666',  //rgb(102,102,102)
   lightGrey: '#F2F2F2',   //rgb(242,242,242)
   white: '#FFFFFF',
-  cyan: '#1FCBD9',        //rgb(31,203,217)
+  cyan: '#1FCBD9',        //rgb(35,193,208)
   //Others
   tintColorTransparent: 'rgba(47,149,220, 0.8)',
   tabIconDefault: '#A7A7A7', 
@@ -25,7 +25,7 @@ export default {
   tabBar: '#fefefe',
   salmon: 'rgba(217, 83, 30, 0.5)',
   darkSalmon: 'rgb(206,62,24)',
-  greenTransparent: 'rgba(80,111,46, 0.8)',
+  greenTransparent: "rgba(93, 127, 32, 0.5)",
   blueTransparent: 'rgba(36,70,124, 0.7)',
   orange: 'rgb(215,85,42)',
   orangeTransparent: 'rgba(215,85,42, 0.8)',
@@ -44,4 +44,5 @@ export default {
   colorExtrasScreen: "white",
   colorItinerariesScreen: '#5D7F20',
   colorEventsScreen: '#D9531E',
+  colorAccomodationsScreen: 'rgb(35,193,208)',
 };

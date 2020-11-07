@@ -10,6 +10,7 @@ import inspirersReducer from '../reducers/inspirers';
 import itinerariesReducer from '../reducers/itineraries';
 import nodesReducer from '../reducers/nodes';
 import poisReducer from '../reducers/pois';
+import accomodationsReducer from '../reducers/accomodations';
 import searchAutocompleteReducer from '../reducers/searchAutocomplete';
 import apolloMiddleware from '../apollo/middleware';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -31,6 +32,7 @@ const rootReducer = combineReducers({
     itinerariesState: itinerariesReducer,
     nodesState: nodesReducer,
     poisState: poisReducer,
+    accomodationsState: accomodationsReducer,
     searchAutocompleteState: searchAutocompleteReducer,
   }
 );
