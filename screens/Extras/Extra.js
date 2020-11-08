@@ -175,7 +175,6 @@ class ExtraScreen extends Component {
         extraData={this.props.locale}
         keyExtractor={item => item.uuid.toString()}
         contentContainerStyle={styles.relatedListContent}
-        ItemSeparatorComponent={this._renderHorizontalSeparator}
         showsHorizontalScrollIndicator={false}
         locale={this.props.locale}
         onPressItem={this._openRelatedEntity}
@@ -305,8 +304,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   relatedListContent: {
-    marginRight: 20,
-    marginLeft: 20,
+    paddingLeft: 10
   },
   separator: {
     width: "100%",
@@ -315,7 +313,7 @@ const styles = StyleSheet.create({
     marginVertical: 32
   },
   relatedListItem: {
-    marginLeft: 0,
+    // marginLeft: 0,
     marginBottom: 10,
   }
 });

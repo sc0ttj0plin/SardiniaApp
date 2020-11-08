@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   },
   contentContainerStyle: {
     // flex: 1,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     backgroundColor: 'white',
   },
   header: {

@@ -376,11 +376,20 @@ export const VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS = {
   [ENTITY_TYPES.accomodations]: {
     backgroundTopRightCorner: Colors.colorAccomodationsScreen,
     iconColor: "white", 
+    backgroundColor: Colors.colorAccomodationsScreen,
     iconName: Platform.OS === 'ios' ? 'ios-home' : 'md-home'
   },
 }
 
 export const FAVOURITES_MAX_ITEMS_IN_LIST = 6;
+
+export const ACCOMODATIONS_DATA_DEFAULT = [
+  {term: "categoria 1", title: "titolo 1", stars: 1, distance: 2, location: "città"},
+  {term: "categoria 2", title: "titolo 2", stars: 2, distance: 3, location: "città"},
+  {term: "categoria 3", title: "titolo 3", stars: 3, distance: 4, location: "città"},
+  {term: "categoria 4", title: "titolo 4", stars: 4, distance: 5, location: "città"},
+  {term: "categoria 5", title: "titolo 5", stars: 5, distance: 6, location: "città"}
+]
 
 export const styles = {
   html: {

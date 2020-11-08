@@ -13,25 +13,26 @@ export default class EntityItem extends PureComponent {
     const { listType, horizontal, index, sideMargins } = props;
     let margins = sideMargins || 20
     let itemWidth = ((Layout.window.width - (margins*2))/2) - 5;
-    this.width = !horizontal ? itemWidth : "100%";
+    this.width = !horizontal ? itemWidth : 160;
     this.height = this.width;
     let space = (Layout.window.width - (margins*2) - (this.width*2))/ 2;
     this.entityIconOpts = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[listType] || Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.places
     this.marginRight = 0;
-    this.marginLeft = !horizontal && index && index%2 != 0 ? space*2 : 0;
+    this.marginLeft = !horizontal && index && index%2 != 0 ? space : 0;
     this.marginBottom = !horizontal ? 16 : 10;
+    console.log("horizontal index", horizontal, index, this.marginRight, this.marginLeft, space)
+
   }
 
   render() {
-    const { onPress, keyItem, title, place, image, distance } = this.props;
+    const { onPress, keyItem, title, place, image, distance, horizontal } = this.props;
 
-    // console.log("horizontal index", horizontal, index, marginRight, marginLeft, space)
     return (
         <BottomSheetTouchable 
             key={keyItem}  
             onPress={onPress}
             activeOpacity={0.7}
-            style={[styles.fill, this.props.style, {
+            style={[this.props.style, {
               marginRight: this.marginRight,
               marginLeft: this.marginLeft,
               marginBottom: this.marginBottom,

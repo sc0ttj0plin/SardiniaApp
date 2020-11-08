@@ -1,67 +1,49 @@
 import React, { PureComponent } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import _ from 'lodash';
+import { useNavigation } from '@react-navigation/native';
 import { FlatList } from "react-native-gesture-handler"
 import LLEntitiesFlatlist from "./loadingLayouts/LLEntitiesFlatlist"
 import AccomodationItem from './AccomodationItem';
 import AsyncOperationStatusIndicator from "./AsyncOperationStatusIndicator"
- 
-export default class EntityAccomodations extends PureComponent {
+import * as Constants from "../constants"
+
+class EntityAccomodations extends PureComponent {
 
     constructor(props){
         super(props)
 
         this.state = {
             // data: props.data ? props.data : [],
-            data: [
-                {
-                    term: "categoria 1",
-                    title: "titolo 1",
-                    stars: 1,
-                    distance: 2,
-                    location: "città"
-                },
-                {
-                    term: "categoria 2",
-                    title: "titolo 2",
-                    stars: 2,
-                    distance: 3,
-                    location: "città"
-                },
-                {
-                    term: "categoria 3",
-                    title: "titolo 3",
-                    stars: 3,
-                    distance: 4,
-                    location: "città"
-                },
-                {
-                    term: "categoria 4",
-                    title: "titolo 4",
-                    stars: 4,
-                    distance: 5,
-                    location: "città"
-                },
-                {
-                    term: "categoria 5",
-                    title: "titolo 5",
-                    stars: 5,
-                    distance: 6,
-                    location: "città"
-                }
-            ]
+            data: props.data || Constants.ACCOMODATIONS_DATA_DEFAULT
         }
     }
     
-    _renderAccomodationItem = (item) => {
+    _renderAccomodationItem = (item, index, horizontal) => {
         return (
+            <>
             <AccomodationItem 
+                horizontal={horizontal}
                 title={item.title}
                 term={item.term}
                 stars={item.stars}
                 location={item.location}
+                hideBorder
                 distance={item.distance}/>
+            <View style={{width: 5, flex: 1}}></View>
+            
+            </>
         )
+    }
+
+    _renderHorizontalSeparator = () => {
+        return (
+          <View style={{width: 5, flex: 1}}></View>
+        )
+    }
+
+    _openMap = () => {
+        this.props.navigation.navigate(Constants.NAVIGATION.NavAccomodationsScreen)
     }
 
     render() {
@@ -82,10 +64,11 @@ export default class EntityAccomodations extends PureComponent {
                             extraData={this.props.extraData}
                             keyExtractor={item => item.title}
                             data={this.state.data}
-                            renderItem={({item, index}) => this._renderAccomodationItem(item, index)}
-                            style={styles.fill}
-                            ItemSeparatorComponent={this.props.ItemSeparatorComponent ? this.props.ItemSeparatorComponent : null}
-                            contentContainerStyle={this.props.contentContainerStyle ? this.props.contentContainerStyle : {}}
+                            renderItem={({item, index}) => this._renderAccomodationItem(item, index, true)}
+                            style={[styles.fill, {}]}
+                            // ItemSeparatorComponent={this.props.ItemSeparatorComponent || this._renderHorizontalSeparator}
+                            // contentContainerStyle={this.props.contentContainerStyle ? this.props.contentContainerStyle : {}}
+                            contentContainerStyle={{paddingLeft: 10}}
                             showsHorizontalScrollIndicator={this.props.showsHorizontalScrollIndicator ? this.props.showsHorizontalScrollIndicator : true}
                             initialNumToRender={2} // Reduce initial render amount
                             updateCellsBatchingPeriod={400} // Increase time between renders
@@ -94,7 +77,7 @@ export default class EntityAccomodations extends PureComponent {
                     </View>
                 </AsyncOperationStatusIndicator>
 
-                <TouchableOpacity style={styles.showButton} activeOpacity={0.8}>
+                <TouchableOpacity style={styles.showButton} activeOpacity={0.8} onPress={this._openMap}>
                     <Text style={styles.showButtonText}>VEDI LA MAPPA</Text>
                 </TouchableOpacity>
             </View>
@@ -147,3 +130,13 @@ const styles = StyleSheet.create({
         fontWeight: "bold"
     }
 });
+
+function EntityAccomodationsContainer(props) {
+    const navigation = useNavigation();
+  
+    return <EntityAccomodations 
+      {...props}
+      navigation={navigation}/>;
+  }
+  
+  export default EntityAccomodationsContainer

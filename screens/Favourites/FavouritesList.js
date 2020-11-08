@@ -21,6 +21,7 @@ import {
   // EntityVirtualTour,
   // EntityWhyVisit,
   // TopMedia,
+  AccomodationItem,
   AsyncOperationStatusIndicator, 
   // AsyncOperationStatusIndicatorPlaceholder,
   // Webview, 
@@ -40,12 +41,10 @@ import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 import Layout from '../../constants/Layout';
-import { greedyArrayFinder, getEntityInfo, getCoordinates, getSampleVideoIndex, getGalleryImages } from '../../helpers/utils';
-import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
+import { LLHorizontalItemsFlatlist } from "../../components/loadingLayouts";
 
 /* Deferred rendering to speedup page inital load: 
    deferred rendering delays the rendering reducing the initial 
@@ -58,14 +57,15 @@ class FavouritesListScreen extends Component {
     super(props);
 
     /* Get props from navigation */
-    let { items, title, type } = props.route.params; 
+    let { items, title, type, isAccomodationsList } = props.route.params; 
 
     this.state = {
       render: USE_DR ? false : true,
       //
       items: items || [],
       title: title || "",
-      type: type || ""
+      type: type || "",
+      isAccomodationsList: isAccomodationsList || false
     };
       
   }
@@ -118,8 +118,7 @@ class FavouritesListScreen extends Component {
   _isLoadingData  = () => true;   /* e.g. this.props.pois.loading; */
   _isErrorData    = () => null;    /* e.g. this.props.pois.error; */
   
-  _openItem = (item) => {
-    const { type } = this.state;
+  _openItem = (item, type) => {
     switch(type) {
       case Constants.ENTITY_TYPES.places:
         this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item, mustFetch: true});
@@ -127,11 +126,14 @@ class FavouritesListScreen extends Component {
       case Constants.ENTITY_TYPES.events:
         this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item, mustFetch: true });
         break;
-      case Constants.ENTITY_TYPES.places.itineraries:
+      case Constants.ENTITY_TYPES.itineraries:
         this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, { item, mustFetch: true })
         break;
-      case Constants.ENTITY_TYPES.places.inspirers:
+      case Constants.ENTITY_TYPES.inspirers:
         this.props.navigation.navigate(Constants.NAVIGATION.NavInspirerScreen, { item, mustFetch: true })
+        break;
+      case Constants.ENTITY_TYPES.accomodations:
+        this.props.navigation.navigate(Constants.NAVIGATION.NavAccomodationScreen, { item, mustFetch: true })
         break;
       default:
         break;
@@ -145,7 +147,7 @@ class FavouritesListScreen extends Component {
     )
   }
 
-  _renderList = (list, title, extraData, type) => {
+  _renderList = (list, title, type) => {
     return (
       <View style={styles.listView}>
         <EntityRelatedList
@@ -168,12 +170,64 @@ class FavouritesListScreen extends Component {
     )
   }
 
+
+  _renderAccomodationListItem = (item, index, horizontal) => {
+    const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
+    const termName = _.get(item, "term.name", "")
+    return (
+      <AccomodationItem 
+        index={index}
+        keyItem={item.nid}
+        horizontal={horizontal}
+        sizeMargins={20}
+        title={title}
+        term={termName}
+        stars={item.stars}
+        onPress={() => this._openItem(item, Constants.ENTITY_TYPES.accomodations)}
+        location={item.location}
+        distance={item.distanceStr}
+      />
+  )}
+
+  _renderAccomodationsList = (list, title, type) => {
+    return (
+    <View>
+      <AsyncOperationStatusIndicator
+        loading={true}
+        success={list && list.length > 0}
+        loadingLayout={<LLHorizontalItemsFlatlist horizontal={false} style={styles.listContainerHeader} title={title} titleStyle={styles.sectionTitle}/>}
+      >
+        <View style={styles.listView}>  
+          <Text style={styles.sectionTitle}>{title}</Text>
+          <FlatList
+            style={styles.list}
+            horizontal={false}
+            numColumns={2}
+            renderItem={({item, index}) => this._renderAccomodationListItem(item, index, false)}
+            data={list}
+            extraData={this.props.locale}
+            keyExtractor={item => item.uuid}
+            contentContainerStyle={styles.listContainerHeader}
+            showsHorizontalScrollIndicator={false}
+            initialNumToRender={3} // Reduce initial render amount
+            maxToRenderPerBatch={2}
+            updateCellsBatchingPeriod={4000} // Increase time between renders
+            windowSize={5} // Reduce the window size
+          />
+        </View>
+      </AsyncOperationStatusIndicator>
+    </View>
+    );
+  }
+
   _renderContent = () => {
     const { favouritesPlaces, favouritesEvents, favouriteItineraries } = this.props.locale.messages;
-    const { items, title, type } = this.state;
+    const { items, title, type, isAccomodationsList } = this.state;
+
     return (
       <ScrollView style={[styles.fill, styles.scrollview]}>
-        {this._renderList(items, title, null, type)}
+        {!isAccomodationsList && this._renderList(items, title, type)}
+        {isAccomodationsList && this._renderAccomodationsList(items, title, type)}
       </ScrollView>
     )
   }

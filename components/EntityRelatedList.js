@@ -26,6 +26,7 @@ export default class EntityRelatedList extends PureComponent {
         const {listType} = this.props
         let place = item && item.term ? item.term.name : "";
         return (
+            <>
             <EntityItem 
                 index={index}
                 keyItem={item.nid}
@@ -39,12 +40,14 @@ export default class EntityRelatedList extends PureComponent {
                 horizontal={this.props.horizontal}
                 sideMargins={this.props.sideMargins}
             />
+            {this._renderHorizontalSeparator()}
+            </>
         )
     }
 
     _renderHorizontalSeparator = () => {
         return (
-          <View style={{width: 5, flex: 1}}></View>
+          <View style={{width: 5}}></View>
         )
     }
 
@@ -115,7 +118,6 @@ export default class EntityRelatedList extends PureComponent {
                         extraData={extraData}
                         keyExtractor={item => item.uuid}
                         data={data}
-                        ItemSeparatorComponent={this._renderHorizontalSeparator}
                         renderItem={({item, index}) => this._renderPoiListItem(item, index)}
                         style={[styles.fill, styles.flatlist, this.props.style]}
                         contentContainerStyle={contentContainerStyle}

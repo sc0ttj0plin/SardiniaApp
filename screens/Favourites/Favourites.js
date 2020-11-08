@@ -236,9 +236,9 @@ class FavouritesScreen extends Component {
     }
   } 
 
-  _onShowListButtonPress = (list, title, type) => {
+  _onShowListButtonPress = (list, title, type, isAccomodationsList) => {
     // console.log("ciao")
-    this.props.navigation.navigate(Constants.NAVIGATION.NavFavouritesListScreen, { items: list, title, type });
+    this.props.navigation.navigate(Constants.NAVIGATION.NavFavouritesListScreen, { items: list, title, type, isAccomodationsList });
   }
 
   /********************* Render methods go down here *********************/
@@ -249,7 +249,7 @@ class FavouritesScreen extends Component {
     )
   }
 
-  _renderShowListButton = (list, title, type) => {
+  _renderShowListButton = (list, title, type, isAccomodationsList) => {
     return(
       <View style={styles.showListButtonView}>
         <TouchableOpacity
@@ -257,7 +257,7 @@ class FavouritesScreen extends Component {
             backgroundColor: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[type].backgroundColor,
           }]}
           activeOpacity={0.7}
-          onPress={() => this._onShowListButtonPress(list, title, type)}>
+          onPress={() => this._onShowListButtonPress(list, title, type, isAccomodationsList)}>
             <Text style={styles.showListButtonText}>Visualizza tutti</Text>
         </TouchableOpacity>
       </View>
@@ -309,6 +309,7 @@ class FavouritesScreen extends Component {
   )}
 
   _renderAccomodationsList = (list, title, type) => {
+    console.log("accomodations list", list.length)
     return (
     <View>
       <AsyncOperationStatusIndicator
@@ -323,10 +324,9 @@ class FavouritesScreen extends Component {
             horizontal={false}
             numColumns={2}
             renderItem={({item, index}) => this._renderAccomodationListItem(item, index, false)}
-            data={list}
+            data={list ? list.slice(0, Constants.FAVOURITES_MAX_ITEMS_IN_LIST) : []}
             extraData={this.props.locale}
             keyExtractor={item => item.uuid}
-            ItemSeparatorComponent={this._renderHorizontalSeparator}
             contentContainerStyle={styles.listContainerHeader}
             showsHorizontalScrollIndicator={false}
             initialNumToRender={3} // Reduce initial render amount
@@ -334,6 +334,9 @@ class FavouritesScreen extends Component {
             updateCellsBatchingPeriod={4000} // Increase time between renders
             windowSize={5} // Reduce the window size
           />
+          {list.length > 6 && 
+            this._renderShowListButton(list, title, type, true)
+          }
         </View>
       </AsyncOperationStatusIndicator>
     </View>

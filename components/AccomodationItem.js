@@ -16,7 +16,7 @@ export default class AccomodationItem extends PureComponent {
     const { listType, horizontal, index, sideMargins } = props;
     let margins = sideMargins || 20
     let itemWidth = ((Layout.window.width - (margins*2))/2) - 5;
-    this.width = !horizontal ? itemWidth : 150;
+    this.width = !horizontal ? itemWidth : 160;
     this.height = this.width;
     let space = (Layout.window.width - (margins*2) - (this.width*2))/ 2;
     this.entityIconOpts = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[listType] || Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.accomodations
@@ -31,7 +31,7 @@ export default class AccomodationItem extends PureComponent {
   }
 
   render() {
-    const { title, term, stars, location, distance, onPress } = this.props;
+    const { title, term, stars, location, distance, onPress, hideBorder } = this.props;
 
     return (
         <BottomSheetTouchable onPress={onPress} style={[styles.item, 
@@ -41,6 +41,7 @@ export default class AccomodationItem extends PureComponent {
             marginBottom: this.marginBottom, 
             width: this.width, 
             height: this.height,
+            borderColor: hideBorder ? "transparent" : Colors.lightGrey
           }]} activeOpacity={0.8}>
           <View style={styles.content}>
             <View style={[styles.corner]}>
@@ -79,6 +80,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.lightGrey,
     borderWidth: 1,
     // paddingLeft: 10,
+    // backgroundColor: "red"
 
   },
   content:{
