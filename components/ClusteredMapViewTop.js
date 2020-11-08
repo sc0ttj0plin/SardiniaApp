@@ -40,6 +40,7 @@ class ClusteredMapViewTop extends PureComponent {
     };
 
     this._region = region;
+    this._mapRef = null;
     this._coords = coords;
     console.log("region constructor", region)
   }
@@ -67,6 +68,7 @@ class ClusteredMapViewTop extends PureComponent {
       position => { 
         if(this._region)
           this._fetchClusters(position.coords); 
+          setTimeout(() => this._mapRef && this._mapRef.animateToRegion(this._region,1000), 500);
       }, 
       ex => { console.log(ex) },
       Constants.NAVIGATOR.watchPositionOpts
