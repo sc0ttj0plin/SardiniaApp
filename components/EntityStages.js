@@ -5,7 +5,8 @@ import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import Layout from '../constants/Layout';
 import { useNavigation } from '@react-navigation/native';
 // import { TouchableOpacity } from 'react-native-gesture-handler';
-
+import moment from "moment"
+import _ from "lodash"
 class EntityStages extends PureComponent {  
   
   constructor(props) {
@@ -27,6 +28,8 @@ class EntityStages extends PureComponent {
   }
 
   _renderEventStage = (item, index) => {
+    const date = _.get(item.date, "start", null)
+    const formattedDate = moment(date).format("DD MMM YYYY");
     return(
       <View style={styles.eventStageView}>
         { index != 0 &&
@@ -35,8 +38,8 @@ class EntityStages extends PureComponent {
         <View style={styles.eventStageNumberView}>
           <Text style={styles.eventStageNumber}>{index + 1}</Text>
         </View>
-        <Text style={styles.eventStageLocation}>{item.location}</Text>
-        <Text style={styles.eventStageDate}>{item.date}</Text>
+        <Text style={styles.eventStageLocation}>{item.nome}</Text>
+        <Text style={styles.eventStageDate}>{formattedDate}</Text>
       </View>
     )
   }
@@ -48,7 +51,7 @@ class EntityStages extends PureComponent {
         <FlatList 
           key={"itinerary-stages"}
           keyExtractor={item => item.name}
-          data={this.state.eventStages}
+          data={this.state.stages}
           renderItem={({item, index}) => this._renderEventStage(item, index)}
           style={styles.eventContainer}
           contentContainerStyle={styles.eventContentContainer}
@@ -241,7 +244,9 @@ const styles = StyleSheet.create({
   },
   eventStageLocation: {
     fontSize: 17,
-    fontWeight: "bold"
+    fontWeight: "bold",
+    maxWidth: Layout.window.width - 100,
+    textAlign: "center"
   },
   eventStageDate: {
     fontSize: 16,

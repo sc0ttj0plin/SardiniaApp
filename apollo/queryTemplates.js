@@ -125,6 +125,7 @@ query ($start: Int, $end: Int, $types: [Int!]) {
       name
       uuid
     }
+    steps: legacy(path: "steps")
     image: legacy(path: "field_immagine_top.und[0].uri")
     language
     abstract: legacy(path: "field_occhiello")
@@ -150,6 +151,7 @@ query ($uuids: [String!]) {
       name
       uuid
     }
+    steps: legacy(path: "steps")
     image: legacy(path: "field_immagine_top.und[0].uri")
     language
     #body #this is single language, from legacy we grab the multilan version

@@ -61,6 +61,7 @@ class EventScreen extends Component {
       title: null, 
       description: null, 
       socialUrl: null, 
+      steps: [],
       sampleVideoUrl: null,
       relatedEntities: [],
     };
@@ -111,7 +112,9 @@ class EventScreen extends Component {
     const { abstract, title, description } = getEntityInfo(entity, ["abstract", "title", "description"], [lan, 0, "value"]);
     const socialUrl = `${Constants.WEBSITE_URL}${greedyArrayFinder(entity.url_alias, "language", lan, "alias", "")}`;
     const sampleVideoUrl = getSampleVideoIndex(entity.nid);
-    this.setState({ entity, abstract,  title,  description,  socialUrl, sampleVideoUrl });
+    const steps = _.get(entity, ["steps", lan], [])
+    // console.log("steps", steps, entity.nid)
+    this.setState({ entity, abstract,  title,  description,  socialUrl, sampleVideoUrl, steps });
   }
 
   _openRelatedEntity = (item) => {
@@ -176,7 +179,7 @@ class EventScreen extends Component {
   }
 
   _renderContent = () => {
-    const { uuid, entity, abstract, title, description, whyVisit, coordinates, socialUrl, sampleVideoUrl, relatedEntities } = this.state;
+    const { uuid, entity, abstract, title, description, steps, coordinates, socialUrl, sampleVideoUrl, relatedEntities } = this.state;
     const { locale, pois, favourites, } = this.props;
     const { lan } = locale;
     const { 
@@ -200,7 +203,7 @@ class EventScreen extends Component {
           </View>
           <View style={[styles.container]}>
             <EntityDescription title={descriptionTitle} text={description} color={Colors.colorEventsScreen}/>
-            <EntityStages />
+            <EntityStages stages={steps}/>
             <View style={styles.separator}/>
             {this._renderRelatedList(canBeOfInterest, relatedEntities, Constants.ENTITY_TYPES.events)}
             <View style={{marginBottom: 30}}></View>
