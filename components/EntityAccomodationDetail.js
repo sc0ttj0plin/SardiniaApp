@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     marginBottom: 13,
     marginTop: 3,
     borderRadius: 8,
-    width: "99%",
+    width: "100%",
     display: "flex",
     flexDirection: "row"
   },
