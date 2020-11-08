@@ -258,8 +258,8 @@ query {
 `;
 
 export const getPoi = gql`
-query ($uuid: String) {
-  nodes(where: { uuid: {_eq: $uuid} }) {
+query ($uuid: String, $nid: Int) {
+  nodes(where: { uuid: {_eq: $uuid}, nid: {_eq: $nid} }) {
     nid
     uuid
     type

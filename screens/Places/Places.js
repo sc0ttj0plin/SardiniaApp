@@ -194,10 +194,8 @@ class PlacesScreen extends PureComponent {
           y: coords.latitude,
           uuids: childUuids
         })).then((pois) => {
-          this.setState({
-            pois: [...statePois, ...pois],
-            poisRefreshing: false
-          });
+          if (pois && pois.length > 0)
+            this.setState({ pois: [...statePois, ...pois], poisRefreshing: false });
         }).catch(e => {
           this.setState({ poisRefreshing: false });
         });
@@ -280,7 +278,7 @@ class PlacesScreen extends PureComponent {
         term={term}
         coords={coords}
         region={region}
-        pois={nearPois}
+        nearPois={nearPois}
         entityType={Constants.ENTITY_TYPES.places}
         types={[Constants.NODE_TYPES.places]}
         uuids={childUuids}
@@ -411,11 +409,16 @@ class PlacesScreen extends PureComponent {
     )
   }
 
+  onPageLayout = (event) => {
+    const { width, height } = event.nativeEvent.layout;
+    console.log("PARENT LAYOUT:", width, height);
+  }; 
+
 
   render() {
     const { render } = this.state;
     return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
+      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this.onPageLayout}>
         <ConnectedHeader 
           backOnPress={this._backButtonPress}
           iconTintColor={Colors.colorPlacesScreen}  

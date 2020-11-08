@@ -5,11 +5,10 @@ import Layout from '../constants/Layout';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {regionToCoords, distance, regionToPoligon, regionDiagonalKm} from '../helpers/maps'
+import _ from 'lodash';
 import actions from '../actions';
 import { apolloQuery } from '../apollo/queries';
-import { Button } from 'react-native-elements';
-import { Ionicons } from '@expo/vector-icons';
+import { boundingRect, regionToPoligon, regionDiagonalKm } from '../helpers/maps';
 import Colors from '../constants/Colors';
 import EntityMarker from './map/EntityMarker'
 import ClusterMarker from './map/ClusterMarker'
@@ -25,15 +24,16 @@ class ClusteredMapViewTop extends PureComponent {
   constructor(props) {
     super(props);
 
-    var { region, coords, types = [] } = props; /* cluster type is like an array of Constants.NODE_TYPES */
+    var { region, coords, types = [], nearPois, } = props; /* cluster type is like an array of Constants.NODE_TYPES */
 
     this._watchID = null; /* navigation watch hook */
 
     const typesForQuery = `{${types.join(",")}}`; /* needs a list like: {"attrattori","strutture_ricettive", ...} */
-
+    this._mapRef = null; /* used for animation */
     this.state = {
       initRegion: region,
       clusters: [],
+      nearPois, /* to calculate the smallest enclosing polygon and zoom to it */
       types: typesForQuery,
       animationToPoi: false, 
       selectedCluster: null, /* currently selected cluster/poi */
@@ -41,7 +41,7 @@ class ClusteredMapViewTop extends PureComponent {
 
     this._region = region;
     this._coords = coords;
-    console.log("region constructor", region)
+    this._geoLocationInitialized = false;
   }
 
   componentDidMount() {
@@ -52,13 +52,20 @@ class ClusteredMapViewTop extends PureComponent {
 
   }
 
+  componentDidUpdate(prevProps) {
+    // if (prevProps.nearPois !== this.props.nearPois && this.props.nearPois.length > 0 && !this._geoLocationInitialized) {
+    //   // console.log("this.props.nearPois.length", this.props.nearPois)
+    //   this._initGeolocation();
+    //   this._geoLocationInitialized = true;
+    // }
+  }
 
   /**
    * Setup navigation: on mount get current position and watch changes
    */
   _initGeolocation = () => {
     navigator.geolocation.getCurrentPosition(
-      position => this._coords = position.coords, 
+      position => this._computeNearestPoisEnclosingPolygon(position), 
       ex => { console.log(ex) },
       Constants.NAVIGATOR.getCurrentPositionOpts
     );
@@ -71,6 +78,14 @@ class ClusteredMapViewTop extends PureComponent {
       ex => { console.log(ex) },
       Constants.NAVIGATOR.watchPositionOpts
     );
+  }
+
+  _computeNearestPoisEnclosingPolygon = (position) => {
+    // const { nearPois } = this.props;
+    this._coords = position.coords; 
+    // this._region = boundingRect(nearPois, [this._coords.longitude, this._coords.latitude], (p) => _.get(p, "georef.coordinates", []));
+    // this._onRegionChangeComplete(this._region);
+    // setTimeout(() => this._mapRef && this._mapRef.animateToRegion(this._region, 1000), 500);
   }
 
   /**
@@ -167,7 +182,6 @@ class ClusteredMapViewTop extends PureComponent {
     this.setState({
       animationToPoi: false
     })
-    console.log("on region change complete")
     this._region = region;
     if(region)
       this._fetchClusters();
@@ -322,7 +336,7 @@ class ClusteredMapViewTop extends PureComponent {
           showsCompass={false}
           onPress={this._clearClusterSelection}
           onRegionChange={this._onRegionChange}
-          onRegionChangeComplete={this._onRegionChangeComplete}
+          _onRegionChangeComplete={this._onRegionChangeComplete}
           >
           {this._renderClustersOrPoi(clusters)}
           {this._renderSelectedPoi(selectedCluster)}

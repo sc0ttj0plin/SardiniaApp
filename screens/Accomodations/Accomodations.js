@@ -185,10 +185,9 @@ class AccomodationsScreen extends Component {
           y: coords.latitude,
           uuids: childUuids
         })).then((pois) => {
-          this.setState({
-            pois: [...statePois, ...pois],
-            poisRefreshing: false
-          });
+          console.log("HERE", pois.length, statePois.length)
+          if (pois && pois.length > 0)
+            this.setState({ pois: [...statePois, ...pois], poisRefreshing: false });
         }).catch(e => {
           this.setState({ poisRefreshing: false });
         });
@@ -241,8 +240,8 @@ class AccomodationsScreen extends Component {
   _backButtonPress = () => { 
     /* update also the header pois based on current cat */
     //this.setState({ pois: [], nearPois: [] });
-    this.setState({ pois: [] });
     this.props.actions.popCurrentCategoryAccomodations();
+    this.setState({ pois: [] });
   }
 
   /********************* Render methods go down here *********************/
@@ -270,7 +269,7 @@ class AccomodationsScreen extends Component {
         term={term}
         coords={coords}
         region={region}
-        pois={nearPois}
+        nearPois={nearPois}
         entityType={Constants.ENTITY_TYPES.accomodations}
         types={[Constants.NODE_TYPES.accomodations]}
         uuids={childUuids}

@@ -36,8 +36,10 @@ export default class ScrollableContainer extends PureComponent {
       inputRange: [0, 0.5, 0.8, 1],
       outputRange: [10, 10, -10, -35],
     });
-    
-    this._snapPoints = [5, Layout.window.height - 390, Layout.window.height - 180]
+    //height of parent - 70 (header) - 12 (color under header) - 44 (handle)
+    // this._snapPoints = [0, Layout.window.height - 390, Layout.window.height - 180]
+    this._snapPoints = [0, 673 -  Layout.statusbarHeight - 70 - 12 - 44 ]
+    // this._snapPoints = [0, , Layout.window.height - 180]
   }
 
   componentDidUpdate(prevProps){
@@ -92,7 +94,7 @@ export default class ScrollableContainer extends PureComponent {
           animatedPosition={this._translateAnim}
           initialNumToRender={8}
           maxToRenderPerBatch={2}
-          onEndReachedThreshold={0.5} 
+          //onEndReachedThreshold={0.5} 
           onEndReached = {({distanceFromEnd})=> onEndReached()}
           contentContainerStyle={[styles.contentContainerStyle, {
             flex:  this.props.data && this.props.data.length == 0 ? 1 : null

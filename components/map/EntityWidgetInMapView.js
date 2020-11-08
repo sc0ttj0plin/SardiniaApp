@@ -15,7 +15,6 @@ export default class EntityWidgetInMapView extends PureComponent {
     super(props);
 
     var {coords, cluster} = props;
-
     var entity = cluster.terms_objs[0];
     entity.distance = distance(coords.longitude, coords.latitude, cluster.centroid.coordinates[0], cluster.centroid.coordinates[1]);
     
@@ -29,7 +28,7 @@ export default class EntityWidgetInMapView extends PureComponent {
   }
 
   componentDidMount() {
-    this._fetchPoi(this.state.entity.term);
+    this._fetchPoi(this.state.entity.nid);
 
   }
 
@@ -45,18 +44,14 @@ export default class EntityWidgetInMapView extends PureComponent {
     }
   }
 
-  _fetchPoi(uuid) {
-      console.log("data", uuid)
-
-      apolloQuery(actions.getPoi({ 
-        uuid 
-      })).then((data) => {
-        // var entity = {...this.state.entity, ...data[0]};
-        // this.setState({
-        //     entity: entity
-        // });
-        console.log("data", data)
-      });
+  _fetchPoi(nid) {
+    apolloQuery(actions.getPoi({ 
+      nid 
+    })).then((data) => {
+      this.setState({ entity: { ...this.state.entity, ...data[0] } });
+    }).catch(e => {
+      console.error(e.message);
+    });
   }
 
   render() { 
