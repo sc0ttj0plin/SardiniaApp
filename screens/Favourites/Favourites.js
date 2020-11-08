@@ -19,6 +19,7 @@ import {
   // EntityMap,
   EntityRelatedList,
   // EntityVirtualTour,
+  AccomodationItem,
   // EntityWhyVisit,
   // TopMedia,
   AsyncOperationStatusIndicator, 
@@ -46,7 +47,7 @@ import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
+import { LLEntitiesFlatlist, LLHorizontalItemsFlatlist } from "../../components/loadingLayouts";
 
 /* Deferred rendering to speedup page inital load: 
    deferred rendering delays the rendering reducing the initial 
@@ -67,7 +68,8 @@ class FavouritesScreen extends Component {
       favPlaces: [],
       favInspirers: [],
       favEvents: [],
-      favItineraries: []
+      favItineraries: [],
+      favAccomodations: [],
     };
       
   }
@@ -85,6 +87,7 @@ class FavouritesScreen extends Component {
     let eventsUuids = Object.keys(this.props.favourites.events);
     let itinerariesUuids = Object.keys(this.props.favourites.itineraries);
     let inspirersUuids = Object.keys(this.props.favourites.inspirers);
+    let accomodationsUuids = Object.keys(this.props.favourites.accomodations);
 
     // this._getPois(placesUuids);
     // this._getEvents(eventsUuids)
@@ -94,6 +97,7 @@ class FavouritesScreen extends Component {
     this.props.actions.getEventsById({ uuids: eventsUuids });
     this.props.actions.getItinerariesById({ uuids: itinerariesUuids });
     this.props.actions.getInspirersById({ uuids: inspirersUuids });
+    this.props.actions.getAccomodationsById({ uuids: accomodationsUuids });
 
   }
 
@@ -126,6 +130,11 @@ class FavouritesScreen extends Component {
     if ((prevProps.events.eventsById !== this.props.events.eventsById) || (prevProps.favourites.events !== this.props.favourites.events)) {
       let favUuids = Object.keys(this.props.favourites.events);
       this._getEvents(favUuids)
+    }
+  
+    if ((prevProps.accomodations !== this.props.accomodations) || (prevProps.favourites.accomodations !== this.props.favourites.accomodations)) {
+      let favUuids = Object.keys(this.props.favourites.accomodations);
+      this._getAccomodations(favUuids)
     }
   }
 
@@ -181,7 +190,6 @@ class FavouritesScreen extends Component {
       if(this.props.inspirers.dataById[uuid])
         inspirers.push(this.props.inspirers.dataById[uuid])
     })
-    console.log("inspirers", inspirers.length)
     this.setState({ favInspirers: inspirers });
   }
 
@@ -191,8 +199,19 @@ class FavouritesScreen extends Component {
       if(this.props.itineraries.dataById[uuid])
       itineraries.push(this.props.itineraries.dataById[uuid])
     })
-    // console.log("itineraries", itineraries.length)
     this.setState({ favItineraries: itineraries });
+  }
+
+  _getAccomodations = (uuids) => {
+    let accomodations = []
+    uuids.map( uuid => {
+      if(this.props.accomodations.dataById[uuid])
+        accomodations.push(this.props.accomodations.dataById[uuid])
+    })
+    // console.log("places", accomodations.length)
+    this.setState({
+      favAccomodations: accomodations
+    })
   }
   
   _openItem = (item, type) => {
@@ -242,7 +261,7 @@ class FavouritesScreen extends Component {
     )
   }
 
-  _renderList = (list, title, extraData, type) => {
+  _renderList = (list, title, type) => {
     return (
       <View style={styles.listView}>
         <EntityRelatedList
@@ -268,14 +287,65 @@ class FavouritesScreen extends Component {
     )
   }
 
+  // _renderAccomodationsList = (list, title, type) => {
+  //   <View style={{ marginLeft: -10, marginRight: -10 }}>
+  //     <AsyncOperationStatusIndicator
+  //       loading={true}
+  //       success={nearPois && nearPois.length > 0}
+  //       loadingLayout={<LLHorizontalItemsFlatlist horizontal={true} style={styles.listContainerHeader} title={nearToYou} titleStyle={styles.sectionTitle}/>}
+  //     >
+  //       <View>  
+  //         <Text style={styles.sectionTitle}>{nearToYou}</Text>
+  //         <FlatList
+  //           horizontal={true}
+  //           renderItem={({item}) => this._renderPoiListItem(item)}
+  //           data={nearPois}
+  //           extraData={this.props.locale}
+  //           keyExtractor={item => item.uuid}
+  //           onEndReachedThreshold={0.5} 
+  //           onEndReached={() => this._fetchNearestPois(coords)}
+  //           ItemSeparatorComponent={this._renderHorizontalSeparator}
+  //           contentContainerStyle={styles.listContainerHeader}
+  //           showsHorizontalScrollIndicator={false}
+  //           initialNumToRender={3} // Reduce initial render amount
+  //           maxToRenderPerBatch={2}
+  //           updateCellsBatchingPeriod={4000} // Increase time between renders
+  //           windowSize={5} // Reduce the window size
+  //         />
+  //       </View>
+  //     </AsyncOperationStatusIndicator>
+  //   </View>
+
+
+  //     )
+  // }
+
+  // const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
+  // const termName = _.get(item, "term.name", "")
+  // return (
+  //   <AccomodationItem 
+  //     index={index}
+  //     keyItem={item.nid}
+  //     horizontal={false}
+  //     sizeMargins={20}
+  //     title={title}
+  //     term={termName}
+  //     stars={item.stars}
+  //     onPress={() => this._openPoi(item)}
+  //     location={item.location}
+  //     distance={item.distanceStr}
+  //   />
+
   _renderContent = () => {
-    const { favouritesPlaces, favouritesEvents, favouriteItineraries, favouritesInspirers } = this.props.locale.messages;
+    const { favouritesPlaces, favouritesEvents, favouriteItineraries, favouritesInspirers, favouriteAccomodations } = this.props.locale.messages;
+    const { favPlaces, favInspirers, favItineraries, favEvents, favAccomodations } = this.state;
     return (
       <ScrollView style={[styles.fill, styles.scrollview]}>
-        {this._renderList(this.state.favPlaces, favouritesPlaces, this.props.pois, Constants.ENTITY_TYPES.places)}
-        {this._renderList(this.state.favInspirers, favouritesInspirers, this.props.inspirers, Constants.ENTITY_TYPES.inspirers)}
-        {this._renderList(this.state.favItineraries, favouriteItineraries, this.props.itineraries, Constants.ENTITY_TYPES.itineraries)}
-        {this._renderList(this.state.favEvents, favouritesEvents, this.props.eventsById, Constants.ENTITY_TYPES.events)}
+        {favPlaces.length > 0 && this._renderList(favPlaces, favouritesPlaces, Constants.ENTITY_TYPES.places)}
+        {favInspirers.length > 0 && this._renderList(favInspirers, favouritesInspirers, Constants.ENTITY_TYPES.inspirers)}
+        {favItineraries.length > 0 && this._renderList(favItineraries, favouriteItineraries, Constants.ENTITY_TYPES.itineraries)}
+        {favEvents.length > 0 && this._renderList(favEvents, favouritesEvents, Constants.ENTITY_TYPES.events)}
+        {favAccomodations.length > 0 && this._renderAccomodationsList(favAccomodations, favouriteAccomodations, Constants.ENTITY_TYPES.accomodations)}
       </ScrollView>
     )
   }
@@ -387,6 +457,7 @@ const mapStateToProps = state => {
     inspirers: state.inspirersState,
     itineraries: state.itinerariesState,
     pois: state.poisState,
+    accomodations: state.accomodationsState,
     searchAutocomplete: state.searchAutocompleteState,
   };
 };
