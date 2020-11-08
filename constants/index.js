@@ -258,7 +258,7 @@ export const SCREENS = {
 
 /* PAGINATION */
 export const PAGINATION = {
-  poisLimit: 30,
+  poisLimit: 15,
   accomodationsLimit: 30,
 }
 
