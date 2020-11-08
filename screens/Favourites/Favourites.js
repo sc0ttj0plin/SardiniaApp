@@ -217,16 +217,19 @@ class FavouritesScreen extends Component {
   _openItem = (item, type) => {
     switch(type) {
       case Constants.ENTITY_TYPES.places:
-        this.props.navigation.push(Constants.NAVIGATION.NavPlaceScreen, { item, mustFetch: true});
+        this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item, mustFetch: true});
         break;
       case Constants.ENTITY_TYPES.events:
-        this.props.navigation.push(Constants.NAVIGATION.NavEventScreen, { item, mustFetch: true });
+        this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item, mustFetch: true });
         break;
-      case Constants.ENTITY_TYPES.places.itineraries:
-        this.props.navigation.push(Constants.NAVIGATION.NavItineraryScreen, { item, mustFetch: true })
+      case Constants.ENTITY_TYPES.itineraries:
+        this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, { item, mustFetch: true })
         break;
-      case Constants.ENTITY_TYPES.places.inspirers:
-        this.props.navigation.push(Constants.NAVIGATION.NavInspirerScreen, { item, mustFetch: true })
+      case Constants.ENTITY_TYPES.inspirers:
+        this.props.navigation.navigate(Constants.NAVIGATION.NavInspirerScreen, { item, mustFetch: true })
+        break;
+      case Constants.ENTITY_TYPES.accomodations:
+        this.props.navigation.navigate(Constants.NAVIGATION.NavAccomodationScreen, { item, mustFetch: true })
         break;
       default:
         break;
@@ -287,54 +290,65 @@ class FavouritesScreen extends Component {
     )
   }
 
-  // _renderAccomodationsList = (list, title, type) => {
-  //   <View style={{ marginLeft: -10, marginRight: -10 }}>
-  //     <AsyncOperationStatusIndicator
-  //       loading={true}
-  //       success={nearPois && nearPois.length > 0}
-  //       loadingLayout={<LLHorizontalItemsFlatlist horizontal={true} style={styles.listContainerHeader} title={nearToYou} titleStyle={styles.sectionTitle}/>}
-  //     >
-  //       <View>  
-  //         <Text style={styles.sectionTitle}>{nearToYou}</Text>
-  //         <FlatList
-  //           horizontal={true}
-  //           renderItem={({item}) => this._renderPoiListItem(item)}
-  //           data={nearPois}
-  //           extraData={this.props.locale}
-  //           keyExtractor={item => item.uuid}
-  //           onEndReachedThreshold={0.5} 
-  //           onEndReached={() => this._fetchNearestPois(coords)}
-  //           ItemSeparatorComponent={this._renderHorizontalSeparator}
-  //           contentContainerStyle={styles.listContainerHeader}
-  //           showsHorizontalScrollIndicator={false}
-  //           initialNumToRender={3} // Reduce initial render amount
-  //           maxToRenderPerBatch={2}
-  //           updateCellsBatchingPeriod={4000} // Increase time between renders
-  //           windowSize={5} // Reduce the window size
-  //         />
-  //       </View>
-  //     </AsyncOperationStatusIndicator>
-  //   </View>
+  _renderAccomodationListItem = (item, index, horizontal) => {
+    const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
+    const termName = _.get(item, "term.name", "")
+    return (
+      <AccomodationItem 
+        index={index}
+        keyItem={item.nid}
+        horizontal={horizontal}
+        sizeMargins={20}
+        title={title}
+        term={termName}
+        stars={item.stars}
+        onPress={() => this._openItem(item, Constants.ENTITY_TYPES.accomodations)}
+        location={item.location}
+        distance={item.distanceStr}
+      />
+  )}
 
+  _renderAccomodationsList = (list, title, type) => {
+    return (
+    <View>
+      <AsyncOperationStatusIndicator
+        loading={true}
+        success={list && list.length > 0}
+        loadingLayout={<LLHorizontalItemsFlatlist horizontal={false} style={styles.listContainerHeader} title={title} titleStyle={styles.sectionTitle}/>}
+      >
+        <View style={styles.listView}>  
+          <Text style={styles.sectionTitle}>{title}</Text>
+          <FlatList
+            style={styles.list}
+            horizontal={false}
+            numColumns={2}
+            renderItem={({item, index}) => this._renderAccomodationListItem(item, index, false)}
+            data={list}
+            extraData={this.props.locale}
+            keyExtractor={item => item.uuid}
+            ItemSeparatorComponent={this._renderHorizontalSeparator}
+            contentContainerStyle={styles.listContainerHeader}
+            showsHorizontalScrollIndicator={false}
+            initialNumToRender={3} // Reduce initial render amount
+            maxToRenderPerBatch={2}
+            updateCellsBatchingPeriod={4000} // Increase time between renders
+            windowSize={5} // Reduce the window size
+          />
+        </View>
+      </AsyncOperationStatusIndicator>
+    </View>
+    );
+  }
 
-  //     )
-  // }
+  _renderNoFavourites = () => {
+    const { noFavourites } = this.props.locale.messages;
+    const { favPlaces, favInspirers, favItineraries, favEvents, favAccomodations } = this.state;
+    if (favPlaces.length == 0 && favInspirers.length == 0 && favItineraries.length == 0 && favEvents.length == 0 && favAccomodations.length == 0)
+      return <View style={styles.center}><Text style={styles.noFavouritesText}>{noFavourites}</Text></View>
+    else 
+      return null;
+  }
 
-  // const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
-  // const termName = _.get(item, "term.name", "")
-  // return (
-  //   <AccomodationItem 
-  //     index={index}
-  //     keyItem={item.nid}
-  //     horizontal={false}
-  //     sizeMargins={20}
-  //     title={title}
-  //     term={termName}
-  //     stars={item.stars}
-  //     onPress={() => this._openPoi(item)}
-  //     location={item.location}
-  //     distance={item.distanceStr}
-  //   />
 
   _renderContent = () => {
     const { favouritesPlaces, favouritesEvents, favouriteItineraries, favouritesInspirers, favouriteAccomodations } = this.props.locale.messages;
@@ -356,6 +370,7 @@ class FavouritesScreen extends Component {
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
         <ConnectedHeader />
+        {this._renderNoFavourites()}
         {render && this._renderContent()}
       </View>
     )
@@ -375,6 +390,12 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     display: "flex",
     flexDirection: "column"
+  },
+  center: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+
   },
   scrollview: {
   },
@@ -426,6 +447,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 20
+  },
+  noFavouritesText: {
+    alignSelf: 'center',
+    fontSize: 20,
   }
 });
 

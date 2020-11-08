@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { View, Platform, StyleSheet, Text } from 'react-native';
 import { TouchableOpacity } from "react-native-gesture-handler"
-
+import BottomSheetTouchable from "../components/BottomSheetTouchable";
 import { Image } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
@@ -23,19 +23,18 @@ export default class AccomodationItem extends PureComponent {
     this.marginRight = 0;
     this.marginLeft = !horizontal && index && index%2 != 0 ? space*2 : 0;
     this.marginBottom = !horizontal ? 16 : 10;
-    // console.log("margin left", this.marginLeft, this.width)
   }
 
   _renderStars = (count) => {
     let stars = new Array(count).fill(0);
-    return stars.map( star => <Ionicons name={"md-star"} size={20} color={Colors.stars} style={styles.star}/>);
+    return stars.map( star => <Ionicons name={"md-star"} size={25} color={Colors.stars} style={styles.star}/>);
   }
 
   render() {
     const { title, term, stars, location, distance, onPress } = this.props;
 
     return (
-        <TouchableOpacity onPress={onPress} style={[styles.item, 
+        <BottomSheetTouchable onPress={onPress} style={[styles.item, 
           {
             marginRight: this.marginRight, 
             marginLeft: this.marginLeft, 
@@ -64,7 +63,7 @@ export default class AccomodationItem extends PureComponent {
           <View style={styles.distanceView}>
             <Text style={styles.distanceText}>Distanza {distance}</Text>
           </View>
-        </TouchableOpacity>
+        </BottomSheetTouchable>
     );
   }
 }
@@ -125,7 +124,7 @@ const styles = StyleSheet.create({
   },
   starsView: {
     display: "flex",
-    flexDirection: "row"
+    flexDirection: "row",
   },
   distanceText: {
     fontSize: 10,
@@ -137,8 +136,9 @@ const styles = StyleSheet.create({
   },
   titleText: {
     marginTop: 5,
-    fontSize: 11,
-    fontWeight: "bold"
+    fontSize: 13,
+    fontWeight: "bold",
+    marginBottom: 10,
   },
   termText: {
     fontSize: 10

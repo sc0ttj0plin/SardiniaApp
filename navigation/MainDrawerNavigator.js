@@ -231,6 +231,7 @@ function FavouritesStackScreen() {
       <FavouritesStack.Screen name={NavPlaceScreen} component={PlaceScreen}/>
       <FavouritesStack.Screen name={NavEventScreen} component={EventScreen}/>
       <FavouritesStack.Screen name={NavItineraryScreen} component={ItineraryScreen}/>
+      <FavouritesStack.Screen name={NavAccomodationScreen} component={AccomodationScreen}/>
     </FavouritesStack.Navigator>
   )
 }
