@@ -78,7 +78,6 @@ export default class ScrollableContainer extends PureComponent {
                 {this.props.extraComponent()}
               </Animated.View>
             }
-            
             <ScrollBottomSheet
               componentType="FlatList"
               numColumns={this.props.numColumns || 1}

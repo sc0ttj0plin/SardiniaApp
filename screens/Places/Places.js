@@ -255,10 +255,14 @@ class PlacesScreen extends PureComponent {
     this.props.actions.popCurrentCategoryPlaces();
   }
 
+  /**
+   * Used to compute snap points
+   * @param {*} event layout event
+   */
   _onPageLayout = (event) => {
     const { width, height } = event.nativeEvent.layout;
-    //height of parent - 70 (header) - 12 (color under header) - 44 (handle)
-    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - 70 - 12 - 44 ] });
+    //height of parent - 70 (header) - 12 (color under header) - 44 (handle) - 36 (header text) - 160 (entityItem) - 10 (margin of entityItem)
+    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - 70 - 12 - 44 - 36 - 160 - 10, height -  Layout.statusbarHeight - 70 - 12 - 44] });
   }; 
 
   /********************* Render methods go down here *********************/
@@ -304,17 +308,19 @@ class PlacesScreen extends PureComponent {
     const { nearPois, coords } = this.state;
     const { nearToYou, whereToGo } = this.props.locale.messages;
       return (
-        <View style={{ marginLeft: -10, marginRight: -10 }}>
+        <View style={styles.listHeaderView}>
           <AsyncOperationStatusIndicator
             loading={true}
             success={nearPois && nearPois.length > 0}
             loadingLayout={<LLHorizontalItemsFlatlist horizontal={true} style={styles.listContainerHeader} title={nearToYou} titleStyle={styles.sectionTitle}/>}
           >
             <View>  
-              <Text style={styles.sectionTitle}>{nearToYou}</Text>
+              <View style={styles.sectionTitleView}>
+                <Text style={styles.sectionTitle}>{nearToYou}</Text>
+              </View>
               <FlatList
                 horizontal={true}
-                renderItem={({item}) => this._renderPoiListItem(item)}
+                renderItem={({item}) => this._renderPoiListItem(item, null, true)}
                 data={nearPois}
                 extraData={this.props.locale}
                 keyExtractor={item => item.uuid}
@@ -330,7 +336,9 @@ class PlacesScreen extends PureComponent {
               />
             </View>
           </AsyncOperationStatusIndicator>
-          <Text style={styles.sectionTitle}>{whereToGo}</Text>
+          <View style={styles.sectionTitleView}>
+            <Text style={styles.sectionTitle}>{whereToGo}</Text>
+          </View>
         </View>
       )
   }
@@ -339,7 +347,7 @@ class PlacesScreen extends PureComponent {
   _renderHorizontalSeparator = () => <View style={{ width: 5, flex: 1 }}></View>;
 
   /* Renders a poi in Header: index */
-  _renderPoiListItem = (item, index) => {
+  _renderPoiListItem = (item, index, horizontal) => {
     const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
     const termName = _.get(item, "term.name", "")
     return (
@@ -354,8 +362,7 @@ class PlacesScreen extends PureComponent {
         place={`${termName}`}
         image={`${item.image}`}
         distance={this.state.isCordsInBound ? item.distanceStr : ""}
-        style={{marginBottom: 10}}
-        horizontal={false}
+        horizontal={horizontal}
         sideMargins={20}
       />
   )}
@@ -452,10 +459,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   sectionTitle: {
-      fontSize: 16,
-      color: Colors.colorPlacesScreen,
-      fontWeight: "bold",
-      margin: 10
+    fontSize: 16,
+    color: Colors.colorPlacesScreen,
+    fontWeight: "bold",
+    margin: 10
   },
   listContainer: {
     backgroundColor: Colors.colorPlacesScreen,
@@ -503,6 +510,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginRight: 8
+  },
+  listHeaderView: { 
+    marginLeft: -10, 
+    marginRight: -10, 
+    minHeight: 36 + 160 + 10 + 36, //36 (text) + 160 (entityitem) + 10 (margin entityItem) + 36 (other text)
+    maxHeight: 36 + 160 + 10 + 36 
+  },
+  sectionTitleView: {
+    maxHeight: 36, 
+    minHeight: 36
   }
 });
 

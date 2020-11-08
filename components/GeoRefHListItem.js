@@ -64,9 +64,8 @@ const styles = StyleSheet.create({
       fontWeight: "bold",
     },
     image: {
+      flex: 1,
       resizeMode: "cover",
-      width: 160,
-      height: 160,
       backgroundColor: "white"
     },
     textContainer: {

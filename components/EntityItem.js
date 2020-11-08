@@ -13,13 +13,13 @@ export default class EntityItem extends PureComponent {
     const { listType, horizontal, index, sideMargins } = props;
     let margins = sideMargins || 20
     let itemWidth = ((Layout.window.width - (margins*2))/2) - 5;
-    this.width = !horizontal ? itemWidth : 160;
+    this.width = horizontal==false ? itemWidth : 160;
     this.height = this.width;
     let space = (Layout.window.width - (margins*2) - (this.width*2))/ 2;
     this.entityIconOpts = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[listType] || Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.places
     this.marginRight = 0;
-    this.marginLeft = !horizontal && index && index%2 != 0 ? space : 0;
-    this.marginBottom = !horizontal ? 16 : 10;
+    this.marginLeft = horizontal==false && index && index%2 != 0 ? space : 0;
+    this.marginBottom = horizontal==false ? 16 : 10;
   }
 
   render() {
@@ -35,7 +35,9 @@ export default class EntityItem extends PureComponent {
               marginLeft: this.marginLeft,
               marginBottom: this.marginBottom,
               width: this.width,
-              height: this.height
+              height: this.height,
+              maxHeight: this.height,
+              minHeight: this.height,
             }]}
         >
             <GeoRefHListItem

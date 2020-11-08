@@ -46,6 +46,8 @@ class AccomodationsScreen extends Component {
       nearPoisRefreshing: false,
       coords: {},
       region: Constants.MAP.defaultRegion,
+      //
+      snapPoints: null,
     };
       
   }
@@ -185,7 +187,6 @@ class AccomodationsScreen extends Component {
           y: coords.latitude,
           uuids: childUuids
         })).then((pois) => {
-          console.log("HERE", pois.length, statePois.length)
           if (pois && pois.length > 0)
             this.setState({ pois: [...statePois, ...pois], poisRefreshing: false });
         }).catch(e => {
@@ -244,6 +245,16 @@ class AccomodationsScreen extends Component {
     this.setState({ pois: [] });
   }
 
+  /**
+   * Used to compute snap points
+   * @param {*} event layout event
+   */
+  _onPageLayout = (event) => {
+    const { width, height } = event.nativeEvent.layout;
+    //height of parent - 70 (header) - 12 (color under header) - 44 (handle) - 36 (header text) - 160 (entityItem) - 10 (margin of entityItem)
+    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - 70 - 12 - 44 - 36 - 160 - 10, height -  Layout.statusbarHeight - 70 - 12 - 44] });
+  }; 
+
   /********************* Render methods go down here *********************/
 
   _renderTopComponentCategorySelector = (item) => 
@@ -287,14 +298,16 @@ class AccomodationsScreen extends Component {
     const { nearPois, coords } = this.state;
     const { nearToYou, whereToGo } = this.props.locale.messages;
       return (
-        <View style={{ marginLeft: -10, marginRight: -10 }}>
+        <View style={styles.listHeaderView}>
           <AsyncOperationStatusIndicator
             loading={true}
             success={nearPois && nearPois.length > 0}
             loadingLayout={<LLHorizontalItemsFlatlist horizontal={true} style={styles.listContainerHeader} title={nearToYou} titleStyle={styles.sectionTitle}/>}
           >
             <View>  
-              <Text style={styles.sectionTitle}>{nearToYou}</Text>
+              <View style={styles.sectionTitleView}>
+                <Text style={styles.sectionTitle}>{nearToYou}</Text>
+              </View>
               <FlatList
                 horizontal={true}
                 renderItem={({item}) => this._renderPoiListItem(item, null, true)}
@@ -313,11 +326,12 @@ class AccomodationsScreen extends Component {
               />
             </View>
           </AsyncOperationStatusIndicator>
-          <Text style={styles.sectionTitle}>{whereToGo}</Text>
+          <View style={styles.sectionTitleView}>
+            <Text style={styles.sectionTitle}>{whereToGo}</Text>
+          </View>
         </View>
       )
   }
-
   /* Horizontal spacing for Header items */
   _renderHorizontalSeparator = () => <View style={{ width: 5, flex: 1 }}></View>;
 
@@ -386,6 +400,7 @@ class AccomodationsScreen extends Component {
         extraComponent={this._renderFiltersList}
         ListHeaderComponent={this._renderListHeader}
         data={data}
+        snapPoints={this.state.snapPoints}
         initialSnapIndex={1}
         onEndReached={this._loadMorePois}
         key={"scrollable-" + numColumns}
@@ -400,7 +415,7 @@ class AccomodationsScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
+      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onPageLayout}>
         <ConnectedHeader 
           backOnPress={this._backButtonPress}
           iconTintColor={Colors.colorAccomodationsScreen}  
@@ -481,6 +496,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginRight: 8
+  },
+  listHeaderView: { 
+    marginLeft: -10, 
+    marginRight: -10, 
+    minHeight: 36 + 160 + 10 + 36, //36 (text) + 160 (entityitem) + 10 (margin entityItem) + 36 (other text)
+    maxHeight: 36 + 160 + 10 + 36 
+  },
+  sectionTitleView: {
+    maxHeight: 36, 
+    minHeight: 36
   }
 });
 
