@@ -37,9 +37,7 @@ export default class ScrollableContainer extends PureComponent {
       outputRange: [10, 10, -10, -35],
     });
     //height of parent - 70 (header) - 12 (color under header) - 44 (handle)
-    // this._snapPoints = [0, Layout.window.height - 390, Layout.window.height - 180]
-    this._snapPoints = [0, 673 -  Layout.statusbarHeight - 70 - 12 - 44 ]
-    // this._snapPoints = [0, , Layout.window.height - 180]
+    this._snapPoints = [0, Layout.window.height - 390, Layout.window.height - 180]
   }
 
   componentDidUpdate(prevProps){
@@ -69,39 +67,43 @@ export default class ScrollableContainer extends PureComponent {
 
   render() {
     const { onEndReached = ()=>{} } = this.props;
-    return (
-      <View style={[styles.fill, {backgroundColor: "transparent", zIndex: -1,}]}>
-        <Animated.View style={[styles.fill, { transform: [{ translateY: this._translateAnimY } ]}]}>
-          {this.props.topComponent()}
-        </Animated.View>
-        { this.props.extraComponent &&
-          <Animated.View style={[styles.extraComponent, { transform: [{ translateY: this._translateAnimY2 } ]}]}>
-            {this.props.extraComponent()}
-          </Animated.View>
-        }
-        
-        <ScrollBottomSheet
-          componentType="FlatList"
-          numColumns={this.props.numColumns || 1}
-          snapPoints={this.props.snapPoints || this._snapPoints}
-          initialSnapIndex={this.props.initialSnapIndex >=0 ? this.props.initialSnapIndex : 0}
-          renderHandle={this._renderHandle}
-          data={this.state.data || []}
-          keyExtractor={this.props.keyExtractor}
-          renderItem={this.props.renderItem}
-          ref={(ref)=>this._scrollable = ref}
-          ListHeaderComponent={this.props.ListHeaderComponent || null}
-          animatedPosition={this._translateAnim}
-          initialNumToRender={8}
-          maxToRenderPerBatch={2}
-          //onEndReachedThreshold={0.5} 
-          onEndReached = {({distanceFromEnd})=> onEndReached()}
-          contentContainerStyle={[styles.contentContainerStyle, {
-            flex:  this.props.data && this.props.data.length == 0 ? 1 : null
-          }]}>
-        </ScrollBottomSheet>
-      </View>
-    )
+    if (this.props.snapPoints && this.props.snapPoints.length > 0)
+      return (
+          <View style={[styles.fill, {backgroundColor: "transparent", zIndex: -1,}]}>
+            <Animated.View style={[styles.fill, { transform: [{ translateY: this._translateAnimY } ]}]}>
+              {this.props.topComponent()}
+            </Animated.View>
+            { this.props.extraComponent &&
+              <Animated.View style={[styles.extraComponent, { transform: [{ translateY: this._translateAnimY2 } ]}]}>
+                {this.props.extraComponent()}
+              </Animated.View>
+            }
+            
+            <ScrollBottomSheet
+              componentType="FlatList"
+              numColumns={this.props.numColumns || 1}
+              snapPoints={this.props.snapPoints}
+              initialSnapIndex={this.props.initialSnapIndex >=0 ? this.props.initialSnapIndex : 0}
+              renderHandle={this._renderHandle}
+              data={this.state.data || []}
+              keyExtractor={this.props.keyExtractor}
+              renderItem={this.props.renderItem}
+              ref={(ref)=>this._scrollable = ref}
+              ListHeaderComponent={this.props.ListHeaderComponent || null}
+              animatedPosition={this._translateAnim}
+              initialNumToRender={8}
+              maxToRenderPerBatch={2}
+              //onEndReachedThreshold={0.5} 
+              onEndReached = {({distanceFromEnd})=> onEndReached()}
+              contentContainerStyle={[styles.contentContainerStyle, {
+                flex:  this.props.data && this.props.data.length == 0 ? 1 : null
+              }]}>
+            </ScrollBottomSheet>
+        </View>
+      )
+    else 
+      return null;
+
   }
 }
 

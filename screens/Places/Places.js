@@ -54,7 +54,9 @@ class PlacesScreen extends PureComponent {
       nearPoisRefreshing: false,
       coords: {},
       region: Constants.MAP.defaultRegion,
-      currentTerm: null
+      currentTerm: null,
+      //
+      snapPoints: null
     };
       
   }
@@ -253,6 +255,12 @@ class PlacesScreen extends PureComponent {
     this.props.actions.popCurrentCategoryPlaces();
   }
 
+  _onPageLayout = (event) => {
+    const { width, height } = event.nativeEvent.layout;
+    //height of parent - 70 (header) - 12 (color under header) - 44 (handle)
+    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - 70 - 12 - 44 ] });
+  }; 
+
   /********************* Render methods go down here *********************/
 
   _renderTopComponentCategorySelector = (item) => 
@@ -399,6 +407,7 @@ class PlacesScreen extends PureComponent {
         extraComponent={this._renderFiltersList}
         ListHeaderComponent={this._renderListHeader}
         data={data}
+        snapPoints={this.state.snapPoints}
         initialSnapIndex={1}
         onEndReached={this._loadMorePois}
         key={"scrollable-" + numColumns}
@@ -409,16 +418,11 @@ class PlacesScreen extends PureComponent {
     )
   }
 
-  onPageLayout = (event) => {
-    const { width, height } = event.nativeEvent.layout;
-    console.log("PARENT LAYOUT:", width, height);
-  }; 
-
 
   render() {
     const { render } = this.state;
     return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this.onPageLayout}>
+      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onPageLayout}>
         <ConnectedHeader 
           backOnPress={this._backButtonPress}
           iconTintColor={Colors.colorPlacesScreen}  
