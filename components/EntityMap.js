@@ -94,13 +94,13 @@ class EntityMap extends PureComponent {
     )
   }
   render() {
-    const { coordinates, hasMarkers } = this.props;
+    const { coordinates, hasMarkers, hideOpenNavigatorButton, containerStyle } = this.props;
     return (
       <>
         { coordinates && (
           <View styles={styles.fill}>
             <View 
-              style={styles.mapContainer}
+              style={[styles.mapContainer, containerStyle]}
               pointerEvents={hasMarkers ? "auto" : "none"}>
               <MapView
                 ref={ map => this._map = map }
@@ -114,7 +114,7 @@ class EntityMap extends PureComponent {
               </MapView>
             </View>
             <View style={styles.openNavigatorContainer}>
-            {!hasMarkers && this._renderOpenNavigatorButton()}
+            {!hasMarkers && !hideOpenNavigatorButton && this._renderOpenNavigatorButton()}
             {hasMarkers && this._renderOpenMapButton()}
             </View>
           </View>

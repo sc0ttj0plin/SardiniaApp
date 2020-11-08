@@ -10,19 +10,21 @@ export default class EntityItem extends PureComponent {
   constructor(props){
     super(props)
     // console.log("props", props)
+    const { listType, horizontal, index, sideMargins } = props;
+    let margins = sideMargins || 20
+    let itemWidth = ((Layout.window.width - (margins*2))/2) - 5;
+    this.width = !horizontal ? itemWidth : "100%";
+    this.height = this.width;
+    let space = (Layout.window.width - (margins*2) - (this.width*2))/ 2;
+    this.entityIconOpts = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[listType] || Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.places
+    this.marginRight = 0;
+    this.marginLeft = !horizontal && index && index%2 != 0 ? space*2 : 0;
+    this.marginBottom = !horizontal ? 16 : 10;
   }
 
   render() {
-    const { onPress, keyItem, title, place, image, distance, listType, horizontal, index, sideMargins } = this.props;
-    let margins = sideMargins || 20
-    let itemWidth = ((Layout.window.width - (margins*2))/2) - 5;
-    let width = !horizontal ? itemWidth : "100%";
-    let height = width;
-    let space = (Layout.window.width - (margins*2) - (width*2))/ 2;
-    let entityIconOpts = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[listType] || Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.places
-    const marginRight = 0;
-    const marginLeft = !horizontal && index && index%2 != 0 ? space*2 : 0;
-    const marginBottom = !horizontal ? 16 : 10
+    const { onPress, keyItem, title, place, image, distance } = this.props;
+
     // console.log("horizontal index", horizontal, index, marginRight, marginLeft, space)
     return (
         <BottomSheetTouchable 
@@ -30,11 +32,11 @@ export default class EntityItem extends PureComponent {
             onPress={onPress}
             activeOpacity={0.7}
             style={[styles.fill, this.props.style, {
-              marginRight,
-              marginLeft,
-              marginBottom,
-              width,
-              height
+              marginRight: this.marginRight,
+              marginLeft: this.marginLeft,
+              marginBottom: this.marginBottom,
+              width: this.width,
+              height: this.height
             }]}
         >
             <GeoRefHListItem
@@ -44,13 +46,13 @@ export default class EntityItem extends PureComponent {
                 distance={distance}
                 style={styles.fill} />
             <View style={[styles.corner, {
-              borderTopColor: entityIconOpts.backgroundTopRightCorner,
+              borderTopColor: this.entityIconOpts.backgroundTopRightCorner,
             }]}>
               <Ionicons
-                  name={entityIconOpts.iconName}
+                  name={this.entityIconOpts.iconName}
                   size={13}
                   style={styles.cornerIcon}
-                  color={entityIconOpts.iconColor}
+                  color={this.entityIconOpts.iconColor}
               />
             </View>
       </BottomSheetTouchable>

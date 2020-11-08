@@ -3,34 +3,52 @@ import { TouchableOpacity, View, Platform, StyleSheet, Text } from 'react-native
 import { Image } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
+import Layout from '../constants/Layout';
 import * as Constants from '../constants';
 
 export default class AccomodationItem extends PureComponent {
 
-  _renderStar = () => {
-    return(
-      <Ionicons
-        name={"md-star"}
-        size={20}
-        color={"#f8e100"}
-        style={styles.star}/>
-    )
+  constructor(props){
+    super(props);
+
+    const { listType, horizontal, index, sideMargins } = props;
+    let margins = sideMargins || 20
+    let itemWidth = ((Layout.window.width - (margins*2))/2) - 5;
+    this.width = !horizontal ? itemWidth : "100%";
+    this.height = this.width;
+    let space = (Layout.window.width - (margins*2) - (this.width*2))/ 2;
+    this.entityIconOpts = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[listType] || Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.accomodations
+    this.marginRight = 0;
+    this.marginLeft = !horizontal && index && index%2 != 0 ? space*2 : 0;
+    this.marginBottom = !horizontal ? 16 : 10;
   }
 
   _renderStars = (count) => {
     let stars = new Array(count).fill(0);
-    return stars.map( star => {
-      return this._renderStar()
-    })
+    return stars.map( star => <Ionicons name={"md-star"} size={20} color={Colors.stars} style={styles.star}/>);
   }
 
   render() {
-    const { title, term, stars, location, distance } = this.props;
+    const { title, term, stars, location, distance, onPress } = this.props;
 
     return (
-        <TouchableOpacity style={styles.item} activeOpacity={0.8}>
+        <TouchableOpacity onPress={onPress} style={[styles.item, 
+          {
+            marginRight: this.marginRight, 
+            marginLeft: this.marginLeft, 
+            marginBottom: this.marginBottom, 
+            width: this.width, 
+            height: this.height
+          }]} activeOpacity={0.8}>
           <View style={styles.content}>
-            <View style={[styles.corner]}/>
+            <View style={[styles.corner]}>
+              <Ionicons
+                  name={this.entityIconOpts.iconName}
+                  size={13}
+                  style={styles.cornerIcon}
+                  color={this.entityIconOpts.iconColor}
+              />
+            </View>
             <Text style={styles.termText}>{term}</Text>
             <Text style={styles.titleText}>{title}</Text>
             <View style={styles.starsView}>
@@ -56,13 +74,19 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 8,
     position: "relative",
-    marginLeft: 10,
   },
   content:{
     width: 150,
     height: 110,
     paddingLeft: 10,
     paddingTop: 10
+  },
+  cornerIcon: { 
+    backgroundColor: "transparent", 
+    position: "absolute",
+    top: -30,
+    right: 0,
+    width: 15,
   },
   corner: {
     position: "absolute",

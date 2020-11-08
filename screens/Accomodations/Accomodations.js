@@ -214,7 +214,7 @@ class AccomodationsScreen extends Component {
    * @param {*} item: item list
    */
   _openPoi = (item) => {
-    this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item });
+    this.props.navigation.navigate(Constants.NAVIGATION.NavAccomodationScreen, { item, mustFetch: true });
   }
 
   /**
@@ -326,9 +326,14 @@ class AccomodationsScreen extends Component {
     const termName = _.get(item, "term.name", "")
     return (
       <AccomodationItem 
+        index={index}
+        keyItem={item.nid}
+        horizontal={false}
+        sizeMargins={20}
         title={title}
         term={termName}
         stars={item.stars}
+        onPress={() => this._openPoi(item)}
         location={item.location}
         distance={item.distanceStr}
       />
@@ -374,7 +379,6 @@ class AccomodationsScreen extends Component {
       data = term;
       renderItem = ({ item }) => this._renderCategoryListItem(item);
     }
-
     return (
       <ScrollableContainer 
         topComponent={this._renderTopComponent}

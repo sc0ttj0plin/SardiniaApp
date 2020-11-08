@@ -332,7 +332,7 @@ class PlacesScreen extends PureComponent {
   /* Horizontal spacing for Header items */
   _renderHorizontalSeparator = () => <View style={{ width: 5, flex: 1 }}></View>;
 
-  /* Renders a poi in Header */
+  /* Renders a poi in Header: index */
   _renderPoiListItem = (item, index) => {
     const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
     const termName = _.get(item, "term.name", "")
@@ -381,7 +381,6 @@ class PlacesScreen extends PureComponent {
     const { term } = this._getCurrentTerm(true);
     const { pois } = this.state;
     const isPoiList = this._isPoiList();
-    // console.log("term", term ? term.length : term, isPoiList, term.name)
     let data = [];
     let renderItem = null;
     let numColumns = 1; //One for categories, two for pois

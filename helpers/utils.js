@@ -1,6 +1,7 @@
 
 import _ from 'lodash';
 import videos from '../constants/_sampleVideos';
+import { Linking, Alert } from 'react-native';
 import * as Constants from "../constants"
 
 export const searchParser = (queryStr) => {
@@ -31,6 +32,29 @@ export const greedyArrayFinder = (array, findKey, match, returnKey, notFoundRetu
 export const getCoordinates = (entity) => {
   return entity && entity.georef ? { latitude: entity.georef.coordinates[1], longitude: entity.georef.coordinates[0] } : null;
 }
+
+export const linkingOpenMail = (email, subject="", body="") => Linking.openURL(`mailto:${email}?subject=${subject}&body=${body}`);
+export const linkingOpenNavigator = (title, coords) => {
+  const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
+  const latLng = `${coords.latitude},${coords.longitude}`;
+  const label = title;
+  const url = Platform.select({
+    ios: `${scheme}${label}@${latLng}`,
+    android: `${scheme}${latLng}(${label})`
+  });
+  Linking.openURL(url); 
+}
+export const linkingCallNumber = phone => {
+  let phoneNumber = `tel:${phone}`;
+  Linking.canOpenURL(phoneNumber).then(supported => {
+    if (!supported) 
+      Alert.alert('Phone number is not available');
+    else
+      return Linking.openURL(phoneNumber);
+  }).catch(err => console.log(err));
+};
+export const linkingOpenUrl = url => Linking.openURL(url);
+
 
 /**
  * Safe multiple fields _.get

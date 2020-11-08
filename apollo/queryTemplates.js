@@ -328,30 +328,6 @@ query ($x: float8, $y: float8, $limit: Int, $offset: Int, $uuids: [String!]) {
 }
 `;
 
-export const getNearestAccomodations = gql`
-query ($x: float8, $y: float8, $limit: Int, $offset: Int, $uuids: [String!]) {
-  nearest_neighbour_no_limits(args: {x: $x, y: $y}, where: {nodes_terms: {term: {uuid: {_in: $uuids}}}, type: {_eq: "${Constants.NODE_TYPES.accomodations}"}}, offset: $offset, limit: $limit, order_by: {distance: asc}) {
-    uuid
-    nid
-    georef
-    title: legacy(path: "title_field")
-    distance
-    image: legacy(path: "field_immagine_top.und[0].uri")
-    gallery: legacy(path: "field_galleria_multimediale.und")
-    email: legacy(path: "field_email.und[0].email")
-    website: legacy(path: "field_sito_web_ricettive.und[0].url")
-    address: legacy(path: "field_indirizzo.und[0].value")
-    location: legacy(path: "field_localit.und[0].value")
-    stars: legacy(path: "field_numero_stelle.und[0].value")
-    phone: legacy(path: "telefono.und[0].value")
-    term {
-      name
-      uuid
-      tid
-    }
-  }
-}
-`;
 
 
 export const getPois = gql`
@@ -503,7 +479,30 @@ query ($limit: Int, $offset: Int, $type: String) {
 `;
 
 
-
+export const getNearestAccomodations = gql`
+query ($x: float8, $y: float8, $limit: Int, $offset: Int, $uuids: [String!]) {
+  nearest_neighbour_no_limits(args: {x: $x, y: $y}, where: {nodes_terms: {term: {uuid: {_in: $uuids}}}, type: {_eq: "${Constants.NODE_TYPES.accomodations}"}}, offset: $offset, limit: $limit, order_by: {distance: asc}) {
+    uuid
+    nid
+    title: legacy(path: "title_field")
+    georef
+    distance
+    image: legacy(path: "field_immagine_top.und[0].uri")
+    gallery: legacy(path: "field_galleria_multimediale.und")
+    email: legacy(path: "field_email.und[0].email")
+    website: legacy(path: "field_sito_web_ricettive.und[0].url")
+    address: legacy(path: "field_indirizzo.und[0].value")
+    location: legacy(path: "field_localit.und[0].value")
+    stars: legacy(path: "field_numero_stelle.und[0].value")
+    phone: legacy(path: "telefono.und[0].value")
+    term {
+      name
+      uuid
+      tid
+    }
+  }
+}
+`;
 
 export const getAccomodations = gql`
 query ($limit: Int, $offset: Int) {
@@ -511,14 +510,17 @@ query ($limit: Int, $offset: Int) {
     nid
     uuid
     type
-    title
+    title: legacy(path: "title_field")
     georef
+    distance
+    image: legacy(path: "field_immagine_top.und[0].uri")
+    gallery: legacy(path: "field_galleria_multimediale.und")
     email: legacy(path: "field_email.und[0].email")
-    sito_web: legacy(path: "field_sito_web_ricettive.und[0].url")
-    indirizzo: legacy(path: "field_indirizzo.und[0].value")
-    localita: legacy(path: "field_localit.und[0].value")
-    stelle: legacy(path: "field_numero_stelle.und[0].value")
-    telefono: legacy(path: "telefono.und[0].value")
+    website: legacy(path: "field_sito_web_ricettive.und[0].url")
+    address: legacy(path: "field_indirizzo.und[0].value")
+    location: legacy(path: "field_localit.und[0].value")
+    stars: legacy(path: "field_numero_stelle.und[0].value")
+    phone: legacy(path: "telefono.und[0].value")
     term {
       name
     }
@@ -532,14 +534,17 @@ query ($uuids: [String!]) {
     nid
     uuid
     type
-    title
+    title: legacy(path: "title_field")
     georef
+    distance
+    image: legacy(path: "field_immagine_top.und[0].uri")
+    gallery: legacy(path: "field_galleria_multimediale.und")
     email: legacy(path: "field_email.und[0].email")
-    sito_web: legacy(path: "field_sito_web_ricettive.und[0].url")
-    indirizzo: legacy(path: "field_indirizzo.und[0].value")
-    localita: legacy(path: "field_localit.und[0].value")
-    stelle: legacy(path: "field_numero_stelle.und[0].value")
-    telefono: legacy(path: "telefono.und[0].value")
+    website: legacy(path: "field_sito_web_ricettive.und[0].url")
+    address: legacy(path: "field_indirizzo.und[0].value")
+    location: legacy(path: "field_localit.und[0].value")
+    stars: legacy(path: "field_numero_stelle.und[0].value")
+    phone: legacy(path: "telefono.und[0].value")
     term {
       name
     }

@@ -34,6 +34,7 @@ export default {
   greyTransparent: 'rgba(125,125,125, 0.8)',
   errorBackground: 'red',
   errorText: '#fff',
+  stars: "#f8e100",
   warningBackground: '#EAEB5E',
   warningText: '#666804',
   noticeBackground: tintColor,
@@ -44,5 +45,5 @@ export default {
   colorExtrasScreen: "white",
   colorItinerariesScreen: '#5D7F20',
   colorEventsScreen: '#D9531E',
-  colorAccomodationsScreen: 'rgb(35,193,208)',
+  colorAccomodationsScreen: '#1FCBD9',
 };

@@ -41,6 +41,7 @@ export AccomodationItem from './AccomodationItem';
 export TopMedia from './TopMedia';
 export EntityStages from './EntityStages';
 export ExtraItem from './ExtraItem';
+export EntityAccomodationDetail from './EntityAccomodationDetail';
 
 
 
