@@ -48,7 +48,8 @@ class ItinerariesScreen extends PureComponent {
       itineraries: [],
       coords: {},
       region: Constants.MAP.defaultRegion,
-      selectedItinerary: null
+      selectedItinerary: null,
+      snapPoints: null
     };
       
   }
@@ -144,6 +145,19 @@ class ItinerariesScreen extends PureComponent {
       })
     }
   }
+
+  
+  /**
+   * Used to compute snap points
+   * @param {*} event layout event
+   */
+  _onPageLayout = (event) => {
+    const { width, height } = event.nativeEvent.layout;
+    let margins = 20
+    let itemWidth = ((Layout.window.width - (margins*2))/2) - 5;
+    //height of parent - 70 (header) - 12 (color under header) - 44 (handle) - 36 (header text) - itemWidth (entityItem) - 10 (margin of entityItem)
+    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - 70 - 12 - 44 - 76 - itemWidth - 10, height -  Layout.statusbarHeight - 70 - 12 - 44 - 76] });
+  }; 
 
   /********************* Render methods go down here *********************/
   
@@ -245,7 +259,7 @@ class ItinerariesScreen extends PureComponent {
         image={`${image}`}
         place={" "}
         style={styles.itinerariesListItem}
-        horizontal={true}
+        horizontal={false}
         style={{
           marginBottom: 10
         }}
@@ -259,14 +273,15 @@ class ItinerariesScreen extends PureComponent {
     if(!data.length)
       data = []
     let snapIndex = selectedItinerary ? 1 : 2;
-    let numColumns = selectedItinerary ? 1 : 2;
+    let numColumns = 2;
     return (
       <ScrollableContainer 
         topComponent={this._renderTopComponent}
         ListHeaderComponent={this._renderListHeader} 
         data={data}
         initialSnapIndex={2}
-        snapPoints={[5, "45%", "70%"]}
+        numColumns={numColumns}
+        snapPoints={this.state.snapPoints}
         snapIndex={snapIndex}
         renderItem={this._renderListItem}
         keyExtractor={item => item.uuid}
@@ -278,7 +293,7 @@ class ItinerariesScreen extends PureComponent {
   render() {
     const { render } = this.state;
     return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
+      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onPageLayout}>
         <ConnectedHeader 
           iconTintColor={Colors.colorItinerariesScreen}
         />
@@ -309,14 +324,13 @@ const styles = StyleSheet.create({
       fontSize: 16,
       color: "black",
       fontWeight: "bold",
-      margin: 10
   },
   listHeader: { 
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
-    marginBottom: 40
+    height: 76
   },
   listContainer: {
     backgroundColor: Colors.colorPlacesScreen,

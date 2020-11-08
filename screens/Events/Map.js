@@ -58,7 +58,8 @@ class EventsMapScreen extends PureComponent {
       coords: {},
       poisLimit: Constants.PAGINATION.poisLimit,
       region: Constants.MAP.defaultRegion,
-      selectedEvent: null
+      selectedEvent: null,
+      snapPoints: null
     };
       
   }
@@ -191,6 +192,18 @@ class EventsMapScreen extends PureComponent {
     this.setState({ selectedEvent: event });
   }
 
+    /**
+   * Used to compute snap points
+   * @param {*} event layout event
+   */
+  _onPageLayout = (event) => {
+    const { width, height } = event.nativeEvent.layout;
+    let margins = 20
+    let itemWidth = ((Layout.window.width - (margins*2))/2) - 5;
+    //height of parent - 70 (header) - 12 (color under header) - 44 (handle) - 36 (header text) - itemWidth (entityItem) - 10 (margin of entityItem)
+    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - 70 - 12 - 44 - 76 - itemWidth - 10, height -  Layout.statusbarHeight - 70 - 12 - 44 - 76] });
+  }; 
+
   // _backButtonPress = () => this.props.actions.popCurrentCategoryPlaces();
 
   /********************* Render methods go down here *********************/
@@ -286,7 +299,7 @@ class EventsMapScreen extends PureComponent {
   _renderHorizontalSeparator = () => <View style={{ width: 5, flex: 1 }}></View>;
 
   /* Renders a poi in Header */
-  _renderListItem = ({item}) => {
+  _renderListItem = ({item, index}) => {
     const { lan } = this.props.locale;
     const title = _.get(item.title, [lan, 0, "value"], null);
     const image = item.image;
@@ -300,7 +313,8 @@ class EventsMapScreen extends PureComponent {
         image={`${image}`}
         place={" "}
         style={styles.eventsListItem}
-        horizontal={true}
+        horizontal={false}
+        extraStyle={styles.eventsListItem}
       />
   )}
 
@@ -316,8 +330,8 @@ class EventsMapScreen extends PureComponent {
         ListHeaderComponent={this._renderListHeader}
         data={data}
         initialSnapIndex={2}
-        snapPoints={[5, "55%", "80%"]}
         snapIndex={snapIndex}
+        snapPoints={this.state.snapPoints}
         numColums={1}
         renderItem={this._renderListItem}
         keyExtractor={item => item.uuid}
@@ -329,7 +343,7 @@ class EventsMapScreen extends PureComponent {
   render() {
     const { render } = this.state;
     return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
+      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onPageLayout}>
         <ConnectedHeader 
           iconTintColor={Colors.colorEventsScreen}  
           backButtonVisible={true}
@@ -362,13 +376,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
-    marginBottom: 40
+    height: 76,
   },
   sectionTitle: {
       fontSize: 16,
       color: "black",
       fontWeight: "bold",
-      margin: 10
   },
   listContainer: {
     backgroundColor: Colors.colorPlacesScreen,
@@ -434,7 +447,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderWidth: 1,
     borderColor: "#0000001A",
-    borderRadius: 10
+    borderRadius: 10,
+    width: "100%",
   }
 });
 
