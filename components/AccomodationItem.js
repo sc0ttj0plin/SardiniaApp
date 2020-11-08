@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
-import { TouchableOpacity, View, Platform, StyleSheet, Text } from 'react-native';
+import { View, Platform, StyleSheet, Text } from 'react-native';
+import { TouchableOpacity } from "react-native-gesture-handler"
+
 import { Image } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
@@ -14,13 +16,14 @@ export default class AccomodationItem extends PureComponent {
     const { listType, horizontal, index, sideMargins } = props;
     let margins = sideMargins || 20
     let itemWidth = ((Layout.window.width - (margins*2))/2) - 5;
-    this.width = !horizontal ? itemWidth : "100%";
+    this.width = !horizontal ? itemWidth : 150;
     this.height = this.width;
     let space = (Layout.window.width - (margins*2) - (this.width*2))/ 2;
     this.entityIconOpts = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[listType] || Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.accomodations
     this.marginRight = 0;
     this.marginLeft = !horizontal && index && index%2 != 0 ? space*2 : 0;
     this.marginBottom = !horizontal ? 16 : 10;
+    // console.log("margin left", this.marginLeft, this.width)
   }
 
   _renderStars = (count) => {
@@ -38,7 +41,7 @@ export default class AccomodationItem extends PureComponent {
             marginLeft: this.marginLeft, 
             marginBottom: this.marginBottom, 
             width: this.width, 
-            height: this.height
+            height: this.height,
           }]} activeOpacity={0.8}>
           <View style={styles.content}>
             <View style={[styles.corner]}>
@@ -49,12 +52,14 @@ export default class AccomodationItem extends PureComponent {
                   color={this.entityIconOpts.iconColor}
               />
             </View>
-            <Text style={styles.termText}>{term}</Text>
-            <Text style={styles.titleText}>{title}</Text>
-            <View style={styles.starsView}>
-              {this._renderStars(stars)}
+            <View style={styles.innerContent}>
+              <Text style={styles.termText}>{term}</Text>
+              <Text style={styles.titleText}>{title}</Text>
+              <View style={styles.starsView}>
+                {this._renderStars(stars)}
+              </View>
+              <Text style={styles.locationText}>{location}</Text>
             </View>
-            <Text style={styles.locationText}>{location}</Text>
           </View>
           <View style={styles.distanceView}>
             <Text style={styles.distanceText}>Distanza {distance}</Text>
@@ -69,17 +74,20 @@ const styles = StyleSheet.create({
     flex: 1
   },
   item: {
-    width: 150,
-    height: 150,
     backgroundColor: "white",
     borderRadius: 8,
     position: "relative",
+    borderColor: Colors.lightGrey,
+    borderWidth: 1,
+    // paddingLeft: 10,
+
   },
   content:{
-    width: 150,
-    height: 110,
-    paddingLeft: 10,
-    paddingTop: 10
+    flex: 1,
+    paddingTop: 10,
+  },
+  innerContent: {
+    paddingLeft: 10
   },
   cornerIcon: { 
     backgroundColor: "transparent", 
@@ -103,7 +111,7 @@ const styles = StyleSheet.create({
     borderTopColor: Colors.colorAccomodationsScreen
   },
   distanceView: {
-    width: 150,
+    width: "100%",
     height: 40,
     backgroundColor: "#F2F2F2",
     borderBottomLeftRadius: 8,
@@ -112,7 +120,8 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     display: "flex",
     justifyContent: "center", 
-    alignItems: "flex-start"
+    alignItems: "flex-start",
+    marginTop: 10
   },
   starsView: {
     display: "flex",
@@ -127,7 +136,8 @@ const styles = StyleSheet.create({
     marginTop: 5
   },
   titleText: {
-    fontSize: 17,
+    marginTop: 5,
+    fontSize: 11,
     fontWeight: "bold"
   },
   termText: {

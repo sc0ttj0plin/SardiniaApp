@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import { 
-  View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
+  View, Text, ActivityIndicator, 
   StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
+import { FlatList, TouchableOpacity } from "react-native-gesture-handler"
+
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   CategoryListItem, 
@@ -296,7 +298,7 @@ class AccomodationsScreen extends Component {
               <Text style={styles.sectionTitle}>{nearToYou}</Text>
               <FlatList
                 horizontal={true}
-                renderItem={({item}) => this._renderPoiListItem(item)}
+                renderItem={({item}) => this._renderPoiListItem(item, null, true)}
                 data={nearPois}
                 extraData={this.props.locale}
                 keyExtractor={item => item.uuid}
@@ -321,14 +323,14 @@ class AccomodationsScreen extends Component {
   _renderHorizontalSeparator = () => <View style={{ width: 5, flex: 1 }}></View>;
 
   /* Renders a poi in Header */
-  _renderPoiListItem = (item, index) => {
+  _renderPoiListItem = (item, index, horizontal) => {
     const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
     const termName = _.get(item, "term.name", "")
     return (
       <AccomodationItem 
         index={index}
         keyItem={item.nid}
-        horizontal={false}
+        horizontal={horizontal}
         sizeMargins={20}
         title={title}
         term={termName}
@@ -372,7 +374,7 @@ class AccomodationsScreen extends Component {
     //if no more nested categories renders pois
     if (isPoiList) {
       data = pois;
-      renderItem = ({ item, index }) => this._renderPoiListItem(item, index);
+      renderItem = ({ item, index }) => this._renderPoiListItem(item, index, false);
       numColumns = 2;
     } else {
       //initially term is null so we get terms from redux, then term is populated with nested terms (categories) 
