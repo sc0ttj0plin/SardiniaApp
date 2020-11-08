@@ -258,7 +258,7 @@ class PlacesScreen extends PureComponent {
   _onPageLayout = (event) => {
     const { width, height } = event.nativeEvent.layout;
     //height of parent - 70 (header) - 12 (color under header) - 44 (handle)
-    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - 70 - 12 - 44 ] });
+    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - 70 - 12 - 44 - 36 - 198] });
   }; 
 
   /********************* Render methods go down here *********************/
