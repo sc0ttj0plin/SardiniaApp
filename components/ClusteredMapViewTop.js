@@ -325,11 +325,11 @@ class ClusteredMapViewTop extends PureComponent {
     var {initRegion, pois, clusters, selectedCluster} = this.state;
     // console.log("Render", this._region)
     return (
-      <View style={ styles.fill }>
+      <>
         <MapView
           ref={ref => this._mapRef = ref}
           provider={ PROVIDER_GOOGLE }
-          style={ styles.fill }
+          style={styles.fill}
           showsUserLocation={ true }
           initialRegion={initRegion}
           mapType='standard'
@@ -343,7 +343,7 @@ class ClusteredMapViewTop extends PureComponent {
           {this._renderSelectedPoi(selectedCluster)}
         </MapView>
         {selectedCluster && this._renderEntityWidget()}
-      </View>
+      </>
 
     );
   }

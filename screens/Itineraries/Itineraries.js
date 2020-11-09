@@ -250,8 +250,7 @@ class ItinerariesScreen extends PureComponent {
     const image = item.image;
     // console.log("title", item)
     return (
-      <EntityItem 
-        index={index}
+      <EntityItem
         keyItem={item.nid}
         listType={Constants.ENTITY_TYPES.itineraries}
         onPress={() => this._openItem(item)}
@@ -260,8 +259,9 @@ class ItinerariesScreen extends PureComponent {
         place={" "}
         style={styles.itinerariesListItem}
         horizontal={false}
-        style={{
-          marginBottom: 10
+        extraStyle={{
+          marginBottom: 10,
+          width: "100%"
         }}
       />
   )}
