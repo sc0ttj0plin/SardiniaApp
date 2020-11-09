@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import GeoRefHListItem from "../components/GeoRefHListItem";
-import ScrollableContainerTouchableOpacity from "../components/ScrollableContainerTouchableOpacity";
+import GeoRefHListItem from "./GeoRefHListItem";
+import ScrollableContainerTouchableOpacity from "./ScrollableContainerTouchableOpacity";
 import { Ionicons } from '@expo/vector-icons';
 import * as Constants from '../constants';
 import Layout from "../constants/Layout";
