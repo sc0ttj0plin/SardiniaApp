@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Visit Sardinia",
-    "slug": "visitsardinia",
+    "name": "Sardinia",
+    "slug": "sardinia",
     "privacy": "unlisted",
     "platforms": [
       "ios",
@@ -23,7 +23,7 @@
       "**/*"
     ],
     "ios": {
-      "bundleIdentifier": "crs4.sinnos.visitsardinia",
+      "bundleIdentifier": "crs4.sinnos.sardinia",
       "supportsTablet": true,
       "config": {
         "googleMapsApiKey": "AIzaSyA5YkfcNGR6dX062bFqhaZ1Asdr2uaNFJo"
@@ -33,7 +33,7 @@
       "permissions": [
         "INTERNET"
       ],
-      "package": "crs4.sinnos.visitsardinia",
+      "package": "crs4.sinnos.sardinia",
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyC3hjqoVRcqCUSh66BNXgeI_LBpgJTi4j0"

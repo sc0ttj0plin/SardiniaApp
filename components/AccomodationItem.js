@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { View, Platform, StyleSheet, Text } from 'react-native';
 import { TouchableOpacity } from "react-native-gesture-handler"
-import BottomSheetTouchable from "../components/BottomSheetTouchable";
+import ScrollableContainerTouchableOpacity from "./ScrollableContainerTouchableOpacity";
 import { Image } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
@@ -35,7 +35,7 @@ export default class AccomodationItem extends PureComponent {
     const { title, term, stars, location, distance, onPress, hideBorder, extraStyle } = this.props;
 
     return (
-        <BottomSheetTouchable onPress={onPress} style={[styles.item, 
+        <ScrollableContainerTouchableOpacity onPress={onPress} style={[styles.item, 
           {
             marginRight: this.marginRight, 
             marginLeft: this.marginLeft, 
@@ -65,7 +65,7 @@ export default class AccomodationItem extends PureComponent {
           <View style={styles.distanceView}>
             <Text style={styles.distanceText}>Distanza {distance}</Text>
           </View>
-        </BottomSheetTouchable>
+        </ScrollableContainerTouchableOpacity>
     );
   }
 }

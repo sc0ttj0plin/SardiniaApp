@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
-import { ActivityIndicator } from 'react-native';
+import { StyleSheet, View, Text, ActivityIndicator } from "react-native";
+import ScrollableContainerTouchableOpacity from "../components/ScrollableContainerTouchableOpacity";
 import { Image } from 'react-native-elements';
 
 /**
@@ -43,7 +43,7 @@ class CategoryListItem extends PureComponent {
     var image = this.props.image ? this.props.image : "https://via.placeholder.com/300x150";
     return (
       <View style={styles.container} onLayout={(event) => { this.setState({ width: event.nativeEvent.layout.width }); }} > 
-       <TouchableOpacity onPress={this.props.onPress} activeOpacity={0.7} style={{flex: 1}}>
+       <ScrollableContainerTouchableOpacity onPress={this.props.onPress} activeOpacity={0.7} style={{flex: 1}}>
         <Image 
             source={{ uri: image }} 
             style={[styles.image, { width: this.state.width, height: this.state.height }, this.props.imageStyle]} 
@@ -51,7 +51,7 @@ class CategoryListItem extends PureComponent {
             >
             {this._renderBottomBox(this.props.title, true, 0.8)}
           </Image>
-        </TouchableOpacity>
+        </ScrollableContainerTouchableOpacity>
       </View>
       );
     }

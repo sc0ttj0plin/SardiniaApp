@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import GeoRefHListItem from "../components/GeoRefHListItem";
-import BottomSheetTouchable from "../components/BottomSheetTouchable";
+import ScrollableContainerTouchableOpacity from "../components/ScrollableContainerTouchableOpacity";
 import { Ionicons } from '@expo/vector-icons';
 import * as Constants from '../constants';
-import Layout from "../constants/Layout"
+import Layout from "../constants/Layout";
 
 export default class EntityItem extends PureComponent {
   constructor(props){
@@ -26,7 +26,7 @@ export default class EntityItem extends PureComponent {
     const { onPress, keyItem, title, place, image, distance, horizontal, extraStyle } = this.props;
 
     return (
-        <BottomSheetTouchable 
+        <ScrollableContainerTouchableOpacity 
             key={keyItem}  
             onPress={onPress}
             activeOpacity={0.7}
@@ -56,7 +56,7 @@ export default class EntityItem extends PureComponent {
                   color={this.entityIconOpts.iconColor}
               />
             </View>
-      </BottomSheetTouchable>
+      </ScrollableContainerTouchableOpacity>
     );
   }
 }
