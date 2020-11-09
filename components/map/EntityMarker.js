@@ -17,7 +17,6 @@ export default class EntityMarker extends PureComponent {
       cluster: props.cluster,
       term: props.term && props.term,
       image: props.term && props.term.marker,
-      trackingViewChanges: props.selected,
       selected: props.selected,
       entityType: props.entityType,
       markerBackgroundColor: this._getBackgroundColor(props.entityType),
@@ -27,18 +26,12 @@ export default class EntityMarker extends PureComponent {
   _getBackgroundColor = (entityType) => {
     switch(entityType) {
       case Constants.ENTITY_TYPES.places:
-        return Colors.colorPlacesScreen;
+        return [Colors.colorPlacesScreen, Colors.colorPlacesScreenTransparent];
       case Constants.ENTITY_TYPES.accomodations:
-        return Colors.colorAccomodationsScreen;
+        return [Colors.colorAccomodationsScreen, Colors.colorAccomodationsScreenTransparent];
       default:
-        return Colors.colorPlacesScreen;
+        return [Colors.colorPlacesScreen, Colors.colorPlacesScreenTransparent];
     }
-  }
-
-  _stopTrackingViewChanges(){
-    this.setState({
-      trackingViewChanges: false
-    })
   }
 
   render() {
@@ -49,13 +42,13 @@ export default class EntityMarker extends PureComponent {
       <Marker.Animated
           coordinate={{ longitude: cluster.centroid.coordinates[0],  latitude: cluster.centroid.coordinates[1] }}
           onPress={this.props.onPress}
-          tracksViewChanges={this.state.trackingViewChanges}
+          tracksViewChanges={false}
           style={{width: 42, height: 42, zIndex: 1}}>
             <View style={[styles.markerContainer, {
-              backgroundColor: selected ? "rgba(23, 74, 124, 0.5)" : "transparent"
+              backgroundColor: selected ? markerBackgroundColor[1] : "transparent"
             }]}>
               <View
-                style={[styles.marker, {backgroundColor: markerBackgroundColor}]}>
+                style={[styles.marker, {backgroundColor: markerBackgroundColor[0]}]}>
                 <Ionicons
                   name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entityType].iconName}
                   size={19}

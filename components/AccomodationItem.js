@@ -13,7 +13,7 @@ export default class AccomodationItem extends PureComponent {
   constructor(props){
     super(props);
 
-    const { listType, horizontal, index, sideMargins } = props;
+    const { listType, horizontal, sideMargins } = props;
     let margins = sideMargins || 20
     let itemWidth = ((Layout.window.width - (margins*2))/2) - 5;
     this.width = !horizontal ? itemWidth : 160;
@@ -21,7 +21,7 @@ export default class AccomodationItem extends PureComponent {
     let space = (Layout.window.width - (margins*2) - (this.width*2))/ 2;
     this.entityIconOpts = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[listType] || Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.accomodations
     this.marginRight = 0;
-    this.marginLeft = !horizontal && index && index%2 != 0 ? space*2 : 0;
+    this.marginLeft = 0;
     this.marginBottom = !horizontal ? 16 : 10;
   }
 
@@ -31,7 +31,7 @@ export default class AccomodationItem extends PureComponent {
   }
 
   render() {
-    const { title, term, stars, location, distance, onPress, hideBorder } = this.props;
+    const { title, term, stars, location, distance, onPress, hideBorder, extraStyle } = this.props;
 
     return (
         <BottomSheetTouchable onPress={onPress} style={[styles.item, 
@@ -42,7 +42,7 @@ export default class AccomodationItem extends PureComponent {
             width: this.width, 
             height: this.height,
             borderColor: hideBorder ? "transparent" : Colors.lightGrey
-          }]} activeOpacity={0.8}>
+          }, extraStyle]} activeOpacity={0.8}>
           <View style={styles.content}>
             <View style={[styles.corner]}>
               <Ionicons

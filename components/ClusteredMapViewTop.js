@@ -1,4 +1,4 @@
-import React, {PureComponent} from 'react';
+import React, {Component, PureComponent} from 'react';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Dimensions, Platform} from 'react-native';
 import Layout from '../constants/Layout';
@@ -23,7 +23,6 @@ class ClusteredMapViewTop extends PureComponent {
 
   constructor(props) {
     super(props);
-
     var { region, coords, types = [], nearPois, } = props; /* cluster type is like an array of Constants.NODE_TYPES */
 
     this._watchID = null; /* navigation watch hook */
@@ -50,15 +49,22 @@ class ClusteredMapViewTop extends PureComponent {
   }
   
   componentWillUnmount() {
-
   }
 
   componentDidUpdate(prevProps) {
-    // if (prevProps.nearPois !== this.props.nearPois && this.props.nearPois.length > 0 && !this._geoLocationInitialized) {
-    //   // console.log("this.props.nearPois.length", this.props.nearPois)
-    //   this._initGeolocation();
-    //   this._geoLocationInitialized = true;
-    // }
+
+    if (prevProps.nearPois !== this.props.nearPois && this.props.nearPois.length > 0 && !this._geoLocationInitialized) {
+      // console.log("this.props.nearPois.length", this.props.nearPois)
+      this._initGeolocation();
+      this._geoLocationInitialized = true;
+    }
+
+    // If the term changes reload pois
+    const prevTerm = this._getTerm(prevProps).term;
+    const currentTerm = this._getTerm(this.props).term;
+    if (prevTerm !== currentTerm) {
+      this._fetchClusters();
+    }
   }
 
   /**
@@ -75,7 +81,7 @@ class ClusteredMapViewTop extends PureComponent {
       position => { 
         if(this._region)
           this._fetchClusters(position.coords); 
-          setTimeout(() => this._mapRef && this._mapRef.animateToRegion(this._region,1000), 500);
+          this._animateMapToRegion();
       }, 
       ex => { console.log(ex) },
       Constants.NAVIGATOR.watchPositionOpts
@@ -83,23 +89,25 @@ class ClusteredMapViewTop extends PureComponent {
   }
 
   _computeNearestPoisEnclosingPolygon = (position) => {
-    // const { nearPois } = this.props;
+    const { nearPois } = this.props;
     this._coords = position.coords; 
-    // this._region = boundingRect(nearPois, [this._coords.longitude, this._coords.latitude], (p) => _.get(p, "georef.coordinates", []));
-    // this._onRegionChangeComplete(this._region);
-    // setTimeout(() => this._mapRef && this._mapRef.animateToRegion(this._region, 1000), 500);
+    this._region = boundingRect(nearPois, [this._coords.longitude, this._coords.latitude], (p) => _.get(p, "georef.coordinates", []));
+    this._animateMapToRegion();
+  }
+
+  _animateMapToRegion = () => {
+    setTimeout(() => this._mapRef && this._mapRef.animateToRegion(this._region, 1000), 500); 
   }
 
   /**
-   * Get current term (category) and its child uuids, 
+   * Get current or previous term (category) and its child uuids, 
    */
-  _getCurrentTerm = () => {
+  _getTerm = (props=this.props) => {
     let term = null;
-
-    if (this.props.entityType === Constants.ENTITY_TYPES.places) {
-      term = this.props.others.placesTerms[this.props.others.placesTerms.length - 1];
-    } else if (this.props.entityType === Constants.ENTITY_TYPES.accomodations) {
-      term = this.props.others.accomodationsTerms[this.props.others.accomodationsTerms.length - 1];
+    if (props.entityType === Constants.ENTITY_TYPES.places) {
+      term = props.others.placesTerms[props.others.placesTerms.length - 1];
+    } else if (props.entityType === Constants.ENTITY_TYPES.accomodations) {
+      term = props.others.accomodationsTerms[props.others.accomodationsTerms.length - 1];
     } else {
       console.error("[ClusteredMapViewTop]: not a known entity");
     }
@@ -112,7 +120,7 @@ class ClusteredMapViewTop extends PureComponent {
    *   clusters === pois when the cluster count is 1
    */
   _fetchClusters() {
-    const { term, childUuids } = this._getCurrentTerm();
+    const { term, childUuids } = this._getTerm();
     const { types } = this.state;
     let region = this._region;
     
@@ -148,24 +156,19 @@ class ClusteredMapViewTop extends PureComponent {
    */
   _onPoiPress(item, e) {
     e.stopPropagation();
-    this.setState({
-      selectedCluster: null,
-    }, () => {
-      if(item.count == 1) {
-        let animationToPoi = Platform.OS === "android" ? true : false;
-        this.setState({
-          selectedCluster: item,
-          animationToPoi: animationToPoi
-        })
-      } else {
-        let region = this._region;
-        region.latitude = item.centroid.coordinates[1];
-        region.longitude = item.centroid.coordinates[0];
-        region.longitudeDelta = region.longitudeDelta/2;
-        region.latitudeDelta = region.latitudeDelta/2;
-        this._mapRef.animateToRegion(region);
-      }
-    })
+    if(item.count == 1) {
+      let animationToPoi = Platform.OS === "android" ? true : false;
+      this.setState({ selectedCluster: item, animationToPoi: animationToPoi });
+      this.props.actions.setCurrentMapEntity(item);
+    } else {
+      let region = this._region;
+      region.latitude = item.centroid.coordinates[1];
+      region.longitude = item.centroid.coordinates[0];
+      region.longitudeDelta = region.longitudeDelta/2;
+      region.latitudeDelta = region.latitudeDelta/2;
+      this._mapRef.animateToRegion(region);
+    }
+
   }
 
   /**
@@ -181,11 +184,9 @@ class ClusteredMapViewTop extends PureComponent {
    * @param {*} region: region boundaries that describe current view
    */
   _onRegionChangeComplete = (region) => {
-    this.setState({
-      animationToPoi: false
-    })
+    this.setState({ animationToPoi: false });
     this._region = region;
-    if(region)
+    if (region)
       this._fetchClusters();
   }
 
@@ -232,7 +233,7 @@ class ClusteredMapViewTop extends PureComponent {
 
 
   /**
-   * Render single poi on bottom of mapview (outside scrollableContainer)
+   * Render single poi on bottom of mapview on press (outside scrollableContainer)
    */
   _renderEntityWidget() {
     return (
@@ -322,11 +323,9 @@ class ClusteredMapViewTop extends PureComponent {
 
   render() {
     var {initRegion, pois, clusters, selectedCluster} = this.state;
-    var {categoriesMap} = this.props;
-
+    // console.log("Render", this._region)
     return (
       <View style={ styles.fill }>
-
         <MapView
           ref={ref => this._mapRef = ref}
           provider={ PROVIDER_GOOGLE }
@@ -338,7 +337,7 @@ class ClusteredMapViewTop extends PureComponent {
           showsCompass={false}
           onPress={this._clearClusterSelection}
           onRegionChange={this._onRegionChange}
-          _onRegionChangeComplete={this._onRegionChangeComplete}
+          onRegionChangeComplete={this._onRegionChangeComplete}
           >
           {this._renderClustersOrPoi(clusters)}
           {this._renderSelectedPoi(selectedCluster)}

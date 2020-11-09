@@ -6,6 +6,7 @@ const INITIAL_STATE = {
   placesTerms: [],
   inspirersTerms: [],
   accomodationsTerms: [],
+  currentMapEntity: null,
 }
 
 
@@ -88,6 +89,12 @@ export default function reducer(state = INITIAL_STATE, action) {
         ...state,
         accomodationsTerms: INITIAL_STATE.accomodationsTerms
       }
+    // MAP POI PRESS     
+    case Constants.SET_CURRENT_MAP_ENTITY:
+      return { 
+        ...state, 
+        currentMapEntity: action.payload
+      };
     default:
       return state;
   }

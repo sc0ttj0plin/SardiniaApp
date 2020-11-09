@@ -79,3 +79,10 @@ export function resetCurrentCategoryAccomodations() {
     type: Constants.RESET_CURRENT_CATEGORY_ACCOMODATIONS
   }
 }
+
+export function setCurrentMapEntity(entity) {
+  return {
+    type: Constants.SET_CURRENT_MAP_ENTITY,
+    payload: entity
+  }
+}

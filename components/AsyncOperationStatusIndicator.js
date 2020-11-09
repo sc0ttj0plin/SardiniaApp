@@ -21,7 +21,6 @@ class AsyncOperationStatusIndicator extends PureComponent {
       this.setState({loading: this.props.loading})
     if(prevProps.success !== this.props.success){
       this.setState({success: this.props.success})
-      console.log("success")
     }
     if(prevProps.error !== this.props.error)
       this.setState({error: this.props.error})

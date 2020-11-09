@@ -16,39 +16,37 @@ export default class EntityWidgetInMapView extends PureComponent {
 
     var {coords, cluster} = props;
     var entity = cluster.terms_objs[0];
-    entity.distance = distance(coords.longitude, coords.latitude, cluster.centroid.coordinates[0], cluster.centroid.coordinates[1]);
+    entity.distance = this._computeDistance(cluster, coords)
     
     this.state = {
       width: 160,
       height: 160,
-      coords: coords,
-      cluster: cluster,
-      entity: entity
+      entity
     };
   }
 
   componentDidMount() {
     this._fetchPoi(this.state.entity.nid);
-
   }
 
   componentDidUpdate(prevProps) {
-    var {cluster} = this.props;
-    
-    if(cluster.terms_objs[0].nid != prevProps.cluster.terms_objs[0].nid) {
-      var entity = cluster.terms_objs[0];
-      entity.distance = distance(this.state.coords.longitude, this.state.coords.latitude, cluster.centroid.coordinates[0], cluster.centroid.coordinates[1]);
-      this.setState({
-        entity: entity
-      })
+    if (prevProps.cluster !== this.props.cluster) {
+      const entity = this.props.cluster.terms_objs[0];
+      this._fetchPoi(entity.nid);
     }
+  }
+
+  _computeDistance = (cluster, coords) => {
+    return distance(coords.longitude, coords.latitude, cluster.centroid.coordinates[0], cluster.centroid.coordinates[1]);
   }
 
   _fetchPoi(nid) {
     apolloQuery(actions.getPoi({ 
       nid 
     })).then((data) => {
-      this.setState({ entity: { ...this.state.entity, ...data[0] } });
+      let entity = data[0];
+      entity.distance = this._computeDistance(this.props.cluster, this.props.coords); 
+      this.setState({ entity });
     }).catch(e => {
       console.error(e.message);
     });

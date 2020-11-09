@@ -56,7 +56,8 @@ class PlacesScreen extends PureComponent {
       region: Constants.MAP.defaultRegion,
       currentTerm: null,
       //
-      snapPoints: null
+      snapPoints: null,
+      snapIndex: 1,
     };
       
   }
@@ -91,6 +92,8 @@ class PlacesScreen extends PureComponent {
       // this.setState({ nearPois: [] }, () => this._fetchNearestPois(this.state.coords)); 
       this._loadMorePois();
     }
+    if (prevProps.others.currentMapEntity !== this.props.others.currentMapEntity)
+      this.setState({ snapIndex: 2 });
   }
 
   componentWillUnmount() {
@@ -285,7 +288,6 @@ class PlacesScreen extends PureComponent {
     const { term, childUuids } = this._getCurrentTerm(true);
     const { coords, region, nearPois } = this.state;
     return (
-      <>
       <ClusteredMapViewTop
         term={term}
         coords={coords}
@@ -295,10 +297,8 @@ class PlacesScreen extends PureComponent {
         types={[Constants.NODE_TYPES.places]}
         uuids={childUuids}
         style={{flex: 1}}
-        categoriesMap={term}
         mapRef={ref => (this._refs["ClusteredMapViewTop"] = ref)}
       />
-      </>
     )
 
   }
@@ -349,11 +349,12 @@ class PlacesScreen extends PureComponent {
   /* Renders a poi in Header: index */
   _renderPoiListItem = (item, index, horizontal) => {
     const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
-    const termName = _.get(item, "term.name", "")
+    const termName = _.get(item, "term.name", "");
     return (
       <EntityItem 
         index={index}
         keyItem={item.nid}
+        extraStyle={ horizontal ? {} : {width: '100%'}}
         backgroundTopLeftCorner={"white"}
         iconColor={Colors.colorPlacesScreen}
         listType={Constants.ENTITY_TYPES.places}
@@ -392,7 +393,7 @@ class PlacesScreen extends PureComponent {
   /* Render content */
   _renderContent = () => {
     const { term } = this._getCurrentTerm(true);
-    const { pois } = this.state;
+    const { pois, snapIndex } = this.state;
     const isPoiList = this._isPoiList();
     let data = [];
     let renderItem = null;
@@ -401,13 +402,18 @@ class PlacesScreen extends PureComponent {
     if (isPoiList) {
       data = pois;
       renderItem = ({ item, index }) => this._renderPoiListItem(item, index);
-      numColumns = 2;
+      // numColumns = 2;
     } else {
       //initially term is null so we get terms from redux, then term is populated with nested terms (categories) 
       data = term;
       renderItem = ({ item }) => this._renderCategoryListItem(item);
     }
 
+    /** 
+     * NOTE: changing numColums on the fly isn't supported and causes the component to unmount, 
+     * thus slowing down the process
+     * set a key to the inner flatlist therefore 
+    */
     return (
       <ScrollableContainer 
         topComponent={this._renderTopComponent}
@@ -415,10 +421,10 @@ class PlacesScreen extends PureComponent {
         ListHeaderComponent={this._renderListHeader}
         data={data}
         snapPoints={this.state.snapPoints}
+        snapIndex={snapIndex}
         initialSnapIndex={1}
         onEndReached={this._loadMorePois}
-        key={"scrollable-" + numColumns}
-        numColumns={numColumns}
+        numColumns={numColumns} 
         renderItem={renderItem}
         keyExtractor={item => item.uuid}
       />

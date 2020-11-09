@@ -48,6 +48,7 @@ class AccomodationsScreen extends Component {
       region: Constants.MAP.defaultRegion,
       //
       snapPoints: null,
+      snapIndex: 1,
     };
       
   }
@@ -82,6 +83,9 @@ class AccomodationsScreen extends Component {
       // this.setState({ nearPois: [] }, () => this._fetchNearestPois(this.state.coords)); 
       this._loadMorePois();
     }
+
+    if (prevProps.others.currentMapEntity !== this.props.others.currentMapEntity)
+      this.setState({ snapIndex: 2 });
   }
 
   componentWillUnmount() {
@@ -275,7 +279,6 @@ class AccomodationsScreen extends Component {
     const { term, childUuids } = this._getCurrentTerm(true);
     const { coords, region, nearPois } = this.state;
     return (
-      <>
       <ClusteredMapViewTop
         term={term}
         coords={coords}
@@ -288,7 +291,6 @@ class AccomodationsScreen extends Component {
         categoriesMap={term}
         mapRef={ref => (this._refs["ClusteredMapViewTop"] = ref)}
       />
-      </>
     )
 
   }
@@ -343,6 +345,7 @@ class AccomodationsScreen extends Component {
       <AccomodationItem 
         index={index}
         keyItem={item.nid}
+        extraStyle={ horizontal ? {} : {width: '100%'}}
         horizontal={horizontal}
         sizeMargins={20}
         title={title}
@@ -379,7 +382,7 @@ class AccomodationsScreen extends Component {
   /* Render content */
   _renderContent = () => {
     const { term } = this._getCurrentTerm(true);
-    const { pois } = this.state;
+    const { pois, snapIndex } = this.state;
     const isPoiList = this._isPoiList();
     let data = [];
     let renderItem = null;
@@ -388,7 +391,7 @@ class AccomodationsScreen extends Component {
     if (isPoiList) {
       data = pois;
       renderItem = ({ item, index }) => this._renderPoiListItem(item, index, false);
-      numColumns = 2;
+      // numColumns = 2;
     } else {
       //initially term is null so we get terms from redux, then term is populated with nested terms (categories) 
       data = term;
@@ -401,9 +404,9 @@ class AccomodationsScreen extends Component {
         ListHeaderComponent={this._renderListHeader}
         data={data}
         snapPoints={this.state.snapPoints}
+        snapIndex={snapIndex}
         initialSnapIndex={1}
         onEndReached={this._loadMorePois}
-        key={"scrollable-" + numColumns}
         numColumns={numColumns}
         renderItem={renderItem}
         keyExtractor={item => item.uuid}

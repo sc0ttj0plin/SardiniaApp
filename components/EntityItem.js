@@ -23,7 +23,7 @@ export default class EntityItem extends PureComponent {
   }
 
   render() {
-    const { onPress, keyItem, title, place, image, distance, horizontal } = this.props;
+    const { onPress, keyItem, title, place, image, distance, horizontal, extraStyle } = this.props;
 
     return (
         <BottomSheetTouchable 
@@ -38,7 +38,7 @@ export default class EntityItem extends PureComponent {
               height: this.height,
               maxHeight: this.height,
               minHeight: this.height,
-            }, this.props.extraStyle]}
+            }, extraStyle]}
         >
             <GeoRefHListItem
                 title={`${title}`}

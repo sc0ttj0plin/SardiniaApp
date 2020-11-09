@@ -99,7 +99,7 @@ export const RESET_CURRENT_CATEGORY_INSPIRERS = 'visitsardinia/inspirers/RESET_C
 export const PUSH_CURRENT_CATEGORY_ACCOMODATIONS = 'visitsardinia/accomodations/PUSH_CURRENT_CATEGORY_ACCOMODATIONS';
 export const POP_CURRENT_CATEGORY_ACCOMODATIONS = 'visitsardinia/accomodations/POP_CURRENT_CATEGORY_ACCOMODATIONS';
 export const RESET_CURRENT_CATEGORY_ACCOMODATIONS = 'visitsardinia/accomodations/RESET_CURRENT_CATEGORY_ACCOMODATIONS';
-
+export const SET_CURRENT_MAP_ENTITY = 'visitsardinia/map/SET_CURRENT_MAP_ENTITY'; /* to set the snap index on parent components */
 
 
 // API
