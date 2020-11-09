@@ -39,7 +39,6 @@ class ClusteredMapViewTop extends PureComponent {
     };
 
     this._region = region;
-    this._mapRef = null;
     this._coords = coords;
     this._geoLocationInitialized = false;
   }
@@ -81,7 +80,7 @@ class ClusteredMapViewTop extends PureComponent {
       position => { 
         if(this._region)
           this._fetchClusters(position.coords); 
-          this._animateMapToRegion();
+          // this._animateMapToRegion();
       }, 
       ex => { console.log(ex) },
       Constants.NAVIGATOR.watchPositionOpts
@@ -92,7 +91,7 @@ class ClusteredMapViewTop extends PureComponent {
     const { nearPois } = this.props;
     this._coords = position.coords; 
     this._region = boundingRect(nearPois, [this._coords.longitude, this._coords.latitude], (p) => _.get(p, "georef.coordinates", []));
-    this._animateMapToRegion();
+    // this._animateMapToRegion();
   }
 
   _animateMapToRegion = () => {
