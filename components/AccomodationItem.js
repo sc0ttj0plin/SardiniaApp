@@ -13,7 +13,7 @@ export default class AccomodationItem extends PureComponent {
   constructor(props){
     super(props);
 
-    const { listType, horizontal, sideMargins } = props;
+    const { listType, horizontal, sideMargins, index } = props;
     let margins = sideMargins || 20
     let itemWidth = ((Layout.window.width - (margins*2))/2) - 5;
     this.width = !horizontal ? itemWidth : 160;
@@ -21,7 +21,8 @@ export default class AccomodationItem extends PureComponent {
     let space = (Layout.window.width - (margins*2) - (this.width*2))/ 2;
     this.entityIconOpts = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[listType] || Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.accomodations
     this.marginRight = 0;
-    this.marginLeft = 0;
+    this.marginLeft = horizontal==false && index && index%2 != 0 ? (space*2) : 0;
+
     this.marginBottom = !horizontal ? 16 : 10;
   }
 

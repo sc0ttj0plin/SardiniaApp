@@ -93,9 +93,8 @@ export default class ScrollableContainer extends PureComponent {
             <ScrollBottomSheet
               componentType="FlatList"
               key={numColumns} /* NOTE always set a key to refresh only this component and avoid unmounting */
-              numColumns={numColumns || 1}
+              // numColumns={numColumns || 1}
               snapPoints={snapPoints}
-              snapIndex={2}
               initialSnapIndex={initialSnapIndex >=0 ? initialSnapIndex : 0}
               renderHandle={this._renderHandle}
               data={this.state.data || []}
