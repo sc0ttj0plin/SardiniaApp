@@ -20,7 +20,7 @@ export default class EntityItem extends PureComponent {
     this.marginRight = 0;
     this.marginLeft = horizontal==false && index && index%2 != 0 ? space : 0;
     this.marginBottom = horizontal==false ? 16 : 10;
-    console.log("entity item", this.width, this.height)
+    // console.log("entity item", this.width, this.height)
   }
 
   render() {
