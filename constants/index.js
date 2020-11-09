@@ -256,6 +256,14 @@ export const SCREENS = {
   }
 }
 
+/* COMPONENTS CONFIGURATIONS */
+export const COMPONENTS = {
+  header: {
+    height: 65,
+    bottomLineHeight: 8
+  }
+}
+
 /* PAGINATION */
 export const PAGINATION = {
   poisLimit: 15,
@@ -390,6 +398,7 @@ export const ACCOMODATIONS_DATA_DEFAULT = [
   {term: "categoria 4", title: "titolo 4", stars: 4, distance: 5, location: "città"},
   {term: "categoria 5", title: "titolo 5", stars: 5, distance: 6, location: "città"}
 ]
+
 
 export const styles = {
   html: {

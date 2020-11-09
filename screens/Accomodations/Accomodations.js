@@ -255,8 +255,8 @@ class AccomodationsScreen extends Component {
    */
   _onPageLayout = (event) => {
     const { width, height } = event.nativeEvent.layout;
-    //height of parent - 70 (header) - 12 (color under header) - 44 (handle) - 36 (header text) - 160 (entityItem) - 10 (margin of entityItem)
-    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - 70 - 12 - 44 - 36 - 160 - 10, height -  Layout.statusbarHeight - 70 - 12 - 44] });
+    //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 44 (handle) - 36 (header text) - 160 (entityItem) - 10 (margin of entityItem)
+    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44 - 36 - 160 - 10, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44] });
   }; 
 
   /********************* Render methods go down here *********************/

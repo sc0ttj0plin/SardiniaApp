@@ -95,7 +95,7 @@ class ExtrasScreen extends Component {
         retryFun={() => {}} 
         loadingLayout={
           <LLEntitiesFlatlist 
-            horizontal={false} 
+            vertical={true} 
             numColumns={1} 
             itemStyle={styles.item} 
             style={styles.listStyle} 

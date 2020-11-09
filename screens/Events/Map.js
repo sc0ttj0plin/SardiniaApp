@@ -189,7 +189,12 @@ class EventsMapScreen extends PureComponent {
   }
 
   _selectMarker = (event) => {
-    this.setState({ selectedEvent: event });
+    if(event)
+      this.setState({ selectedEvent: null }, () => {
+        this.setState({ selectedEvent: event });
+      })
+    else 
+      this.setState({ selectedEvent: null });
   }
 
     /**
@@ -200,8 +205,8 @@ class EventsMapScreen extends PureComponent {
     const { width, height } = event.nativeEvent.layout;
     let margins = 20
     let itemWidth = ((Layout.window.width - (margins*2))/2) - 5;
-    //height of parent - 70 (header) - 12 (color under header) - 44 (handle) - 36 (header text) - itemWidth (entityItem) - 10 (margin of entityItem)
-    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - 70 - 12 - 44 - 76 - itemWidth - 10, height -  Layout.statusbarHeight - 70 - 12 - 44 - 76] });
+    //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 44 (handle) - 36 (header text) - itemWidth (entityItem) - 10 (margin of entityItem)
+    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44 - 76 - itemWidth - 10, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44 - 76] });
   }; 
 
   // _backButtonPress = () => this.props.actions.popCurrentCategoryPlaces();
@@ -266,7 +271,7 @@ class EventsMapScreen extends PureComponent {
           onPress={() => this._selectMarker(event)}
           tracksViewChanges={false}
           style={styles.markerAnimated}>
-            <View style={[styles.markerContainer, { backgroundColor: selected ? "rgba(217, 83, 30, 0.5)" : "transparent"}]}>
+            <View style={[styles.markerContainer, { backgroundColor: selected ? Colors.colorEventsScreenTransparent : "transparent"}]}>
               <View
                 style={[styles.marker]}>
                 <Ionicons

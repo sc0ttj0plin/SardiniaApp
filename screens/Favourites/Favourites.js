@@ -309,7 +309,6 @@ class FavouritesScreen extends Component {
   )}
 
   _renderAccomodationsList = (list, title, type) => {
-    console.log("accomodations list", list.length)
     return (
     <View>
       <AsyncOperationStatusIndicator

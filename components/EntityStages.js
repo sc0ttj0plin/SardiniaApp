@@ -4,6 +4,7 @@ import * as Constants from '../constants';
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import Layout from '../constants/Layout';
 import { useNavigation } from '@react-navigation/native';
+import Colors from '../constants/Colors';
 // import { TouchableOpacity } from 'react-native-gesture-handler';
 import moment from "moment"
 import _ from "lodash"
@@ -71,7 +72,9 @@ class EntityStages extends PureComponent {
     return(
       <View style={styles.itemContainer}>
         <View style={styles.topLine}>
-          <Text style={styles.title}>{title}</Text>
+          <View style={styles.titleView}>
+            <Text style={styles.title}>{title}</Text>
+          </View>
           <Text style={styles.index}>{index + 1}</Text>
         </View>
         <View style={styles.imageCircle}>
@@ -146,19 +149,24 @@ const styles = StyleSheet.create({
   },
   topLine: {
     height: 36,
-    backgroundColor: "#5D7F20",
+    backgroundColor: Colors.colorItinerariesScreen,
     paddingLeft: 70,
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 20
+    // paddingVertical: 20,
+    justifyContent: 'center',
+  },
+  titleView: {
+    height: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   title: {
     color: "white",
     fontSize: 13,
     textTransform: "capitalize",
     paddingVertical: Platform.OS === "ios" ? 0 : 5,
-    flex: 4
   },
   index: {
     color: "white",
@@ -199,7 +207,7 @@ const styles = StyleSheet.create({
   bottomButtonText: {
     fontSize: 14,
     fontWeight: "bold",
-    color: "#5D7F20"
+    color: Colors.colorItinerariesScreen
   },
   eventStagesView: {
     paddingVertical: 50,

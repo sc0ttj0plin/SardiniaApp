@@ -147,12 +147,13 @@ class ItineraryStagesMapScreen extends Component {
           >
           {this.state.markers.map((marker, index) => {
             const coordinates = marker.coords;
-            const opacityStyle = { opacity: interpolations[index].opacity };
+            // const opacityStyle = { opacity: interpolations[index].opacity };
+            const opacityStyle = { opacity: 1 };
             return (
               <MapView.Marker
                 key={index} 
                 coordinate={coordinates}
-                tracksViewChanges={true}
+                tracksViewChanges={false}
                 onPress={() => this._handleMarkerPress(index)}
               >
                 <Animated.View style={[styles.markerWrap, opacityStyle]}>

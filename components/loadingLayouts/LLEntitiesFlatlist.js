@@ -14,30 +14,22 @@ export default class LLEntitiesFlatlist extends PureComponent{
         const { sideMargins, horizontal, vertical } = this.props;
         let margins = sideMargins || 20
         let itemWidth = ((Layout.window.width - (margins*2))/2) - 5;
-        let width = !horizontal ? itemWidth : "100%";
+        let width = horizontal===false ? itemWidth : "100%";
         let height = width;
         let space = (Layout.window.width - (margins*2) - (width*2))/ 2;
         const marginRight = 0;
-        const marginLeft = !horizontal && index && index%2 != 0 ? space*2 : 0;
-        const marginBottom = !horizontal ? 16 : 0
-        // console.log("horizontal", horizontal, vertical)
+        const marginLeft = horizontal===false && index && index%2 != 0 ? space*2 : 0;
+        const marginBottom = horizontal===false ? 16 : 0
         return(
             <>
-            { !horizontal &&
+            { horizontal===false &&
                 <ShimmerWrapper 
                     style={[styles.item]} 
-                    shimmerStyle={[styles.item, this.props.itemStyle,  {
-                        marginRight,
-                        marginLeft,
-                        marginBottom,
-                        width,
-                        height
-                    }]}/>
+                    shimmerStyle={[styles.item, this.props.itemStyle,  { marginRight, marginLeft, marginBottom, width, height }]}/>
             }
-
             { horizontal || vertical &&
                 <ShimmerWrapper 
-                    style={[styles.item]} 
+                    style={[styles.item, this.props.itemStyle]} 
                     shimmerStyle={[styles.item, this.props.itemStyle]}/>
             }
             </>

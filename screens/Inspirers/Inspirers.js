@@ -120,12 +120,17 @@ class InspirersScreen extends Component {
    */
   _loadMorePois = () => {
     const { childUuids } = this._getCurrentTerm();
-    const { inspirers } = this.state;
+    const { inspirers: stateInspirers } = this.state;
     if (this._isPoiList()) {
-      this.props.actions.getInspirers({ 
-        limit: Constants.PAGINATION.poisLimit, 
-        offset: 0,
+      apolloQuery(actions.getInspirers({
+        limit: Constants.PAGINATION.poisLimit,
+        offset: stateInspirers ? stateInspirers.length : 0,
         uuids: childUuids
+      })).then((inspirers) => {
+        if (inspirers && inspirers.length > 0)
+          this.setState({ inspirers: [...stateInspirers, ...inspirers]});
+      }).catch(e => {
+        console.error("[Inspirers] Cannot fetch inspirers")
       });
     }
   }
@@ -145,7 +150,7 @@ class InspirersScreen extends Component {
    * @param {*} item: item list
    */
   _openPoi = (item) => {
-    this.props.navigation.navigate(Constants.NAVIGATION.NavInspirerScreen, { item });
+    this.props.navigation.navigate(Constants.NAVIGATION.NavInspirerScreen, { item, mustFetch: true });
   }
 
   /**
@@ -156,7 +161,10 @@ class InspirersScreen extends Component {
     return term && (!term.terms || term.terms.length == 0);
   }
 
-  _backButtonPress = () => this.props.actions.popCurrentCategoryInspirers();
+  _backButtonPress = () => {
+    this.setState({ inspirers: [] });
+    this.props.actions.popCurrentCategoryInspirers()
+  };
 
   _isSuccessData  = () => this.props.categories.success || this.props.inspirers.success;
   _isLoadingData  = () => this.props.categories.loading || this.props.inspirers.loading; 
@@ -192,7 +200,7 @@ class InspirersScreen extends Component {
 
   _renderContent = () => {
     const { term } = this._getCurrentTerm(true);
-    const { inspirers } = this.props;
+    const { inspirers } = this.state;
     const isPoiList = this._isPoiList();
     let flatListData = [];
     let renderItem = null;
@@ -200,7 +208,7 @@ class InspirersScreen extends Component {
     let numColumns = 1; //One for categories, two for pois
     //if no more nested categories renders pois
     if (isPoiList) {
-      flatListData = inspirers.data || [];
+      flatListData = inspirers || [];
       renderItem = ({ item, index }) => this._renderPoiListItem(item, index);
       numColumns = 2;
     } else {

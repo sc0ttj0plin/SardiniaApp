@@ -17,6 +17,7 @@ export default {
   colorAccomodationsScreen: '#1FCBD9', //rgb(31,203,217)
   colorPlacesScreenTransparent: 'rgb(23,74,124,0.5)',
   colorAccomodationsScreenTransparent: 'rgb(31,203,217,0.5)',
+  colorEventsScreenTransparent: "rgba(217, 83, 30, 0.5)",
   lightRed: 'rgba(217,83,30,0.5)',
   black: '#000000',
   darkGrey: '#333333',    //rgb(51,51,51)

@@ -130,20 +130,12 @@ class ItinerariesScreen extends PureComponent {
 
 
   _selectMarker = (itinerary) => {
-    if(itinerary){
-      this.setState({
-        selectedItinerary: null
-      }, () => {
-        this.setState({
-          selectedItinerary: itinerary
-        })
+    if(itinerary)
+      this.setState({ selectedItinerary: null }, () => {
+        this.setState({ selectedItinerary: itinerary });
       })
-    }
-    else{
-      this.setState({
-        selectedItinerary: null
-      })
-    }
+    else 
+      this.setState({ selectedItinerary: null });
   }
 
   
@@ -155,8 +147,8 @@ class ItinerariesScreen extends PureComponent {
     const { width, height } = event.nativeEvent.layout;
     let margins = 20
     let itemWidth = ((Layout.window.width - (margins*2))/2) - 5;
-    //height of parent - 70 (header) - 12 (color under header) - 44 (handle) - 36 (header text) - itemWidth (entityItem) - 10 (margin of entityItem)
-    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - 70 - 12 - 44 - 76 - itemWidth - 10, height -  Layout.statusbarHeight - 70 - 12 - 44 - 76] });
+    //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 44 (handle) - 36 (header text) - itemWidth (entityItem) - 10 (margin of entityItem)
+    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44 - 76 - itemWidth - 10, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44 - 76] });
   }; 
 
   /********************* Render methods go down here *********************/

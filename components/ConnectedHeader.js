@@ -250,11 +250,10 @@ const styles = StyleSheet.create({
     zIndex: 999,
     flexDirection: "row",
     width: "100%",
-    backgroundColor: 'rgba(255,255,255,0.90)',
-    height: 70,
-    maxHeight: 70,
-    minHeight: 70,
-    // marginTop: STATUSBAR_HEIGHT, //Layout.header.height,
+    backgroundColor: 'white',
+    height: Constants.COMPONENTS.header.height,
+    maxHeight: Constants.COMPONENTS.header.height,
+    minHeight: Constants.COMPONENTS.header.height,
     alignItems: "center",
   },
   searchBarExternalContainer: {
@@ -270,8 +269,7 @@ const styles = StyleSheet.create({
   searchBarContainer: {
     flex: 1,
     alignItems:'center',
-    // height: 60,
-    height: 70,
+    height: Constants.COMPONENTS.header.height,
   },
   buttonContainer: {
     backgroundColor: "transparent"
@@ -289,12 +287,12 @@ const styles = StyleSheet.create({
   },
   bottomLine: {
     width: "100%",
-    height: 12,
+    height: Constants.COMPONENTS.header.bottomLineHeight,
     marginBottom: 0,
   },
   mixedBottomLine: {
     width: "100%",
-    height: 12,
+    height: Constants.COMPONENTS.header.bottomLineHeight,
     marginBottom: 0,
     display: "flex",
     flexDirection: "row",
