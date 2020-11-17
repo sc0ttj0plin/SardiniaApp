@@ -259,6 +259,7 @@ query {
 }
 `;
 
+
 export const getPoi = gql`
 query ($uuid: String, $nid: Int) {
   nodes(where: { uuid: {_eq: $uuid}, nid: {_eq: $nid} }) {
@@ -268,6 +269,17 @@ query ($uuid: String, $nid: Int) {
     title: legacy(path: "title_field")
     description: legacy(path: "body")
     georef
+    nodes_linked(where: {field: {_eq: "cosa_vedere"}, node: {type: {_eq: "${Constants.NODE_TYPES.places}"}}}) {
+      node {
+        title
+        nid
+        uuid
+        term {
+          name
+        }
+        image: legacy(path: "field_immagine_top.und[0].uri")
+      }
+    }
     term {
       tid
       name

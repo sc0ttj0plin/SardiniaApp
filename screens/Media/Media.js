@@ -66,7 +66,6 @@ class MediaScreen extends PureComponent {
 
     /* Get props from navigation */ 
     const { source, type, images, initialPage } = this.props.route.params;
-    console.log("type", type)
     this._vPlayer = null;
     this._refs = {};
     this.state = {
@@ -208,7 +207,6 @@ class MediaScreen extends PureComponent {
 
   _renderContent = () => {
     const {type} = this.state;
-    console.log("type", type)
     switch(type){
       case "video":
         return this._renderVideoView()

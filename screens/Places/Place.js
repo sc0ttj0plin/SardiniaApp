@@ -102,15 +102,16 @@ class PlaceScreen extends Component {
   }
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
-  _fetchNearNodes = async (coords) => {
-    if (coords)
+  _fetchNearNodes = async () => {
+    const { coordinates } = this.state;
+    if (coordinates)
       try {
         const relatedEntities = await apolloQuery(actions.getNearestNodesByType({ 
           type: Constants.NODE_TYPES.places, 
           limit: Constants.PAGINATION.poisAccomodationsLimit,
           offset: 0,
-          x: coords.longitude,
-          y: coords.latitude,
+          x: coordinates.longitude,
+          y: coordinates.latitude,
           excludeUuids: [this.state.uuid]
         }));
         this.setState({ relatedEntities });
@@ -119,18 +120,20 @@ class PlaceScreen extends Component {
       }
   }
 
-  _fetchNearAccomodations = async (coords) => {
-    if (coords)
+  _fetchNearAccomodations = async () => {
+    const { coordinates } = this.state;
+    if (coordinates)
       try {
         const nearAccomodations = await apolloQuery(actions.getNearestNodesByType({ 
           type: Constants.NODE_TYPES.accomodations, 
           limit: Constants.PAGINATION.poisAccomodationsLimit,
           offset: 0,
-          x: coords.longitude,
-          y: coords.latitude,
+          x: coordinates.longitude,
+          y: coordinates.latitude,
         }));
-        //Compute dataRegion, the smallest enclosing region of the pois (no center, compute from pois)
-        const nearAccomodationsRegion = boundingRect(nearAccomodations, null, (p) => p.georef.coordinates);
+        // Compute dataRegion, the smallest enclosing region of the pois (center is current poi location)
+        const centerCoords = [coordinates.longitude, coordinates.latitude]
+        const nearAccomodationsRegion = boundingRect(nearAccomodations, centerCoords, (p) => p.georef.coordinates);
         this.setState({ nearAccomodations, nearAccomodationsRegion });
       } catch(error) {
         console.log(error);
@@ -145,10 +148,11 @@ class PlaceScreen extends Component {
     const socialUrl = `${Constants.WEBSITE_URL}${greedyArrayFinder(entity.url_alias, "language", lan, "alias", "")}`;
     const sampleVideoUrl = getSampleVideoIndex(entity.nid);
     const gallery = getGalleryImages(entity);
-    this.setState({ entity, abstract,  title,  description,  whyVisit,  coordinates,  socialUrl, sampleVideoUrl, gallery });
-    // After parsing the entity fetch near accomodations 
-    this._fetchNearNodes(coordinates);
-    this._fetchNearAccomodations(coordinates);
+    this.setState({ entity, abstract,  title,  description,  whyVisit,  coordinates,  socialUrl, sampleVideoUrl, gallery }, () => {
+      // After parsing the entity fetch near accomodations  and nodes, both depend on state
+      this._fetchNearNodes();
+      this._fetchNearAccomodations();
+    });
   }
 
   _openRelatedEntity = (item) => {
@@ -169,6 +173,14 @@ class PlaceScreen extends Component {
       default:
         break;
     }
+  }
+
+  _openAccomodationsMap = () => {
+    //Compute region of nearest pois and send to accomodations screen
+    this.props.navigation.navigate(Constants.NAVIGATION.NavAccomodationsScreen, { 
+      region: this.state.nearAccomodationsRegion, 
+      sourceEntity: this.state.entity 
+    });
   }
 
   /********************* Render methods go down here *********************/
@@ -256,9 +268,9 @@ class PlaceScreen extends Component {
             {this._renderRelatedList(canBeOfInterest, relatedEntities, Constants.ENTITY_TYPES.places)}
             <EntityAccomodations 
               data={nearAccomodations} 
-              region={nearAccomodationsRegion} 
               locale={locale} 
               showMapBtnText={showMap} 
+              openMap={this._openAccomodationsMap}
               horizontal/>
           </View>
          </ScrollView>
