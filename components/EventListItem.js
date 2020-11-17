@@ -71,9 +71,9 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 5
   },
   itemDescView: {
-    paddingTop: 14,
+    paddingTop: 8,
     paddingLeft: 10,
-    // paddingRight: 10,
+    paddingRight: 10,
     flex: 1
   },
   listItemImage: {
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     zIndex: -1
   },
   listItemTitle: {
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: "bold",
   },
   listItemDate: {
