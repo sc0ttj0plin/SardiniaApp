@@ -408,7 +408,7 @@ export const styles = {
   html: {
     shortText: "textAlign: center; color: #333333; font-size: 15;",
     shortTextSecondary: "textAlign: center; color: #333333; font-size: 15;",
-    longText: "textAlign: center; opacity: 1; font-size: 15; padding-left: 16px; padding-right: 16px;",
+    longText: "textAlign: justify; opacity: 1; font-size: 15; padding-left: 16px; padding-right: 16px;",
     longTextLeft: "textAlign: left; opacity: 1; font-size: 15;",
   },
   innerText: {

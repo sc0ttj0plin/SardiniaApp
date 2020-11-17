@@ -82,8 +82,8 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 8,
     position: "relative",
-    borderColor: Colors.lightGrey,
-    borderWidth: 1,
+    // borderColor: Colors.lightGrey,
+    // borderWidth: 1,
     // paddingLeft: 10,
     // backgroundColor: "red"
 
@@ -146,6 +146,8 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "bold",
     marginBottom: 10,
+    minHeight: 50,
+    paddingRight: 5
   },
   termText: {
     fontSize: 10

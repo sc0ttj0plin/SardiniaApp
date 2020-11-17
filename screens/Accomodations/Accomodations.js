@@ -369,7 +369,15 @@ class AccomodationsScreen extends Component {
       <AccomodationItem 
         index={index}
         keyItem={item.nid}
-        extraStyle={ horizontal ? {} : {width: '100%'}}
+        extraStyle={ horizontal ? {
+          borderColor: Colors.lightGrey,
+          borderWidth: 1,
+        } : {
+          width: '100%',
+          borderColor: Colors.lightGrey,
+          borderWidth: 1,
+          marginLeft: 0
+        }}
         horizontal={horizontal}
         sizeMargins={20}
         title={title}

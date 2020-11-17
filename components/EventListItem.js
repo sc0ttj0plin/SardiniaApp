@@ -52,21 +52,23 @@ const styles = StyleSheet.create({
       height: 2,
     },
     shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowRadius: 5,
     elevation: 5,
     marginBottom: 13,
     marginTop: 3,
-    borderRadius: 5,
+    borderTopLeftRadius: 5,
+    borderBottomLeftRadius: 5,
     width: "99%",
     display: "flex",
     flexDirection: "row"
   },
   imageView: {
-    width: 78,
-    height: 78,
-    borderRadius: 5,
+    flex: 1,
+    maxWidth: 78,
     borderRightColor: "#F2F2F2",
-    borderRightWidth: 1
+    borderRightWidth: 1,
+    borderTopLeftRadius: 5,
+    borderBottomLeftRadius: 5
   },
   itemDescView: {
     paddingTop: 14,
