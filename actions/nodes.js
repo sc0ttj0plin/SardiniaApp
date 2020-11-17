@@ -7,3 +7,10 @@ export function getNodes(query, props) {
     ...props
   };
 }
+
+export function getNearestNodesByType(query) {
+  return {
+    type: Constants.GET_NEAREST_NODES_BY_TYPE,
+    query: query,
+  };
+}

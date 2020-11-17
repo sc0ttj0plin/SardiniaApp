@@ -76,7 +76,7 @@ class ItineraryScreen extends Component {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
     const { uuid, mustFetch } = this.state;
-    this._fetchRelatedNodes();
+    this._fetchNearNodes();
 
     if (mustFetch)
       this.props.actions.getItinerariesById({ uuids: [uuid] });
@@ -99,7 +99,7 @@ class ItineraryScreen extends Component {
   _isLoadingData  = () => true;   /* e.g. this.props.pois.loading; */
   _isErrorData    = () => null;    /* e.g. this.props.pois.error; */
 
-  _fetchRelatedNodes = async () => {
+  _fetchNearNodes = async () => {
     try {
       const relatedEntities = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.itineraries, offset: 0, limit: 5}))
       this.setState({ relatedEntities })
@@ -159,7 +159,6 @@ class ItineraryScreen extends Component {
         this.props.navigation.navigate(Constants.NAVIGATION.ItineraryScreen, { item, mustFetch: true });
         break;
       case Constants.NODE_TYPES.itineraries:
-        // console.log("item", item.type)
         this.props.navigation.push(Constants.NAVIGATION.NavItineraryScreen, { item, mustFetch: true })
         break;
       case Constants.NODE_TYPES.inspirers:

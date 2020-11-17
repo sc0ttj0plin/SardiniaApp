@@ -25,6 +25,7 @@
 //:::               GeoDataSource.com (C) All Rights Reserved 2018            :::
 //:::                                                                         :::
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+import { getCenter } from 'geolib';
 
 export function distance(lat1, lon1, lat2, lon2, unit = "K") {
 	if ((lat1 == lat2) && (lon1 == lon2)) {
@@ -64,15 +65,19 @@ export function distanceToString(distance, unit = "K") {
     return distance.toString();
 }
 
+
 // Generates a bounding rectangle ready for use in google maps [[lng0, lat0], [lng1, lat1], ..., [lngN, latN]]
 export function boundingRect(points, center, getCoordsFun) {
-	var arrayLength = points.length;
-	var trIndex = 0;
-	var blIndex = 0;
-	var tr = bl = getCoordsFun(points[0]);
+  let _center = center;
+	let arrayLength = points.length;
+	let trIndex = 0;
+	let blIndex = 0;
+  let tr = bl = getCoordsFun(points[0]);
+  let coordsArray = [];
 	
 	points.forEach((p, index) => {
-		var coords = getCoordsFun(p);
+    let coords = getCoordsFun(p);
+    coordsArray.push({ latitude: coords[1], longitude: coords[0] });
 		if(coords[0] < bl[0] || coords[1] < bl[1]) {
 			bl=coords;
 			blIndex = index;
@@ -81,14 +86,19 @@ export function boundingRect(points, center, getCoordsFun) {
 			tr=coords;
 			trIndex = index;
 		}
-	})
+  })
+  // If there's no center compute it from points
+  if (!_center) { 
+    _center = getCenter(coordsArray);
+    _center = [_center.longitude, _center.latitude];
+  }
 
-	var maxLonDelta = Math.max(Math.abs(center[0]-tr[0]), Math.abs(center[0]-bl[0]));
-	var maxLatDelta = Math.max(Math.abs(center[1]-tr[1]), Math.abs(center[1]-bl[1]));
+	let maxLonDelta = Math.max(Math.abs(_center[0]-tr[0]), Math.abs(_center[0]-bl[0]));
+	let maxLatDelta = Math.max(Math.abs(_center[1]-tr[1]), Math.abs(_center[1]-bl[1]));
 
 	return {
-		longitude: center[0],
-		latitude: center[1],
+		longitude: _center[0],
+		latitude: _center[1],
 		longitudeDelta: maxLonDelta * 2.5,
 		latitudeDelta: maxLatDelta * 2.5
 	}

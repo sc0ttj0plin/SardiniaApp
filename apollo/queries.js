@@ -82,7 +82,7 @@ export function apolloQuery(action) {
         return pois;
     })
 
-  }  else if (action.type === Constants.GET_CLUSTERS) {
+  } else if (action.type === Constants.GET_CLUSTERS) {
       return apolloClient.query({
           query: Queries.getClusters,
           variables: action.query
@@ -91,8 +91,7 @@ export function apolloQuery(action) {
           clusters.forEach((e) => processEntity(e, action.coords));
           return clusters;
       })
-  }
-  else if (action.type === Constants.GET_POI) {
+  } else if (action.type === Constants.GET_POI) {
       return apolloClient.query({
           query: Queries.getPoi,
           variables: action.query
@@ -108,5 +107,14 @@ export function apolloQuery(action) {
           processEntity(resp.data.nodes[0]);
           return resp.data.nodes;
       })
+  } else if (action.type === Constants.GET_NEAREST_NODES_BY_TYPE) {
+    return apolloClient.query({
+      query: Queries.getNearestByType,
+      variables: action.query
+    }).then((resp) => {
+        var pois = resp.data.nearest_neighbour_no_limits;
+        pois.forEach((e) => processEntity(e, action.coords));
+        return pois;
+    })
   }
 }

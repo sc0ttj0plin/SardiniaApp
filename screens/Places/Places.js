@@ -256,6 +256,7 @@ class PlacesScreen extends PureComponent {
     //this.setState({ pois: [], nearPois: [] });
     this.setState({ pois: [] });
     this.props.actions.popCurrentCategoryPlaces();
+    this.props.actions.setCurrentMapEntity(undefined);
   }
 
   /**
@@ -264,8 +265,8 @@ class PlacesScreen extends PureComponent {
    */
   _onPageLayout = (event) => {
     const { width, height } = event.nativeEvent.layout;
-    //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 44 (handle) - 36 (header text) - 160 (entityItem) - 10 (margin of entityItem)
-    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44 - 36 - 160 - 10, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44] });
+    //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 44 (handle) - 36 (header text) - 160 (entityItem) - 10 (margin of entityItem) - 36 (whereToGo text)
+    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44 - 36 - 160 - 10 - 36, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44] });
   }; 
 
   /********************* Render methods go down here *********************/
@@ -306,7 +307,9 @@ class PlacesScreen extends PureComponent {
   /* Renders the Header of the scrollable container */
   _renderListHeader = () => {
     const { nearPois, coords } = this.state;
-    const { nearToYou, whereToGo } = this.props.locale.messages;
+    const { nearToYou, whereToGo, explore } = this.props.locale.messages;
+    const { term } = this._getCurrentTerm();
+    const categoryTitle = term ? `${explore} ${term.name}` : whereToGo;
       return (
         <View style={styles.listHeaderView}>
           <AsyncOperationStatusIndicator
@@ -337,7 +340,7 @@ class PlacesScreen extends PureComponent {
             </View>
           </AsyncOperationStatusIndicator>
           <View style={styles.sectionTitleView}>
-            <Text style={styles.sectionTitle}>{whereToGo}</Text>
+            <Text style={styles.sectionTitle}>{categoryTitle}</Text>
           </View>
         </View>
       )
@@ -468,7 +471,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.colorPlacesScreen,
     fontWeight: "bold",
-    margin: 10
+    padding: 10
   },
   listContainer: {
     backgroundColor: Colors.colorPlacesScreen,

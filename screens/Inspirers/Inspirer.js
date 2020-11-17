@@ -84,7 +84,7 @@ class InspirerScreen extends Component {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
     const { uuid, mustFetch } = this.state;
-    this._fetchRelatedNodes();
+    this._fetchNearNodes();
 
     if (mustFetch)
       this.props.actions.getInspirersById({ uuids: [uuid], vid: Constants.VIDS.inspirersCategories });
@@ -103,7 +103,7 @@ class InspirerScreen extends Component {
   }
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
-  _fetchRelatedNodes = async () => {
+  _fetchNearNodes = async () => {
     try {
       const relatedEntities = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.inspirers, offset: 0, limit: 5}))
       this.setState({ relatedEntities })
@@ -192,6 +192,7 @@ class InspirerScreen extends Component {
       gallery: galleryTitle, 
       description: descriptionTitle,
       canBeOfInterest,
+      showMap,
     } = locale.messages;
     
     const { orientation } = this.state;
@@ -213,7 +214,7 @@ class InspirerScreen extends Component {
             <EntityDescription title={descriptionTitle} text={description} color={Colors.colorInspirersScreen}/>
             <View style={styles.separator}/>
             {this._renderRelatedList(canBeOfInterest, relatedEntities, Constants.ENTITY_TYPES.inspirers)}
-            <EntityAccomodations horizontal/>
+            <EntityAccomodations data={[]} locale={locale} showMapBtnText={showMap} horizontal/>
           </View>
          </ScrollView>
        </View>

@@ -2,104 +2,107 @@ import Colors from './Colors';
 import { Platform } from "react-native"
 
 // Actions
-export const GET_ENTITIES = 'visitsardinia/entities/LOAD';
-export const GET_ENTITIES_SUCCESS = 'visitsardinia/entities/LOAD_SUCCESS';
-export const GET_ENTITIES_FAIL = 'visitsardinia/entities/LOAD_FAIL';
-export const GET_ENTITY = 'visitsardinia/entity/LOAD';
-export const GET_ENTITY_SUCCESS = 'visitsardinia/entity/LOAD_SUCCESS';
-export const GET_ENTITY_FAIL = 'visitsardinia/entity/LOAD_FAIL';
-export const GET_CATEGORIES = 'visitsardinia/categories/LOAD';
-export const GET_CATEGORIES_SUCCESS = 'visitsardinia/categories/LOAD_SUCCESS';
-export const GET_CATEGORIES_FAIL = 'visitsardinia/categories/LOAD_FAIL';
-export const GET_CATEGORIES_INSPIRERS = 'visitsardinia/categoriesinspirers/LOAD';
-export const GET_CATEGORIES_INSPIRERS_SUCCESS = 'visitsardinia/categoriesinspirers/LOAD_SUCCESS';
-export const GET_CATEGORIES_INSPIRERS_FAIL = 'visitsardinia/categoriesinspirers/LOAD_FAIL';
-export const GET_NEARPOIS = 'visitsardinia/nearpois/LOAD';
-export const GET_NEARPOIS_SUCCESS = 'visitsardinia/nearpois/LOAD_SUCCESS';
-export const GET_NEARPOIS_FAIL = 'visitsardinia/nearpois/LOAD_FAIL';
-export const GET_NEARESTPOIS = 'visitsardinia/nearestpois/LOAD';
-export const GET_NEARESTPOIS_SUCCESS = 'visitsardinia/nearestpois/LOAD_SUCCESS';
-export const GET_NEARESTPOIS_FAIL = 'visitsardinia/nearestpois/LOAD_FAIL';
-export const GET_NEARESTPOISIMAGES = 'visitsardinia/nearestpoisimages/LOAD';
-export const GET_NEARESTPOISIMAGES_SUCCESS = 'visitsardinia/nearestpoisimages/LOAD_SUCCESS';
-export const GET_NEARESTPOISIMAGES_FAIL = 'visitsardinia/nearestpoisimages/LOAD_FAIL';
-export const GET_NEARESTACCOMODATIONS = 'visitsardinia/nearestaccomodations/LOAD';
-export const GET_NEARESTACCOMODATIONS_SUCCESS = 'visitsardinia/nearestaccomodations/LOAD_SUCCESS';
-export const GET_NEARESTACCOMODATIONS_FAIL = 'visitsardinia/nearestaccomodations/LOAD_FAIL';
-export const GET_NEARESTACCOMODATIONSIMAGES = 'visitsardinia/nearestaccomodationsimages/LOAD';
-export const GET_NEARESTACCOMODATIONSIMAGES_SUCCESS = 'visitsardinia/nearestaccomodationsimages/LOAD_SUCCESS';
-export const GET_NEARESTACCOMODATIONSIMAGES_FAIL = 'visitsardinia/nearestaccomodationsimages/LOAD_FAIL';
-export const GET_POIS = 'visitsardinia/pois/LOAD';
-export const GET_POIS_SUCCESS = 'visitsardinia/pois/LOAD_SUCCESS';
-export const GET_POIS_FAIL = 'visitsardinia/pois/LOAD_FAIL';
-export const GET_EXTRAS = 'visitsardinia/extras/LOAD';
-export const GET_EXTRAS_SUCCESS = 'visitsardinia/extras/LOAD_SUCCESS';
-export const GET_EXTRAS_FAIL = 'visitsardinia/extras/LOAD_FAIL';
-export const GET_POI = 'visitsardinia/poi/LOAD';
-export const GET_POI_SUCCESS = 'visitsardinia/poi/LOAD_SUCCESS';
-export const GET_POI_FAIL = 'visitsardinia/poi/LOAD_FAIL';
-export const GET_NODES = 'visitsardinia/nodes/LOAD';
-export const GET_NODES_SUCCESS = 'visitsardinia/nodes/LOAD_SUCCESS';
-export const GET_NODES_FAIL = 'visitsardinia/nodes/LOAD_FAIL';
-export const GET_ACCOMODATIONS = 'visitsardinia/accomodations/LOAD';
-export const GET_ACCOMODATIONS_SUCCESS = 'visitsardinia/accomodations/LOAD_SUCCESS';
-export const GET_ACCOMODATIONS_FAIL = 'visitsardinia/accomodations/LOAD_FAIL';
-export const GET_ACCOMODATIONS_BY_ID = 'visitsardinia/accomodationsById/LOAD';
-export const GET_ACCOMODATIONS_BY_ID_SUCCESS = 'visitsardinia/accomodationsById/LOAD_SUCCESS';
-export const GET_ACCOMODATIONS_BY_ID_FAIL = 'visitsardinia/accomodationsById/LOAD_FAIL';
-export const GET_INSPIRERS = 'visitsardinia/inspirers/LOAD';
-export const GET_INSPIRERS_SUCCESS = 'visitsardinia/inspirers/LOAD_SUCCESS';
-export const GET_INSPIRERS_FAIL = 'visitsardinia/inspirers/LOAD_FAIL';
-export const GET_INSPIRERS_BY_ID = 'visitsardinia/inspirersById/LOAD';
-export const GET_INSPIRERS_BY_ID_SUCCESS = 'visitsardinia/inspirersById/LOAD_SUCCESS';
-export const GET_INSPIRERS_BY_ID_FAIL = 'visitsardinia/inspirersById/LOAD_FAIL';
-export const GET_INSPIRER = 'visitsardinia/inspirer/LOAD';
-export const GET_INSPIRER_SUCCESS = 'visitsardinia/inspirer/LOAD_SUCCESS';
-export const GET_INSPIRER_FAIL = 'visitsardinia/inspirer/LOAD_FAIL';
-export const GET_EVENTS = 'visitsardinia/events/LOAD';
-export const GET_EVENTS_SUCCESS = 'visitsardinia/events/LOAD_SUCCESS';
-export const GET_EVENTS_FAIL = 'visitsardinia/events/LOAD_FAIL';
-export const GET_EVENTS_BY_ID = 'visitsardinia/events_by_id/LOAD';
-export const GET_EVENTS_BY_ID_SUCCESS = 'visitsardinia/events_by_id/LOAD_SUCCESS';
-export const GET_EVENTS_BY_ID_FAIL = 'visitsardinia/events_by_id/LOAD_FAIL';
-export const RESET_EVENTS = 'visitsardinia/events/RESET_EVENTS';
-export const FILTER_EVENTS = 'visitsardinia/events/FILTER';
-export const CHANGE_LOCALE = 'visitsardinia/locale/CHANGE_LOCALE';
-export const GET_CLUSTERS = 'visitsardinia/clusters/LOAD';
-export const GET_CLUSTERS_SUCCESS = 'visitsardinia/clusters/LOAD_SUCCESS';
-export const GET_CLUSTERS_FAIL = 'visitsardinia/clusters/LOAD_FAIL';
-export const GET_EVENT_TYPES = 'visitsardinia/eventtypes/LOAD';
-export const GET_EVENT_TYPES_SUCCESS = 'visitsardinia/eventtypes/LOAD_SUCCESS';
-export const GET_EVENT_TYPES_FAIL = 'visitsardinia/eventtypes/LOAD_FAIL';
-export const GET_ITINERARIES = 'visitsardinia/itineraries/LOAD';
-export const GET_ITINERARIES_SUCCESS = 'visitsardinia/itineraries/LOAD_SUCCESS';
-export const GET_ITINERARIES_FAIL = 'visitsardinia/itineraries/LOAD_FAIL';
-export const GET_ITINERARIES_BY_ID = 'visitsardinia/itinerariesById/LOAD';
-export const GET_ITINERARIES_BY_ID_SUCCESS = 'visitsardinia/itinerariesById/LOAD_SUCCESS';
-export const GET_ITINERARIES_BY_ID_FAIL = 'visitsardinia/itinerariesById/LOAD_FAIL';
-export const SEARCH = 'visitsardinia/search/LOAD';
-export const SEARCH_SUCCESS = 'visitsardinia/search/LOAD_SUCCESS';
-export const SEARCH_FAIL = 'visitsardinia/search/LOAD_FAIL';
-export const AUTOCOMPLETE = 'visitsardinia/autocomplete/LOAD';
-export const AUTOCOMPLETE_SUCCESS = 'visitsardinia/autocomplete/LOAD_SUCCESS';
-export const AUTOCOMPLETE_FAIL = 'visitsardinia/autocomplete/LOAD_FAIL';
-export const RESET_SEARCH_AND_AUTOCOMPLETE_RESULTS = 'visitsardinia/search_autocomplete/RESET_SEARCH_AND_AUTOCOMPLETE_RESULTS';
-export const SWITCH_SEARCH_OR_AUTOCOMPLETE = 'visitsardinia/search_autocomplete/SWITCH_SEARCH_OR_AUTOCOMPLETE';
-export const SET_SEARCH_OR_AUTOCOMPLETE = 'visitsardinia/search_autocomplete/SET_SEARCH_OR_AUTOCOMPLETE';
-export const RESET_SEARCH_AND_AUTOCOMPLETE_STR = 'visitsardinia/search_autocomplete/RESET_SEARCH_AND_AUTOCOMPLETE_STR';
-export const SET_FAVOURITE = 'visitsardinia/favourites/SET_FAVOURITE';
-export const UNSET_FAVOURITE = 'visitsardinia/favourites/UNSET_FAVOURITE';
-export const TOGGLE_FAVOURITE = 'visitsardinia/favourites/TOGGLE_FAVOURITE';
-export const PUSH_CURRENT_CATEGORY_PLACES = 'visitsardinia/places/PUSH_CURRENT_CATEGORY_PLACES';
-export const POP_CURRENT_CATEGORY_PLACES = 'visitsardinia/places/POP_CURRENT_CATEGORY_PLACES';
-export const RESET_CURRENT_CATEGORY_PLACES = 'visitsardinia/places/RESET_CURRENT_CATEGORY_PLACES';
-export const PUSH_CURRENT_CATEGORY_INSPIRERS = 'visitsardinia/inspirers/PUSH_CURRENT_CATEGORY_INSPIRERS';
-export const POP_CURRENT_CATEGORY_INSPIRERS = 'visitsardinia/inspirers/POP_CURRENT_CATEGORY_INSPIRERS';
-export const RESET_CURRENT_CATEGORY_INSPIRERS = 'visitsardinia/inspirers/RESET_CURRENT_CATEGORY_INSPIRERS';
-export const PUSH_CURRENT_CATEGORY_ACCOMODATIONS = 'visitsardinia/accomodations/PUSH_CURRENT_CATEGORY_ACCOMODATIONS';
-export const POP_CURRENT_CATEGORY_ACCOMODATIONS = 'visitsardinia/accomodations/POP_CURRENT_CATEGORY_ACCOMODATIONS';
-export const RESET_CURRENT_CATEGORY_ACCOMODATIONS = 'visitsardinia/accomodations/RESET_CURRENT_CATEGORY_ACCOMODATIONS';
-export const SET_CURRENT_MAP_ENTITY = 'visitsardinia/map/SET_CURRENT_MAP_ENTITY'; /* to set the snap index on parent components */
+export const GET_ENTITIES = 'sardinia/entities/LOAD';
+export const GET_ENTITIES_SUCCESS = 'sardinia/entities/LOAD_SUCCESS';
+export const GET_ENTITIES_FAIL = 'sardinia/entities/LOAD_FAIL';
+export const GET_ENTITY = 'sardinia/entity/LOAD';
+export const GET_ENTITY_SUCCESS = 'sardinia/entity/LOAD_SUCCESS';
+export const GET_ENTITY_FAIL = 'sardinia/entity/LOAD_FAIL';
+export const GET_CATEGORIES = 'sardinia/categories/LOAD';
+export const GET_CATEGORIES_SUCCESS = 'sardinia/categories/LOAD_SUCCESS';
+export const GET_CATEGORIES_FAIL = 'sardinia/categories/LOAD_FAIL';
+export const GET_CATEGORIES_INSPIRERS = 'sardinia/categoriesinspirers/LOAD';
+export const GET_CATEGORIES_INSPIRERS_SUCCESS = 'sardinia/categoriesinspirers/LOAD_SUCCESS';
+export const GET_CATEGORIES_INSPIRERS_FAIL = 'sardinia/categoriesinspirers/LOAD_FAIL';
+export const GET_NEARPOIS = 'sardinia/nearpois/LOAD';
+export const GET_NEARPOIS_SUCCESS = 'sardinia/nearpois/LOAD_SUCCESS';
+export const GET_NEARPOIS_FAIL = 'sardinia/nearpois/LOAD_FAIL';
+export const GET_NEARESTPOIS = 'sardinia/nearestpois/LOAD';
+export const GET_NEARESTPOIS_SUCCESS = 'sardinia/nearestpois/LOAD_SUCCESS';
+export const GET_NEARESTPOIS_FAIL = 'sardinia/nearestpois/LOAD_FAIL';
+export const GET_NEARESTPOISIMAGES = 'sardinia/nearestpoisimages/LOAD';
+export const GET_NEARESTPOISIMAGES_SUCCESS = 'sardinia/nearestpoisimages/LOAD_SUCCESS';
+export const GET_NEARESTPOISIMAGES_FAIL = 'sardinia/nearestpoisimages/LOAD_FAIL';
+export const GET_NEARESTACCOMODATIONS = 'sardinia/nearestaccomodations/LOAD';
+export const GET_NEARESTACCOMODATIONS_SUCCESS = 'sardinia/nearestaccomodations/LOAD_SUCCESS';
+export const GET_NEARESTACCOMODATIONS_FAIL = 'sardinia/nearestaccomodations/LOAD_FAIL';
+export const GET_NEARESTACCOMODATIONSIMAGES = 'sardinia/nearestaccomodationsimages/LOAD';
+export const GET_NEARESTACCOMODATIONSIMAGES_SUCCESS = 'sardinia/nearestaccomodationsimages/LOAD_SUCCESS';
+export const GET_NEARESTACCOMODATIONSIMAGES_FAIL = 'sardinia/nearestaccomodationsimages/LOAD_FAIL';
+export const GET_NEAREST_NODES_BY_TYPE = 'sardinia/nearest_nodes_by_type/LOAD';
+export const GET_NEAREST_NODES_BY_TYPE_SUCCESS = 'sardinia/nearest_nodes_by_type/LOAD_SUCCESS';
+export const GET_NEAREST_NODES_BY_TYPE_FAIL = 'sardinia/nearest_nodes_by_type/LOAD_FAIL';
+export const GET_POIS = 'sardinia/pois/LOAD';
+export const GET_POIS_SUCCESS = 'sardinia/pois/LOAD_SUCCESS';
+export const GET_POIS_FAIL = 'sardinia/pois/LOAD_FAIL';
+export const GET_EXTRAS = 'sardinia/extras/LOAD';
+export const GET_EXTRAS_SUCCESS = 'sardinia/extras/LOAD_SUCCESS';
+export const GET_EXTRAS_FAIL = 'sardinia/extras/LOAD_FAIL';
+export const GET_POI = 'sardinia/poi/LOAD';
+export const GET_POI_SUCCESS = 'sardinia/poi/LOAD_SUCCESS';
+export const GET_POI_FAIL = 'sardinia/poi/LOAD_FAIL';
+export const GET_NODES = 'sardinia/nodes/LOAD';
+export const GET_NODES_SUCCESS = 'sardinia/nodes/LOAD_SUCCESS';
+export const GET_NODES_FAIL = 'sardinia/nodes/LOAD_FAIL';
+export const GET_ACCOMODATIONS = 'sardinia/accomodations/LOAD';
+export const GET_ACCOMODATIONS_SUCCESS = 'sardinia/accomodations/LOAD_SUCCESS';
+export const GET_ACCOMODATIONS_FAIL = 'sardinia/accomodations/LOAD_FAIL';
+export const GET_ACCOMODATIONS_BY_ID = 'sardinia/accomodationsById/LOAD';
+export const GET_ACCOMODATIONS_BY_ID_SUCCESS = 'sardinia/accomodationsById/LOAD_SUCCESS';
+export const GET_ACCOMODATIONS_BY_ID_FAIL = 'sardinia/accomodationsById/LOAD_FAIL';
+export const GET_INSPIRERS = 'sardinia/inspirers/LOAD';
+export const GET_INSPIRERS_SUCCESS = 'sardinia/inspirers/LOAD_SUCCESS';
+export const GET_INSPIRERS_FAIL = 'sardinia/inspirers/LOAD_FAIL';
+export const GET_INSPIRERS_BY_ID = 'sardinia/inspirersById/LOAD';
+export const GET_INSPIRERS_BY_ID_SUCCESS = 'sardinia/inspirersById/LOAD_SUCCESS';
+export const GET_INSPIRERS_BY_ID_FAIL = 'sardinia/inspirersById/LOAD_FAIL';
+export const GET_INSPIRER = 'sardinia/inspirer/LOAD';
+export const GET_INSPIRER_SUCCESS = 'sardinia/inspirer/LOAD_SUCCESS';
+export const GET_INSPIRER_FAIL = 'sardinia/inspirer/LOAD_FAIL';
+export const GET_EVENTS = 'sardinia/events/LOAD';
+export const GET_EVENTS_SUCCESS = 'sardinia/events/LOAD_SUCCESS';
+export const GET_EVENTS_FAIL = 'sardinia/events/LOAD_FAIL';
+export const GET_EVENTS_BY_ID = 'sardinia/events_by_id/LOAD';
+export const GET_EVENTS_BY_ID_SUCCESS = 'sardinia/events_by_id/LOAD_SUCCESS';
+export const GET_EVENTS_BY_ID_FAIL = 'sardinia/events_by_id/LOAD_FAIL';
+export const RESET_EVENTS = 'sardinia/events/RESET_EVENTS';
+export const FILTER_EVENTS = 'sardinia/events/FILTER';
+export const CHANGE_LOCALE = 'sardinia/locale/CHANGE_LOCALE';
+export const GET_CLUSTERS = 'sardinia/clusters/LOAD';
+export const GET_CLUSTERS_SUCCESS = 'sardinia/clusters/LOAD_SUCCESS';
+export const GET_CLUSTERS_FAIL = 'sardinia/clusters/LOAD_FAIL';
+export const GET_EVENT_TYPES = 'sardinia/eventtypes/LOAD';
+export const GET_EVENT_TYPES_SUCCESS = 'sardinia/eventtypes/LOAD_SUCCESS';
+export const GET_EVENT_TYPES_FAIL = 'sardinia/eventtypes/LOAD_FAIL';
+export const GET_ITINERARIES = 'sardinia/itineraries/LOAD';
+export const GET_ITINERARIES_SUCCESS = 'sardinia/itineraries/LOAD_SUCCESS';
+export const GET_ITINERARIES_FAIL = 'sardinia/itineraries/LOAD_FAIL';
+export const GET_ITINERARIES_BY_ID = 'sardinia/itinerariesById/LOAD';
+export const GET_ITINERARIES_BY_ID_SUCCESS = 'sardinia/itinerariesById/LOAD_SUCCESS';
+export const GET_ITINERARIES_BY_ID_FAIL = 'sardinia/itinerariesById/LOAD_FAIL';
+export const SEARCH = 'sardinia/search/LOAD';
+export const SEARCH_SUCCESS = 'sardinia/search/LOAD_SUCCESS';
+export const SEARCH_FAIL = 'sardinia/search/LOAD_FAIL';
+export const AUTOCOMPLETE = 'sardinia/autocomplete/LOAD';
+export const AUTOCOMPLETE_SUCCESS = 'sardinia/autocomplete/LOAD_SUCCESS';
+export const AUTOCOMPLETE_FAIL = 'sardinia/autocomplete/LOAD_FAIL';
+export const RESET_SEARCH_AND_AUTOCOMPLETE_RESULTS = 'sardinia/search_autocomplete/RESET_SEARCH_AND_AUTOCOMPLETE_RESULTS';
+export const SWITCH_SEARCH_OR_AUTOCOMPLETE = 'sardinia/search_autocomplete/SWITCH_SEARCH_OR_AUTOCOMPLETE';
+export const SET_SEARCH_OR_AUTOCOMPLETE = 'sardinia/search_autocomplete/SET_SEARCH_OR_AUTOCOMPLETE';
+export const RESET_SEARCH_AND_AUTOCOMPLETE_STR = 'sardinia/search_autocomplete/RESET_SEARCH_AND_AUTOCOMPLETE_STR';
+export const SET_FAVOURITE = 'sardinia/favourites/SET_FAVOURITE';
+export const UNSET_FAVOURITE = 'sardinia/favourites/UNSET_FAVOURITE';
+export const TOGGLE_FAVOURITE = 'sardinia/favourites/TOGGLE_FAVOURITE';
+export const PUSH_CURRENT_CATEGORY_PLACES = 'sardinia/places/PUSH_CURRENT_CATEGORY_PLACES';
+export const POP_CURRENT_CATEGORY_PLACES = 'sardinia/places/POP_CURRENT_CATEGORY_PLACES';
+export const RESET_CURRENT_CATEGORY_PLACES = 'sardinia/places/RESET_CURRENT_CATEGORY_PLACES';
+export const PUSH_CURRENT_CATEGORY_INSPIRERS = 'sardinia/inspirers/PUSH_CURRENT_CATEGORY_INSPIRERS';
+export const POP_CURRENT_CATEGORY_INSPIRERS = 'sardinia/inspirers/POP_CURRENT_CATEGORY_INSPIRERS';
+export const RESET_CURRENT_CATEGORY_INSPIRERS = 'sardinia/inspirers/RESET_CURRENT_CATEGORY_INSPIRERS';
+export const PUSH_CURRENT_CATEGORY_ACCOMODATIONS = 'sardinia/accomodations/PUSH_CURRENT_CATEGORY_ACCOMODATIONS';
+export const POP_CURRENT_CATEGORY_ACCOMODATIONS = 'sardinia/accomodations/POP_CURRENT_CATEGORY_ACCOMODATIONS';
+export const RESET_CURRENT_CATEGORY_ACCOMODATIONS = 'sardinia/accomodations/RESET_CURRENT_CATEGORY_ACCOMODATIONS';
+export const SET_CURRENT_MAP_ENTITY = 'sardinia/map/SET_CURRENT_MAP_ENTITY'; /* to set the snap index on parent components */
 
 
 // API
@@ -165,7 +168,7 @@ export const NAVIGATION = {
  * Vocabulary ids used for queries
  */
 export const VIDS = {
-  events: 4,
+  events: 9, //was 4
   pois: 14,
   inspirersCategories: 46,
   poisCategories: 36,
@@ -259,8 +262,8 @@ export const SCREENS = {
 /* COMPONENTS CONFIGURATIONS */
 export const COMPONENTS = {
   header: {
-    height: 65,
-    bottomLineHeight: 8
+    height: 60,
+    bottomLineHeight: 4
   }
 }
 
@@ -268,6 +271,7 @@ export const COMPONENTS = {
 export const PAGINATION = {
   poisLimit: 15,
   accomodationsLimit: 30,
+  poisAccomodationsLimit: 8,
 }
 
 /* MAP CONSTANTS */

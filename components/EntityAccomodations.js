@@ -6,33 +6,38 @@ import { FlatList } from "react-native-gesture-handler"
 import LLEntitiesFlatlist from "./loadingLayouts/LLEntitiesFlatlist"
 import AccomodationItem from './AccomodationItem';
 import AsyncOperationStatusIndicator from "./AsyncOperationStatusIndicator"
-import * as Constants from "../constants"
+import * as Constants from "../constants";
+import Colors from '../constants/Colors';
 
 class EntityAccomodations extends PureComponent {
 
     constructor(props){
         super(props)
 
-        this.state = {
-            // data: props.data ? props.data : [],
-            data: props.data || Constants.ACCOMODATIONS_DATA_DEFAULT
-        }
     }
+
+    _onAccomodationPress = (item) => this.props.navigation.navigate(Constants.NAVIGATION.NavAccomodationScreen, { item, mustFetch: true })
     
     _renderAccomodationItem = (item, index, horizontal) => {
-        return (
-            <>
-            <AccomodationItem 
-                horizontal={horizontal}
-                title={item.title}
-                term={item.term}
-                stars={item.stars}
-                location={item.location}
-                hideBorder
-                distance={item.distance}/>
-            <View style={{width: 5, flex: 1}}></View>
-            
-            </>
+      const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
+      const termName = _.get(item, "term.name", "")
+      return (
+        <>
+          <AccomodationItem 
+            index={index}
+            keyItem={item.nid}
+            extraStyle={ horizontal ? {} : {width: '100%'}}
+            horizontal={horizontal}
+            sizeMargins={20}
+            title={title}
+            term={termName}
+            stars={item.stars}
+            location={item.location}
+            distance={item.distanceStr}
+            onPress={() => this._onAccomodationPress(item)}
+          />
+          <View style={{width: 5, flex: 1}}></View>
+        </>
         )
     }
 
@@ -43,33 +48,34 @@ class EntityAccomodations extends PureComponent {
     }
 
     _openMap = () => {
-        this.props.navigation.navigate(Constants.NAVIGATION.NavAccomodationsScreen)
+      //Compute region of nearest pois and send to 
+      this.props.navigation.navigate(Constants.NAVIGATION.NavAccomodationsScreen, { region: this.props.region });
     }
 
     render() {
-        const { listTitle } = this.props; 
+        const { listTitle, showMapBtnText = "", data, listTitleStyle, horizontal, showsHorizontalScrollIndicator, extraData } = this.props; 
         return (
             <View style={[styles.fill, styles.mainView]}>
                 <Text style={styles.title}>Strutture ricettive nelle vicinanze</Text>
                 <AsyncOperationStatusIndicator
                     loading={true}
-                    success={this.state.data && this.state.data.length > 0}
+                    success={data && data.length > 0}
                     error={false}
                     loadingLayout={<LLEntitiesFlatlist horizontal={true} style={styles.contentContainerStyle} title={listTitle} titleStyle={this.props.listTitleStyle} error={false}/>}>
                     <View style={{flex: 1}}>   
-                        <Text style={{...this.props.listTitleStyle}}>{listTitle}</Text>
+                        <Text style={{...listTitleStyle}}>{listTitle}</Text>
                         <FlatList 
-                            horizontal={this.props.horizontal ? this.props.horizontal : false}
+                            horizontal={horizontal ? horizontal : false}
                             key={listTitle + "-1"}
-                            extraData={this.props.extraData}
-                            keyExtractor={item => item.title}
-                            data={this.state.data}
+                            extraData={extraData}
+                            keyExtractor={(item, index) => index}
+                            data={data || []}
                             renderItem={({item, index}) => this._renderAccomodationItem(item, index, true)}
                             style={[styles.fill, {}]}
-                            // ItemSeparatorComponent={this.props.ItemSeparatorComponent || this._renderHorizontalSeparator}
-                            // contentContainerStyle={this.props.contentContainerStyle ? this.props.contentContainerStyle : {}}
+                            // ItemSeparatorComponent={ItemSeparatorComponent || this._renderHorizontalSeparator}
+                            // contentContainerStyle={contentContainerStyle ? contentContainerStyle : {}}
                             contentContainerStyle={{paddingLeft: 10}}
-                            showsHorizontalScrollIndicator={this.props.showsHorizontalScrollIndicator ? this.props.showsHorizontalScrollIndicator : true}
+                            showsHorizontalScrollIndicator={showsHorizontalScrollIndicator ? showsHorizontalScrollIndicator : true}
                             initialNumToRender={2} // Reduce initial render amount
                             updateCellsBatchingPeriod={400} // Increase time between renders
                             windowSize={10} // Reduce the window size
@@ -78,7 +84,7 @@ class EntityAccomodations extends PureComponent {
                 </AsyncOperationStatusIndicator>
 
                 <TouchableOpacity style={styles.showButton} activeOpacity={0.8} onPress={this._openMap}>
-                    <Text style={styles.showButtonText}>VEDI LA MAPPA</Text>
+        <Text style={styles.showButtonText}>{showMapBtnText}</Text>
                 </TouchableOpacity>
             </View>
         )
@@ -95,7 +101,7 @@ const styles = StyleSheet.create({
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        backgroundColor: "rgba(31, 203, 217, 0.3)",
+        backgroundColor: Colors.colorAccomodationsScreen,
         marginTop: 32,
     },
     title: {

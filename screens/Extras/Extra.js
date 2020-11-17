@@ -87,7 +87,7 @@ class ExtraScreen extends Component {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
     this._parseEntity(this.state.entity);
-    this._fetchRelatedNodes();
+    this._fetchNearNodes();
   }
 
   /**
@@ -110,7 +110,7 @@ class ExtraScreen extends Component {
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
 
-  _fetchRelatedNodes = async () => {
+  _fetchNearNodes = async () => {
     try {
       const relatedPlaces = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.places, offset: Math.ceil(Math.random()*100), limit: 5}))
       const relatedItineraries = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.itineraries, offset: 0, limit: 5}))

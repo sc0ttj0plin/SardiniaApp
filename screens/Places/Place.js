@@ -47,6 +47,7 @@ import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
+import { boundingRect } from '../../helpers/maps';
 import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
 
 
@@ -75,6 +76,7 @@ class PlaceScreen extends Component {
       sampleVideoUrl: null,
       gallery: [],
       relatedEntities: [],
+      nearAccomodations: []
     };
       
   }
@@ -84,7 +86,6 @@ class PlaceScreen extends Component {
   async componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
-    this._fetchRelatedNodes();
     this.props.actions.getPoi({ uuid: this.state.uuid });
   }
 
@@ -101,13 +102,39 @@ class PlaceScreen extends Component {
   }
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
-  _fetchRelatedNodes = async () => {
-    try {
-      const relatedEntities = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.places, offset: Math.ceil(Math.random()*100), limit: 5}))
-      this.setState({ relatedEntities })
-    } catch(error){
-      console.log(error)
-    }
+  _fetchNearNodes = async (coords) => {
+    if (coords)
+      try {
+        const relatedEntities = await apolloQuery(actions.getNearestNodesByType({ 
+          type: Constants.NODE_TYPES.places, 
+          limit: Constants.PAGINATION.poisAccomodationsLimit,
+          offset: 0,
+          x: coords.longitude,
+          y: coords.latitude,
+          excludeUuids: [this.state.uuid]
+        }));
+        this.setState({ relatedEntities });
+      } catch(error) {
+        console.log(error)
+      }
+  }
+
+  _fetchNearAccomodations = async (coords) => {
+    if (coords)
+      try {
+        const nearAccomodations = await apolloQuery(actions.getNearestNodesByType({ 
+          type: Constants.NODE_TYPES.accomodations, 
+          limit: Constants.PAGINATION.poisAccomodationsLimit,
+          offset: 0,
+          x: coords.longitude,
+          y: coords.latitude,
+        }));
+        //Compute dataRegion, the smallest enclosing region of the pois (no center, compute from pois)
+        const nearAccomodationsRegion = boundingRect(nearAccomodations, null, (p) => p.georef.coordinates);
+        this.setState({ nearAccomodations, nearAccomodationsRegion });
+      } catch(error) {
+        console.log(error);
+      }
   }
   
   _parseEntity = (entity) => {
@@ -119,6 +146,9 @@ class PlaceScreen extends Component {
     const sampleVideoUrl = getSampleVideoIndex(entity.nid);
     const gallery = getGalleryImages(entity);
     this.setState({ entity, abstract,  title,  description,  whyVisit,  coordinates,  socialUrl, sampleVideoUrl, gallery });
+    // After parsing the entity fetch near accomodations 
+    this._fetchNearNodes(coordinates);
+    this._fetchNearAccomodations(coordinates);
   }
 
   _openRelatedEntity = (item) => {
@@ -180,7 +210,20 @@ class PlaceScreen extends Component {
   }
 
   _renderContent = () => {
-    const { uuid, entity, abstract, title, description, whyVisit, coordinates, socialUrl, sampleVideoUrl, gallery, relatedEntities } = this.state;
+    const { 
+      uuid, 
+      entity, 
+      abstract, 
+      title, 
+      description, 
+      whyVisit, 
+      coordinates, 
+      socialUrl, 
+      sampleVideoUrl, 
+      gallery, 
+      relatedEntities, 
+      nearAccomodations, 
+      nearAccomodationsRegion } = this.state;
     const { locale, pois, favourites, } = this.props;
     const { lan } = locale;
     const { 
@@ -189,6 +232,7 @@ class PlaceScreen extends Component {
       gallery: galleryTitle, 
       description: descriptionTitle,
       canBeOfInterest,
+      showMap,
     } = locale.messages;
     
     const { orientation } = this.state;
@@ -210,7 +254,12 @@ class PlaceScreen extends Component {
             <EntityDescription title={descriptionTitle} text={description} color={Colors.colorPlacesScreen}/>
             <View style={styles.separator}/>
             {this._renderRelatedList(canBeOfInterest, relatedEntities, Constants.ENTITY_TYPES.places)}
-            <EntityAccomodations horizontal/>
+            <EntityAccomodations 
+              data={nearAccomodations} 
+              region={nearAccomodationsRegion} 
+              locale={locale} 
+              showMapBtnText={showMap} 
+              horizontal/>
           </View>
          </ScrollView>
        </View>
