@@ -44,7 +44,7 @@ const HEADER_BUTTONS_PER_SCREEN = {
   [Constants.NAVIGATION.NavSearchScreen]: {backButtonVisible: true, searchButtonVisible: true},
   [Constants.NAVIGATION.NavFavouritesScreen]: {backButtonVisible: true, searchButtonVisible: true},
   [Constants.NAVIGATION.NavFavouritesListScreen]: {backButtonVisible: true, searchButtonVisible: true},
-  [Constants.NAVIGATION.NavAccomodationsScreen]: {backButtonVisible: false, searchButtonVisible: true},
+  [Constants.NAVIGATION.NavAccomodationsScreen]: {backButtonVisible: true, searchButtonVisible: true},
   [Constants.NAVIGATION.NavAccomodationScreen]: {backButtonVisible: true, searchButtonVisible: true},
   [Constants.NAVIGATION.NavBoilerPlate]: {backButtonVisible: true, searchButtonVisible: true},
 

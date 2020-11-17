@@ -59,6 +59,10 @@ class ConnectedFab extends PureComponent {
     )
   }
 
+  _openParkingModal = () => {
+    
+  }
+
   render() {
     const isFavourite = this.props.favourites.[this.props.type][this.state.uuid];
     const { shareLink, coordinates, color, title } = this.props;
@@ -80,7 +84,7 @@ class ConnectedFab extends PureComponent {
               this._renderButton(backgroundColor, isFavourite ? "heart" : "heart-o", () => this.props.actions.toggleFavourite({ type: this.props.type, id: this.state.uuid }))
             }
             {coordinates && (
-              this._renderButton(backgroundColor, "location-arrow", () => this._openNavigator(title, coordinates))
+              this._renderButton(backgroundColor, "parking", () => this._openParkingModal())
             )}
           </View>
         }
