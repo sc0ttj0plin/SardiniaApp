@@ -93,10 +93,11 @@ class ConnectedHeader extends PureComponent {
   }
   
   _backButtonPressed = () => {
-    if (this.props.backOnPress)
+    if (this.props.backOnPress) 
       this.props.backOnPress()
-    else 
+    else {
       this.props.navigation.goBack();
+    }
   }
 
   _updateSearch = search => {

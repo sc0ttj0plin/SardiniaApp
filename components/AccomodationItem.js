@@ -27,8 +27,12 @@ export default class AccomodationItem extends PureComponent {
   }
 
   _renderStars = (count) => {
-    let stars = new Array(count).fill(0);
-    return stars.map( star => <Ionicons name={"md-star"} size={25} color={Colors.stars} style={styles.star}/>);
+    if (count > 0) {
+      let stars = new Array(count).fill(0);
+      return stars.map( star => <Ionicons name={"md-star"} size={25} color={Colors.stars} style={styles.star}/>);
+    } else {
+      return null;
+    }
   }
 
   render() {

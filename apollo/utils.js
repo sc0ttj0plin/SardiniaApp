@@ -128,7 +128,6 @@ export const processEntity = function(entity, coords=null) {
 
   if (!entity.distance && coords && entity.georef) {
     entity.distance = distanceToString(distance(coords[0], coords[1], entity.georef.coordinates[0], entity.georef.coordinates[1]));
-    console.log(">>", entity.distance)
   }
 
   if (entity.stages)

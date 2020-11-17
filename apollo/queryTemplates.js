@@ -317,6 +317,7 @@ query ($x: float8, $y: float8, $limit: Int, $offset: Int, $uuids: [String!]) {
     uuid
     nid
     georef
+    type
     title: legacy(path: "title_field")
     distance
     image: legacy(path: "field_immagine_top.und[0].uri")
@@ -329,6 +330,26 @@ query ($x: float8, $y: float8, $limit: Int, $offset: Int, $uuids: [String!]) {
   }
 }
 `;
+
+export const getNearestByType = gql`
+query ($x: float8, $y: float8, $type: String!, $limit: Int!, $offset: Int!, $excludeUuids: [String!]) {
+  nearest_neighbour_no_limits(args: {x: $x, y: $y}, where: {type: {_eq: $type}, uuid: {_nin: $excludeUuids}}, limit: $limit, offset: $offset, order_by: {distance: asc}) {
+    uuid
+    nid
+    type
+    georef
+    title: legacy(path: "title_field")
+    distance
+    image: legacy(path: "field_immagine_top.und[0].uri")
+    gallery: legacy(path: "field_galleria_multimediale.und")
+    term {
+      name
+      uuid
+      tid
+    }
+  }
+}
+`
 
 
 

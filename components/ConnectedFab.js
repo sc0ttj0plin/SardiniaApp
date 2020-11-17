@@ -1,5 +1,5 @@
 import React, { PureComponent, Component } from "react";
-import { Text, View, StyleSheet, Platform, Linking } from "react-native";
+import { Text, View, StyleSheet, Platform, Linking, Share, TouchableWithoutFeedback, Modal, TouchableOpacity as TouchableOpacityRN } from "react-native";
 import { NavigationEvents, useNavigation, useRoute } from '@react-navigation/native';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -10,6 +10,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons'; 
 import { FontAwesome } from '@expo/vector-icons'; 
 import Colors from '../constants/Colors';
+import Layout from "../constants/Layout"
 import * as Constants from '../constants';
 import _ from 'lodash';
 
@@ -20,6 +21,7 @@ class ConnectedFab extends PureComponent {
 
     this.state = {
       active: false,
+      modalVisible: false,
       direction: props.direction ? props.direction : "up",
       uuid: props.uuid,
       isFavourite: props.favourites.places[props.uuid]
@@ -47,7 +49,7 @@ class ConnectedFab extends PureComponent {
 
 
 
-  _renderButton = (backgroundColor, iconName, onPress) => {
+  _renderButtonFontAwesome = (backgroundColor, iconName, onPress) => {
 
     return(
       <TouchableOpacity
@@ -59,8 +61,53 @@ class ConnectedFab extends PureComponent {
     )
   }
 
+  _renderButtonFontAwesome5 = (backgroundColor, iconName, onPress) => {
+
+    return(
+      <TouchableOpacity
+        activeOpacity={0.7} 
+        style={[styles.button]} 
+        onPress={onPress}>
+        <FontAwesome5 name={iconName} size={20} color={backgroundColor} /> 
+      </TouchableOpacity>
+    )
+  }
+
   _openParkingModal = () => {
-    
+    this.setState({modalVisible: true})
+  }
+
+  _shareInApp = async (link) => {
+    try {
+      const result = await Share.share({
+        message: link,
+        title: link,
+        url: link
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  _renderParkingButton = (title, backgroundColor, action) => {
+    return(
+      <TouchableOpacityRN activeOpacity={0.8} style={[styles.modalBtn, {
+        backgroundColor
+      }]} onPress={action}>
+        <Text style={[styles.modalBtnText, {
+          backgroundColor
+        }]}>{title}</Text>
+      </TouchableOpacityRN>
+    )
   }
 
   render() {
@@ -68,27 +115,55 @@ class ConnectedFab extends PureComponent {
     const { shareLink, coordinates, color, title } = this.props;
     const backgroundColor = color || Colors.colorPlacesScreen;
     return (
-      <View style={styles.fabView}>
-        <TouchableOpacity 
-          style={[styles.fabButton, {backgroundColor: backgroundColor}]}
-          onPress={() => this.setState({ active: !this.state.active })} 
-          activeOpacity={0.8}>
-            <FontAwesome5 name={this.state.active ? "times" : "plus"} size={25} color={"white"} />
-        </TouchableOpacity>
-        { this.state.active &&      
-          <View style={styles.fabChildrenContainer}>
-            { shareLink != "" && shareLink &&
-              this._renderButton(backgroundColor, "share-alt", () => Linking.openURL(shareLink))
-            }
-            { this.state.uuid != "" && this.state.uuid &&
-              this._renderButton(backgroundColor, isFavourite ? "heart" : "heart-o", () => this.props.actions.toggleFavourite({ type: this.props.type, id: this.state.uuid }))
-            }
-            {coordinates && (
-              this._renderButton(backgroundColor, "parking", () => this._openParkingModal())
-            )}
+      <>
+        <View style={styles.fabView}>
+          <TouchableOpacity 
+            style={[styles.fabButton, {backgroundColor: backgroundColor}]}
+            onPress={() => this.setState({ active: !this.state.active })} 
+            activeOpacity={0.8}>
+              <FontAwesome5 name={this.state.active ? "times" : "plus"} size={25} color={"white"} />
+          </TouchableOpacity>
+          { this.state.active &&      
+            <View style={styles.fabChildrenContainer}>
+              { shareLink != "" && shareLink &&
+                this._renderButtonFontAwesome(backgroundColor, "share-alt", () => this._shareInApp(shareLink))
+              }
+              { this.state.uuid != "" && this.state.uuid &&
+                this._renderButtonFontAwesome(backgroundColor, isFavourite ? "heart" : "heart-o", () => this.props.actions.toggleFavourite({ type: this.props.type, id: this.state.uuid }))
+              }
+              {coordinates && (
+                this._renderButtonFontAwesome5(backgroundColor, "parking", () => this._openParkingModal())
+              )}
+            </View>
+          }
+        </View>
+
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={this.state.modalVisible}
+          onRequestClose={() => { }}>
+          <View style={styles.modalView}>
+            <TouchableOpacityRN 
+              style={styles.modalInnerView}
+              onPress={() => this.setState({modalVisible: false})} /* on press outside children */
+              activeOpacity={1}
+            >
+              <TouchableWithoutFeedback>
+                <View style={styles.modalWindow}>
+                  <Text style={styles.modalTitle}>{"Parcheggi nelle vicinanze!"}</Text>
+                  <Text style={styles.modalDescription}>{"Scopri i parcheggi liberi più vicini a te attraverso uno dei servizi convenzionati."}</Text>
+                  <View style={styles.firstRow}>
+                    {this._renderParkingButton("MYCICERO", "#7B3A95", null)}
+                    <View style={styles.separator}></View>
+                    {this._renderParkingButton("EASYPARK", "#F1287E", null)}
+                  </View>
+                </View>
+              </TouchableWithoutFeedback>
+            </TouchableOpacityRN>
           </View>
-        }
-      </View>
+          </Modal>
+      </>
     )
   }
 }
@@ -101,7 +176,7 @@ const styles = StyleSheet.create({
   fabContainer: { 
     width: "100%",
     height: 165,
-    backgroundColor: "red",
+    backgroundColor: "transparent",
     position: "absolute",
     top: 0,
     left: 0,
@@ -146,6 +221,62 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5, 
+  },
+  modalView: {
+    position: "absolute",
+    top: Constants.COMPONENTS.header.height + Constants.COMPONENTS.header.bottomLineHeight,
+    left: 0,
+    height: Layout.window.height - Constants.COMPONENTS.header.height,
+    width: Layout.window.width,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    zIndex: 2,
+  },
+  modalInnerView:{
+    width: "100%",
+    height: "100%",
+    backgroundColor: "transparent",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  modalWindow: { 
+    paddingHorizontal: 30,
+    paddingTop: 20,
+    backgroundColor: "white", 
+    zIndex: 2, 
+    width: "80%", 
+    height: 185,
+    flexDirection: "column",
+  },
+  modalTitle: {
+    fontSize: 15,
+    fontWeight: "bold",
+    marginBottom: 14,
+  },
+  modalDescription: {
+    fontSize: 12,
+    color: "#333333"
+  },
+  modalBtn: {
+    flex: 1,
+    height: 36,
+    borderRadius: 4,
+    paddingVertical: 9,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "red"
+
+  },
+  modalBtnText: {
+    color: "white",
+  },
+  firstRow: {
+    marginTop: 30,
+    flexDirection: "row",
+    width: "100%",
+  },
+  separator: {
+    width: 10,
+    height: 10
   }
 });
 

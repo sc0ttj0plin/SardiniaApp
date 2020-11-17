@@ -212,6 +212,8 @@ function MainStackScreen() {
       <MainStack.Screen name={NavItineraryStagesMapScreen} component={ItineraryStagesMapScreen}  />
       <MainStack.Screen name={NavInspirerScreen} component={InspirerScreen}/>
       <MainStack.Screen name={NavMediaScreen} component={MediaScreen}/>
+      <MainStack.Screen name={NavAccomodationsScreen} component={AccomodationsScreen}/>
+      <MainStack.Screen name={NavAccomodationScreen} component={AccomodationScreen}/>
     </MainStack.Navigator>
     </>
   );

@@ -29,12 +29,12 @@ import Colors from '../../constants/Colors';
 import { LLHorizontalItemsFlatlist } from "../../components/loadingLayouts";
 
 const USE_DR = false;
-const ACCOMODATION_LIMIT = Constants.PAGINATION.accomodationsLimit;
 class AccomodationsScreen extends Component {
 
   constructor(props) {
     super(props);
 
+    const region = _.get(props, "route.params.region", null);
     this._watchID = null; /* navigation watch hook */
     this._onFocus = null;
     this._refs = {};
@@ -45,7 +45,7 @@ class AccomodationsScreen extends Component {
       nearPois: [],
       nearPoisRefreshing: false,
       coords: {},
-      region: Constants.MAP.defaultRegion,
+      region: region || Constants.MAP.defaultRegion,
       //
       snapPoints: null,
       snapIndex: 1,
@@ -245,8 +245,12 @@ class AccomodationsScreen extends Component {
   _backButtonPress = () => { 
     /* update also the header pois based on current cat */
     //this.setState({ pois: [], nearPois: [] });
-    this.props.actions.popCurrentCategoryAccomodations();
-    this.setState({ pois: [] });
+    if (this.props.others.accomodationsTerms.length > 0) {
+      this.props.actions.popCurrentCategoryAccomodations();
+      this.setState({ pois: [] });
+    } else {
+      this.props.navigation.goBack();
+    }
   }
 
   /**
@@ -255,8 +259,8 @@ class AccomodationsScreen extends Component {
    */
   _onPageLayout = (event) => {
     const { width, height } = event.nativeEvent.layout;
-    //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 44 (handle) - 36 (header text) - 160 (entityItem) - 10 (margin of entityItem)
-    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44 - 36 - 160 - 10, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44] });
+    //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 44 (handle) - 36 (header text) - 160 (entityItem) - 10 (margin of entityItem) - 36 (whereToGo text)
+    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44 - 36 - 160 - 10 - 36, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44] });
   }; 
 
   /********************* Render methods go down here *********************/
@@ -298,7 +302,9 @@ class AccomodationsScreen extends Component {
   /* Renders the Header of the scrollable container */
   _renderListHeader = () => {
     const { nearPois, coords } = this.state;
-    const { nearToYou, whereToGo } = this.props.locale.messages;
+    const { nearToYou, exploreAccomodation, explore } = this.props.locale.messages;
+    const { term } = this._getCurrentTerm();
+    const categoryTitle = term ? `${explore} ${term.name}` : exploreAccomodation;
       return (
         <View style={styles.listHeaderView}>
           <AsyncOperationStatusIndicator
@@ -329,7 +335,7 @@ class AccomodationsScreen extends Component {
             </View>
           </AsyncOperationStatusIndicator>
           <View style={styles.sectionTitleView}>
-            <Text style={styles.sectionTitle}>{whereToGo}</Text>
+            <Text style={styles.sectionTitle}>{categoryTitle}</Text>
           </View>
         </View>
       )
@@ -422,7 +428,6 @@ class AccomodationsScreen extends Component {
         <ConnectedHeader 
           backOnPress={this._backButtonPress}
           iconTintColor={Colors.colorAccomodationsScreen}  
-          backButtonVisible={this.props.others.accomodationsTerms.length > 0}
         />
         {render && this._renderContent()}
       </View>
@@ -451,7 +456,7 @@ const styles = StyleSheet.create({
       fontSize: 16,
       color: Colors.colorAccomodationsScreen,
       fontWeight: "bold",
-      margin: 10
+      padding: 10
   },
   listContainer: {
     backgroundColor: Colors.colorAccomodationsScreen,
