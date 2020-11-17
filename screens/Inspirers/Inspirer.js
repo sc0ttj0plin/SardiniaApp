@@ -113,7 +113,6 @@ class InspirerScreen extends Component {
   }
   
   _parseEntity = (entity) => {
-    console.log(entity)
     const { locale } = this.props;
     const { lan } = locale;
     const { abstract, title, description, whyVisit } = getEntityInfo(entity, ["abstract", "title", "description", "whyVisit"], [lan, 0, "value"]);

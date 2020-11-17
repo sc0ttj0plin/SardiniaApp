@@ -130,10 +130,18 @@ export const processEntity = function(entity, coords=null) {
     entity.distance = distanceToString(distance(coords[0], coords[1], entity.georef.coordinates[0], entity.georef.coordinates[1]));
   }
 
+  if (entity.nodes_linked) {
+    entity.nodes_linked = entity.nodes_linked.reduce((acc, el, index) => {
+      el.node.image = el.node.image.replace("public://", "https://www.sardegnaturismo.it/sites/default/files/");
+      acc.push(el.node);
+      return acc;
+    }, []);
+  }
+
   if (entity.stages)
     entity.stages.forEach((el) => {
       el.poi.image = el.poi.image.replace("public://", "https://www.sardegnaturismo.it/sites/default/files/");
-    })
+    });
 }
 
 /**

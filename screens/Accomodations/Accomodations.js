@@ -34,7 +34,10 @@ class AccomodationsScreen extends Component {
   constructor(props) {
     super(props);
 
+    // Region and sourceEntity are set if another screen (Place and Event) navigates to Accomodations
     const region = _.get(props, "route.params.region", null);
+    const sourceEntity = _.get(props, "route.params.sourceEntity", null);
+
     this._watchID = null; /* navigation watch hook */
     this._onFocus = null;
     this._refs = {};
@@ -46,6 +49,7 @@ class AccomodationsScreen extends Component {
       nearPoisRefreshing: false,
       coords: {},
       region: region || Constants.MAP.defaultRegion,
+      sourceEntity,
       //
       snapPoints: null,
       snapIndex: 1,
@@ -154,14 +158,18 @@ class AccomodationsScreen extends Component {
   /**
    * Loads pois that are near "coords" and sets nearPois on state
    * uuids controls the category of the pois
+   * If sourceEntity is specified, then fetch accomodations that are near the source entity (poi or event)
    * @param {*} coords: the coordinates for which to load new pois
    */
   _fetchNearestPois = (coords) => {
-    const { nearPois } = this.state;
+    const { nearPois, sourceEntity } = this.state;
+    let _coords = coords;
+    if (sourceEntity)
+      _coords = { longitude: sourceEntity.georef.coordinates[0], latitude: sourceEntity.georef.coordinates[1] };
     return apolloQuery(actions.getNearestAccomodations({ 
       limit: Constants.PAGINATION.accomodationsLimit,
-      x: coords.longitude,
-      y: coords.latitude,
+      x: _coords.longitude,
+      y: _coords.latitude,
       // uuids: childUuids, /* no need to specify the category since we get random pois */
       offset: nearPois.length,
     })).then((pois) => {
@@ -179,7 +187,11 @@ class AccomodationsScreen extends Component {
    */
   _loadMorePois = () => {
     const { childUuids } = this._getCurrentTerm();
-    const { poisRefreshing, pois: statePois, coords } = this.state;
+    const { poisRefreshing, pois: statePois, coords, sourceEntity } = this.state;
+    let _coords = coords;
+    if (sourceEntity)
+      _coords = { longitude: sourceEntity.georef.coordinates[0], latitude: sourceEntity.georef.coordinates[1] };
+
     if(coords && this._isPoiList() && !poisRefreshing){
       this.setState({
         poisRefreshing: true
@@ -187,8 +199,8 @@ class AccomodationsScreen extends Component {
         apolloQuery(actions.getNearestAccomodations({
           limit: Constants.PAGINATION.accomodationsLimit,
           offset: statePois ? statePois.length : 0,
-          x: coords.longitude,
-          y: coords.latitude,
+          x: _coords.longitude,
+          y: _coords.latitude,
           uuids: childUuids
         })).then((pois) => {
           if (pois && pois.length > 0)
@@ -301,9 +313,15 @@ class AccomodationsScreen extends Component {
 
   /* Renders the Header of the scrollable container */
   _renderListHeader = () => {
-    const { nearPois, coords } = this.state;
-    const { nearToYou, exploreAccomodation, explore } = this.props.locale.messages;
+    const { nearPois, coords, sourceEntity } = this.state;
+    const { nearToYou, nearTo, exploreAccomodation, explore } = this.props.locale.messages;
     const { term } = this._getCurrentTerm();
+
+    let nearToText = nearToYou;
+    // If we have a source entity it becomes near to "sourceEntity" title
+    if (sourceEntity)
+      nearToText = `${nearTo} ${_.get(sourceEntity.title, [this.props.locale.lan, 0, "value"], null)}`;
+
     const categoryTitle = term ? `${explore} ${term.name}` : exploreAccomodation;
       return (
         <View style={styles.listHeaderView}>
@@ -314,7 +332,7 @@ class AccomodationsScreen extends Component {
           >
             <View>  
               <View style={styles.sectionTitleView}>
-                <Text style={styles.sectionTitle}>{nearToYou}</Text>
+                <Text style={styles.sectionTitle}>{nearToText}</Text>
               </View>
               <FlatList
                 horizontal={true}

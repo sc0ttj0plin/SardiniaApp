@@ -47,13 +47,17 @@ class EntityAccomodations extends PureComponent {
         )
     }
 
-    _openMap = () => {
-      //Compute region of nearest pois and send to 
-      this.props.navigation.navigate(Constants.NAVIGATION.NavAccomodationsScreen, { region: this.props.region });
-    }
-
     render() {
-        const { listTitle, showMapBtnText = "", data, listTitleStyle, horizontal, showsHorizontalScrollIndicator, extraData } = this.props; 
+        const { 
+          listTitle, 
+          showMapBtnText = "", 
+          data, 
+          listTitleStyle, 
+          horizontal, 
+          showsHorizontalScrollIndicator, 
+          extraData,
+          openMap,
+        } = this.props; 
         return (
             <View style={[styles.fill, styles.mainView]}>
                 <Text style={styles.title}>Strutture ricettive nelle vicinanze</Text>
@@ -83,7 +87,7 @@ class EntityAccomodations extends PureComponent {
                     </View>
                 </AsyncOperationStatusIndicator>
 
-                <TouchableOpacity style={styles.showButton} activeOpacity={0.8} onPress={this._openMap}>
+                <TouchableOpacity style={styles.showButton} activeOpacity={0.8} onPress={openMap}>
         <Text style={styles.showButtonText}>{showMapBtnText}</Text>
                 </TouchableOpacity>
             </View>
