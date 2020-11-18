@@ -308,6 +308,7 @@ class AccomodationsScreen extends Component {
         uuids={childUuids}
         style={{flex: 1}}
         categoriesMap={term}
+        isAccomodationsMap
         mapRef={ref => (this._refs["ClusteredMapViewTop"] = ref)}
       />
     )

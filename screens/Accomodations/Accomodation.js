@@ -169,7 +169,7 @@ class AccomodationScreen extends Component {
 
 
   _renderStars = (count) => {
-    let stars = new Array(count).fill(0);
+    let stars = new Array(count > 0 ? count : 0).fill(0);
     return stars.map( star => <Ionicons name={"md-star"} size={25} color={Colors.stars} style={styles.star}/>);
   }
 
