@@ -76,7 +76,8 @@ class PlaceScreen extends Component {
       sampleVideoUrl: null,
       gallery: [],
       relatedEntities: [],
-      nearAccomodations: []
+      nearAccomodations: [],
+      nearAccomodationsRegion: null,
     };
       
   }
@@ -179,7 +180,11 @@ class PlaceScreen extends Component {
     //Compute region of nearest pois and send to accomodations screen
     this.props.navigation.navigate(Constants.NAVIGATION.NavAccomodationsScreen, { 
       region: this.state.nearAccomodationsRegion, 
-      sourceEntity: this.state.entity 
+      sourceEntity: this.state.entity,
+      sourceEntityCoordinates: { 
+        longitude: this.state.entity.georef.coordinates[0], 
+        latitude: this.state.entity.georef.coordinates[1] 
+      },
     });
   }
 

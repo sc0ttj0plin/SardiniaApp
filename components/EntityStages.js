@@ -6,8 +6,8 @@ import Layout from '../constants/Layout';
 import { useNavigation } from '@react-navigation/native';
 import Colors from '../constants/Colors';
 // import { TouchableOpacity } from 'react-native-gesture-handler';
-import moment from "moment"
-import _ from "lodash"
+import moment from "moment";
+import _ from "lodash";
 class EntityStages extends PureComponent {  
   
   constructor(props) {
@@ -15,6 +15,7 @@ class EntityStages extends PureComponent {
     this.state = {
       stages: props.stages || []
     };
+
   }
 
   componentDidUpdate(prevProps){
@@ -25,12 +26,14 @@ class EntityStages extends PureComponent {
 
   _openPoi = (uuid) => {
     // console.log("uuid poi", uuid)
-    this.props.navigation.push(Constants.NAVIGATION.NavPlaceScreen, { item: {uuid} });
+    this.props.navigation.push(Constants.NAVIGATION.NavPlaceScreen, { item: { uuid } });
   }
 
   _renderEventStage = (item, index) => {
-    const date = _.get(item.date, "start", null)
-    const formattedDate = moment(date).format("DD MMM YYYY");
+    const startDate = _.get(item.date, "start", null);
+    const endDate = _.get(item.date, "end", null);
+    const formattedStartDate = moment(startDate).format("DD MMMM YYYY");
+    const formattedEndDate = moment(endDate).format("DD MMMM YYYY");
     return(
       <View style={styles.eventStageView}>
         { index != 0 &&
@@ -40,15 +43,16 @@ class EntityStages extends PureComponent {
           <Text style={styles.eventStageNumber}>{index + 1}</Text>
         </View>
         <Text style={styles.eventStageLocation}>{item.nome}</Text>
-        <Text style={styles.eventStageDate}>{formattedDate}</Text>
+        <Text style={styles.eventStageDate}>{formattedStartDate} - {formattedEndDate}</Text>
       </View>
     )
   }
 
   _renderEventStages = () => {
+    const { stages } = this.props.locale.messages;
     return(
       <View style={styles.eventStagesView}>
-        <Text style={styles.eventStagesTitle}>Le tappe</Text>
+        <Text style={styles.eventStagesTitle}>{stages}</Text>
         <FlatList 
           key={"itinerary-stages"}
           keyExtractor={item => item.name}
@@ -68,7 +72,7 @@ class EntityStages extends PureComponent {
   _renderItineraryStage = (stage, index) => {
     const { title, body } = stage
     const { uuid } = stage.poi || null;
-    // console.log("stage", stage)
+    const { explore } = this.props.locale.messages;
     return(
       <View style={styles.itemContainer}>
         <View style={styles.topLine}>
@@ -87,7 +91,7 @@ class EntityStages extends PureComponent {
           <TouchableOpacity
             style={styles.bottomButton}
             activeOpacity={0.7} onPress={() => this._openPoi(uuid)}>
-              <Text style={styles.bottomButtonText}>ESPLORA</Text>
+              <Text style={styles.bottomButtonText}>{explore}</Text>
           </TouchableOpacity>
         </View>
       </View>

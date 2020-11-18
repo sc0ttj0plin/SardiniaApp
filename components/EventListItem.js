@@ -7,9 +7,18 @@ import Colors from '../constants/Colors';
  * EventListItem
  */
 export default class EventListItem extends PureComponent {
-  render() {
-    const { title, term, image, date } = this.props
 
+  _renderDates = () => {
+    const { startDate, endDate } = this.props
+    if (startDate !== endDate) 
+      return <Text style={styles.listItemDate}>{startDate} {endDate}</Text>
+    else 
+      return <Text style={styles.listItemDate}>{startDate}</Text>
+  }
+
+  render() {
+    const { title, term, image } = this.props
+    
     return (
       <TouchableOpacity style={styles.listItemButton} activeOpacity={0.7} onPress={this.props.onPress}>
         <View style={styles.listItem}>
@@ -21,8 +30,8 @@ export default class EventListItem extends PureComponent {
           </View>
           <View style={styles.itemDescView}>
               <Text style={styles.listItemTitle}>{title}</Text>
-              <Text style={styles.listItemDate}>{date}</Text>
               <Text style={styles.listItemTerm}>{term}</Text>
+              {this._renderDates()}
           </View>
         </View>
       </TouchableOpacity>

@@ -37,6 +37,7 @@ class AccomodationsScreen extends Component {
     // Region and sourceEntity are set if another screen (Place and Event) navigates to Accomodations
     const region = _.get(props, "route.params.region", null);
     const sourceEntity = _.get(props, "route.params.sourceEntity", null);
+    const sourceEntityCoordinates = _.get(props, "route.params.sourceEntityCoordinates", null);
 
     this._watchID = null; /* navigation watch hook */
     this._onFocus = null;
@@ -50,6 +51,7 @@ class AccomodationsScreen extends Component {
       coords: {},
       region: region || Constants.MAP.defaultRegion,
       sourceEntity,
+      sourceEntityCoordinates,
       //
       snapPoints: null,
       snapIndex: 1,
@@ -165,7 +167,7 @@ class AccomodationsScreen extends Component {
     const { nearPois, sourceEntity } = this.state;
     let _coords = coords;
     if (sourceEntity)
-      _coords = { longitude: sourceEntity.georef.coordinates[0], latitude: sourceEntity.georef.coordinates[1] };
+      _coords = this.state.sourceEntityCoordinates;
     return apolloQuery(actions.getNearestAccomodations({ 
       limit: Constants.PAGINATION.accomodationsLimit,
       x: _coords.longitude,
@@ -183,6 +185,7 @@ class AccomodationsScreen extends Component {
    * we reach the end of the category tree . 
    * Pois are loaded in order of distance from the user and are "categorized"
    * to load pois in the bottom scrollable container list (not header)
+   * If sourceEntity is specified, then fetch accomodations that are near the source entity (poi or event)
    * uuids controls the category of the pois
    */
   _loadMorePois = () => {
@@ -190,9 +193,9 @@ class AccomodationsScreen extends Component {
     const { poisRefreshing, pois: statePois, coords, sourceEntity } = this.state;
     let _coords = coords;
     if (sourceEntity)
-      _coords = { longitude: sourceEntity.georef.coordinates[0], latitude: sourceEntity.georef.coordinates[1] };
+      _coords = this.state.sourceEntityCoordinates;
 
-    if(coords && this._isPoiList() && !poisRefreshing){
+    if(_coords && this._isPoiList() && !poisRefreshing){
       this.setState({
         poisRefreshing: true
       }, () => {

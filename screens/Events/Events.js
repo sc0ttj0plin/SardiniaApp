@@ -252,14 +252,16 @@ class EventsScreen extends Component {
     const title = _.get(item.title, [lan, 0, "value"], null);
     const term = _.get(item, "term.name", null);
     const image = item.image;
-    const date = item.date1render;
+    const date1 = item.date1render;
+    const date2 = item.date2render;
     return(
       <EventListItem 
         onPress={() => this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item })}  
         title={title} 
         term={term}
         image={image}
-        date={date}
+        startDate={date1}
+        endDate={date2}
       />
     )
   }

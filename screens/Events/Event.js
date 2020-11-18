@@ -36,6 +36,7 @@ import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
+import { getCenterFromPoints, boundingRect } from '../../helpers/maps';
 import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
 
 /* Deferred rendering to speedup page inital load: 
@@ -64,6 +65,10 @@ class EventScreen extends Component {
       steps: [],
       sampleVideoUrl: null,
       relatedEntities: [],
+      stepsCoordinates: [],
+      stepsCoordinatesCenter: null,
+      nearAccomodations: [], /* nearAccomodations is computed on all the stages */
+      nearAccomodationsRegion: null,
     };
       
   }
@@ -106,15 +111,44 @@ class EventScreen extends Component {
     }
   }
 
+  _fetchNearAccomodations = async () => {
+    const { stepsCoordinates, stepsCoordinatesCenter } = this.state;
+    if (stepsCoordinates.length > 0) {
+      try {
+        const nearAccomodations = await apolloQuery(actions.getNearestNodesByType({ 
+          type: Constants.NODE_TYPES.accomodations, 
+          limit: Constants.PAGINATION.poisAccomodationsLimit,
+          offset: 0,
+          x: stepsCoordinatesCenter.longitude,
+          y: stepsCoordinatesCenter.latitude,
+        }));
+        // Compute dataRegion, the smallest enclosing region of the pois (center is current poi location)
+        const centerCoords = [stepsCoordinatesCenter.longitude, stepsCoordinatesCenter.latitude]
+        const nearAccomodationsRegion = boundingRect(nearAccomodations, centerCoords, (p) => p.georef.coordinates);
+        this.setState({ nearAccomodations, nearAccomodationsRegion });
+      } catch(error) {
+        console.log(error);
+      }
+    }
+  }
+
   _parseEntity = (entity) => {
     const { locale } = this.props;
     const { lan } = locale;
     const { abstract, title, description } = getEntityInfo(entity, ["abstract", "title", "description"], [lan, 0, "value"]);
     const socialUrl = `${Constants.WEBSITE_URL}${greedyArrayFinder(entity.url_alias, "language", lan, "alias", "")}`;
     const sampleVideoUrl = getSampleVideoIndex(entity.nid);
-    const steps = _.get(entity, ["steps", lan], [])
+    const steps = _.get(entity, ["steps", lan], []);
+    const stepsCoordinates = steps.reduce((acc, el, idx) => {
+      acc.push([el.georef.lon, el.georef.lat]);
+      return acc;
+    }, []);
+    const stepsCoordinatesCenter = getCenterFromPoints(stepsCoordinates, p => p);
     // console.log("steps", steps, entity.nid)
-    this.setState({ entity, abstract,  title,  description,  socialUrl, sampleVideoUrl, steps });
+    this.setState({ entity, abstract,  title,  description,  socialUrl, sampleVideoUrl, steps, stepsCoordinates, stepsCoordinatesCenter }, () => {
+      // After parsing the entity fetch near accomodations  and nodes, both depend on state
+      this._fetchNearAccomodations();
+    });
   }
 
   _openRelatedEntity = (item) => {
@@ -135,6 +169,15 @@ class EventScreen extends Component {
       default:
         break;
     }
+  }
+
+  _openAccomodationsMap = () => {
+    //Compute region of nearest pois and send to accomodations screen
+    this.props.navigation.navigate(Constants.NAVIGATION.NavAccomodationsScreen, { 
+      region: this.state.nearAccomodationsRegion, 
+      sourceEntity: this.state.entity,
+      sourceEntityCoordinates: this.state.stepsCoordinatesCenter
+    });
   }
 
   /********************* Render methods go down here *********************/
@@ -179,7 +222,18 @@ class EventScreen extends Component {
   }
 
   _renderContent = () => {
-    const { uuid, entity, abstract, title, description, steps, coordinates, socialUrl, sampleVideoUrl, relatedEntities } = this.state;
+    const { 
+      uuid, 
+      entity, 
+      abstract, 
+      title, 
+      description, 
+      steps, 
+      coordinates, 
+      socialUrl, 
+      sampleVideoUrl, 
+      relatedEntities, 
+      nearAccomodations } = this.state;
     const { locale, pois, favourites, } = this.props;
     const { lan } = locale;
     const { 
@@ -188,6 +242,7 @@ class EventScreen extends Component {
       gallery: galleryTitle, 
       description: descriptionTitle,
       canBeOfInterest,
+      showMap,
     } = locale.messages;
     
     const { orientation } = this.state;
@@ -203,9 +258,15 @@ class EventScreen extends Component {
           </View>
           <View style={[styles.container]}>
             <EntityDescription title={descriptionTitle} text={description} color={Colors.colorEventsScreen}/>
-            <EntityStages stages={steps}/>
+            <EntityStages stages={steps} locale={locale}/>
             <View style={styles.separator}/>
             {this._renderRelatedList(canBeOfInterest, relatedEntities, Constants.ENTITY_TYPES.events)}
+            <EntityAccomodations 
+              data={nearAccomodations} 
+              locale={locale} 
+              showMapBtnText={showMap} 
+              openMap={this._openAccomodationsMap}
+              horizontal/>
             <View style={{marginBottom: 30}}></View>
           </View>
          </ScrollView>

@@ -87,11 +87,13 @@ export default function reducer(state = INITIAL_STATE, action) {
       let eventsCalendarMarkers = {};
       console.log("events", action.payload.events.length)
       action.payload.events.forEach((event) => { 
-        const eventDate = moment.unix(event.date1).add(1,"year");
+        const eventStartDate = moment.unix(event.date1).add(1,"year");
+        const eventEndDate = moment.unix(event.date2).add(1,"year");
         // let dateFormatted = moment.unix(e.date1).format(Constants.DATE_FORMAT); //TODO: temporary fix to show events
-        let eventYearMonthDay = eventDate.format(Constants.DATE_FORMAT);
+        let eventYearMonthDay = eventStartDate.format(Constants.DATE_FORMAT);
         let eventYearMonth = eventYearMonthDay.substr(0, eventYearMonthDay.lastIndexOf(Constants.DATE_SEP));
-        event.date1render = eventDate.format(Constants.DATE_FORMAT_RENDER);
+        event.date1render = eventStartDate.format(Constants.DATE_FORMAT_RENDER);
+        event.date2render = eventEndDate.format(Constants.DATE_FORMAT_RENDER);
         eventsById[event.uuid] = event;
         eventsByYearMonth[eventYearMonth] = eventsByYearMonth[eventYearMonth] || [];
         eventsByYearMonthDay[eventYearMonthDay] = eventsByYearMonthDay[eventYearMonthDay] || [];

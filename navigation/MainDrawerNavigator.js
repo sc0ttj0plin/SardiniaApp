@@ -281,6 +281,7 @@ let ConnectedTextAccomodations = () => <ConnectedText languageKey="accomodations
  */
 
 const Drawer = createDrawerNavigator();
+
 function CustomDrawerContent(props) {
   const { state, ...rest } = props;
   const newState = { ...state};
@@ -290,7 +291,7 @@ function CustomDrawerContent(props) {
   return (
     <DrawerContentScrollView {...props}>
       <DrawerItemList state={newState} {...rest}/>
-      {/* <ConnectedLanguageList /> */}
+      <ConnectedLanguageList />
     </DrawerContentScrollView>
   );
 }

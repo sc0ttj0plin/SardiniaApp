@@ -15,7 +15,7 @@ export ConnectedHeader from './ConnectedHeader';
 export HeaderFullscreen from './HeaderFullscreen';
 
 // export ImageGridItem from './ImageGridItem';
-// export ConnectedLanguageList from './ConnectedLanguageList';
+export ConnectedLanguageList from './ConnectedLanguageList';
 // export BoxWithText from './BoxWithText';
 export ConnectedFab from './ConnectedFab';
 // export PoiItem from './PoiItem';

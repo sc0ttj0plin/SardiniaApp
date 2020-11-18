@@ -5,9 +5,7 @@ import Layout from '../constants/Layout';
 import Colors from '../constants/Colors'; 
 import _ from 'lodash';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import * as graphqlActions from '../actions/graphql';
-import * as restActions from '../actions/rest';
-import * as localeActions from '../actions/locale';
+import actions from '../actions';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { DrawerActions } from '@react-navigation/native';
@@ -96,7 +94,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({ locale: state.localeState });
 const mapDispatchToProps = dispatch => {
-  return {...bindActionCreators({ ...graphqlActions, ...restActions, ...localeActions}, dispatch)};
+  return {...bindActionCreators({ ...actions}, dispatch)};
 };
 
 
