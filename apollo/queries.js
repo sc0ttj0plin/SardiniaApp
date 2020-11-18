@@ -36,6 +36,15 @@ export function apolloQuery(action) {
         pois.forEach((e) => processEntity(e, action.coords));
         return pois;
     })
+  } else if (action.type === Constants.GET_ACCOMODATIONS_BY_ID) {
+    return apolloClient.query({
+        query: Queries.getAccomodationsById,
+        variables: action.query
+    }).then((resp) => {
+        var pois = resp.data.nodes;
+        pois.forEach((e) => processEntity(e, action.coords));
+        return pois;
+    })
   } else if (action.type === Constants.GET_POIS) {
       return apolloClient.query({
           query: Queries.getPois,

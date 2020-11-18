@@ -89,11 +89,13 @@ const styles = StyleSheet.create({
 
   },
   content:{
-    flex: 1,
     paddingTop: 10,
+    height: 130,
   },
   innerContent: {
-    paddingLeft: 10
+    paddingLeft: 10,
+    flexDirection: "column",
+    flex: 1
   },
   cornerIcon: { 
     backgroundColor: "transparent", 
@@ -118,7 +120,7 @@ const styles = StyleSheet.create({
   },
   distanceView: {
     width: "100%",
-    height: 40,
+    height: 30,
     backgroundColor: "#F2F2F2",
     borderBottomLeftRadius: 8,
     borderBottomRightRadius: 8,
@@ -127,11 +129,11 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center", 
     alignItems: "flex-start",
-    marginTop: 10
   },
   starsView: {
     display: "flex",
     flexDirection: "row",
+    minHeight: 25
   },
   distanceText: {
     fontSize: 10,
@@ -139,17 +141,17 @@ const styles = StyleSheet.create({
   },
   locationText: {
     fontSize: 10,
-    marginTop: 5
+    marginTop: 5,
   },
   titleText: {
     marginTop: 5,
-    fontSize: 13,
+    fontSize: 11,
     fontWeight: "bold",
-    marginBottom: 10,
-    minHeight: 50,
+    minHeight: 30,
     paddingRight: 5
   },
   termText: {
-    fontSize: 10
+    fontSize: 10,
+    minHeight: 20,
   }
 })

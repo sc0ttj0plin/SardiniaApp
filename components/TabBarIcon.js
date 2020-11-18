@@ -1,5 +1,5 @@
 import React from 'react';
-import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 import { Image } from "react-native"
 import Colors from '../constants/Colors';
 
@@ -7,7 +7,7 @@ import Colors from '../constants/Colors';
  * TabBarIcon (self explanatory)
  */
 export default function TabBarIcon(props) {
-  const defaultColor = props.tintColor ? props.tintColor : Colors.tabIconDefault;
+  const defaultColor = Colors.tabIconDefault;
   const activeColor = props.activeColor ? props.activeColor : Colors.tabIconSelected;
   return (
     <>
@@ -15,7 +15,7 @@ export default function TabBarIcon(props) {
       <Image source={props.focused && props.iconSourceActive? props.iconSourceActive : props.iconSourceDefault} style={{...props.iconStyle}}>
       </Image>
     ) : (
-      <Ionicons
+      <FontAwesome
         name={props.name}
         size={26}
         style={{ marginBottom: -3, backgroundColor: "transparent" }}

@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        backgroundColor: "rgba(31, 203, 217, 0.3)",
+        backgroundColor: Colors.entityAccomodations,
         marginTop: 32,
     },
     title: {

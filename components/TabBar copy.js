@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import {
   View,
   Text,
@@ -10,7 +10,7 @@ import ConnectedText from './ConnectedText';
 import TabBarIcon from './TabBarIcon';
 import posed from 'react-native-pose';
 import Layout from '../constants/Layout';
-import Colors from "../constants/Colors"
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { useSafeArea } from 'react-native-safe-area-context';
  
 // define click zoom
@@ -30,58 +30,32 @@ const CenterScaler = posed.View({
  * Includes an animated component that scales up on focus
  */
 const TabBar = props => {
-  var insets = useSafeArea();
-  const {
-      navigation
-  } = props
-  const { routes, index } = props.state
-  let activeRouteIndex = index;
-  let descriptors = props.descriptors ? props.descriptors : []
-  let newRoutes = []
-  let activeRoute = null;
-  let count = 0;
-  for(let key in descriptors){
-      let descriptor = descriptors[key];
-      let route = {
-          name: descriptor.options.name,
-          languageKey: descriptor.options.languageKey,
-          backgroundActiveColor: descriptor.options.backgroundActiveColor,
-          icon: descriptor.options.icon,
-          iconSourceDefault: descriptor.options.iconSourceDefault,
-          iconSourceActive: descriptor.options.iconSourceActive
-      }
-      newRoutes.push(route)
-      if(activeRouteIndex == count)
-        activeRoute = route
-      count++;
-  }
+    var insets = useSafeArea();
+    const {
+        navigation
+    } = props
+    const { routes, index } = props.state
+    let activeRouteIndex = index;
+    let descriptors = props.descriptors ? props.descriptors : []
+    let newRoutes = []
+    for(let key in descriptors){
+        let descriptor = descriptors[key];
+        let route = {
+            name: descriptor.options.name,
+            languageKey: descriptor.options.languageKey,
+            backgroundActiveColor: descriptor.options.backgroundActiveColor,
+            icon: descriptor.options.icon,
+            iconSourceDefault: descriptor.options.iconSourceDefault,
+            iconSourceActive: descriptor.options.iconSourceActive
+        }
+        newRoutes.push(route)
+    }
 
-  const onTabPress = (screen) => {
-      navigation.navigate(screen);
-  }
-
-  const renderBottomLine = (activeRoute) => {
-    return(
-      <View style={[Styles.bottomLine, { 
-        backgroundColor: activeRoute ? activeRoute.backgroundActiveColor : "white",
-      }]}></View>
-    )
-  }
-
-  const renderMixedBottomLine = () => {
-    return(
-      <View style={[Styles.mixedBottomLine]}>
-        <View style={[Styles.mixedBottomLineItem, {backgroundColor: Colors.colorPlacesScreen}]}/>
-        <View style={[Styles.mixedBottomLineItem, {backgroundColor: Colors.colorInspirersScreen}]}/>
-        <View style={[Styles.mixedBottomLineItem, {backgroundColor: Colors.colorItinerariesScreen}]}/>
-        <View style={[Styles.mixedBottomLineItem, {backgroundColor: Colors.colorEventsScreen}]}/>
-      </View>
-    )
-  }
+    const onTabPress = (screen) => {
+        navigation.navigate(screen);
+    }
 
   return (
-    <>
-    {activeRoute && activeRoute.name == 'Extras' ? renderMixedBottomLine() : renderBottomLine(activeRoute)}
     <View style={[Styles.container, {height: 63, marginBottom: insets.bottom}]}>
       {newRoutes.map((route, routeIndex) => {
         const isRouteActive = routeIndex === activeRouteIndex
@@ -90,7 +64,7 @@ const TabBar = props => {
             key={routeIndex}
             activeOpacity={0.7}
             style={[Styles.tabButton, {
-                backgroundColor: "white" 
+                backgroundColor: isRouteActive && route.backgroundActiveColor ? route.backgroundActiveColor : "white" 
             }]}
             onPress={ () => onTabPress(route.name)}>
                 {route.name == 'Extras' ? ( // Special handling of special icons
@@ -113,21 +87,20 @@ const TabBar = props => {
               >
                   { route.icon &&
                     <View style={Styles.iconContainer}>
-                        <TabBarIcon focused={isRouteActive} name={route.icon} activeColor={isRouteActive ? route.backgroundActiveColor : "#A7A7A7"}/>
+                        <TabBarIcon focused={isRouteActive} name={route.icon} tintColor={isRouteActive ? "white" : Colors.tintColor} iconSourceDefault={route.iconSourceDefault} iconSourceActive={route.iconSourceActive}/>
                     </View>
                   }
-                  { isRouteActive &&
                     <ConnectedText textStyle={[Styles.iconText, {
-                        color: route.backgroundActiveColor
-                    }]} languageKey={route.languageKey}/>
-                  }
+                        color: isRouteActive ? "white" : "#A7A7A7"
+                    }]} languageKey={route.languageKey}>
+
+                    </ConnectedText>
               </Scaler>
             )}
           </TouchableOpacity>
         )
       })}
     </View>
-    </>
   )
 }
  
@@ -140,19 +113,6 @@ const Styles = StyleSheet.create({
     width: "100%",
     backgroundColor: "white",
     justifyContent: "center"
-  },
-  mixedBottomLine: {
-    width: Layout.window.width,
-    height: 2,
-    display: "flex",
-    flexDirection: "row",
-  },
-  bottomLine: {
-    width: Layout.window.width,
-    height: 2,
-  },
-  mixedBottomLineItem: {
-    flex: 1
   },
   tabButton: {
     flex: 1,

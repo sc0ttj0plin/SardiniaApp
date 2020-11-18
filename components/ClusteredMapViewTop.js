@@ -197,16 +197,7 @@ class ClusteredMapViewTop extends PureComponent {
       this.setState({ selectedCluster: null });
   }
 
-  /**
-   * Navigate to entity screen
-   * @param {*} item: poi
-   */
-  _openEntity(item) {
-    // console.log("GOTO ENTITY!", item);
-    this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, {
-      item: item.terms_objs[0], mustBeFech: true
-    })
-  }
+
 
   /**
    * Extract unique identifier for the current cluster
@@ -235,16 +226,17 @@ class ClusteredMapViewTop extends PureComponent {
    * Render single poi on bottom of mapview on press (outside scrollableContainer)
    */
   _renderEntityWidget() {
+    const { isAccomodationsMap } = this.props;
     return (
-      <View style={[styles.entityWidget]}>
-        <TouchableOpacity
-          style={styles.fill}
-          onPress={() => this._openEntity(this.state.selectedCluster)}
-          activeOpacity={0.7}>
-          <EntityWidgetInMapView locale={this.props.locale} cluster={this.state.selectedCluster} coords={this._coords} />
-        </TouchableOpacity>
-      </View>)
+      <EntityWidgetInMapView 
+        locale={this.props.locale} 
+        isAccomodationItem={isAccomodationsMap} 
+        cluster={this.state.selectedCluster} 
+        coords={this._coords} 
+      />
+    )
   }
+
 
   /**
    * Renders single poi marker
