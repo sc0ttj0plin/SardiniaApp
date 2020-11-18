@@ -67,7 +67,7 @@ export default class AccomodationItem extends PureComponent {
             </View>
           </View>
           <View style={styles.distanceView}>
-          <Text style={styles.distanceText}>Distanza {distance}</Text>
+            <Text style={styles.distanceText}>Distanza {distance}</Text>
           </View>
         </ScrollableContainerTouchableOpacity>
     );
@@ -119,8 +119,7 @@ const styles = StyleSheet.create({
     borderTopColor: Colors.colorAccomodationsScreen
   },
   distanceView: {
-    width: "100%",
-    height: 30,
+    flex: 1,
     backgroundColor: "#F2F2F2",
     borderBottomLeftRadius: 8,
     borderBottomRightRadius: 8,
