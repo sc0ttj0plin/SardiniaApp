@@ -30,8 +30,10 @@ import MediaScreen from '../screens/Media/Media';
 import FavouritesScreen from '../screens/Favourites/Favourites';
 import FavouritesListScreen from '../screens/Favourites/FavouritesList';
 import Boilerplate from '../screens/Boilerplates/Boilerplate';
-import { ConnectedText, ConnectedLanguageList, TabBar } from '../components';
+import { ConnectedText, ConnectedLanguageList, TabBar, ConnectedDrawer } from '../components';
 // import VirtualTourScreen from '../screens/Others/VirtualTourScreen';
+import { Ionicons } from '@expo/vector-icons';
+import Colors from '../constants/Colors';
 import * as Constants from '../constants';
 const {
   NavPlacesScreen, NavInspirersScreen ,NavMapScreen, 
@@ -43,8 +45,6 @@ const {
 } = Constants.NAVIGATION;
 
 import {FromTopTransition} from './transitions'
-import Colors from '../constants/Colors'; 
-import Place from '../screens/Places/Place';
 
 /**
  * App navigation hyerarchy is as follows (TODO: revise)
@@ -283,38 +283,42 @@ let ConnectedTextAccomodations = () => <ConnectedText languageKey="accomodations
 const Drawer = createDrawerNavigator();
 
 function CustomDrawerContent(props) {
-  const { state, ...rest } = props;
-  const newState = { ...state};
+  // const { state, ...rest } = props;
+  // const newState = { ...state};
   // const excludedScreens = ['SearchStackScreen'];
   // newState.routes = newState.routes.filter(item => excludedScreens.indexOf(item.name) < 0);
 
   return (
     <DrawerContentScrollView {...props}>
-      <DrawerItemList state={newState} {...rest}/>
+      {/* <DrawerItemList state={newState} {...rest}/> */}
+      <ConnectedDrawer.Line />
+      <DrawerItemList {...props}/>
       <ConnectedLanguageList />
     </DrawerContentScrollView>
   );
 }
 
 function DrawerNavigator() {
+
   const drawerContentOptions = {
     inactiveTintColor: "white",
     activeTintColor: "white",
     labelStyle: {
-      color: "white",
-      backgroundColor: "blue"
+      color: "black",
+      backgroundColor: "white"
     }
   }
 
   return (
     <Drawer.Navigator
       drawerStyle={{
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.white,
         paddingTop: 50,
         paddingLeft: 30,
       }}
       drawerContentOptions={drawerContentOptions}
       drawerContent={(props) => <CustomDrawerContent {...props} />}
+      // drawerContent={(props) => <ConnectedDrawer {...props} />}
     >
       <Drawer.Screen name={NavMainStackScreen} component={MainStackScreen} options={{ drawerLabel: ConnectedTextTabName }} />
       <Drawer.Screen name={NavAccomodationsStackScreen} component={AccomodationStackScreen} options={{ drawerLabel: ConnectedTextAccomodations }}/>
