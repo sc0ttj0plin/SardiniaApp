@@ -21,7 +21,7 @@ export ConnectedFab from './ConnectedFab';
 // export PoiItem from './PoiItem';
 // export PoiItemsList from './PoiItemsList';
 // export ExtrasListItem from './ExtrasListItem';
-export ConnectedDrawer from './ConnectedDrawer';
+export CustomDrawer from './CustomDrawer';
 export CategoryListItem from './CategoryListItem';
 export ClusteredMapViewTop from './ClusteredMapViewTop';
 export TabBar from './TabBar';

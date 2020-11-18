@@ -127,11 +127,6 @@ const TabBar = props => {
         )
       })}
     </View>
-    <View style={{
-      height: insets.bottom,
-      width: "100%",
-      backgroundColor: Colors.lightGrey
-    }}></View>
     </>
   )
 }

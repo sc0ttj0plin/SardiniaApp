@@ -223,6 +223,7 @@ class ConnectedHeader extends PureComponent {
 
     return (
       <>
+      <View style={styles.statusBar}></View>
       <View style={[styles.container,this.props.containerStyle, {height: Layout.header.height}]}>
         {this.state.backButtonVisible && this._renderBackButton()}
         {!this.state.backButtonVisible && this._renderDrawerButton()}
@@ -256,6 +257,12 @@ const styles = StyleSheet.create({
     maxHeight: Constants.COMPONENTS.header.height,
     minHeight: Constants.COMPONENTS.header.height,
     alignItems: "center",
+  },
+  statusBar: {
+    height: Layout.statusbarHeight, 
+    width: '100%', 
+    marginTop: -Layout.statusbarHeight, 
+    backgroundColor: Colors.lightGrey
   },
   searchBarExternalContainer: {
     backgroundColor: 'transparent',

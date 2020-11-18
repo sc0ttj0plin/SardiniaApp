@@ -234,7 +234,7 @@ class ItineraryScreen extends Component {
             <EntityAbstract abstract={abstract} />
             <EntityMap coordinates={stagesMarkers} hasMarkers uuid={uuid}/>
             <EntityDescription title={descriptionTitle} text={description} color={Colors.colorItinerariesScreen}/>
-            <EntityStages type="itinerary" stages={stages}/>
+            <EntityStages type="itinerary" stages={stages} locale={locale} />
             <View style={styles.separator}/>
             {this._renderRelatedList(canBeOfInterest, relatedEntities, Constants.ENTITY_TYPES.itineraries)}
             <View style={{marginBottom: 30}}></View>

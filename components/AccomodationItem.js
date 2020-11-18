@@ -67,9 +67,7 @@ export default class AccomodationItem extends PureComponent {
             </View>
           </View>
           <View style={styles.distanceView}>
-            { distance &&
-              <Text style={styles.distanceText}>Distanza {distance}</Text>
-            }
+          <Text style={styles.distanceText}>Distanza {distance}</Text>
           </View>
         </ScrollableContainerTouchableOpacity>
     );
