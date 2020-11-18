@@ -82,7 +82,7 @@ const TabBar = props => {
   return (
     <>
     {activeRoute && activeRoute.name == 'Extras' ? renderMixedBottomLine() : renderBottomLine(activeRoute)}
-    <View style={[Styles.container, {height: 63, marginBottom: insets.bottom}]}>
+    <View style={[Styles.container, {height: 63 + insets.bottom, paddingBottom: insets.bottom}]}>
       {newRoutes.map((route, routeIndex) => {
         const isRouteActive = routeIndex === activeRouteIndex
         return (

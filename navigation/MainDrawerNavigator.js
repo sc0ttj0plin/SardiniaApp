@@ -291,6 +291,7 @@ function CustomDrawerContent(props) {
   return (
     <DrawerContentScrollView {...props}>
       {/* <DrawerItemList state={newState} {...rest}/> */}
+      <ConnectedDrawer.Header />
       <ConnectedDrawer.Line />
       <DrawerItemList {...props}/>
       <ConnectedLanguageList />
