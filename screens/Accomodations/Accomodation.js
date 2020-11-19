@@ -243,7 +243,7 @@ class AccomodationScreen extends Component {
               iconName={"md-wifi"} />}
             { entity.email && <EntityAccomodationDetail 
               onPress={() => this.setState({ 
-                modalAction: () => linkingOpenUrl(entity.email),
+                modalAction: () => linkingOpenUrl(`mailto:${entity.email}?subject=&body=`),
                 modalVisible: true, 
                 modalTitle: emailModalTitle, 
                 modalDescription: emailOnPressAlert, 
