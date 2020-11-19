@@ -101,7 +101,7 @@ class EntityMap extends PureComponent {
           <View styles={styles.fill}>
             <View 
               style={[styles.mapContainer, containerStyle]}
-              pointerEvents={hasMarkers ? "auto" : "none"}>
+              pointerEvents={"none"}>
               <MapView
                 ref={ map => this._map = map }
                 initialRegion={Constants.REGION_SARDINIA}

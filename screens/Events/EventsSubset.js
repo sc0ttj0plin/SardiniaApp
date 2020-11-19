@@ -61,7 +61,7 @@ class EventsSubsetScreen extends Component {
   constructor(props) {
     super(props);
 
-    moment.locale('it');
+    moment.locale(Constants.DEFAULT_LANGUAGE);
 
     /* Get props from navigation */
     let { dateString, dateHeaderFormat, eventsSubset } = props.route.params; 
@@ -184,6 +184,7 @@ const styles = StyleSheet.create({
   calendarListTitle: {
     color: "#000000E6",
     fontWeight: "bold",
+    textTransform: "capitalize"
   }
 });
 

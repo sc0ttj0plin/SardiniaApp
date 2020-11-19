@@ -7,6 +7,8 @@ import { useNavigation } from '@react-navigation/native';
 import Colors from '../constants/Colors';
 // import { TouchableOpacity } from 'react-native-gesture-handler';
 import moment from "moment";
+import it from 'moment/locale/it'
+import en from 'moment/locale/en-gb'
 import _ from "lodash";
 class EntityStages extends PureComponent {  
   
@@ -15,6 +17,8 @@ class EntityStages extends PureComponent {
     this.state = {
       stages: props.stages || []
     };
+
+    moment.locale(Constants.DEFAULT_LANGUAGE);
 
   }
 
@@ -262,6 +266,7 @@ const styles = StyleSheet.create({
   },
   eventStageDate: {
     fontSize: 16,
+    textTransform: "capitalize"
   },
   bottomButton: {
     backgroundColor: "transparent",

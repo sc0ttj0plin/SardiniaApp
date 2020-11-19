@@ -307,6 +307,7 @@ class EventsMapScreen extends PureComponent {
   _renderListItem = ({item, index}) => {
     const { lan } = this.props.locale;
     const title = _.get(item.title, [lan, 0, "value"], null);
+    const term = _.get(item, "term.name", null);
     const image = item.image;
     // console.log("title", item)
     return (
@@ -316,7 +317,7 @@ class EventsMapScreen extends PureComponent {
         onPress={() => this._openItem(item)}
         title={`${title}`}
         image={`${image}`}
-        place={" "}
+        place={`${term}`}
         style={styles.eventsListItem}
         horizontal={false}
         extraStyle={styles.eventsListItem}
