@@ -1,5 +1,6 @@
 import React, { PureComponent } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, ImageBackground, Image } from "react-native";
+import { StyleSheet, Text, View, ImageBackground, Image } from "react-native";
+import ScrollableContainerTouchableOpacity from "../ScrollableContainerTouchableOpacity";
 import { ActivityIndicator } from 'react-native';
 // import { Image } from 'react-native-elements';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -157,12 +158,12 @@ class EntityWidgetInMapView extends PureComponent {
     const {entity} = this.state;
     return (
       <View style={[styles.entityWidget]} onLayout={(event) => { this.setState({ width: event.nativeEvent.layout.width, height: event.nativeEvent.layout.height }) }}>
-        <TouchableOpacity
+        <ScrollableContainerTouchableOpacity
           style={[styles.entityButton]}
           onPress={() => this._openEntity(entity)}
           activeOpacity={0.7}>
               {this._renderEntity()}
-        </TouchableOpacity>
+        </ScrollableContainerTouchableOpacity>
       </View>
       );
     }

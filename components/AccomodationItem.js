@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F2F2F2",
     borderBottomLeftRadius: 8,
     borderBottomRightRadius: 8,
-    paddingVertical: 15,
+    // paddingVertical: 15,
     paddingLeft: 10,
     display: "flex",
     justifyContent: "center", 
