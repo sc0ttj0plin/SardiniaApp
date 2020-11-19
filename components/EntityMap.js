@@ -49,16 +49,7 @@ class EntityMap extends PureComponent {
   _setRegion = () => {
     console.log("set region")
     const { coordinates } = this.props;
-    let newCoordinates = []
-    let coordsArray = []
-    coordinates.map( marker => {
-      newCoordinates.push([marker.coords.longitude, marker.coords.latitude]);
-      coordsArray.push(marker.coords)
-    })
-    let center = getCenter(coordsArray)
-    // console.log("new coordinates", newCoordinates)
-    let region = boundingRect(newCoordinates, [center.longitude, center.latitude], (p) => p);
-    console.log("region", region, center, [center.longitude, center.latitude])
+    let region = boundingRect(coordinates, null, (p) => [p.coords.longitude, p.coords.latitude], 5);
     this._onRegionChangeComplete(region)
   }
   
@@ -142,7 +133,8 @@ class EntityMap extends PureComponent {
       <>
         { coordinates && (
           <View styles={styles.fill}>
-            <View 
+            <View
+              pointerEvents={"none"} 
               style={[styles.mapContainer, containerStyle]}
               >
               <MapView

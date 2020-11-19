@@ -77,8 +77,8 @@ export function getCenterFromPoints(points, getCoordsFun) {
 
 
 // Generates a bounding rectangle ready for use in google maps [[lng0, lat0], [lng1, lat1], ..., [lngN, latN]]
-export function boundingRect(points, center, getCoordsFun) {
-  	let _center = center;
+export function boundingRect(points, center, getCoordsFun, zoomOutMultiplicator=2.5) {
+  let _center = center;
 	let arrayLength = points.length;
 	let trIndex = 0;
 	let blIndex = 0;
@@ -111,8 +111,8 @@ export function boundingRect(points, center, getCoordsFun) {
 	return {
 		longitude: _center[0],
 		latitude: _center[1],
-		longitudeDelta: maxLonDelta * 2.5,
-		latitudeDelta: maxLatDelta * 2.5
+		longitudeDelta: maxLonDelta * zoomOutMultiplicator,
+		latitudeDelta: maxLatDelta * zoomOutMultiplicator
 	}
 }
 
