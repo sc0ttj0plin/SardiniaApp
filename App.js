@@ -157,6 +157,7 @@ const styles = StyleSheet.create({
   },
   backgroundVideo: {
     width: "100%",
-    height: "100%"
+    height: "100%",
+    backgroundColor: "black"
   }
 });
