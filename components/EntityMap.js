@@ -5,21 +5,62 @@ import MapView from "react-native-map-clustering";
 import { PROVIDER_GOOGLE, Marker } from "react-native-maps";
 import Colors from '../constants/Colors';
 import { useNavigation } from '@react-navigation/native';
-
+import { getCenter } from 'geolib';
 import Layout from '../constants/Layout';
 import { has } from 'lodash';
+import {boundingRect} from '../helpers/maps';
+
 // import { TouchableOpacity } from 'react-native-gesture-handler';
 
 class EntityMap extends PureComponent {  
   
   constructor(props) {
     super(props);
+    const { hasMarkers, coordinates } = props;
     this.state = {
+      region: Constants.REGION_SARDINIA,
+      coordinates
     };
 
     this._map = null
+    console.log("coordinates", coordinates, hasMarkers)
   }
 
+  componentDidMount(){
+    const { hasMarkers, coordinates } = this.props;
+    // console.log("coordinates", coordinates, hasMarkers)
+    if(hasMarkers && coordinates && coordinates.length > 0){
+      this._setRegion()
+    }
+  }
+
+  componentDidUpdate(prevProps){
+    if(prevProps.coordinates !== this.props.coordinates){
+      const { hasMarkers, coordinates } = this.props;
+      console.log("coordinates", coordinates, hasMarkers)
+      if(hasMarkers && coordinates && coordinates.length > 0){
+        this._setRegion()
+      }
+    }
+  }
+
+  
+
+  _setRegion = () => {
+    console.log("set region")
+    const { coordinates } = this.props;
+    let newCoordinates = []
+    let coordsArray = []
+    coordinates.map( marker => {
+      newCoordinates.push([marker.coords.longitude, marker.coords.latitude]);
+      coordsArray.push(marker.coords)
+    })
+    let center = getCenter(coordsArray)
+    // console.log("new coordinates", newCoordinates)
+    let region = boundingRect(newCoordinates, [center.longitude, center.latitude], (p) => p);
+    console.log("region", region, center, [center.longitude, center.latitude])
+    this._onRegionChangeComplete(region)
+  }
   
   _openNavigator = (title, coords) => {
     const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
@@ -36,6 +77,8 @@ class EntityMap extends PureComponent {
     const { coordinates } = this.props;
     this.props.navigation.push(Constants.NAVIGATION.NavItineraryStagesMapScreen, { markers: coordinates });
   }
+
+  _onRegionChangeComplete = (region) => this.setState({region})
   
   _renderPoint = (coordinates) => <Marker coordinate={coordinates} tracksViewChanges={false} />
 
@@ -101,13 +144,15 @@ class EntityMap extends PureComponent {
           <View styles={styles.fill}>
             <View 
               style={[styles.mapContainer, containerStyle]}
-              pointerEvents={"none"}>
+              >
               <MapView
                 ref={ map => this._map = map }
                 initialRegion={Constants.REGION_SARDINIA}
-                provider={ PROVIDER_GOOGLE }
+                region={this.state.region}
+                provider={PROVIDER_GOOGLE}
                 minZoom={14}
                 clusteringEnabled={false}
+                onRegionChangeComplete={this._onRegionChangeComplete}
                 style={{flex: 1}}>
                 {!hasMarkers && this._renderPoint(coordinates)}
                 {hasMarkers && this._renderMarkers(coordinates)}

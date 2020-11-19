@@ -78,34 +78,36 @@ export function getCenterFromPoints(points, getCoordsFun) {
 
 // Generates a bounding rectangle ready for use in google maps [[lng0, lat0], [lng1, lat1], ..., [lngN, latN]]
 export function boundingRect(points, center, getCoordsFun) {
-  let _center = center;
+  	let _center = center;
 	let arrayLength = points.length;
 	let trIndex = 0;
 	let blIndex = 0;
-  let tr = bl = getCoordsFun(points[0]);
-  let coordsArray = []; // If there's no center compute it from points (uncomment if needed)
-	
+	let tr = bl = getCoordsFun(points[0]);
+	let coordsArray = []; // If there's no center compute it from points (uncomment if needed)
+		
 	points.forEach((p, index) => {
-    let coords = getCoordsFun(p);
-    coordsArray.push({ latitude: coords[1], longitude: coords[0] }); // If there's no center compute it from points (uncomment if needed)
+		let coords = getCoordsFun(p);
+		coordsArray.push({ latitude: coords[1], longitude: coords[0] }); // If there's no center compute it from points (uncomment if needed)
 		if(coords[0] < bl[0] || coords[1] < bl[1]) {
-      bl=coords;
+      		bl=coords;
 			blIndex = index;
 		}
 		if(coords[0] > tr[0] || coords[1] > tr[1]) {
-      tr=coords;
+      		tr=coords;
 			trIndex = index;
 		}
-  })
-  // If there's no center compute it from points (uncomment if needed)
-  if (!_center) { 
-    _center = getCenter(coordsArray);
-    _center = [_center.longitude, _center.latitude];
-  }
+	})
+	// console.log("coords array", coordsArray, points)  
+	// If there's no center compute it from points (uncomment if needed)
+	if (!_center && coordsArray && coordsArray.length > 0) { 
+		_center = getCenter(coordsArray);
+		_center = [_center.longitude, _center.latitude];
+	}
 
 	let maxLonDelta = Math.max(Math.abs(_center[0]-tr[0]), Math.abs(_center[0]-bl[0]));
 	let maxLatDelta = Math.max(Math.abs(_center[1]-tr[1]), Math.abs(_center[1]-bl[1]));
-
+	
+	console.log("max lon delta", _center[0]-tr[0], _center[0]-bl[0])
 	return {
 		longitude: _center[0],
 		latitude: _center[1],

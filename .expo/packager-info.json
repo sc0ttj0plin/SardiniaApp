@@ -1,10 +1,10 @@
 {
-  "devToolsPort": 19003,
-  "expoServerPort": 19004,
-  "packagerPort": 19005,
-  "packagerPid": 63541,
-  "expoServerNgrokUrl": "https://zr-ehp.visitsardinia.sardinia-app.exp.direct",
-  "packagerNgrokUrl": "https://packager.zr-ehp.visitsardinia.sardinia-app.exp.direct",
-  "ngrokPid": 63551,
+  "devToolsPort": 19002,
+  "expoServerPort": 19000,
+  "packagerPort": 19001,
+  "packagerPid": 31328,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null,
   "webpackServerPort": null
 }
