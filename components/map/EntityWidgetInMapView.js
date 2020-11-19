@@ -116,6 +116,7 @@ class EntityWidgetInMapView extends PureComponent {
         onPress={null}
         location={entity.location}
         distance={distanceToString(entity.distance)}
+        onPress={() => this._openEntity(entity)}
       />
   )}
 
@@ -123,26 +124,29 @@ class EntityWidgetInMapView extends PureComponent {
     var {entity} = this.state;
     const title = _.get(entity.title, [this.props.locale.lan, 0, "value"], null);
     return(
-      <>
-      <Image source={{ uri: entity.image }} style={styles.image} PlaceholderContent={<ActivityIndicator />} />
-      <View style={styles.textContainer}>
-        <Text
-        numberOfLines={1}
-        ellipsizeMode='tail'
-        style={styles.title}>{title}
-        </Text>
-        <Text 
-        numberOfLines={1}
-        ellipsizeMode='tail'
-        style={styles.place}>{entity.term.name}
-        </Text>
-        <Text 
-        numberOfLines={1}
-        ellipsizeMode='tail'
-        style={styles.distance}>{distanceToString(entity.distance)}
-        </Text>
-      </View>
-      </>
+      <ScrollableContainerTouchableOpacity
+          style={[styles.entityButton]}
+          onPress={() => this._openEntity(entity)}
+          activeOpacity={0.7}>
+          <Image source={{ uri: entity.image }} style={styles.image} PlaceholderContent={<ActivityIndicator />} />
+          <View style={styles.textContainer}>
+            <Text
+            numberOfLines={1}
+            ellipsizeMode='tail'
+            style={styles.title}>{title}
+            </Text>
+            <Text 
+            numberOfLines={1}
+            ellipsizeMode='tail'
+            style={styles.place}>{entity.term.name}
+            </Text>
+            <Text 
+            numberOfLines={1}
+            ellipsizeMode='tail'
+            style={styles.distance}>{distanceToString(entity.distance)}
+            </Text>
+          </View>
+      </ScrollableContainerTouchableOpacity>
     )
   }
   _renderEntity = () => {
@@ -158,12 +162,7 @@ class EntityWidgetInMapView extends PureComponent {
     const {entity} = this.state;
     return (
       <View style={[styles.entityWidget]} onLayout={(event) => { this.setState({ width: event.nativeEvent.layout.width, height: event.nativeEvent.layout.height }) }}>
-        <ScrollableContainerTouchableOpacity
-          style={[styles.entityButton]}
-          onPress={() => this._openEntity(entity)}
-          activeOpacity={0.7}>
-              {this._renderEntity()}
-        </ScrollableContainerTouchableOpacity>
+        {this._renderEntity()}
       </View>
       );
     }
