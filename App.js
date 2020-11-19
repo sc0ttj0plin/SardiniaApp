@@ -135,7 +135,7 @@ export default class App extends Component {
       <Provider store={store}>
         <PersistGate loading={<View style={[styles.container]} />} persistor={persistor}>
           <ApolloProvider client={client}>
-            <SafeAreaProvider style={{ flex: 1, backgroundColor: 'green' }} forceInset={{ top: 'always', bottom:'always' }}>
+            <SafeAreaProvider style={{ flex: 1 }} forceInset={{ top: 'always', bottom:'always' }}>
               <View style={[styles.container]}>
                 {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
                 <AppNavigator />
