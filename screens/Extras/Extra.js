@@ -65,6 +65,8 @@ class ExtraScreen extends Component {
     /* Get props from navigation */
     let { item } = props.route.params; 
 
+    
+
     this.state = {
       render: USE_DR ? false : true,
       //
@@ -74,6 +76,9 @@ class ExtraScreen extends Component {
       relatedEvents: [],
       scrollY: new Animated.Value(0)
     };
+
+
+    console.log(this.state.entity.uuid)
       
   }
 
@@ -152,10 +157,18 @@ class ExtraScreen extends Component {
   }
 
   _openVRContent = () => {
-    this.props.navigation.navigate(Constants.NAVIGATION.NavMediaScreen, {
+    if(this.state.entity.uuid  == "7a432c9f-fbf1-41b0-bd10-9f2440eb1c9f")
+      this.props.navigation.navigate(Constants.NAVIGATION.NavMediaScreen, {
+          source: "https://my.matterport.com/show/?m=Sbi2Lko9jqf",
+          type: "virtualTour"
+      });
+    else
+      this.props.navigation.navigate(Constants.NAVIGATION.NavMediaScreen, {
         source: "https://sketchfab.com/models/0569f020894644b18d0c20eae09bd54c/embed?preload=1&amp;ui_controls=1&amp;ui_infos=1&amp;ui_inspector=1&amp;ui_stop=1&amp;ui_watermark=1&amp;ui_watermark_link=1",
         type: "virtualTour"
     });
+
+    
   }
 
   _isSuccessData  = () => false;    /* e.g. this.props.pois.success; */
