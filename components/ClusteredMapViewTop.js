@@ -80,7 +80,7 @@ class ClusteredMapViewTop extends PureComponent {
       position => { 
         if(this._region)
           this._fetchClusters(position.coords); 
-          // this._animateMapToRegion();
+          this._animateMapToRegion();
       }, 
       ex => { console.log(ex) },
       Constants.NAVIGATOR.watchPositionOpts
