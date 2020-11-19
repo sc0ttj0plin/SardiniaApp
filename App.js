@@ -30,7 +30,7 @@ export default class App extends Component {
       isVideoLoaded: false,
       isVideoPlaying: false
     };
-    this._skipVideo = true;
+    this._skipVideo = false;
     //Ignores warning boxes
     LogBox.ignoreLogs(['Warning:']); //or: LogBox.ignoreAllLogs();
     SplashScreen.preventAutoHideAsync();
@@ -157,7 +157,6 @@ const styles = StyleSheet.create({
   },
   backgroundVideo: {
     width: "100%",
-    height: "100%",
-    backgroundColor: "red"
+    height: "100%"
   }
 });

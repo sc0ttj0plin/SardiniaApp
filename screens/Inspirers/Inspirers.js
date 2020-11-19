@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
   list: {
     marginBottom: 50,
     width: "100%",
-    paddingHorizontal: 20
+    paddingHorizontal: 10
   },
   listView: {
     width: "100%",

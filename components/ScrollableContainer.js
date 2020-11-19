@@ -100,12 +100,17 @@ export default class ScrollableContainer extends PureComponent {
               data={this.state.data || []}
               keyExtractor={keyExtractor}
               renderItem={renderItem}
+              innerRef = {(ref) => this._scrollableInner = ref}
               ref={(ref)=>this._scrollable = ref}
               ListHeaderComponent={ListHeaderComponent || null}
               animatedPosition={this._translateAnim}
               initialNumToRender={8}
               maxToRenderPerBatch={2}
               //onEndReachedThreshold={0.5} 
+              onSettle = {(index) => {
+                if(Platform.OS === 'android')
+                  setTimeout(() => {this._scrollableInner.getNode().scrollToOffset({ animated: false, offset: 0 })}, 10);
+              }}
               onEndReached = {({distanceFromEnd})=> onEndReached()}
               contentContainerStyle={[styles.contentContainerStyle, {
                 flex:  data && data.length == 0 ? 1 : null
@@ -132,7 +137,7 @@ const styles = StyleSheet.create({
   },
   contentContainerStyle: {
     // flex: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     backgroundColor: 'white',
   },
   header: {
