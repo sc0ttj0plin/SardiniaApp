@@ -41,6 +41,8 @@ import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 import moment from 'moment';
+import it from 'moment/locale/it'
+import en from 'moment/locale/en-gb'
 import Layout from '../../constants/Layout';
 import { greedyArrayFinder, getEntityInfo, getCoordinates, getSampleVideoIndex, getGalleryImages } from '../../helpers/utils';
 import { apolloQuery } from '../../apollo/queries';
@@ -58,6 +60,8 @@ class EventsSubsetScreen extends Component {
 
   constructor(props) {
     super(props);
+
+    moment.locale('it');
 
     /* Get props from navigation */
     let { dateString, dateHeaderFormat, eventsSubset } = props.route.params; 

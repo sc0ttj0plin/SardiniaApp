@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { connect, useStore } from 'react-redux';
-import { SafeAreaView } from 'react-navigation';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItems, DrawerItem } from '@react-navigation/drawer';
 import { Avatar, Icon, Overlay, Divider } from 'react-native-elements';
 import { View, Text, ScrollView, StyleSheet, TouchableNativeFeedback, TouchableOpacity } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 import * as Constants from '../constants';
