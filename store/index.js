@@ -8,6 +8,7 @@ import categoriesReducer from '../reducers/categories';
 import eventsReducer from '../reducers/events';
 import inspirersReducer from '../reducers/inspirers';
 import itinerariesReducer from '../reducers/itineraries';
+import authReducer from '../reducers/auth';
 import nodesReducer from '../reducers/nodes';
 import poisReducer from '../reducers/pois';
 import accomodationsReducer from '../reducers/accomodations';
@@ -17,11 +18,31 @@ import AsyncStorage from '@react-native-community/async-storage';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'; //2lvl objects
 import makeApolloClient from '../apollo/client';
 import restClient from '../rest/client';
+import thunk from 'redux-thunk';
 import { persistStore, persistReducer } from 'redux-persist';
 import * as Config from '../constants/Config';
 
+
+//Token is fetched from the persisted store.auth.token (so when app starts we should have token stored)
+const axiosMiddlewareOptions = {
+  interceptors: {
+    request: [
+      ({getState, dispatch, getSourceAction}, req) => {
+        //Redux persist-saved token
+        const token = getState().authState.token;
+        // console.log(token)
+        if (token) 
+          req.headers.common['Authorization'] = 'Bearer ' + token;
+        return req;
+      }
+    ],
+    response: []
+  }
+}
+
 const rootReducer = combineReducers({ 
     restState: restReducer,
+    authState: authReducer,
     localeState: localeReducer,
     othersState: othersReducer,
     favouritesState: favouritesReducer,
@@ -41,14 +62,15 @@ const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
   stateReconciler: autoMergeLevel2, //Store up to two level nesting
-  whitelist: ['favouritesState'], //only store whitelisted reducers
+  whitelist: ['favouritesState', 'authState'], //only store whitelisted reducers
 };
 
 
 //Persisted reducer
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
+
 //Create the apollo client, export 
 export const apolloClient = makeApolloClient(Config.APOLLO_KEY);
-export const store = createStore(persistedReducer, applyMiddleware(axiosMiddleware(restClient), apolloMiddleware(apolloClient)));
+export const store = createStore(persistedReducer, applyMiddleware(thunk, axiosMiddleware(restClient, axiosMiddlewareOptions), apolloMiddleware(apolloClient)));
 export const persistor = persistStore(store);

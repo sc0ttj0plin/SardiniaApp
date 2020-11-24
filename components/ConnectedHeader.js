@@ -35,7 +35,6 @@ const HEADER_BUTTONS_PER_SCREEN = {
   [Constants.NAVIGATION.NavExtrasScreen]: {backButtonVisible: false, searchButtonVisible: true}, 
   [Constants.NAVIGATION.NavExtraScreen]: {backButtonVisible: true, searchButtonVisible: true}, 
   [Constants.NAVIGATION.NavExperiences]: {backButtonVisible: false, searchButtonVisible: true}, 
-  [Constants.NAVIGATION.NavPlaces]: {backButtonVisible: false, searchButtonVisible: true},
   [Constants.NAVIGATION.NavInspirers]: {backButtonVisible: false, searchButtonVisible: true}, 
   [Constants.NAVIGATION.NavExplore]: {backButtonVisible: false, searchButtonVisible: true}, 
   [Constants.NAVIGATION.NavEvents]: {backButtonVisible: false, searchButtonVisible: true}, 

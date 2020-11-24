@@ -2,6 +2,15 @@ import Colors from './Colors';
 import { Platform } from "react-native"
 
 // Actions
+export const SET_URL = 'sardinia/others/SET_URL';
+export const AUTH = 'sardinia/auth/AUTH';
+export const AUTH_SUCCESS = 'sardinia/auth/AUTH_SUCCESS';
+export const AUTH_FAIL = 'sardinia/auth/AUTH_FAIL';
+export const AUTH_RESET = 'sardinia/auth/AUTH_RESET';
+export const LOGOUT = 'sardinia/auth/LOGOUT';
+export const LOGOUT_SUCCESS = 'sardinia/auth/LOGOUT_SUCCESS';
+export const LOGOUT_FAIL = 'sardinia/auth/LOGOUT_FAIL';
+export const LOGOUT_RESET = 'sardinia/auth/LOGOUT_RESET';
 export const GET_ENTITIES = 'sardinia/entities/LOAD';
 export const GET_ENTITIES_SUCCESS = 'sardinia/entities/LOAD_SUCCESS';
 export const GET_ENTITIES_FAIL = 'sardinia/entities/LOAD_FAIL';
@@ -103,6 +112,9 @@ export const PUSH_CURRENT_CATEGORY_ACCOMODATIONS = 'sardinia/accomodations/PUSH_
 export const POP_CURRENT_CATEGORY_ACCOMODATIONS = 'sardinia/accomodations/POP_CURRENT_CATEGORY_ACCOMODATIONS';
 export const RESET_CURRENT_CATEGORY_ACCOMODATIONS = 'sardinia/accomodations/RESET_CURRENT_CATEGORY_ACCOMODATIONS';
 export const SET_CURRENT_MAP_ENTITY = 'sardinia/map/SET_CURRENT_MAP_ENTITY'; /* to set the snap index on parent components */
+export const USER_EDIT = 'sardinia/user/LOAD';
+export const USER_EDIT_SUCCESS = 'sardinia/user/LOAD_SUCCESS';
+export const USER_EDIT_FAIL = 'sardinia/user/LOAD_FAIL';
 
 
 // API
@@ -119,8 +131,11 @@ export const REGION_SARDINIA = { longitude: 9.0, latitude: 40.0, longitudeDelta:
 
 export const WEBSITE_URL = "https://www.sardegnaturismo.it/";
 
+export const FIREBASE_LINK_PROXY = 'https://wt-6e2a5f000b93f69e1b65cf98021e1945-0.sandbox.auth0-extend.com/firebase-authentication-link-redirect';
+
 /* NAVIGATION */
 export const NAVIGATION = {
+  NavDrawerNavigator: "MainDrawerNavigator",
   NavPlacesScreen: "PlacesScreen",
   NavInspirersScreen: "InspirersScreen",
   NavMapScreen: "MapScreen",
@@ -140,8 +155,10 @@ export const NAVIGATION = {
   NavInspirerScreen: "InspirerScreen",
   NavExtrasScreen: "ExtrasScreen",
   NavExperiences: "Experiences",
-  NavPlaces: "Places",
   NavInspirers: "Inspirers",
+  NavPreferencesStack: "PreferencesStackScreen",
+  NavPreferencesScreen: "PreferencesScreen",
+  NavLoginScreen: "LoginScreen",
   NavGalleryScreen: "GalleryScreen",
   NavExplore: "Explore",
   NavEvents: "Events",
@@ -160,7 +177,15 @@ export const NAVIGATION = {
   NavAccomodationsScreen: "AccomodationsScreen",
   NavAccomodationScreen: "AccomodationScreen",
   NavAccomodationsStackScreen: "AccomodationsStackScreen",
+  NavLoadingScreen: "LoadingScreen",
   NavBoilerPlate: "Boilerplate",
+}
+
+/* Regex for validation */
+export const VALIDATORS = {
+  email: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+  password: /^.{5,}$/,
+  username: /^.{1,}$/,
 }
 
 /**

@@ -3,7 +3,7 @@ import * as SplashScreen from 'expo-splash-screen'
 import { Asset } from 'expo-asset';
 import * as Font from 'expo-font';
 import React, { Component } from 'react';
-import { Platform, StatusBar, StyleSheet, View, LogBox } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View, LogBox, Linking } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -16,6 +16,9 @@ import { persistor, store } from './store';
 import { Video } from 'expo-av';
 import { enableScreens } from 'react-native-screens';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import config from './config/config';
+import * as firebase from 'firebase';
+
 enableScreens();
 
 export default class App extends Component {
@@ -30,7 +33,7 @@ export default class App extends Component {
       isVideoLoaded: false,
       isVideoPlaying: false
     };
-    this._skipVideo = false;
+    this._skipVideo = true;
     //Ignores warning boxes
     LogBox.ignoreLogs(['Warning:']); //or: LogBox.ignoreAllLogs();
     SplashScreen.preventAutoHideAsync();
@@ -62,8 +65,13 @@ export default class App extends Component {
         'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
       })
     ]);
+    this._initFirebaseApp();
   }
 
+  _initFirebaseApp = () => {
+    if (firebase.apps.length === 0)
+      firebase.initializeApp(config.firebase);
+  }
 
   _handleLoadingError(error) {
     console.warn(error);

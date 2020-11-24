@@ -29,6 +29,8 @@ import SearchScreen from '../screens/Search/Search';
 import MediaScreen from '../screens/Media/Media';
 import FavouritesScreen from '../screens/Favourites/Favourites';
 import FavouritesListScreen from '../screens/Favourites/FavouritesList';
+import LoginScreen from '../screens/Auth/Login';
+import LoadingScreen from '../screens/Loading/Loading';
 import Boilerplate from '../screens/Boilerplates/Boilerplate';
 import { ConnectedText, ConnectedLanguageList, TabBar, CustomDrawer } from '../components';
 // import VirtualTourScreen from '../screens/Others/VirtualTourScreen';
@@ -36,10 +38,10 @@ import { Ionicons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 import * as Constants from '../constants';
 const {
-  NavPlacesScreen, NavInspirersScreen ,NavMapScreen, 
+  NavPlacesScreen, NavInspirersScreen ,NavMapScreen, NavLoadingScreen, 
   NavItinerariesScreen, NavAccomodationsScreen, NavAccomodationScreen, NavAccomodationsStackScreen,
   NavItineraryScreen, NavEventsScreen, NavEventScreen, NavItineraryStagesMapScreen,NavEventsMapScreen, NavEventsSubset, NavExploreScreen, 
-  NavVirtualTourScreen, NavPlaceScreen, NavInspirerScreen,
+  NavVirtualTourScreen, NavPlaceScreen, NavInspirerScreen, NavLoginScreen, NavPreferencesStack, NavPreferencesScreen,
   NavExtrasScreen, NavExtraScreen, NavTabNavigator, NavSearchScreen, NavSearchStackScreen, 
   NavMainStackScreen, NavMediaScreen, NavFavouritesScreen, NavFavouritesListScreen, NavFavouritesStackScreen 
 } = Constants.NAVIGATION;
@@ -196,10 +198,13 @@ function TabNavigator() {
  * Main Navigator (level: 1, parent: DrawerNavigator)
  */
 var MainStack = createStackNavigator();
+
 function MainStackScreen() {
   return (
     <>
-    <MainStack.Navigator headerMode="none" initialRouteName={NavTabNavigator}>
+    <MainStack.Navigator headerMode="none" initialRouteName={LoadingScreen}>
+      {/* Loading & Preload (optional) */}
+      {/* <MainStack.Screen name={NavLoadingScreen} component={LoadingScreen} /> */}
       {/* TabNavigator */}
       <MainStack.Screen name={NavTabNavigator} component={TabNavigator} />
       {/* Inner screens */}
@@ -255,6 +260,20 @@ function SearchStackScreen() {
   );
 }
 
+/**
+ * Preferences stack (level: 1, parent: DrawerNavigator)
+ */
+
+var PreferencesStack = createStackNavigator();
+
+function PreferencesStackScreen() {
+  return (
+    <PreferencesStack.Navigator headerMode="none" initialRouteName={NavLoginScreen}>
+      <PreferencesStack.Screen name={NavLoginScreen} component={LoginScreen} />
+
+    </PreferencesStack.Navigator>
+  );
+}
 
 /**
  * Accomodation Stack (level: 1, parent DrawerNavigator)
@@ -275,6 +294,7 @@ let ConnectedTextTabName = () => <ConnectedText languageKey="drawerTab" textStyl
 let ConnectedTextSearch = () => <ConnectedText languageKey="drawerSearch" textStyle={{ color: "black" }} />;
 let ConnectedFavourites = () => <ConnectedText languageKey="favourites" textStyle={{ color: "black" }} />;
 let ConnectedTextAccomodations = () => <ConnectedText languageKey="accomodations" textStyle={{ color: "black" }} />;
+let ConnectedTextPreferences = () => <ConnectedText languageKey="myPreferences" textStyle={{ color: "black" }} />;
 
 /**
  * Drawer navigator (level: 0)
@@ -296,8 +316,8 @@ function CustomDrawerContent(props) {
       <CustomDrawer.Item {...props} routeIndex={1} label={ConnectedTextSearch} screenName={Constants.NAVIGATION.NavSearchStackScreen} iconOpts={{name: 'search', size: 20, color: Colors.mediumGray}} />
       <CustomDrawer.Item {...props} routeIndex={2} label={ConnectedTextAccomodations} screenName={Constants.NAVIGATION.NavAccomodationsStackScreen} iconOpts={{name: 'suitcase', size: 20, color: Colors.mediumGray}} />
       <CustomDrawer.Item {...props} routeIndex={3} label={ConnectedFavourites} screenName={Constants.NAVIGATION.NavFavouritesStackScreen} iconOpts={{name: 'heart', size: 20, color: Colors.mediumGray}} />
+      <CustomDrawer.Item {...props} routeIndex={4} label={ConnectedTextPreferences} screenName={Constants.NAVIGATION.NavPreferencesStack} iconOpts={{name: 'user', size: 20, color: Colors.mediumGray}} />
       <CustomDrawer.Separator />
-
       {/* <DrawerItemList {...props}/> */}
       <ConnectedLanguageList />
     </DrawerContentScrollView>
@@ -344,6 +364,11 @@ function DrawerNavigator() {
       <Drawer.Screen 
         name={NavFavouritesStackScreen} 
         component={FavouritesStackScreen} 
+        // options={{ drawerLabel: ConnectedFavourites }} 
+      />
+      <Drawer.Screen 
+        name={NavPreferencesStack} 
+        component={PreferencesStackScreen} 
         // options={{ drawerLabel: ConnectedFavourites }} 
       />
     </Drawer.Navigator>

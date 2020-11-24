@@ -25,6 +25,7 @@ export const greedyArrayFinder = (array, findKey, match, returnKey, notFoundRetu
   return notFoundReturnVal;
 }
 
+
 /**
  * Extracts coordinates from an entity and returns {latitude: x, longitude: y}
  * @param {*} entity: node item

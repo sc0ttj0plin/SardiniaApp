@@ -86,3 +86,8 @@ export function setCurrentMapEntity(entity) {
     payload: entity
   }
 }
+
+export const setUrl = (url) => 
+  async (dispatch) => {
+    dispatch({ type: Constants.SET_URL, payload: url });
+  }
