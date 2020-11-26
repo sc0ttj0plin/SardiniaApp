@@ -29,6 +29,7 @@ import SearchScreen from '../screens/Search/Search';
 import MediaScreen from '../screens/Media/Media';
 import FavouritesScreen from '../screens/Favourites/Favourites';
 import FavouritesListScreen from '../screens/Favourites/FavouritesList';
+import PreferencesScreen from "../screens/Preferences/Preferences"
 import Boilerplate from '../screens/Boilerplates/Boilerplate';
 import { ConnectedText, ConnectedLanguageList, TabBar, CustomDrawer } from '../components';
 // import VirtualTourScreen from '../screens/Others/VirtualTourScreen';
@@ -39,7 +40,7 @@ const {
   NavPlacesScreen, NavInspirersScreen ,NavMapScreen, 
   NavItinerariesScreen, NavAccomodationsScreen, NavAccomodationScreen, NavAccomodationsStackScreen,
   NavItineraryScreen, NavEventsScreen, NavEventScreen, NavItineraryStagesMapScreen,NavEventsMapScreen, NavEventsSubset, NavExploreScreen, 
-  NavVirtualTourScreen, NavPlaceScreen, NavInspirerScreen,
+  NavVirtualTourScreen, NavPlaceScreen, NavInspirerScreen, NavPreferencesScreen,
   NavExtrasScreen, NavExtraScreen, NavTabNavigator, NavSearchScreen, NavSearchStackScreen, 
   NavMainStackScreen, NavMediaScreen, NavFavouritesScreen, NavFavouritesListScreen, NavFavouritesStackScreen 
 } = Constants.NAVIGATION;
@@ -275,6 +276,7 @@ let ConnectedTextTabName = () => <ConnectedText languageKey="drawerTab" textStyl
 let ConnectedTextSearch = () => <ConnectedText languageKey="drawerSearch" textStyle={{ color: "black" }} />;
 let ConnectedFavourites = () => <ConnectedText languageKey="favourites" textStyle={{ color: "black" }} />;
 let ConnectedTextAccomodations = () => <ConnectedText languageKey="accomodations" textStyle={{ color: "black" }} />;
+let ConnectedPreferences = () => <ConnectedText languageKey="preferences" textStyle={{ color: "black" }} />;
 
 /**
  * Drawer navigator (level: 0)
@@ -295,9 +297,10 @@ function CustomDrawerContent(props) {
       <CustomDrawer.Item {...props} routeIndex={0} label={ConnectedTextTabName} screenName={Constants.NAVIGATION.NavMainStackScreen} iconOpts={{name: 'home', size: 20, color: Colors.mediumGray}} />
       <CustomDrawer.Item {...props} routeIndex={1} label={ConnectedTextSearch} screenName={Constants.NAVIGATION.NavSearchStackScreen} iconOpts={{name: 'search', size: 20, color: Colors.mediumGray}} />
       <CustomDrawer.Item {...props} routeIndex={2} label={ConnectedTextAccomodations} screenName={Constants.NAVIGATION.NavAccomodationsStackScreen} iconOpts={{name: 'suitcase', size: 20, color: Colors.mediumGray}} />
-      <CustomDrawer.Item {...props} routeIndex={3} label={ConnectedFavourites} screenName={Constants.NAVIGATION.NavFavouritesStackScreen} iconOpts={{name: 'heart', size: 20, color: Colors.mediumGray}} />
+      <CustomDrawer.Item {...props} routeIndex={3} label={ConnectedPreferences} screenName={Constants.NAVIGATION.NavPreferencesScreen} iconOpts={{name: 'user', size: 20, color: Colors.mediumGray}} />
       <CustomDrawer.Separator />
-
+      <CustomDrawer.Item {...props} routeIndex={4} label={ConnectedFavourites} screenName={Constants.NAVIGATION.NavFavouritesStackScreen} iconOpts={{name: 'heart', size: 20, color: Colors.mediumGray}} />
+      <CustomDrawer.Separator />
       {/* <DrawerItemList {...props}/> */}
       <ConnectedLanguageList />
     </DrawerContentScrollView>
@@ -344,6 +347,11 @@ function DrawerNavigator() {
       <Drawer.Screen 
         name={NavFavouritesStackScreen} 
         component={FavouritesStackScreen} 
+        // options={{ drawerLabel: ConnectedFavourites }} 
+      />
+      <Drawer.Screen 
+        name={NavPreferencesScreen} 
+        component={PreferencesScreen} 
         // options={{ drawerLabel: ConnectedFavourites }} 
       />
     </Drawer.Navigator>

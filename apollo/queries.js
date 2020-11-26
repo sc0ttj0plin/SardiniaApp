@@ -71,6 +71,7 @@ export function apolloQuery(action) {
     }).then((resp) => {
         var pois = resp.data.nodes;
         if(pois && pois.length > 0){
+            console.log("enter here")
             pois.forEach(e => {
                 if(e.nodes_terms && e.nodes_terms[0])
                     e.term = e.nodes_terms[0] ? e.nodes_terms[0].term : null

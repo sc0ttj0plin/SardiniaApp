@@ -30,7 +30,7 @@ export default class App extends Component {
       isVideoLoaded: false,
       isVideoPlaying: false
     };
-    this._skipVideo = false;
+    this._skipVideo = true;
     //Ignores warning boxes
     LogBox.ignoreLogs(['Warning:']); //or: LogBox.ignoreAllLogs();
     SplashScreen.preventAutoHideAsync();
@@ -92,7 +92,7 @@ export default class App extends Component {
   }
 
   _playVideo() {
-    if(this.state.isLoadingComplete && this.state.isVideoLoaded) {
+    if(this.state.isLoadingComplete && this.state.isVideoLoaded && this.vPlayer) {
       this.vPlayer.playAsync();
     }
   }

@@ -15,7 +15,7 @@ class CategoryListItem extends PureComponent {
   }
 
   _renderBottomBox = (title, showBoxes, opacityBackground, bgColor) => {
-    let backgroundColor = opacityBackground ? (`rgba(60, 66, 72, ${opacityBackground})`) : (`rgba(60, 66, 72, 0.8)`);
+    let backgroundColor = (`rgba(255, 255, 255, 0.7)`);
 
     return (
       <View style={[styles.titleContainer]}>
@@ -25,7 +25,7 @@ class CategoryListItem extends PureComponent {
               <Text style={[styles.title]}>
                   {title}
               </Text>
-              {
+              {/* {
                 showBoxes &&
                 <View style={styles.boxes}>
                     <View style={styles.box1}></View>
@@ -33,7 +33,7 @@ class CategoryListItem extends PureComponent {
                     <View style={styles.box3}></View>
                     <View style={styles.box4}></View>
                 </View>
-              }
+              } */}
           </View>
       </View>
     );
@@ -42,7 +42,7 @@ class CategoryListItem extends PureComponent {
   render() { 
     var image = this.props.image ? this.props.image : "https://via.placeholder.com/300x150";
     return (
-      <ScrollableContainerTouchableOpacity onPress={this.props.onPress} activeOpacity={0.7} style={styles.container} onLayout={(event) => { this.setState({ width: event.nativeEvent.layout.width }); }} > 
+      <ScrollableContainerTouchableOpacity onPress={this.props.onPress} activeOpacity={0.7} style={[styles.container, this.props.style]} onLayout={(event) => { this.setState({ width: event.nativeEvent.layout.width }); }} > 
        <View style={{flex: 1}}>
         <Image 
             source={{ uri: image }} 
@@ -63,10 +63,10 @@ const styles = StyleSheet.create({
     },
     container: {
       flex: 1,
-      borderRadius: 10,
+      borderRadius: 8,
       overflow: "hidden",
-      height: 240,
-      marginBottom: 8,
+      height: 160,
+      marginTop: 10,
       flexDirection: "column",
       justifyContent: 'center',
       alignItems: 'center',
@@ -80,11 +80,11 @@ const styles = StyleSheet.create({
       alignItems: 'flex-end',
     },
     title: {
-      fontSize: 16,
-      color: "#ffffff",
+      fontSize: 18,
+      color: "black",
+      fontWeight: "bold",
       padding: 10,
       textAlign: "center",
-      fontWeight: "300"
     },
     titleContainer: {
       width: "100%",
@@ -95,7 +95,9 @@ const styles = StyleSheet.create({
     },
     titleContainerBackground:  {
       width: "100%",
-      backgroundColor: "rgba(60,66,72, 0.8)"
+      minHeight: 60,
+      justifyContent: "center",
+      alignItems: "center"
     },
     boxes: {
         position: "absolute",

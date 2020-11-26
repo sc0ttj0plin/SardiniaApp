@@ -36,7 +36,7 @@ class EntityAccomodations extends PureComponent {
             distance={item.distanceStr}
             onPress={() => this._onAccomodationPress(item)}
           />
-          <View style={{width: 5, flex: 1}}></View>
+          <View style={{width: 10, flex: 1}}></View>
         </>
         )
     }
@@ -88,7 +88,7 @@ class EntityAccomodations extends PureComponent {
                 </AsyncOperationStatusIndicator>
 
                 <TouchableOpacity style={styles.showButton} activeOpacity={0.8} onPress={openMap}>
-        <Text style={styles.showButtonText}>{showMapBtnText}</Text>
+                    <Text style={styles.showButtonText}>{showMapBtnText}</Text>
                 </TouchableOpacity>
             </View>
         )
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     },
     mainView: {
         paddingTop: 32,
-        paddingBottom: 50,
+        paddingBottom: 30,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -112,13 +112,13 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: "bold",
         color: "black",
-        marginBottom: 32
+        marginBottom: 0
     },
     contentContainerStyle: {
         paddingLeft: 30
     },
     showButton: {
-        marginTop: 32,
+        marginTop: 16,
         backgroundColor: "white",
         width: 144,
         height: 36,

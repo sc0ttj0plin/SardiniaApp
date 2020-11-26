@@ -246,6 +246,7 @@ const styles = StyleSheet.create({
     width: "80%", 
     height: 185,
     flexDirection: "column",
+    borderRadius: 8
   },
   modalTitle: {
     fontSize: 15,

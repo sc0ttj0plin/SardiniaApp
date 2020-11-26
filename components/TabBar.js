@@ -12,17 +12,18 @@ import posed from 'react-native-pose';
 import Layout from '../constants/Layout';
 import Colors from "../constants/Colors"
 import { useSafeArea } from 'react-native-safe-area-context';
- 
+import Animated from 'react-native-reanimated';
+
 // define click zoom
 const Scaler = posed.View({ 
   active: { scale: 1 },
-  inactive: { scale: 0.9 }
+  inactive: { scale: 1 }
 })
  
 // define click zoom
 const CenterScaler = posed.View({ 
     active: { scale: 0.6 },
-    inactive: { scale: 0.5 } 
+    inactive: { scale: 0.45 } 
 })
 
 /**
@@ -82,7 +83,7 @@ const TabBar = props => {
   return (
     <>
     {activeRoute && activeRoute.name == 'Extras' ? renderMixedBottomLine() : renderBottomLine(activeRoute)}
-    <View style={[Styles.container, {height: 63 + insets.bottom, paddingBottom: insets.bottom}]}>
+    <View style={[Styles.container, {height: 60 + insets.bottom, paddingBottom: insets.bottom}]}>
       {newRoutes.map((route, routeIndex) => {
         const isRouteActive = routeIndex === activeRouteIndex
         return (
@@ -116,11 +117,16 @@ const TabBar = props => {
                         <TabBarIcon focused={isRouteActive} name={route.icon} activeColor={isRouteActive ? route.backgroundActiveColor : "#A7A7A7"}/>
                     </View>
                   }
-                  { isRouteActive &&
+                 
+                  <Animated.View style={{
+                    height: isRouteActive ? 20 : 0,
+                  }}>
                     <ConnectedText textStyle={[Styles.iconText, {
-                        color: route.backgroundActiveColor
+                        color: route.backgroundActiveColor,
+                        fontWeight: "bold",
+                        textAlign: "center"
                     }]} languageKey={route.languageKey}/>
-                  }
+                  </Animated.View>
               </Scaler>
             )}
           </TouchableOpacity>
@@ -149,7 +155,7 @@ const Styles = StyleSheet.create({
   },
   bottomLine: {
     width: Layout.window.width,
-    height: 2,
+    height: 3,
   },
   mixedBottomLineItem: {
     flex: 1
@@ -174,7 +180,7 @@ const Styles = StyleSheet.create({
   scaler: { 
     width: Layout.window.width/5,
     height: "100%",
-    alignItems: "flex-start",
+    alignItems: "center",
     justifyContent:"flex-end"
   },
   scalerOnline: {

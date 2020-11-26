@@ -1,11 +1,11 @@
 import React, { PureComponent, Component } from 'react';
-import { Dimensions, StyleSheet, Text, View, TouchableOpacity, ScrollView, NativeModules } from 'react-native';
+import { Dimensions, StyleSheet, Text, View, TouchableOpacity, ScrollView, NativeModules, Easing } from 'react-native';
 import ScrollBottomSheet from 'react-native-scroll-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import MapView from 'react-native-maps';
 const windowHeight = Dimensions.get('window').height;
 import Layout from '../constants/Layout';
-
+import ScrollableContainerTouchableOpacity from "./ScrollableContainerTouchableOpacity"
 import { call, useCode, useAnimatedStyle, useSharedValue} from 'react-native-reanimated'
 import { PanGestureHandler, State } from "react-native-gesture-handler";
 const { Value, event, interpolate } = Animated;
@@ -19,12 +19,15 @@ export default class ScrollableContainer extends PureComponent {
     super(props);
     // Scrollable refernce
     this.state = {
-      data: props.data
+      data: props.data,
     }
     this._scrollable = {}
     //Drag 
     this._dragX = new Value(0);
     this._dragY = new Value(0);
+    this._handleBorderRadius = new Value(32)
+    this._handleBorderRadiusMax = 32;
+    this._handleBorderRadiusMin = 0;
     //Topmost component translation animations when scrolling
     this._translateAnim = new Value(0);
     this._translateAnimY = interpolate(this._translateAnim, {
@@ -36,6 +39,8 @@ export default class ScrollableContainer extends PureComponent {
       inputRange: [0, 0.5, 0.8, 1],
       outputRange: [10, 10, -10, -35],
     });
+
+    this._snapping = false;
   }
 
   componentWillUnmount() {
@@ -44,9 +49,11 @@ export default class ScrollableContainer extends PureComponent {
 
   componentDidUpdate(prevProps){
     if(prevProps.snapIndex !== this.props.snapIndex){
+      this._snapping = true;
       let timeout = setTimeout( () => {
         this._scrollable.snapTo(this.props.snapIndex)
         clearTimeout(timeout)
+        // this._snapping = false;
       }, 300)
     }
     if(prevProps.data !== this.props.data){
@@ -61,10 +68,29 @@ export default class ScrollableContainer extends PureComponent {
     }
   }
 
+  _onHandlePress = () => {
+    if(this.props.onSettle)
+      this.props.onSettle() 
+  }
+
+  _startHandleAnimation = (value) => {
+    Animated.timing(
+      this._handleBorderRadius,
+      {
+          toValue: value,
+          duration: 100,
+          easing: Easing.linear
+      }
+    ).start()
+    this._handleBorderRadius._value = value;
+  }
+
   _renderHandle = () =>
-    <View style={styles.header}>
+    <Animated.View style={[styles.header, {
+      borderTopRightRadius: this._handleBorderRadius
+    }]}>
       <View style={styles.panelHandle} />
-    </View>;
+    </Animated.View>;
 
   render() {
     const { 
@@ -109,7 +135,17 @@ export default class ScrollableContainer extends PureComponent {
               //onEndReachedThreshold={0.5} 
               onSettle = {(index) => {
                 if(Platform.OS === 'android')
-                  setTimeout(() => {this._scrollableInner.getNode().scrollToOffset({ animated: false, offset: 0 })}, 10);
+                  setTimeout(() => {this._scrollableInner.getNode().scrollToOffset({ animated: false, offset: 0 })}, 100);
+
+                if(index == 0 && this._handleBorderRadius._value != this._handleBorderRadiusMin){
+                  console.log("index 1", this._handleBorderRadius._value, this._handleBorderRadiusMax)
+                  this._startHandleAnimation(0)
+                }
+                else if(index != 0 && this._handleBorderRadius._value != this._handleBorderRadiusMax){
+                  console.log("index 2", this._handleBorderRadius._value, this._handleBorderRadiusMin)
+                  this._startHandleAnimation(32)
+                }
+
               }}
               onEndReached = {({distanceFromEnd})=> onEndReached()}
               contentContainerStyle={[styles.contentContainerStyle, {

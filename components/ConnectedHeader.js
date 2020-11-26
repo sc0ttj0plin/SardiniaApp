@@ -46,8 +46,8 @@ const HEADER_BUTTONS_PER_SCREEN = {
   [Constants.NAVIGATION.NavFavouritesListScreen]: {backButtonVisible: true, searchButtonVisible: true},
   [Constants.NAVIGATION.NavAccomodationsScreen]: {backButtonVisible: true, searchButtonVisible: true},
   [Constants.NAVIGATION.NavAccomodationScreen]: {backButtonVisible: true, searchButtonVisible: true},
+  [Constants.NAVIGATION.NavPreferencesScreen]: {backButtonVisible: true, searchButtonVisible: true},
   [Constants.NAVIGATION.NavBoilerPlate]: {backButtonVisible: true, searchButtonVisible: true},
-
   ["default"]: {backButtonVisible: false, searchButtonVisible: true}
 }
 
@@ -124,12 +124,14 @@ class ConnectedHeader extends PureComponent {
       <Button
         type="clear"
         containerStyle={[styles.buttonContainer, this.props.buttonContainer, this.props.buttonContainer, this.props.buttonContainer]}
-        buttonStyle={styles.button}
+        buttonStyle={[styles.button, {
+          marginLeft: 5
+        }]}
         onPress={() => this.props.navigation.toggleDrawer()}
         icon={
           <Ionicons
             name={Platform.OS === 'ios' ? 'ios-menu' : 'md-menu'}
-            size={40}
+            size={35}
             color={Colors.headerIconColor}
           />
           }
@@ -142,12 +144,14 @@ class ConnectedHeader extends PureComponent {
       <Button
         type="clear"
         containerStyle={[styles.buttonContainer]}
-        buttonStyle={[styles.button, this.props.searchButton]}
+        buttonStyle={[styles.button, this.props.searchButton, {
+          marginLeft: 5
+        }]}
         onPress={this._backButtonPressed}
         icon={
           <Ionicons
             name={Platform.OS === 'ios' ? 'ios-arrow-back' : 'md-arrow-back'}
-            size={30}
+            size={35}
             color={Colors.headerIconColor}
           />
         }
@@ -190,12 +194,14 @@ class ConnectedHeader extends PureComponent {
       <Button
         type="clear"
         containerStyle={[styles.buttonContainer, this.props.buttonContainer]}
-        buttonStyle={styles.button}
+        buttonStyle={[styles.button, {
+          marginRight: 5
+        }]}
         onPress={this._searchButtonPressed}
         icon={
           <Ionicons
             name={Platform.OS === 'ios' ? 'ios-search' : 'md-search'}
-            size={30}
+            size={35}
             color={Colors.headerIconColor}
           />
         }
@@ -284,13 +290,14 @@ const styles = StyleSheet.create({
   },
   button: {
     height: "100%",
-    width: 50
+    width: 50,
+    justifyContent: "center",
+    alignItems: "center",
   },
   logo: {
     flex: 1,
     resizeMode: "contain",
-    width: "80%",
-    height: "100%",
+    width: "60%",
     backgroundColor: "transparent"
   },
   bottomLine: {

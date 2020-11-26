@@ -209,7 +209,6 @@ class EventScreen extends Component {
           extraData={this.props.locale}
           keyExtractor={item => item.nid.toString()}
           contentContainerStyle={styles.listContainerHeader}
-          ItemSeparatorComponent={this._renderHorizontalSeparator}
           showsHorizontalScrollIndicator={false}
           locale={this.props.locale}
           onPressItem={this._openRelatedEntity}

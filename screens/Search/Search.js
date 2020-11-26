@@ -166,7 +166,7 @@ class SearchScreen extends Component {
             color={"white"}
           />
         </View>
-        <Text style={this._isNavigableItem(el) ? styles.boldText : styles.normalText}>{title}</Text>
+        <Text style={this._isNavigableItem(el) ? styles.normalText : styles.boldText}>{title}</Text>
       </TouchableOpacity>
     );
   }

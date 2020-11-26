@@ -319,7 +319,10 @@ class PlacesScreen extends PureComponent {
           >
             <View>  
               <View style={styles.sectionTitleView}>
-                <Text style={styles.sectionTitle}>{nearToYou}</Text>
+                <Text style={[styles.sectionTitle, {
+                  fontSize: 16,
+                  marginBottom: 10
+                }]}>{nearToYou}</Text>
               </View>
               <FlatList
                 horizontal={true}
@@ -340,14 +343,16 @@ class PlacesScreen extends PureComponent {
             </View>
           </AsyncOperationStatusIndicator>
           <View style={styles.sectionTitleView}>
-            <Text style={styles.sectionTitle}>{categoryTitle}</Text>
+            <Text style={[styles.sectionTitle, {
+              fontSize: 20,
+            }]}>{categoryTitle}</Text>
           </View>
         </View>
       )
   }
 
   /* Horizontal spacing for Header items */
-  _renderHorizontalSeparator = () => <View style={{ width: 5, flex: 1 }}></View>;
+  _renderHorizontalSeparator = () => <View style={{ width: 10, flex: 1 }}></View>;
 
   /* Renders a poi in Header: index */
   _renderPoiListItem = (item, index, horizontal) => {
@@ -372,8 +377,14 @@ class PlacesScreen extends PureComponent {
   )}
 
   /* Renders categories list */
-  _renderCategoryListItem = (item) => 
-      <CategoryListItem onPress={() => this._selectCategory(item)} image={item.image} title={item.name} />;
+  _renderCategoryListItem = (item, index, length) => {
+    let marginBottom = (index + 1) == length ? 20 : 0
+    return(
+      <CategoryListItem onPress={() => this._selectCategory(item)} image={item.image} title={item.name} style={{
+        marginBottom
+      }}/>
+    )
+  }
 
   _renderFiltersList = () => {
     const { term } = this._getCurrentTerm(true);
@@ -409,7 +420,7 @@ class PlacesScreen extends PureComponent {
     } else {
       //initially term is null so we get terms from redux, then term is populated with nested terms (categories) 
       data = term;
-      renderItem = ({ item }) => this._renderCategoryListItem(item);
+      renderItem = ({ item, index }) => this._renderCategoryListItem(item, index, data.length);
     }
 
     /** 
@@ -469,9 +480,10 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 16,
-    color: Colors.colorPlacesScreen,
+    color: "black",
     fontWeight: "bold",
-    padding: 10
+    padding: 10,
+    textAlign: "center"
   },
   listContainer: {
     backgroundColor: Colors.colorPlacesScreen,

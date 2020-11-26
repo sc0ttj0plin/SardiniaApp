@@ -17,7 +17,7 @@ export default function TabBarIcon(props) {
     ) : (
       <FontAwesome
         name={props.name}
-        size={26}
+        size={25}
         style={{ marginBottom: -3, backgroundColor: "transparent" }}
         color={props.focused ? activeColor : defaultColor}
       />
