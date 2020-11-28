@@ -18,6 +18,7 @@ export default class EntityItem extends PureComponent {
     let space = (Layout.window.width - (margins*2) - (this.width*2))/ 2;
     this.entityIconOpts = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[listType] || Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.places
     this.marginRight = 0;
+    this.marginTop = !horizontal && index == 0 ? 10 : 0;
     this.marginLeft = horizontal==false && index && index%2 != 0 ? space : 0;
     this.marginBottom = horizontal==false ? 16 : 10;
     // console.log("entity item", this.width, this.height)
@@ -35,11 +36,12 @@ export default class EntityItem extends PureComponent {
               marginRight: this.marginRight,
               marginLeft: this.marginLeft,
               marginBottom: this.marginBottom,
+              marginTop: this.marginTop,
               width: this.width,
               height: this.height,
               maxHeight: this.height,
               minHeight: this.height,
-            }, extraStyle]}
+            }, extraStyle, styles.shadow]}
         >
             <GeoRefHListItem
                 title={`${title}`}
@@ -52,7 +54,7 @@ export default class EntityItem extends PureComponent {
             }]}>
               <Ionicons
                   name={this.entityIconOpts.iconName}
-                  size={13}
+                  size={15}
                   style={styles.cornerIcon}
                   color={this.entityIconOpts.iconColor}
               />
@@ -73,18 +75,28 @@ const styles = StyleSheet.create({
     right: 0,
     borderWidth: 10,
     borderRightColor: "transparent",
-    borderLeftWidth: 35,
+    borderLeftWidth: 40,
     borderLeftColor: "transparent",
     borderBottomColor: "transparent",
-    borderTopWidth: 35,
+    borderTopWidth: 40,
     borderRightWidth: 0,
-    borderTopRightRadius: 10,
+    borderTopRightRadius: 8,
   },
   cornerIcon: { 
     backgroundColor: "transparent", 
     position: "absolute",
-    top: -30,
-    right: 0,
+    top: -35,
+    right: 3,
     width: 15,
+  },
+  shadow: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 5,
+    elevation: 5,
   }
 })

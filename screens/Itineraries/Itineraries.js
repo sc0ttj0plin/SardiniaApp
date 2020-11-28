@@ -130,12 +130,18 @@ class ItinerariesScreen extends PureComponent {
 
 
   _selectMarker = (itinerary) => {
-    if(itinerary)
+    if(itinerary){
       this.setState({ selectedItinerary: null }, () => {
-        this.setState({ selectedItinerary: itinerary });
+        this.setState({ 
+          selectedItinerary: itinerary,
+        });
       })
-    else 
-      this.setState({ selectedItinerary: null });
+    }
+    else{
+      this.setState({ 
+        selectedItinerary: null
+      });
+    }
   }
 
   
@@ -148,14 +154,39 @@ class ItinerariesScreen extends PureComponent {
     let margins = 20
     let itemWidth = ((Layout.window.width - (margins*2))/2) - 5;
     //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 44 (handle) - 36 (header text) - itemWidth (entityItem) - 10 (margin of entityItem)
-    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44 - 76 - itemWidth - 10, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44 - 76] });
+    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44 - 76 - itemWidth - 10, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44 - 76, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44] });
   }; 
+
+  _onSettle = () => {
+    this.setState({
+      selectedItinerary: null
+    })
+  }
 
   /********************* Render methods go down here *********************/
   
+  _renderCluster = (cluster) => {
+    const { id, geometry, onPress, properties } = cluster;
+    const points = properties.point_count;
+
+    return (
+      <Marker
+        key={`cluster-${id}`}
+        coordinate={{
+          longitude: geometry.coordinates[0],
+          latitude: geometry.coordinates[1]
+        }}
+        onPress={onPress}
+      >
+        <View style={styles.cluster}>
+          <Text style={styles.clusterText}>{points}</Text>
+        </View>
+      </Marker>
+    )
+  }
   /* Renders the topmost component: a map in our use case */
   _renderTopComponent = () => {
-    const { coords, region } = this.state;
+    const { coords, region, selectedItinerary } = this.state;
     return (
       <>
       <MapView
@@ -166,6 +197,7 @@ class ItinerariesScreen extends PureComponent {
         showsUserLocation={ true }
         showsIndoorLevelPicker={true}
         showsCompass={false}
+        renderCluster={this._renderCluster}
         ref={(ref) => this._map = ref}
         clusterColor={Colors.colorItinerariesScreen}
         style={{flex: 1}}
@@ -174,7 +206,35 @@ class ItinerariesScreen extends PureComponent {
       >
         {this._renderMarkers()}
       </MapView>
+      {selectedItinerary && this._renderWidget()}
       </>
+    )
+  }
+
+  _renderWidget = () => {
+    const { selectedItinerary } = this.state;
+    const { lan } = this.props.locale;
+    const title = _.get(selectedItinerary.title, [lan, 0, "value"], null);
+    const image = selectedItinerary.image;
+
+    return(
+      <View style={styles.widget}>
+        <EntityItem 
+          keyItem={selectedItinerary.nid}
+          listType={Constants.ENTITY_TYPES.itineraries}
+          onPress={() => this._openItem(selectedItinerary)}
+          title={`${title}`}
+          image={`${image}`}
+          place={" "}
+          style={styles.itinerariesListItem}
+          horizontal={false}
+          extraStyle={{
+            marginBottom: 10,
+            width: "100%",
+            height: "100%"
+          }}
+        />
+      </View>
     )
   }
 
@@ -197,7 +257,7 @@ class ItinerariesScreen extends PureComponent {
         <Marker.Animated
           coordinate={{ longitude: parseFloat(long),  latitude: parseFloat(lat) }}
           onPress={() => this._selectMarker(itinerary)}
-          tracksViewChanges={false}
+          tracksViewChanges={itinerary == this.state.selectedItinerary}
           style={{width: 42, height: 42, zIndex: 1}}>
             <View style={[styles.markerContainer, {
               backgroundColor: selected ? Colors.greenTransparent : "transparent"
@@ -224,10 +284,10 @@ class ItinerariesScreen extends PureComponent {
 
   /* Renders the Header of the scrollable container */
   _renderListHeader = () => {
-    const { nearToYou, whereToGo } = this.props.locale.messages;
+    const { nearToYou, whereToGo, exploreItineraries } = this.props.locale.messages;
       return (
         <View style={styles.listHeader}>
-          <Text style={styles.sectionTitle}>Esplora itinerari</Text>
+          <Text style={styles.sectionTitle}>{exploreItineraries}</Text>
         </View>
       )
   }
@@ -261,10 +321,10 @@ class ItinerariesScreen extends PureComponent {
   /* Render content */
   _renderContent = () => {
     const { selectedItinerary, itineraries } = this.state;
-    let data = selectedItinerary ? [selectedItinerary] : itineraries;
+    let data = itineraries;
     if(!data.length)
       data = []
-    let snapIndex = selectedItinerary ? 1 : 2;
+    let snapIndex = selectedItinerary ? 3 : 2;
     let numColumns = 2;
     return (
       <ScrollableContainer 
@@ -274,6 +334,7 @@ class ItinerariesScreen extends PureComponent {
         initialSnapIndex={2}
         numColumns={numColumns}
         snapPoints={this.state.snapPoints}
+        onSettle={this._onSettle}
         snapIndex={snapIndex}
         renderItem={this._renderListItem}
         keyExtractor={item => item.uuid}
@@ -381,6 +442,26 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#0000001A",
     borderRadius: 10
+  },
+  widget: {
+    width: "100%",
+    height: 180,
+    position: "absolute",
+    // backgroundColor: Colors.lightGrey,
+    bottom: 60,
+    left: 0,
+    padding: 10,
+  },
+  cluster: { 
+    width: 40, 
+    height: 40, 
+    borderRadius: 20,
+    backgroundColor: Colors.colorItinerariesScreen,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  clusterText: {
+    color: "white"
   }
 });
 

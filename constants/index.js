@@ -159,6 +159,8 @@ export const NAVIGATION = {
   NavPreferencesStack: "PreferencesStackScreen",
   NavPreferencesScreen: "PreferencesScreen",
   NavLoginScreen: "LoginScreen",
+  NavLogoutScreen: "LogoutScreen",
+  NavAuthScreen: "AuthScreen",
   NavGalleryScreen: "GalleryScreen",
   NavExplore: "Explore",
   NavEvents: "Events",
@@ -177,7 +179,6 @@ export const NAVIGATION = {
   NavAccomodationsScreen: "AccomodationsScreen",
   NavAccomodationScreen: "AccomodationScreen",
   NavAccomodationsStackScreen: "AccomodationsStackScreen",
-  NavLoadingScreen: "LoadingScreen",
   NavBoilerPlate: "Boilerplate",
 }
 
@@ -288,7 +289,7 @@ export const SCREENS = {
 export const COMPONENTS = {
   header: {
     height: 60,
-    bottomLineHeight: 4
+    bottomLineHeight: 6
   }
 }
 
@@ -308,6 +309,21 @@ export const MAP = {
     latitudeDelta: 3,
     longitudeDelta: 3
   },
+}
+
+export const EMOTICONS = {
+  "dizzy": {
+    color: Colors.colorEventsScreen
+  },
+  "meh": {
+    color: Colors.colorInspirersScreen
+  },
+  "laugh-squint": {
+    color: Colors.colorPlacesScreen
+  },
+  "grin-hearts": {
+    color: Colors.colorItinerariesScreen  
+  }
 }
 
 export const NAVIGATOR = {
@@ -431,8 +447,8 @@ export const ACCOMODATIONS_DATA_DEFAULT = [
 
 export const styles = {
   html: {
-    shortText: "textAlign: center; color: #333333; font-size: 15;",
-    shortTextSecondary: "textAlign: center; color: #333333; font-size: 15;",
+    shortText: "textAlign: center; color: #333333; font-size: 15; padding-left: 16px; padding-right: 16px;",
+    shortTextSecondary: "textAlign: center; color: #333333; font-size: 15; padding-left: 16px; padding-right: 16px;",
     longText: "textAlign: justify; opacity: 1; font-size: 15; padding-left: 16px; padding-right: 16px;",
     longTextLeft: "textAlign: left; opacity: 1; font-size: 15;",
   },
@@ -447,16 +463,16 @@ export const styles = {
     agendaTodayColor: "white",
     agendaDayTextColor: "black",
     arrowColor: 'black',
-    selectedDayBackgroundColor: Colors.salmon,
+    selectedDayBackgroundColor: Colors.lightGrey,
     selectedDayTextColor: 'black',
     dayTextColor: "black",
     monthTextColor: "black",
     color: "black",
     textSectionTitleColor: "black",
     textMonthFontWeight: "bold",
-    textDisabledColor: "#ECECEC",
+    textDisabledColor: Colors.mediumGrey,
     todayTextColor: "white",
-    dotColor: Colors.salmon,
+    dotColor: Colors.lightGrey,
     // selectedDotColor: 'white',
     // disabledDotColor: 'black',
     dotStyle: {marginTop: -2},

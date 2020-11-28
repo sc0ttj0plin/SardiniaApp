@@ -20,8 +20,8 @@ class EntityGallery extends PureComponent {
       <>
         { images && images.length > 0 &&
           <View style={styles.mainView}>
-            <Text style={[styles.sectionTitle]}>{title}</Text>
-            <View style={styles.borderLine}></View>
+            {/* <Text style={[styles.sectionTitle]}>{title}</Text> */}
+            {/* <View style={styles.borderLine}></View> */}
             <GridGallery images={images} useFlatList={false} onPress={(index) => {
                 this.props.navigation.navigate(Constants.NAVIGATION.NavMediaScreen, { images: images, initialPage: index, type: "gallery" })
             }}/>

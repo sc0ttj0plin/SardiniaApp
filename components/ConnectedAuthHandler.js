@@ -1,80 +1,30 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import { 
   View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
-  StyleSheet, BackHandler, Platform, ScrollView, TouchableWithoutFeedback } from "react-native";
+  StyleSheet, BackHandler, Platform, ScrollView, TouchableWithoutFeedback, Modal } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { 
-  // CategoryListItem, 
-  // GeoRefHListItem, 
-  // GridGallery, 
-  // GridGalleryImage, 
-  // MapViewTop, 
-  // ScrollableHeader,
-  // TabBarIcon, 
-  // CalendarListItem, 
-  // EntityAbstract,
-  // EntityDescription,
-  // EntityGallery,
-  // EntityHeader,
-  // EntityItem,
-  // EventListItem,
-  // EntityMap,
-  // EntityRelatedList,
-  // EntityVirtualTour,
-  // EntityWhyVisit,
-  // TopMedia,
-  AsyncOperationStatusIndicator, 
-  // AsyncOperationStatusIndicatorPlaceholder,
-  // Webview, 
-  // ConnectedText, 
-  ConnectedHeader, 
-  // ImageGridItem, 
-  // ConnectedLanguageList, 
-  // BoxWithText,
-  // ConnectedFab, 
-  // PoiItem, 
-  // PoiItemsList, 
-  // ExtrasListItem, 
-  // MapViewItinerary
- } from "../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 import Layout from '../constants/Layout';
-import { greedyArrayFinder, getEntityInfo, getCoordinates, getSampleVideoIndex, getGalleryImages } from '../helpers/utils';
-import { apolloQuery } from '../../apollo/queries';
-import actions from '../../actions';
+import actions from '../actions';
 import * as Constants from '../constants';
 import Colors from '../constants/Colors';
 import { LLEntitiesFlatlist } from "../components/loadingLayouts";
 
-/* Deferred rendering to speedup page inital load: 
-   deferred rendering delays the rendering reducing the initial 
-   number of components loaded when the page initially mounts.
-   Other components are loaded right after the mount */
-const USE_DR = false;
-class ConnectedAuthHandler extends Component {
+const USE_DR = true;
+const DR_TIMEOUT = 1000;
+class ConnectedAuthHandler extends PureComponent {
 
   constructor(props) {
     super(props);
-
-    /* Get props from navigation */
-    //let { someNavProps } = props.route.params; 
-
     this.state = {
       render: USE_DR ? false : true,
-    };
-      
-  }
-
-  constructor(props) {
-    super(props);
-    this.state = {
       loginData: null,
       isLoggedIn: false,
       url: null,
       //
-      modalVisible: false,
+      modalVisible: true,
       modalTitle: "",
       modalDescription: "",
       modalBtnTitle: "",
@@ -85,8 +35,7 @@ class ConnectedAuthHandler extends Component {
 
   //////////////////////////////////////
   async componentDidMount() {
-
-    await this._login();
+    {(USE_DR && setTimeout(() => (this.setState({ render: true })), DR_TIMEOUT))};
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
@@ -108,7 +57,10 @@ class ConnectedAuthHandler extends Component {
   _isLoadingData = () => this.props.auth.loading;
   _isErrorData = () => this.props.auth.error;
 
-  _onRegister = () => this.props.navigation.navigate(Constants.NAVIGATION.NavLoginScreen);
+  _onRegister = () => {
+    this.setState({ modalVisible: false });
+    this.props.navigation.navigate(Constants.NAVIGATION.NavLoginScreen);
+  }
 
   _onSkip = () => { 
     const { loginOptional = false } = this.props;
@@ -120,45 +72,45 @@ class ConnectedAuthHandler extends Component {
   /********************* Render methods go down here *********************/
   _renderContent = () => {
     const { modalVisible, modalTitle, modalDescription } = this.state;
-    const { locale, loginOptional = false } = this.props;
+    const { locale, loginOptional = false} = this.props;
+    const { user } = this.props.auth;
     const { access, skip, login, loginText } = locale.messages;
 
-    return (
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => { }}>
-          <View 
-            style={styles.modalView} 
-          >
-            <TouchableWithoutFeedback>
-              <View style={styles.modalWindow}>
-                <Text style={styles.modalTitle}>{login}</Text>
-                <Text style={styles.modalDescription}>{loginText}</Text>
-                <TouchableOpacity activeOpacity={0.8} style={styles.modalBtn} onPress={this._onRegister}>
-                  <Text style={styles.modalBtnText}>{access}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.8} style={styles.modalBtn} onPress={this._onSkip}>
-                  <Text style={styles.modalBtnText}>{skip}</Text>
-                </TouchableOpacity>
-              </View>
-            </TouchableWithoutFeedback>
-          </View>
-      </Modal>
-    )
+    if (!user)
+      return (
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => { }}>
+            <View style={[styles.fill]}>
+            <View 
+              style={styles.modalView} 
+            >
+              <TouchableWithoutFeedback>
+                <View style={styles.modalWindow}>
+                  <Text style={styles.modalTitle}>{login}</Text>
+                  <Text style={styles.modalDescription}>{loginText}</Text>
+                  <TouchableOpacity activeOpacity={0.8} style={styles.modalBtn} onPress={this._onRegister}>
+                    <Text style={styles.modalBtnText}>{access}</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity activeOpacity={0.8} style={styles.modalBtn} onPress={this._onSkip}>
+                    <Text style={styles.modalBtnText}>{skip}</Text>
+                  </TouchableOpacity>
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+            </View>
+        </Modal>
+      )
+    else 
+      return null;
 }
 
 
   render() {
     const { render } = this.state;
-    const { user } = this.props.auth;
-    return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-
-        {!user && this._renderContent()}
-      </View>
-    )
+    return render && this._renderContent();
   }
   
 }
@@ -171,8 +123,11 @@ ConnectedAuthHandler.navigationOptions = {
 
 const styles = StyleSheet.create({
   fill: {
-    flex: 1,
-    backgroundColor: "white"
+    position: "absolute",
+    width: Layout.window.width,
+    height: Layout.window.height,
+    backgroundColor: "rgba(0,0,0, 0.5)",
+    zIndex: 11,
   },
   fab: {
     position: "absolute",

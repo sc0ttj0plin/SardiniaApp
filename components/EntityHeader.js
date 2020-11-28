@@ -57,7 +57,8 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: "center",
     color: "#000000E6",
-    fontWeight: "bold"
+    fontWeight: "bold",
+    paddingHorizontal: 70
   },
   topLineContainer: {
     width: "100%",

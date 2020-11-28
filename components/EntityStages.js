@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: "white",
-    fontSize: 13,
+    fontSize: 15,
     textTransform: "capitalize",
     paddingVertical: Platform.OS === "ios" ? 0 : 5,
   },
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     paddingRight: 30
   },
   description: {
-    fontSize: 12,
+    fontSize: 15,
     fontWeight: "normal",
     textAlign: "justify"
   },
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end",
     height: 36,
-    paddingRight: 15,
+    paddingRight: 30,
     paddingTop: 15
   },
   bottomButtonText: {

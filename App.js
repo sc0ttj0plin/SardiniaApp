@@ -11,6 +11,7 @@ import { Fontisto } from '@expo/vector-icons';
 import { Provider } from 'react-redux'
 import AppNavigator from './navigation/AppNavigator_redux';
 import AsyncStorage from '@react-native-community/async-storage';
+import { CommonActions } from '@react-navigation/native';
 import { ApolloProvider } from '@apollo/react-hooks';
 import actions from './actions';
 import { PersistGate } from 'redux-persist/lib/integration/react';
@@ -20,6 +21,7 @@ import { enableScreens } from 'react-native-screens';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import config from './config/config';
 import * as firebase from 'firebase';
+import * as Constants from './constants';
 
 enableScreens();
 
@@ -61,21 +63,34 @@ export default class App extends Component {
     });
   }
 
+
   _parseLinkingUrl = async (url) => {
     //Login url type
-    if (url.indexOf("apiKey") >=0)
+    if (url.indexOf("apiKey") >=0) {
       store.dispatch(actions.passwordLessLinkHandler(url));
+      //TODO: navigate if app is closed
+      // navigation.dispatch(
+      //   CommonActions.navigate({
+      //     name: Constants.NAVIGATION.NavLoginScreen,
+      //     params: {},
+      //   })
+      // );
+    }
   }
 
 
-  _initFirebaseAppAndLogin = async () => {
+  _initFirebaseAppAndLogin = () => {
+    //Initialize app is synchronous
     if (firebase.apps.length === 0)
       firebase.initializeApp(config.firebase);
+    this._performLogin();
+  }
+
+  _performLogin = async () => {
     //Attempt login
     const email = await AsyncStorage.getItem('email');
     if (email)
       store.dispatch(actions.passwordLessLogin());
-    
   }
 
   _loadResourcesAsync = async () => {
@@ -133,7 +148,7 @@ export default class App extends Component {
   }
 
   _playVideo() {
-    if(this.state.isLoadingComplete && this.state.isVideoLoaded) {
+    if(this.state.isLoadingComplete && this.state.isVideoLoaded && this.vPlayer) {
       this.vPlayer.playAsync();
     }
   }

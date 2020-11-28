@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Platform } from 'react-native';
 import Layout from '../constants/Layout'
 import Colors from '../constants/Colors';
+import * as Constants from "../constants"
 import _ from 'lodash';
 
 /**
@@ -20,7 +21,7 @@ class HeaderFullscreen extends PureComponent {
     const text = this.props.text;
 
     return (
-        <View style={[styles.buttonTopHeader, {top: Layout.statusbarHeight, height: Layout.header.height}]}>
+        <View style={[styles.buttonTopHeader]}>
             {text && 
             <View style={[styles.centerButtonContainer]}>
                 <Text style={styles.pageIndex}>{text}</Text>
@@ -49,17 +50,23 @@ class HeaderFullscreen extends PureComponent {
 
 const styles = StyleSheet.create({
     buttonTopHeader: {
+        zIndex: 999,
+        position: "absolute",
+        flexDirection: "row",
         width: "100%",
-        position: 'absolute',
-        top: 0,
-        justifyContent: 'center',
-        alignItems: 'center'
+        height: Layout.header.height,
+        backgroundColor: 'black',
+        height: Constants.COMPONENTS.header.height,
+        maxHeight: Constants.COMPONENTS.header.height,
+        minHeight: Constants.COMPONENTS.header.height,
+        alignItems: "center",
+        justifyContent: "center"
     },
     centerButtonContainer: {
-        position: 'absolute',
+        // position: 'absolute',
         justifyContent: 'center',
         alignItems: 'center',
-        top: 0,
+        // top: 0,
         height: '100%',
     },
     leftButtonContainer: {

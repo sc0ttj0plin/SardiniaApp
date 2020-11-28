@@ -59,7 +59,7 @@ class EventsMapScreen extends PureComponent {
       poisLimit: Constants.PAGINATION.poisLimit,
       region: Constants.MAP.defaultRegion,
       selectedEvent: null,
-      snapPoints: null
+      snapPoints: null,
     };
       
   }
@@ -189,12 +189,18 @@ class EventsMapScreen extends PureComponent {
   }
 
   _selectMarker = (event) => {
-    if(event)
+    if(event){
       this.setState({ selectedEvent: null }, () => {
-        this.setState({ selectedEvent: event });
+        this.setState({ 
+          selectedEvent: event
+        });
       })
-    else 
-      this.setState({ selectedEvent: null });
+    }
+    else{
+      this.setState({ 
+        selectedEvent: null
+      });
+    }
   }
 
     /**
@@ -206,7 +212,7 @@ class EventsMapScreen extends PureComponent {
     let margins = 20
     let itemWidth = ((Layout.window.width - (margins*2))/2) - 5;
     //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 44 (handle) - 36 (header text) - itemWidth (entityItem) - 10 (margin of entityItem)
-    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44 - 76 - itemWidth - 10, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44 - 76] });
+    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44 - 76 - itemWidth - 10, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44 - 76, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44] });
   }; 
 
   // _backButtonPress = () => this.props.actions.popCurrentCategoryPlaces();
@@ -218,8 +224,25 @@ class EventsMapScreen extends PureComponent {
       <Text style={{color: 'white'}}>{item.name}</Text>
     </TouchableOpacity>
 
+
   _renderCluster = (cluster) => {
-    console.log("cluster", cluster)
+    const { id, geometry, onPress, properties } = cluster;
+    const points = properties.point_count;
+
+    return (
+      <Marker
+        key={`cluster-${id}`}
+        coordinate={{
+          longitude: geometry.coordinates[0],
+          latitude: geometry.coordinates[1]
+        }}
+        onPress={onPress}
+      >
+        <View style={styles.cluster}>
+          <Text style={styles.clusterText}>{points}</Text>
+        </View>
+      </Marker>
+    )
   }
   
   /* Renders the topmost component: a map in our use case */
@@ -236,18 +259,49 @@ class EventsMapScreen extends PureComponent {
         showsUserLocation={ true }
         showsIndoorLevelPicker={true}
         showsCompass={false}
+        renderCluster={this._renderCluster}
         clusteringEnabled={true}
         clusterColor={Colors.colorEventsScreen}
         style={{flex: 1}}
         onPress={() => this._selectMarker(null)}
+        onPanDrag={() => this._selectMarker(null)}
         onRegionChangeComplete={this._onRegionChangeComplete}
       >
         {this._renderMarkers()}
         {/* {this.state.selectedEvent && this._renderMarker(this.state.selectedEvent, true)} */}
       </MapView>
+      {selectedEvent && this._renderWidget()}
+
       </>
     )
 
+  }
+
+  _renderWidget = () => {
+    const { selectedEvent } = this.state;
+    const { lan } = this.props.locale;
+    const title = _.get(selectedEvent.title, [lan, 0, "value"], null);
+    const image = selectedEvent.image;
+
+    return(
+      <View style={styles.widget}>
+        <EntityItem 
+          keyItem={selectedEvent.nid}
+          listType={Constants.ENTITY_TYPES.events}
+          onPress={() => this._openItem(selectedEvent)}
+          title={`${title}`}
+          image={`${image}`}
+          place={" "}
+          style={styles.itinerariesListItem}
+          horizontal={false}
+          extraStyle={{
+            marginBottom: 10,
+            width: "100%",
+            height: "100%"
+          }}
+        />
+      </View>
+    )
   }
 
   _renderMarkers = () => {
@@ -269,7 +323,7 @@ class EventsMapScreen extends PureComponent {
         <Marker.Animated
           coordinate={{ longitude: parseFloat(long),  latitude: parseFloat(lat) }}
           onPress={() => this._selectMarker(event)}
-          tracksViewChanges={false}
+          tracksViewChanges={event == this.state.selectedEvent}
           style={styles.markerAnimated}>
             <View style={[styles.markerContainer, { backgroundColor: selected ? Colors.colorEventsScreenTransparent : "transparent"}]}>
               <View
@@ -292,10 +346,10 @@ class EventsMapScreen extends PureComponent {
 
   /* Renders the Header of the scrollable container */
   _renderListHeader = () => {
-    const { nearToYou, whereToGo } = this.props.locale.messages;
+    const { nearToYou, whereToGo, exploreEvents } = this.props.locale.messages;
       return (
         <View style={styles.listHeader}>
-          <Text style={styles.sectionTitle}>Esplora Eventi</Text>
+          <Text style={styles.sectionTitle}>{exploreEvents}</Text>
         </View>
       )
   }
@@ -327,8 +381,8 @@ class EventsMapScreen extends PureComponent {
   /* Render content */
   _renderContent = () => {
     const { selectedEvent, events } = this.state;
-    let data = selectedEvent ? [selectedEvent] : events;
-    let snapIndex = selectedEvent ? 1 : 2
+    let data = events;
+    let snapIndex = selectedEvent ? 3 : 2
 
     return (
       <ScrollableContainer 
@@ -403,10 +457,9 @@ const styles = StyleSheet.create({
   markerAnimated: {
     width: 42, 
     height: 42, 
-    zIndex: 1
+    zIndex: 1,
   },
   markerIcon: {
-    paddingTop: Platform.OS === 'ios' ? 3 : 0
   },
   listPois: {
     backgroundColor: Colors.colorPlacesScreen,
@@ -431,9 +484,6 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent"
   },
   marker: {
-    // backgroundColor: "transparent",
-    // justifyContent: 'center',
-    // alignItems: 'center'
     width: "100%",
     height: "100%",
     backgroundColor: "blue",
@@ -447,7 +497,7 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42,
     padding: 6,
-    borderRadius: 21
+    borderRadius: 21,
   },
   eventsListItem: {
     marginBottom: 10,
@@ -455,6 +505,26 @@ const styles = StyleSheet.create({
     borderColor: "#0000001A",
     borderRadius: 10,
     width: "100%",
+  },
+  widget: {
+    width: "100%",
+    height: 180,
+    position: "absolute",
+    // backgroundColor: Colors.lightGrey,
+    bottom: 60,
+    left: 0,
+    padding: 10,
+  },
+  cluster: { 
+    width: 40, 
+    height: 40, 
+    borderRadius: 20,
+    backgroundColor: Colors.colorEventsScreen,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  clusterText: {
+    color: "white"
   }
 });
 

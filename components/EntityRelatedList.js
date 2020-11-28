@@ -47,7 +47,7 @@ export default class EntityRelatedList extends PureComponent {
 
     _renderHorizontalSeparator = () => {
         return (
-          <View style={{width: 5}}></View>
+          <View style={{width: 10}}></View>
         )
     }
 

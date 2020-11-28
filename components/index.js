@@ -11,6 +11,7 @@ export AsyncOperationStatusIndicator from './AsyncOperationStatusIndicator';
 // export MapViewItinerary from './MapViewItinerary';
 // export Webview from './Webview';
 export ConnectedText from './ConnectedText';
+export ConnectedAuthText from './ConnectedAuthText';
 export ConnectedHeader from './ConnectedHeader';
 export HeaderFullscreen from './HeaderFullscreen';
 
@@ -43,6 +44,7 @@ export TopMedia from './TopMedia';
 export EntityStages from './EntityStages';
 export ExtraItem from './ExtraItem';
 export EntityAccomodationDetail from './EntityAccomodationDetail';
+export ConnectedAuthHandler from './ConnectedAuthHandler';
 
 
 

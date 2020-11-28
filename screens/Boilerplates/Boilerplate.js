@@ -185,6 +185,8 @@ function BoilerPlateScreenContainer(props) {
 const mapStateToProps = state => {
   return {
     restState: state.restState,
+    //auth
+    auth: state.authState,
     //mixed state
     others: state.othersState,
     //language

@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 5,
     marginRight: 20,
-    borderRadius: 5,
+    borderRadius: 8,
     overflow: "hidden",
     position: "relative",
   },

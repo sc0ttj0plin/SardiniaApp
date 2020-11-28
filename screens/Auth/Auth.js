@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {  Platform, KeyboardAvoidingView, StyleSheet, Text, ActivityIndicator, TouchableOpacity } from 'react-native';
+import {  Platform, KeyboardAvoidingView, StyleSheet, Text, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
 import { NavigationEvents, useNavigation, useRoute } from '@react-navigation/native';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -22,6 +22,26 @@ class Login extends Component {
       authFSM: "emailInput", /* Possible states: emailInput, emailSent, loginSuccess, loginError */
       isVerifyingEmail: false,
     };
+  }
+
+  componentDidMount() {
+    if (this.props.auth.user) {
+      Alert.alert(
+        "Auth",
+        "Logout?",[{
+            text: "Cancel",
+            onPress: () => this.props.navigation.goBack(),
+            style: "cancel"
+          }, { 
+            text: "OK", 
+            onPress: () => {
+              this.props.actions.logout();
+              this.props.navigation.goBack();
+            },
+        }],
+        { cancelable: false }
+      );
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -131,18 +151,22 @@ class Login extends Component {
   }
 
   render() {
-    ///contain, cover, stretch, center, repeat.
-    const { authFSM } = this.state;
-    if (authFSM === "emailInput")
-      return this._renderMailInput();
-    else if (authFSM === "emailSent") 
-      return this._renderMailSent();
-    else if (authFSM === "loginError") 
-      return this._renderLoginError();
-    else if (authFSM === "loginSuccess") 
-      return this._renderLoginSuccess();
-    else 
+    if (!this.props.auth.user) {
+      ///contain, cover, stretch, center, repeat.
+      const { authFSM } = this.state;
+      if (authFSM === "emailInput")
+        return this._renderMailInput();
+      else if (authFSM === "emailSent") 
+        return this._renderMailSent();
+      else if (authFSM === "loginError") 
+        return this._renderLoginError();
+      else if (authFSM === "loginSuccess") 
+        return this._renderLoginSuccess();
+      else 
+        return null;
+    } else {
       return null;
+    }
   }
 }
 

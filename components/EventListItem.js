@@ -65,8 +65,9 @@ const styles = StyleSheet.create({
     elevation: 5,
     marginBottom: 13,
     marginTop: 3,
-    borderTopLeftRadius: 5,
-    borderBottomLeftRadius: 5,
+    // borderTopLeftRadius: 5,
+    // borderBottomLeftRadius: 5,
+    borderRadius: 8,
     width: "99%",
     display: "flex",
     flexDirection: "row"
