@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {  Platform, KeyboardAvoidingView, StyleSheet, Text, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
 import { NavigationEvents, useNavigation, useRoute } from '@react-navigation/native';
+import { ConnectedHeader } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import actions from '../../actions';
@@ -92,7 +93,7 @@ class Login extends Component {
   _renderMailInput = () => {
     const { isVerifyingEmail } = this.state;
     return (
-      <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={{ flex:1, backgroundColor: '#fafafa', marginTop: Layout.statusbarHeight}}>
+      <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={styles.screen}>
         <View style={styles.view0}>
           <View style={styles.view01}>
             <Text style={styles.loginText}>Email</Text>
@@ -118,7 +119,7 @@ class Login extends Component {
 
   _renderMailSent = () => {
     return (
-      <View style={{ flex:1, backgroundColor: '#fafafa', marginTop: Layout.statusbarHeight }}>
+      <View style={styles.screen}>
         <View style={styles.view0}>
           <View style={styles.view1}>
             <Text style={styles.text0}>
@@ -154,16 +155,15 @@ class Login extends Component {
     if (!this.props.auth.user) {
       ///contain, cover, stretch, center, repeat.
       const { authFSM } = this.state;
-      if (authFSM === "emailInput")
-        return this._renderMailInput();
-      else if (authFSM === "emailSent") 
-        return this._renderMailSent();
-      else if (authFSM === "loginError") 
-        return this._renderLoginError();
-      else if (authFSM === "loginSuccess") 
-        return this._renderLoginSuccess();
-      else 
-        return null;
+      return (
+        <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
+          <ConnectedHeader />
+          {authFSM === "emailInput" && this._renderMailInput()}
+          {authFSM === "emailSent" && this._renderMailSent()}
+          {authFSM === "loginError" && this._renderLoginError()}
+          {authFSM === "loginSuccess" && this._renderLoginSuccess()}
+        </View>
+      )
     } else {
       return null;
     }
@@ -173,6 +173,15 @@ class Login extends Component {
 
 const styles = StyleSheet.create({
   maxContentWith: 250,
+  fill: {
+    flex: 1,
+    backgroundColor: "white"
+  },
+  screen: {
+    flex:1, 
+    backgroundColor: 'white', 
+    marginTop: Layout.statusbarHeight
+  },
   view0: { 
     flex: 1, 
     alignItems: 'center' 
@@ -185,7 +194,7 @@ const styles = StyleSheet.create({
   },
   mainView: {
     flex:1, 
-    backgroundColor: '#fafafa' 
+    backgroundColor: 'white' 
   },
   view1: {
     width: Layout.window.width - 50, 
