@@ -37,7 +37,16 @@ class LoadingScreen extends Component {
       this._parseUrl(url);
     });
 
-    await this._checkEmail();
+    await this._login();
+  }
+
+  ////////////////////////////////////////////////////////
+  async componentDidUpdate(prevProps) {
+    //auth is updated by passwordLessLogin action
+    if (this.props.auth !== prevProps.auth)
+      if (!this.props.auth.loading) {
+        this.props.navigation.navigate(Constants.NAVIGATION.NavTabNavigator);
+      }
   }
 
   //////////////////////////////////////
@@ -49,33 +58,13 @@ class LoadingScreen extends Component {
 
 
   ////////////////////////////////////////////////////////
-  _checkEmail = async () => {
+  _login = async () => {
     //Tries login first ()
     const email = await AsyncStorage.getItem('email');
     if (email)
       this.props.actions.passwordLessLogin();
-    else 
-      this.props.navigation.navigate("SignInUp");
   }
   
-
-  ////////////////////////////////////////////////////////
-  async componentDidUpdate(prevProps) {
-    //auth is updated by passwordLessLogin action
-    if (this.props.auth !== prevProps.auth)
-      this._verifyLoginState();
-  }
-
-  ////////////////////////////////////////////////////////
-  _verifyLoginState = () => {
-    if (!this.props.auth.loading) {
-      if (this.props.auth.success) {
-        this.props.navigation.navigate(Constants.NAVIGATION.NavTabNavigator);
-      } else {
-        this.props.navigation.navigate("SignInUp");  //Signup
-      }
-    }
-  }
 
   //////////////////////////////////////
   _isSuccessData = () => this.props.auth.success;

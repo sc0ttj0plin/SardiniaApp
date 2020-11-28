@@ -9,9 +9,11 @@ import { FontAwesome } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
 import { Provider } from 'react-redux'
-import AppNavigator from './navigation/AppNavigator';
-import { PersistGate } from 'redux-persist/lib/integration/react';
+import AppNavigator from './navigation/AppNavigator_redux';
+import AsyncStorage from '@react-native-community/async-storage';
 import { ApolloProvider } from '@apollo/react-hooks';
+import actions from './actions';
+import { PersistGate } from 'redux-persist/lib/integration/react';
 import { persistor, store } from './store';
 import { Video } from 'expo-av';
 import { enableScreens } from 'react-native-screens';
@@ -39,7 +41,44 @@ export default class App extends Component {
     SplashScreen.preventAutoHideAsync();
   }
   
-  async _loadResourcesAsync() {
+  _initAppAsync = () => {
+    this._loadResourcesAsync();
+    this._initLinkingAsync();
+    this._initFirebaseAppAndLogin();
+  }
+
+  _initLinkingAsync = async () => {
+    //app is closed
+    const url = await Linking.getInitialURL();
+    if (url) {
+      store.dispatch(actions.setUrl(url));
+      this._parseLinkingUrl(url);
+    }
+    //or app is opened 
+    Linking.addEventListener('url', ({ url }) => {
+      store.dispatch(actions.setUrl(url));
+      this._parseLinkingUrl(url);
+    });
+  }
+
+  _parseLinkingUrl = async (url) => {
+    //Login url type
+    if (url.indexOf("apiKey") >=0)
+      store.dispatch(actions.passwordLessLinkHandler(url));
+  }
+
+
+  _initFirebaseAppAndLogin = async () => {
+    if (firebase.apps.length === 0)
+      firebase.initializeApp(config.firebase);
+    //Attempt login
+    const email = await AsyncStorage.getItem('email');
+    if (email)
+      store.dispatch(actions.passwordLessLogin());
+    
+  }
+
+  _loadResourcesAsync = async () => {
     await Promise.all([
       Asset.loadAsync([
         require('./assets/images/robot-dev.png'),
@@ -65,12 +104,6 @@ export default class App extends Component {
         'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
       })
     ]);
-    this._initFirebaseApp();
-  }
-
-  _initFirebaseApp = () => {
-    if (firebase.apps.length === 0)
-      firebase.initializeApp(config.firebase);
   }
 
   _handleLoadingError(error) {
@@ -121,7 +154,7 @@ export default class App extends Component {
       return (
         <View>
           <AppLoading
-            startAsync={this._loadResourcesAsync.bind(this)}
+            startAsync={this._initAppAsync}
             onError={this._handleLoadingError}
             onFinish={() => this._handleFinishLoading()}
           />

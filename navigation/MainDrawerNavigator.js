@@ -48,43 +48,6 @@ const {
 
 import {FromTopTransition} from './transitions'
 
-/**
- * App navigation hyerarchy is as follows (TODO: revise)
- * 
- *  Drawer (drawer)
- *    Favourites (stack)
- *        Favourite (screen with fav categories list)
- *        Place (screen showing single poi)
- *        Event (screen showing single event)
- *        Itinerary (screen showing single itinerary)
- *    Explore (screen showing gallery)
- *    Search (stack)
- *        Search (screen showing the search results)
- *        Place (screen showing single poi)
- *        Event (screen showing single event)
- *        Virtualtour (screen showing virtual tour)
- *        Video (screen showing a video)
- *    Main (stack)
- *        BottomTabs (tabs)
- *          Places (screen showing pois list)
- *          Inspirers (screen showing article list grouped by category)
- *          Extra (stack - inspirers grouped by a category)
- *              Extras (screen showing inspirers categories that are considered of interest (subset of all inspirers))
- *              Extra (screen showing an inspirer with related poi, event and itinerary)
- *              Place (screen showing single poi)
- *          Itineraries (screen showing all the itineraries)
- *          Events (screen showing all the events)
- *        Map (screen with a single map, used by places screen and inspirers screen)
- *        Places (screen showing pois list)
- *        Place (screen showing single poi)
- *        Video (screen showing single video)
- *        VirtualTour (screen showing virtual tour)
- *        Inspirers (screen showing article list grouped by category)
- *        Inspirer (screen showing a single article)
- *        Itinerary (screen showing a single itinerary)
- *        Event (screen showing single event)
- */
-
  /**
   * Navigation Translations (mainly for BottomTabNavigator)
   */
@@ -202,8 +165,8 @@ var MainStack = createStackNavigator();
 function MainStackScreen() {
   return (
     <>
-    <MainStack.Navigator headerMode="none" initialRouteName={LoadingScreen}>
-      {/* Loading & Preload (optional) */}
+    <MainStack.Navigator headerMode="none" initialRouteName={TabNavigator}>
+      {/* Loading */}
       {/* <MainStack.Screen name={NavLoadingScreen} component={LoadingScreen} /> */}
       {/* TabNavigator */}
       <MainStack.Screen name={NavTabNavigator} component={TabNavigator} />

@@ -17,3 +17,17 @@
 5. Creare le azioni/riduttori corrispondenti
 6. Creare il bind nello store di redux
 7. Creare la localization in Localization.js e usare ConnectedText con la prop languageKey per settare il nome schermo a rendering
+
+## Login
+Il login è di tipo passwordless.
+
+Il linking ed il login viene gestito da App.js in modo che in ogni stato: app aperta o chiusa, il comportamento sia predicibile.
+Infatti nel processo di login, quando l'utente riceve la mail ed esegue lo switch, il SO potrebbe terminare il processo dell'app smontando uno schermo X ipotetico il quale gestisce la callback del linking. 
+Pertanto la cattura del link deve essere fatta a livello principale.
+
+Inoltre è stato creato un componente che, se importato e renderizzato in uno schermo generico, permette di verificare lo stato di autenticazione corrente e mostrare il messaggio di richiesta di login. Questo ha il vantaggio di disaccoppiare gli schermi navigabili dall'autenticazione. Può essere inserito in uno schermo ed impedirne la navigazione se l'utente non è registrato.
+Il popup rimanda allo stack di Login quando l'utente decide di registrarsi.
+
+
+
+

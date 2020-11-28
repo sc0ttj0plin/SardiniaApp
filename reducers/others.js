@@ -95,6 +95,13 @@ export default function reducer(state = INITIAL_STATE, action) {
         ...state, 
         currentMapEntity: action.payload
       };
+    // SET LINKING URL (LINKING)
+    case Constants.SET_URL:
+      console.log("Set link", action.payload);
+      return { 
+        ...state, 
+        url: action.payload, 
+      };
     default:
       return state;
   }

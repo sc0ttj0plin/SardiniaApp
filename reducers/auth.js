@@ -23,7 +23,6 @@ export default (state = INITIAL_STATE, action) => {
         success: false
       };
     case Constants.AUTH_SUCCESS:
-      console.log("Auth success");
       return { 
         ...state, 
         user: action.payload.user, 
