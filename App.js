@@ -9,7 +9,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
 import { Provider } from 'react-redux'
-import AppNavigator from './navigation/AppNavigator_redux';
+import AppNavigator from './navigation/AppNavigator';
 import AsyncStorage from '@react-native-community/async-storage';
 import { CommonActions } from '@react-navigation/native';
 import { ApolloProvider } from '@apollo/react-hooks';
