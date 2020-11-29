@@ -108,7 +108,7 @@ class Login extends Component {
               {isVerifyingEmail ? 
               <ActivityIndicator animating={isVerifyingEmail} size={"small"} color={Colors.tintColor}/>
               :
-              <Text style={styles.registerTxt}>SEND ME THE LINK</Text>
+              <Text style={styles.registerTxt}>Mandami il link</Text>
               }
             </TouchableOpacity>
           </View>
@@ -123,7 +123,7 @@ class Login extends Component {
         <View style={styles.view0}>
           <View style={styles.view1}>
             <Text style={styles.text0}>
-              We've sent you a registration link
+              Ti abbiamo mandato un link
             </Text> 
             <Text style={styles.text1}>
               Check your inbox
