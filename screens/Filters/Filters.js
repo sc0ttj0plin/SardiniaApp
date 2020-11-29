@@ -48,6 +48,7 @@ import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
 import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
+import { Ionicons } from '@expo/vector-icons';
 
 /* Deferred rendering to speedup page inital load: 
    deferred rendering delays the rendering reducing the initial 
@@ -126,31 +127,41 @@ class FiltersScreen extends Component {
 
   _onFilterPress = (item) => {
         const selectedFilters = [parseInt(item.id)]
+        this.props.actions.resetEvents()
         this.props.actions.setSelectedEventTypes(selectedFilters);
         this.props.navigation.goBack()
   }
   /********************* Render methods go down here *********************/
-  _renderEventFilters = () => {
-      console.log("events", this.state.eventFilters.length)
-      return(
-          <FlatList 
-            key={"event-filters"}
-            renderItem={({item, index}) => this._renderEventFilter(item)}
-            keyExtractor={item => item.id}
-            style={styles.fill}
-            data={this.state.eventFilters}
-          />
-      )
+  _renderEventFiltersContainer = () => {
+        // console.log("events", this.state.eventFilters.length)
+        return(
+            <View style={styles.eventFiltersView}>
+                {this._renderEventFilters()}
+            </View>
+        )
   }
   
+  _renderEventFilters = () => {
+      return this.state.eventFilters.map( filter => {
+          return this._renderEventFilter(filter)
+      })
+  }
 
   _renderEventFilter = (item) => {
     return(
-        <TouchableOpacity
-            onPress={() => this._onFilterPress(item)}
-            activeOpacity={0.7}
-            style={styles.eventFilter}>
-            <Text style={styles.eventFilterText}>{item.name}</Text>
+        <TouchableOpacity 
+            style={[styles.eventFilter, Constants.styles.shadow]} 
+            onPress={() => this._onFilterPress(item)} 
+            activeOpacity={0.7}>
+            <View style={styles.icon}>
+                <Ionicons
+                    name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS["events"].iconName}
+                    size={13}
+                    style={styles.cornerIcon}
+                    color={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS["events"].iconColor}
+                />
+            </View>
+            <CustomText style={styles.eventFilterText}>{item.name}</CustomText>
         </TouchableOpacity>
     )
   }
@@ -158,7 +169,7 @@ class FiltersScreen extends Component {
   _renderFilters = () => {
     const { filterType } = this.state;
     if(filterType == Constants.ENTITY_TYPES.events){
-        return this._renderEventFilters()
+        return this._renderEventFiltersContainer()
     }
   }
 
@@ -215,10 +226,38 @@ const styles = StyleSheet.create({
     textTransform: "uppercase"
   },
   eventFilter: {
-      width: 100,
-      height: 20,
-      backgroundColor: "red",
-      marginVertical: 10
+    height: 32, 
+    paddingVertical: 7, 
+    backgroundColor: "white", 
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 16,
+    paddingRight: 15,
+    paddingLeft: 5,
+    marginRight: 10,
+    marginTop: 10
+  },
+  eventFilterText: {
+    color: "#000000DE",
+    fontSize: 14
+  },
+  icon: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: Colors.colorEventsScreen,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 8
+  },
+  eventFiltersView: {
+      flex: 1,
+      flexDirection: "row",
+      alignItems: "flex-start",
+      flexWrap: "wrap",
+      paddingLeft: 15
   }
 });
 
