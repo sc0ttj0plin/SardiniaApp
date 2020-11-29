@@ -97,6 +97,8 @@ const dict = {
     country: "Paese", 
     sex: "Sesso",
     confirm: "CONFERMA",
+    register: "REGISTRATI",
+    next: "AVANTI",
   },
   "en-gb": {
     //GENERIC
@@ -195,6 +197,8 @@ const dict = {
     country: "Country", 
     sex: "Sex",
     confirm: "CONFIRM",
+    register: "REGISTER",
+    next: "NEXT",
   }
 }
 

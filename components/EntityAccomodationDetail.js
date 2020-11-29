@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 8,
     borderBottomRightRadius: 8,
     backgroundColor: Colors.colorAccomodationsScreen,
-    borderRightColor: Colors.lightGrey,
+    borderRightColor: Colors.lightGray,
     borderRightWidth: 1
   },
   itemDescView: {

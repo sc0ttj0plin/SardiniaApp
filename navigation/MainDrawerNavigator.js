@@ -227,6 +227,7 @@ function SearchStackScreen() {
   );
 }
 
+
 /**
  * Accomodation Stack (level: 1, parent DrawerNavigator)
  */

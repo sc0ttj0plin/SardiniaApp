@@ -67,7 +67,7 @@ class FiltersScreen extends Component {
       render: USE_DR ? false : true,
       filterType: filterType || Constants.ENTITY_TYPES.events,
       eventFilters: props.events.eventsTypes || [],
-      selectedFilters: []
+      selectedFilters: props.events.selectedTypes || []
     };
       
   }
@@ -126,19 +126,41 @@ class FiltersScreen extends Component {
   }
 
   _onFilterPress = (item) => {
-        const selectedFilters = [parseInt(item.id)]
+    const { selectedFilters } = this.state;
+    let newFilters = []
+    let filterID = parseInt(item.id)
+    if(selectedFilters.indexOf(filterID) == -1){
+        // console.log("selected")
+        newFilters = [...selectedFilters]
+        newFilters.push(filterID)
+    }
+    else{
+        // console.log("not selected")
+        newFilters = selectedFilters.filter(filter => filter != filterID);
+    }
+
+    // console.log("new filters", newFilters)
+    this.setState({
+        selectedFilters: newFilters
+    })
+  }
+
+  _onBackPress = () => {
+    const { selectedFilters } = this.state;
+    if(this.props.events.selectedTypes !== selectedFilters){
         this.props.actions.resetEvents()
         this.props.actions.setSelectedEventTypes(selectedFilters);
-        this.props.navigation.goBack()
+    }
+    this.props.navigation.goBack()
   }
   /********************* Render methods go down here *********************/
   _renderEventFiltersContainer = () => {
-        // console.log("events", this.state.eventFilters.length)
-        return(
-            <View style={styles.eventFiltersView}>
-                {this._renderEventFilters()}
-            </View>
-        )
+    // console.log("events", this.state.eventFilters.length)
+    return(
+        <View style={styles.eventFiltersView}>
+            {this._renderEventFilters()}
+        </View>
+    )
   }
   
   _renderEventFilters = () => {
@@ -148,9 +170,17 @@ class FiltersScreen extends Component {
   }
 
   _renderEventFilter = (item) => {
+    const { selectedFilters } = this.state;
+    
+    let filterID = parseInt(item.id)
+    const selected = selectedFilters.indexOf(filterID) != -1;
+    let opacity = selected ? 0.5 : 1
+    // console.log("selected", selected, opacity)
     return(
         <TouchableOpacity 
-            style={[styles.eventFilter, Constants.styles.shadow]} 
+            style={[styles.eventFilter, Constants.styles.shadow, {
+                backgroundColor: selected ? Colors.lightGray : "white" 
+            }]} 
             onPress={() => this._onFilterPress(item)} 
             activeOpacity={0.7}>
             <View style={styles.icon}>
@@ -178,8 +208,8 @@ class FiltersScreen extends Component {
 
      return (
       <View style={styles.fill}>
-          <CustomText style={styles.title}>{filterBy}</CustomText>
-          {this._renderFilters()}
+        <CustomText style={styles.title}>{filterBy}</CustomText>
+        {this._renderFilters()}
       </View>
      )
   }
@@ -189,7 +219,7 @@ class FiltersScreen extends Component {
     const { render } = this.state;
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader  />
+        <ConnectedHeader onBackPress={this._onBackPress} />
         {render && this._renderContent()}
       </View>
     )

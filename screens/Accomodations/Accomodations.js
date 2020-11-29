@@ -375,11 +375,11 @@ class AccomodationsScreen extends Component {
         index={index}
         keyItem={item.nid}
         extraStyle={ horizontal ? {
-          borderColor: Colors.lightGrey,
+          borderColor: Colors.lightGray,
           borderWidth: 1,
         } : {
           width: '100%',
-          borderColor: Colors.lightGrey,
+          borderColor: Colors.lightGray,
           borderWidth: 1,
           marginLeft: 0
         }}
@@ -457,7 +457,7 @@ class AccomodationsScreen extends Component {
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onPageLayout}>
         <ConnectedHeader 
-          backOnPress={this._backButtonPress}
+          onBackPress={this._backButtonPress}
           iconTintColor={Colors.colorAccomodationsScreen}  
         />
         {render && this._renderContent()}

@@ -47,7 +47,7 @@ const HEADER_BUTTONS_PER_SCREEN = {
   [Constants.NAVIGATION.NavAccomodationsScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
   [Constants.NAVIGATION.NavAccomodationScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
   [Constants.NAVIGATION.NavPreferencesScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
-  [Constants.NAVIGATION.NavAuthScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
+  [Constants.NAVIGATION.NavAuthScreen]: {backButtonVisible: true, searchButtonVisible: false, filterButtonVisible: false},
   [Constants.NAVIGATION.NavFiltersScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
   [Constants.NAVIGATION.NavBoilerPlate]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
   ["default"]: {backButtonVisible: false, searchButtonVisible: true, filterButtonVisible: false}
@@ -97,8 +97,8 @@ class ConnectedHeader extends PureComponent {
   }
   
   _backButtonPressed = () => {
-    if (this.props.backOnPress) 
-      this.props.backOnPress()
+    if (this.props.onBackPress) 
+      this.props.onBackPress()
     else {
       this.props.navigation.goBack();
     }
@@ -215,7 +215,8 @@ class ConnectedHeader extends PureComponent {
   }
 
   _renderLogoImage = () => {
-    let marginLeft = this.state.filterButtonVisible ? 50 : 0
+    let marginLeft = (this.state.filterButtonVisible ? 50 : 0) + (!this.state.searchButtonVisible ? -50 : 0);
+
     return (
       <Image
         style={[styles.logo, {
@@ -306,7 +307,7 @@ const styles = StyleSheet.create({
     height: Layout.statusbarHeight, 
     width: '100%', 
     marginTop: -Layout.statusbarHeight, 
-    backgroundColor: Colors.lightGrey
+    backgroundColor: Colors.lightGray
   },
   searchBarExternalContainer: {
     backgroundColor: 'transparent',
@@ -335,7 +336,7 @@ const styles = StyleSheet.create({
   logo: {
     flex: 1,
     resizeMode: "contain",
-    width: "60%",
+    width: 160,
     backgroundColor: "transparent",
   },
   bottomLine: {

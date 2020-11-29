@@ -175,9 +175,9 @@ class PreferencesScreen extends Component {
 
   _renderStep = (entity, index) => {
     const { entityIndex, selectedColors } = this.state;
-    let backgroundColor = Colors.lightGrey;
+    let backgroundColor = Colors.lightGray;
     if(entityIndex == index)
-      backgroundColor = Colors.mediumGrey;
+      backgroundColor = Colors.mediumGray;
     else if(selectedColors[index])
       backgroundColor = selectedColors[index]
     return(
@@ -271,10 +271,10 @@ class PreferencesScreen extends Component {
           <Text style={styles.startedContentText}>{doYouLikeIt}</Text>
           {entity && this._renderEntity(entity)}
           <View style={[styles.icons, {marginTop: 70, paddingHorizontal: 50}]}>
-            {this._renderIcon("dizzy", Colors.lightGrey, true)}
-            {this._renderIcon("meh", Colors.lightGrey, true)}
-            {this._renderIcon("laugh-squint", Colors.lightGrey, true)}
-            {this._renderIcon("grin-hearts", Colors.lightGrey, true)}
+            {this._renderIcon("dizzy", Colors.lightGray, true)}
+            {this._renderIcon("meh", Colors.lightGray, true)}
+            {this._renderIcon("laugh-squint", Colors.lightGray, true)}
+            {this._renderIcon("grin-hearts", Colors.lightGray, true)}
           </View>
         </View>
         {this._renderBottomSteps()}
@@ -422,11 +422,11 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     width: "100%",
     minHeight: 160,
-    backgroundColor: Colors.lightGrey,
+    backgroundColor: Colors.lightGray,
     borderRadius: 8,
     marginTop: 16,
     borderWidth: 1,
-    borderColor: Colors.lightGrey
+    borderColor: Colors.lightGray
   },
   entityTerm: {
     textAlign: "center",

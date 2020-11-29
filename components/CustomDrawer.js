@@ -61,7 +61,7 @@ CustomDrawer.Item = class Item extends Component {
     const active = state.index === routeIndex;
     const { name, size, color } = iconOpts;
     return(
-      <View style={{ marginHorizontal: 10, backgroundColor: active ? Colors.lightGrey : 'white', borderRadius: 4}}>
+      <View style={{ marginHorizontal: 10, backgroundColor: active ? Colors.lightGray : 'white', borderRadius: 4}}>
         <DrawerItem
         icon={() => (
           <FontAwesome
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     marginLeft: 16, 
     marginTop: 3, 
     fontSize: 14, 
-    color: Colors.mediumGrey
+    color: Colors.mediumGray
   },
   mixedBottomLineItem: {
     flex: 1,

@@ -47,7 +47,7 @@ export default class AccomodationItem extends PureComponent {
             marginBottom: this.marginBottom, 
             width: this.width, 
             height: this.height,
-            borderColor: hideBorder ? "transparent" : Colors.lightGrey
+            borderColor: hideBorder ? "transparent" : Colors.lightGray
           }, extraStyle, Constants.styles.shadow]} activeOpacity={0.8}>
           <View style={styles.content}>
             <View style={[styles.corner]}>
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 8,
     position: "relative",
-    // borderColor: Colors.lightGrey,
+    // borderColor: Colors.lightGray,
     // borderWidth: 1,
     // paddingLeft: 10,
     // backgroundColor: "red"

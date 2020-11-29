@@ -47,7 +47,7 @@ import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
+import { LLVerticalItemsFlatlist } from "../../components/loadingLayouts";
 
 /* Deferred rendering to speedup page inital load: 
    deferred rendering delays the rendering reducing the initial 
@@ -218,31 +218,30 @@ class InspirersScreen extends Component {
 
     return (
       <AsyncOperationStatusIndicator
-      loading={this._isLoadingData()}
-      success={this._isSuccessData()}
-      error={this._isErrorData()}
-      loadingLayout={
-        <LLEntitiesFlatlist 
-          horizontal={false} 
-          numColumns={numColumns}
-          key={"shimmer-layout" + numColumns} 
-          itemStyle={styles.itemFlatlist} 
-          style={styles.listStyle} 
-          bodyContainerStyle={styles.listContainer}/>}>
-        <View style={styles.listView}> 
-          <FlatList
-            data={flatListData}
-            renderItem={renderItem}
+        loading={this._isLoadingData()}
+        success={this._isSuccessData()}
+        error={this._isErrorData()}
+        loadingLayout={
+          <LLVerticalItemsFlatlist 
             numColumns={numColumns}
-            key={"flatlist-layout" + numColumns} 
-            onEndReached={this._loadMorePois}
-            keyExtractor={item => item.uuid}
-            initialNumToRender={3} // Reduce initial render amount
-            maxToRenderPerBatch={2}
-            style={styles.listStyle}
-            updateCellsBatchingPeriod={400} // Increase time between renders
-            windowSize={5} // Reduce the window size
-            />
+            key={"shimmer-layout" + numColumns} 
+            itemStyle={styles.itemFlatlist} 
+            style={styles.listStyleLL} 
+            bodyContainerStyle={styles.listContainer}/>}>
+          <View style={styles.listView}> 
+            <FlatList
+              data={flatListData}
+              renderItem={renderItem}
+              numColumns={numColumns}
+              key={"flatlist-layout" + numColumns} 
+              onEndReached={this._loadMorePois}
+              keyExtractor={item => item.uuid}
+              initialNumToRender={3} // Reduce initial render amount
+              maxToRenderPerBatch={2}
+              style={styles.listStyle}
+              updateCellsBatchingPeriod={400} // Increase time between renders
+              windowSize={5} // Reduce the window size
+              />
           </View>   
       </AsyncOperationStatusIndicator>
     );
@@ -254,7 +253,7 @@ class InspirersScreen extends Component {
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
         <ConnectedHeader 
-          backOnPress={this._backButtonPress}
+          onBackPress={this._backButtonPress}
           iconTintColor={Colors.colorInspirersScreen}  
           backButtonVisible={this.props.others.inspirersTerms.length > 0}
         />
@@ -311,10 +310,18 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     height: "100%",
   },
+  listStyleLL: {
+    marginTop: 16,
+    paddingTop: 10, 
+    backgroundColor: "transparent",
+    marginHorizontal: 20,
+    height: "100%",
+  },
   itemFlatlist: {
-    height: 240, 
+    marginTop: 10,
+    marginBottom: 0,
+    height: 160, 
     width: "100%", 
-    marginBottom: 8
   }
 });
 
