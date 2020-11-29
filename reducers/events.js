@@ -157,7 +157,7 @@ export default function reducer(state = INITIAL_STATE, action) {
       console.log(action);
       return { 
         ...state, 
-        selectedTypes: action.payload.types
+        selectedTypes: action.types
       };
     default:
       return state;

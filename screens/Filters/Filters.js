@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { 
   View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
-  StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
+  StyleSheet, BackHandler, Platform, ScrollView, TouchableOpacityComponent } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   // CategoryListItem, 
@@ -64,7 +64,9 @@ class FiltersScreen extends Component {
 
     this.state = {
       render: USE_DR ? false : true,
-      filterType: filterType || Constants.ENTITY_TYPES.events
+      filterType: filterType || Constants.ENTITY_TYPES.events,
+      eventFilters: props.events.eventsTypes || [],
+      selectedFilters: []
     };
       
   }
@@ -91,7 +93,12 @@ class FiltersScreen extends Component {
      * if(prevProps.xxx !== this.props.xxx)
      *  doStuff();
      */
-    console.log("filters", this.props.events.eventsTypes)
+    if(prevProps.events.eventTypes !== this.props.events.eventTypes){
+        // console.log("filters", this.props.events.eventTypes)
+        this.setState({
+            eventFilters: this.props.events.eventTypes
+        })
+    }
   }
 
   /**
@@ -116,13 +123,52 @@ class FiltersScreen extends Component {
   _fetchEventsFilters = () => {
     this.props.actions.getEventTypes()
   }
+
+  _onFilterPress = (item) => {
+        const selectedFilters = [parseInt(item.id)]
+        this.props.actions.setSelectedEventTypes(selectedFilters);
+        this.props.navigation.goBack()
+  }
   /********************* Render methods go down here *********************/
+  _renderEventFilters = () => {
+      console.log("events", this.state.eventFilters.length)
+      return(
+          <FlatList 
+            key={"event-filters"}
+            renderItem={({item, index}) => this._renderEventFilter(item)}
+            keyExtractor={item => item.id}
+            style={styles.fill}
+            data={this.state.eventFilters}
+          />
+      )
+  }
+  
+
+  _renderEventFilter = (item) => {
+    return(
+        <TouchableOpacity
+            onPress={() => this._onFilterPress(item)}
+            activeOpacity={0.7}
+            style={styles.eventFilter}>
+            <Text style={styles.eventFilterText}>{item.name}</Text>
+        </TouchableOpacity>
+    )
+  }
+
+  _renderFilters = () => {
+    const { filterType } = this.state;
+    if(filterType == Constants.ENTITY_TYPES.events){
+        return this._renderEventFilters()
+    }
+  }
+
   _renderContent = () => {
     const { filterBy } = this.props.locale.messages;
 
      return (
       <View style={styles.fill}>
           <CustomText style={styles.title}>{filterBy}</CustomText>
+          {this._renderFilters()}
       </View>
      )
   }
@@ -168,6 +214,12 @@ const styles = StyleSheet.create({
     fontFamily: "montserrat-bold",
     textTransform: "uppercase"
   },
+  eventFilter: {
+      width: 100,
+      height: 20,
+      backgroundColor: "red",
+      marginVertical: 10
+  }
 });
 
 

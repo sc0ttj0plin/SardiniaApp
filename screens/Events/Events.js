@@ -101,7 +101,12 @@ class EventsScreen extends Component {
       // console.log(this.props.events.eventsCalendarMarkers);
     if(prevProps.events.eventTypes !== this.props.events.eventTypes){
       this.setState({eventTypes: this.props.events.eventTypes})
-      console.log("this.props.events.eventsTYpes", this.props.events.eventTypes )
+      // console.log("this.props.events.eventsTYpes", this.props.events.eventTypes )
+    }
+
+    if(prevProps.events.selectedTypes !== this.props.events.selectedTypes){
+      console.log("new filters")
+      this._loadEvents(INITIAL_DATE);
     }
   }
 

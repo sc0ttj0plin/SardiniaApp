@@ -339,7 +339,7 @@ const styles = StyleSheet.create({
   },
   firstView: {
     flex: 1,
-    paddingTop: 173,
+    paddingTop: 153,
     paddingHorizontal: 55,
     paddingBottom: 0
   },
@@ -391,7 +391,7 @@ const styles = StyleSheet.create({
   startedContent: {
     paddingHorizontal: 15,
     flex: 1,
-    paddingTop: 122
+    paddingTop: 100
   },
   startedContentText: {
     fontSize: 15,
