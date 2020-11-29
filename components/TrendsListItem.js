@@ -7,6 +7,7 @@ import BoxWithText from "./BoxWithText";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import _ from 'lodash';
 import { LinearGradient } from 'expo-linear-gradient';
+import CustomText from "./CustomText";
 
 class ExtrasListItem extends PureComponent{ 
   constructor(props) {
@@ -38,7 +39,7 @@ class ExtrasListItem extends PureComponent{
           <Text style={{
                 color: "white",
                 textTransform: "uppercase",
-                fontWeight: "bold",
+                fontFamily: "montserrat-bold",
                 fontSize: 28,
                 lineHeight: 26,
                 alignSelf: "center",
@@ -63,7 +64,7 @@ class ExtrasListItem extends PureComponent{
                         borderWidth: 2,
                         padding: 5,
                         paddingHorizontal: 15,
-                        fontWeight: "bold"
+                        fontFamily: "montserrat-bold",
                     }}>APPROFONDISCI</Text>
             </TouchableOpacity>
 

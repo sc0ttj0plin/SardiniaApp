@@ -31,6 +31,8 @@ import FavouritesScreen from '../screens/Favourites/Favourites';
 import FavouritesListScreen from '../screens/Favourites/FavouritesList';
 import AuthScreen from '../screens/Auth/Auth';
 import PreferencesScreen from "../screens/Preferences/Preferences"
+import FiltersScreen from '../screens/Filters/Filters';
+
 import Boilerplate from '../screens/Boilerplates/Boilerplate';
 import { ConnectedText, ConnectedLanguageList, TabBar, CustomDrawer, ConnectedAuthText } from '../components';
 // import VirtualTourScreen from '../screens/Others/VirtualTourScreen';
@@ -43,7 +45,7 @@ const {
   NavItineraryScreen, NavEventsScreen, NavEventScreen, NavItineraryStagesMapScreen,NavEventsMapScreen, NavEventsSubset, NavExploreScreen, 
   NavVirtualTourScreen, NavPlaceScreen, NavInspirerScreen, NavPreferencesScreen,
   NavExtrasScreen, NavExtraScreen, NavTabNavigator, NavSearchScreen, NavSearchStackScreen, 
-  NavMainStackScreen, NavMediaScreen, NavFavouritesScreen, NavFavouritesListScreen, NavFavouritesStackScreen 
+  NavMainStackScreen, NavMediaScreen, NavFavouritesScreen, NavFavouritesListScreen, NavFavouritesStackScreen, NavFiltersScreen 
 } = Constants.NAVIGATION;
 
 import {FromTopTransition} from './transitions'
@@ -183,6 +185,7 @@ function MainStackScreen() {
       <MainStack.Screen name={NavMediaScreen} component={MediaScreen}/>
       <MainStack.Screen name={NavAccomodationsScreen} component={AccomodationsScreen}/>
       <MainStack.Screen name={NavAccomodationScreen} component={AccomodationScreen}/>
+      <MainStack.Screen name={NavFiltersScreen} component={FiltersScreen}/>
     </MainStack.Navigator>
     </>
   );

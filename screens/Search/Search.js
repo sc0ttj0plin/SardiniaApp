@@ -36,7 +36,8 @@ import {
   // PoiItem, 
   // PoiItemsList, 
   // ExtrasListItem, 
-  // MapViewItinerary
+  // MapViewItinerary,
+  CustomText
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -256,7 +257,7 @@ const styles = StyleSheet.create({
   },
   boldText: {
     fontSize: 15,
-    fontWeight: "bold"
+    fontFamily: "montserrat-bold",
   }
 });
 

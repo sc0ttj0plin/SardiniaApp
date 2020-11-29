@@ -1,6 +1,7 @@
 import React, { useState, PureComponent } from "react";
 import { Animated, Platform, StatusBar, StyleSheet, Text, View, TouchableOpacity, UIManager } from 'react-native';
 import Layout from '../constants/Layout';
+import CustomText from "./CustomText";
 
 
 if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {

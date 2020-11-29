@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {  Platform, KeyboardAvoidingView, StyleSheet, Text, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
 import { NavigationEvents, useNavigation, useRoute } from '@react-navigation/native';
-import { ConnectedHeader } from "../../components";
+import { ConnectedHeader, CustomText } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import actions from '../../actions';

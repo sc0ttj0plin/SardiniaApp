@@ -5,7 +5,7 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Image } from "react-native-elements";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
-import { ConnectedHeader } from "../../components";
+import { ConnectedHeader, CustomText } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
   },
   cardtitle: {
     fontSize: 12,
-    fontWeight: "bold",
+    fontFamily: "montserrat-bold",
   },
   cardDescription: {
     fontSize: 12,

@@ -2,6 +2,7 @@ import React, {PureComponent} from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import * as Constants from '../constants';
 import HTML from 'react-native-render-html';
+import CustomText from "./CustomText";
 
 export default class EntityWhyVisit extends PureComponent {  
   
@@ -44,7 +45,7 @@ const styles = StyleSheet.create({
   title: {
     alignSelf: "center",
     color: "#174A7C",
-    fontWeight: "bold",
+    fontFamily: "montserrat-bold",
     marginBottom: 16,
     fontSize: 18,
     opacity: 1

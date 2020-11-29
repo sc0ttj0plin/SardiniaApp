@@ -4,6 +4,7 @@ import { ActivityIndicator } from 'react-native';
 import { Image } from 'react-native-elements';
 import { TouchableOpacity } from "react-native-gesture-handler";
 import _ from 'lodash';
+import CustomText from "./CustomText";
 
 /**
  * ExtraItem is a list item component used in the Extra screen 
@@ -52,7 +53,7 @@ const styles = StyleSheet.create({
     itemTitle: {
       color: "white",
       textTransform: "uppercase",
-      fontWeight: "bold",
+      fontFamily: "montserrat-bold",
       fontSize: 28,
       lineHeight: 26,
       alignSelf: "center",
@@ -72,7 +73,7 @@ const styles = StyleSheet.create({
       borderWidth: 2,
       padding: 5,
       paddingHorizontal: 15,
-      fontWeight: "bold"
+      fontFamily: "montserrat-bold",
     },
     spinner: {
       marginTop: 40

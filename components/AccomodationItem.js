@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 import Layout from '../constants/Layout';
 import * as Constants from '../constants';
+import CustomText from "./CustomText";
 
 export default class AccomodationItem extends PureComponent {
 
@@ -47,7 +48,7 @@ export default class AccomodationItem extends PureComponent {
             width: this.width, 
             height: this.height,
             borderColor: hideBorder ? "transparent" : Colors.lightGrey
-          }, extraStyle]} activeOpacity={0.8}>
+          }, extraStyle, Constants.styles.shadow]} activeOpacity={0.8}>
           <View style={styles.content}>
             <View style={[styles.corner]}>
               <Ionicons
@@ -136,7 +137,7 @@ const styles = StyleSheet.create({
   },
   distanceText: {
     fontSize: 10,
-    fontWeight: "bold"
+    fontFamily: "montserrat-bold",
   },
   locationText: {
     fontSize: 10,
@@ -145,7 +146,7 @@ const styles = StyleSheet.create({
   titleText: {
     marginTop: 5,
     fontSize: 11,
-    fontWeight: "bold",
+    fontFamily: "montserrat-bold",
     minHeight: 30,
     paddingRight: 5
   },

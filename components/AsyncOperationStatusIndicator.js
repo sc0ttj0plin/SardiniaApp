@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { View, StyleSheet, ActivityIndicator, Text } from 'react-native';
 import { Button } from "react-native-elements";
+import CustomText from "./CustomText";
 
 /**
  * Displays a spinner while loading, on error shows a message and optionally renders a retry button
@@ -85,7 +86,7 @@ const styles = StyleSheet.create({
   error: {
     fontSize: 16,
     color: "red",
-    fontWeight: "bold",
+    fontFamily: "montserrat-bold",
     alignSelf: "center"
   },
   errorContainer: {

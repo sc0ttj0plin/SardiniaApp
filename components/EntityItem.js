@@ -10,16 +10,19 @@ export default class EntityItem extends PureComponent {
   constructor(props){
     super(props)
     // console.log("props", props)
-    const { listType, horizontal, index, sideMargins } = props;
+    const { listType, horizontal, index, sideMargins, topSpace, listTitle } = props;
     let margins = sideMargins || 20
-    let itemWidth = ((Layout.window.width - (margins*2))/2) - 5;
+    let space = 5;
+    let itemWidth = ((Layout.window.width - (margins*2))/2) - space;
     this.width = horizontal==false ? itemWidth : 160;
     this.height = this.width;
-    let space = (Layout.window.width - (margins*2) - (this.width*2))/ 2;
+    // let space = (Layout.window.width - (margins*2) - (this.width*2))/ 2;
     this.entityIconOpts = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[listType] || Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.places
     this.marginRight = 0;
-    this.marginTop = !horizontal && index == 0 ? 10 : 0;
-    this.marginLeft = horizontal==false && index && index%2 != 0 ? space : 0;
+    this.marginTop = topSpace || 0;
+    this.marginLeft = horizontal==false && index && index%2 != 0 ? space*2 : 0;
+    // console.log("width", this.width, this.marginLeft, listTitle, space) 
+    // console.log("inspirers")
     this.marginBottom = horizontal==false ? 16 : 10;
     // console.log("entity item", this.width, this.height)
   }

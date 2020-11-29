@@ -3,6 +3,7 @@ import { StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { Image } from "react-native-elements";
 import BoxWithText from "../components/BoxWithText";
 import Colors from "../constants/Colors";
+import CustomText from "./CustomText";
 
 /**
  * List item elements in the Events screen

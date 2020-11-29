@@ -13,6 +13,7 @@ let { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+import CustomText from "./CustomText";
 
 /**
  * MapViewTop comprises a map that renders a set of pois or clusters of pois 

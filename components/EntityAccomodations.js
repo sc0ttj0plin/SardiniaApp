@@ -8,6 +8,7 @@ import AccomodationItem from './AccomodationItem';
 import AsyncOperationStatusIndicator from "./AsyncOperationStatusIndicator"
 import * as Constants from "../constants";
 import Colors from '../constants/Colors';
+import CustomText from "./CustomText";
 
 class EntityAccomodations extends PureComponent {
 
@@ -110,7 +111,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 15,
-        fontWeight: "bold",
+        fontFamily: "montserrat-bold",
         color: "black",
         marginBottom: 0
     },
@@ -137,7 +138,7 @@ const styles = StyleSheet.create({
     },
     showButtonText: {
         fontSize: 14,
-        fontWeight: "bold"
+        fontFamily: "montserrat-bold",
     }
 });
 

@@ -9,6 +9,7 @@ import { getCenter } from 'geolib';
 import Layout from '../constants/Layout';
 import { has } from 'lodash';
 import {boundingRect} from '../helpers/maps';
+import CustomText from "./CustomText";
 
 // import { TouchableOpacity } from 'react-native-gesture-handler';
 
@@ -191,7 +192,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "white",
-    fontWeight: "bold",
+    fontFamily: "montserrat-bold",
     fontSize: 16,
     textTransform: "uppercase"
   },

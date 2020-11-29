@@ -13,6 +13,7 @@ import {
   ScrollableContainer,
   EntityItem,
   AccomodationItem,
+  CustomText
  } from "../../components";
  import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
 import { Ionicons } from '@expo/vector-icons';
@@ -485,7 +486,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
       fontSize: 16,
       color: Colors.colorAccomodationsScreen,
-      fontWeight: "bold",
+      fontFamily: "montserrat-bold",
       padding: 10
   },
   listContainer: {

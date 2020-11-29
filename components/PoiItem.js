@@ -4,6 +4,7 @@ import { Image } from 'react-native-elements';
 import { GeoRefHListItem} from "../components";
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
+import CustomText from "./CustomText";
 
 /**
  * PoiItem is similar to GeoRefHListItem (in fact it uses it) 

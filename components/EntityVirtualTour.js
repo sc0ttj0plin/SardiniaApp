@@ -2,6 +2,7 @@ import React, {PureComponent} from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, Animated, Easing } from 'react-native';
 import Colors from '../constants/Colors';
 import { Fontisto } from '@expo/vector-icons';
+import CustomText from "./CustomText";
 
 export default class EntityHeader extends PureComponent {  
   
@@ -53,6 +54,6 @@ const styles = StyleSheet.create({
     color: "white",
     marginTop: 10,
     textTransform: "uppercase",
-    fontWeight: "bold"
+    fontFamily: "montserrat-bold",
   }
 });

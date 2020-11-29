@@ -13,6 +13,7 @@ import Layout from '../constants/Layout';
 import Colors from "../constants/Colors"
 import { useSafeArea } from 'react-native-safe-area-context';
 import Animated from 'react-native-reanimated';
+import CustomText from "./CustomText";
 
 // define click zoom
 const Scaler = posed.View({ 
@@ -123,7 +124,7 @@ const TabBar = props => {
                   }}>
                     <ConnectedText textStyle={[Styles.iconText, {
                         color: route.backgroundActiveColor,
-                        fontWeight: "bold",
+                        fontFamily: "montserrat-bold",
                         textAlign: "center"
                     }]} languageKey={route.languageKey}/>
                   </Animated.View>

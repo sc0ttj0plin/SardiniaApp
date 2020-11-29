@@ -4,7 +4,8 @@ import _ from 'lodash';
 import {LLEntitiesFlatlist, LLHorizontalItemsFlatlist} from "./loadingLayouts/"
 import EntityItem from './EntityItem';
 import AsyncOperationStatusIndicator from "./AsyncOperationStatusIndicator"
- 
+import CustomText from "./CustomText";
+import * as Constants from "../constants"
 export default class EntityRelatedList extends PureComponent {
 
     constructor(props){
@@ -23,7 +24,7 @@ export default class EntityRelatedList extends PureComponent {
 
     _renderPoiListItem = (item, index) => {
         const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
-        const {listType} = this.props
+        const {listType, listTitle, sideMargins, horizontal, itemStyle, disableSeparator} = this.props
         let place = item && item.term ? item.term.name : "";
         return (
             <>
@@ -31,16 +32,17 @@ export default class EntityRelatedList extends PureComponent {
                 index={index}
                 keyItem={item.nid}
                 listType={listType}
+                listTitle={listTitle}
                 onPress={ () => this.props.onPressItem(item, listType)}
                 title={`${title}`}
                 place={`${place}`}
                 image={`${item.image}`}
                 distance={this.state.isCordsInBound && item.distance}
-                style={this.props.itemStyle}
-                horizontal={this.props.horizontal}
-                sideMargins={this.props.sideMargins}
+                style={itemStyle}
+                horizontal={horizontal}
+                sideMargins={sideMargins}
             />
-            {this._renderHorizontalSeparator()}
+            {!disableSeparator && this._renderHorizontalSeparator()}
             </>
         )
     }
@@ -119,7 +121,7 @@ export default class EntityRelatedList extends PureComponent {
                         keyExtractor={item => item.uuid}
                         data={data}
                         renderItem={({item, index}) => this._renderPoiListItem(item, index)}
-                        style={[styles.fill, styles.flatlist, this.props.style]}
+                        style={[styles.fill, this.props.style]}
                         contentContainerStyle={contentContainerStyle}
                         showsHorizontalScrollIndicator={showsHorizontalScrollIndicator || true}
                         initialNumToRender={2} // Reduce initial render amount

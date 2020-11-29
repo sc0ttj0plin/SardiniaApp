@@ -4,6 +4,7 @@ import { Button, Icon } from "react-native-elements";
 import Layout from '../constants/Layout';
 import * as Constants from '../constants';
 import HTML from 'react-native-render-html';
+import CustomText from "./CustomText";
 
 export default Webview = (props) => {
   const { lan, title, description, image, category, abstract, showAll = true } = props;
@@ -134,7 +135,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     opacity: 0.6,
     color: "black",
-    fontWeight: "bold"
+    fontFamily: "montserrat-bold",
   },
   sectionTitle: {
     flex: 1,
@@ -143,7 +144,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     opacity: 0.6,
     color: "black",
-    fontWeight: "bold"
+    fontFamily: "montserrat-bold",
   },
   showMoreButton: {
       marginBottom: 10

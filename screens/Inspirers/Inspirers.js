@@ -35,7 +35,8 @@ import {
   // PoiItem, 
   // PoiItemsList, 
   // ExtrasListItem, 
-  // MapViewItinerary
+  // MapViewItinerary,
+  CustomText
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -180,14 +181,12 @@ class InspirersScreen extends Component {
       <EntityItem 
         index={index}
         keyItem={item.nid}
-        backgroundTopLeftCorner={"white"}
         listType={Constants.ENTITY_TYPES.inspirers}
         iconColor={Colors.colorInspirersScreen}
         onPress={() => this._openPoi(item)}
         title={`${title}`}
         place={`${item.term.name}`}
         image={`${item.image}`}
-        style={{marginBottom: 10}}
         horizontal={false}
         sideMargins={20}
       />
@@ -240,7 +239,7 @@ class InspirersScreen extends Component {
             keyExtractor={item => item.uuid}
             initialNumToRender={3} // Reduce initial render amount
             maxToRenderPerBatch={2}
-            style={styles.list}
+            style={styles.listStyle}
             updateCellsBatchingPeriod={400} // Increase time between renders
             windowSize={5} // Reduce the window size
             />
@@ -309,7 +308,7 @@ const styles = StyleSheet.create({
   listStyle: {
     paddingTop: 10, 
     backgroundColor: "transparent",
-    marginHorizontal: 10,
+    marginHorizontal: 20,
     height: "100%",
   },
   itemFlatlist: {

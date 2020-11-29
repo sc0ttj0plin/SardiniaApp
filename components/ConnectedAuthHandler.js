@@ -10,6 +10,7 @@ import Layout from '../constants/Layout';
 import actions from '../actions';
 import * as Constants from '../constants';
 import Colors from '../constants/Colors';
+import CustomText from "./CustomText";
 import { LLEntitiesFlatlist } from "../components/loadingLayouts";
 
 const USE_DR = true;
@@ -89,14 +90,17 @@ class ConnectedAuthHandler extends PureComponent {
             >
               <TouchableWithoutFeedback>
                 <View style={styles.modalWindow}>
-                  <Text style={styles.modalTitle}>{login}</Text>
-                  <Text style={styles.modalDescription}>{loginText}</Text>
-                  <TouchableOpacity activeOpacity={0.8} style={styles.modalBtn} onPress={this._onRegister}>
-                    <Text style={styles.modalBtnText}>{access}</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity activeOpacity={0.8} style={styles.modalBtn} onPress={this._onSkip}>
-                    <Text style={styles.modalBtnText}>{skip}</Text>
-                  </TouchableOpacity>
+                  <CustomText style={styles.modalTitle}>{login}</CustomText>
+                  <CustomText style={styles.modalDescription}>{loginText}</CustomText>
+                  <View style={styles.modalButtons}>
+                    <TouchableOpacity activeOpacity={0.8} style={[styles.modalBtn, styles.loginButton, Constants.styles.shadow]} onPress={this._onRegister}>
+                      <CustomText style={[styles.modalBtnText, styles.loginButtonText]}>{access}</CustomText>
+                    </TouchableOpacity>
+                    <View style={styles.buttonsSeparator} />
+                    <TouchableOpacity activeOpacity={0.8} style={[styles.modalBtn, styles.skipButton, Constants.styles.shadow]} onPress={this._onSkip}>
+                      <CustomText style={[styles.modalBtnText, styles.skipButtonText]}>{skip}</CustomText>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </TouchableWithoutFeedback>
             </View>
@@ -162,7 +166,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     color: "#000000E6",
-    fontWeight: "bold"
+    fontFamily: "montserrat-bold",
   },
   listContainerHeader: {
     paddingLeft: 10,
@@ -199,37 +203,57 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   modalWindow: { 
-    paddingHorizontal: 30,
+    paddingHorizontal: 28.5,
     paddingTop: 20,
     backgroundColor: "white", 
     zIndex: 2, 
-    width: Layout.window.width - 20, 
+    width: 280, 
     height: 200,
     flexDirection: "column",
+    borderRadius: 4
   },
   modalTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
+    fontSize: 15,
+    fontFamily: "montserrat-bold",
     marginBottom: 14,
   },
   modalDescription: {
-    fontSize: 15,
+    fontSize: 12,
     color: "#333333"
   },
-  modalBtn: {
-    flex: 1,
+  modalButtons: {
+    flexDirection: "row",
+    width: "100%",
     height: 36,
-    borderRadius: 8,
-    paddingVertical: 9,
+    marginTop: 21
+  },
+  modalBtn: {
+    minWidth: 106,
+    height: 36,
+    borderRadius: 4,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "black",
+    display: "flex",
+  },
+  loginButton: {
+    alignSelf: "flex-start"
+  },
+  skipButton: {
+    alignSelf: "flex-end",
+    backgroundColor: Colors.lightGrey
+  },
+  skipButtonText: {
+    color: "black"
   },
   modalBtnText: {
     color: "white",
-    paddingHorizontal: 23,
-    paddingVertical: 9,
-    borderRadius: 8,
-    backgroundColor: Colors.colorAccomodationsScreen
+    fontFamily: "montserrat-bold",
+    width: "100%",
+    textAlign: "center"
+  },
+  buttonsSeparator: {
+    width: 11
   }
 });
 
