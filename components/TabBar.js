@@ -115,7 +115,7 @@ const TabBar = props => {
               >
                   { route.icon &&
                     <View style={Styles.iconContainer}>
-                        <TabBarIcon focused={isRouteActive} name={route.icon} activeColor={isRouteActive ? route.backgroundActiveColor : "#A7A7A7"}/>
+                        <TabBarIcon focused={isRouteActive} name={route.icon} iconSourceDefault={route.iconSourceDefault} iconSourceActive={route.iconSourceActive}/>
                     </View>
                   }
                  
