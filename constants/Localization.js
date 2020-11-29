@@ -86,16 +86,22 @@ const dict = {
     insertHere: "Cerca",
     favourites: "Preferiti",
     accomodations: "Strutture Ricettive",
+    doYouLikeIt: "Ti piace questo tipo di contenuto?",
     //LANGUAGES
     lanItalian: '🇮🇹 Italiano',
     lanEnglish: '🇬🇧 Inglese',
-    doYouLikeIt: "Ti piace questo tipo di contenuto?",
+    //AUTH
+    name: "Nome", 
+    surname: "Cognome", 
+    birth: "Data di nascita", 
+    country: "Paese", 
+    sex: "Sesso",
+    confirm: "CONFERMA",
   },
   "en-gb": {
     //GENERIC
     welcome: "Hello",
     start: "Start",
-    doYouLikeIt: "Do you like this content",
     openNavigator: "Open navigator",
     time: "It\"s",
     itineraries: "Itineraries",
@@ -178,9 +184,17 @@ const dict = {
     insertHere: "Search",
     favourites: "Favourites",
     accomodations: "Accomodations",
+    doYouLikeIt: "Do you like this content",
     //LANGUAGES
     lanItalian: '🇮🇹 Italian',
-    lanEnglish: '🇬🇧 English'
+    lanEnglish: '🇬🇧 English',
+    //AUTH
+    name: "Name", 
+    surname: "Surname", 
+    birth: "Birth date", 
+    country: "Country", 
+    sex: "Sex",
+    confirm: "CONFIRM",
   }
 }
 

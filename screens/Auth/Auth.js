@@ -22,6 +22,11 @@ class Login extends Component {
       email: "",
       authFSM: "emailInput", /* Possible states: emailInput, emailSent, loginSuccess, loginError */
       isVerifyingEmail: false,
+      name: "",
+      surname: "",
+      birth: "",
+      country: "",
+      sex: "",
     };
   }
 
@@ -67,6 +72,13 @@ class Login extends Component {
     }
   }
 
+  _setUserData = () => {
+    const { name, surname, birth, country, sex, } = this.state;
+    const userData = { name, surname, birth, country, sex, };
+    this.props.actions.editUser(userData);
+    this.props.navigation.goBack();
+  }
+
   renderAuthOutcome = () => {
     if (this.props.auth.loading) return (<Text style={styles.errorBox}>Login in corso..</Text>);
     if (this.props.auth.error) return (<Text style={styles.errorBox}>Errore: {this.props.auth.error}</Text>);
@@ -74,17 +86,20 @@ class Login extends Component {
   }
 
   _renderLoginSuccess = () => {
-    return (
+    const { name, surname, birth, country, sex, confirm } = this.props.locale.messages;
+      return (
       <View style={styles.mainView}>
         <View style={styles.view0}>
           <View style={styles.view1}>
-              <Text style={styles.text0}>
-                Registration successful
-              </Text>
-              <Text style={styles.text1}>
-                Now loading...
-              </Text>
+            <Input placeholder={name} style={{ letterSpacing: 1 }}  onChangeText={(text) => this.setState({name: text})} />
+            <Input placeholder={surname} style={{ letterSpacing: 1 }}  onChangeText={(text) => this.setState({surname: text})} />
+            <Input placeholder={birth} style={{ letterSpacing: 1 }}  onChangeText={(text) => this.setState({birth: text})} />
+            <Input placeholder={country} style={{ letterSpacing: 1 }}  onChangeText={(text) => this.setState({country: text})} />
+            <Input placeholder={sex} style={{ letterSpacing: 1 }}  onChangeText={(text) => this.setState({sex: text})} />
           </View>
+          <TouchableOpacity style={styles.signInButton} onPress={this._setUserData}>
+              <Text style={styles.registerTxt}>{confirm}</Text>
+          </TouchableOpacity>
         </View>
       </View>
     )
