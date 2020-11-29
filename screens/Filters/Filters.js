@@ -147,8 +147,10 @@ class FiltersScreen extends Component {
 
   _onBackPress = () => {
     const { selectedFilters } = this.state;
-    this.props.actions.resetEvents()
-    this.props.actions.setSelectedEventTypes(selectedFilters);
+    if(this.props.events.selectedTypes !== selectedFilters){
+        this.props.actions.resetEvents()
+        this.props.actions.setSelectedEventTypes(selectedFilters);
+    }
     this.props.navigation.goBack()
   }
   /********************* Render methods go down here *********************/
