@@ -129,8 +129,9 @@ class EventsScreen extends Component {
       const eventsQuery = {
         start: Math.floor(this._ubLb.lb.valueOf()/1000), 
         end: Math.floor(this._ubLb.ub.valueOf()/1000), 
+        // types: this.props.events.
       };
-      this.props.actions.getEvents(eventsQuery, {}, this._ubLb);
+      this.props.actions.getEvents(eventsQuery, this._ubLb);
       // this.props.actions.getEventTypes()
       this._queriedMonths[monthFormatted] = true;
     }

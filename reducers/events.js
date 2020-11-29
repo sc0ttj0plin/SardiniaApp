@@ -33,6 +33,7 @@ const INITIAL_STATE = {
   eventTypesSuccess: false, 
   eventTypesError: null,
   eventTypesLoading: false,
+  selectedTypes: [],
 }
 
 
@@ -85,7 +86,6 @@ export default function reducer(state = INITIAL_STATE, action) {
       let eventsByYearMonth = {};
       let eventsByYearMonthDay = {};
       let eventsCalendarMarkers = {};
-      console.log("events", action.payload.events.length)
       action.payload.events.forEach((event) => { 
         const eventStartDate = moment.unix(event.date1).add(1,"year");
         const eventEndDate = moment.unix(event.date2).add(1,"year");
@@ -152,6 +152,12 @@ export default function reducer(state = INITIAL_STATE, action) {
         eventTypesSuccess: false,
         eventTypesLoading: false, 
         eventTypesError: 'Error while fetching eventTypes',
+      };
+    case Constants.SET_SELECTED_EVENT_TYPES:
+      console.log(action);
+      return { 
+        ...state, 
+        selectedTypes: action.payload.types
       };
     default:
       return state;

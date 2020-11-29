@@ -213,7 +213,6 @@ const apolloMiddleware = client => {
             variables: action.query
           }).then((resp) => {
             let dispatch = { type: Constants.GET_EVENT_TYPES_SUCCESS, payload: { eventTypes: [] } };
-            console.log("resp", resp)
             if (resp.data && resp.data.eventTypes.nodes.length > 0) 
               dispatch.payload.eventTypes = processEventTypes(resp.data.eventTypes.nodes);
             store.dispatch(dispatch);

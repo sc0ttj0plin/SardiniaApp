@@ -60,7 +60,7 @@ class ConnectedAuthHandler extends PureComponent {
 
   _onRegister = () => {
     this.setState({ modalVisible: false });
-    this.props.navigation.navigate(Constants.NAVIGATION.NavLoginScreen);
+    this.props.navigation.navigate(Constants.NAVIGATION.NavAuthScreen);
   }
 
   _onSkip = () => { 

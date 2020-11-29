@@ -112,7 +112,7 @@ query ($cats: _text, $polygon: String, $dbscan_eps: float8, $types: _text) {
 // term: {tid: {_in: $types}}, removed from where clause because query didn't work with it
 export const getEvents = gql`
 query ($start: Int, $end: Int, $types: [Int!]) {
-  events: nodes(where: {type: {_eq: "${Constants.NODE_TYPES.events}"}, date1: {_gte: $start, _lte: $end}}, order_by: {date1: asc}) {
+  events: nodes(where: {type: {_eq: "${Constants.NODE_TYPES.events}"}, date1: {_gte: $start, _lte: $end}, term: {tid: {_in: $types}}}, order_by: {date1: asc}) {
     title: legacy(path: "title_field")
     description: legacy(path: "body")
     type
@@ -240,8 +240,9 @@ export const getEventTypes = gql`
 query {
   eventTypes: nodes_terms_aggregate(where: {node: {type: {_eq: "${Constants.NODE_TYPES.events}"}}, field: {_eq: "field_tipo_di_evento"}}, distinct_on: term_uuid) {
     nodes {
-      uuid
-      term_uuid
+      nid
+      uuid: term_uuid
+      #term_uuid
       #field
       term {
         tid

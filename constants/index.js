@@ -80,6 +80,7 @@ export const CHANGE_LOCALE = 'sardinia/locale/CHANGE_LOCALE';
 export const GET_CLUSTERS = 'sardinia/clusters/LOAD';
 export const GET_CLUSTERS_SUCCESS = 'sardinia/clusters/LOAD_SUCCESS';
 export const GET_CLUSTERS_FAIL = 'sardinia/clusters/LOAD_FAIL';
+export const SET_SELECTED_EVENT_TYPES = 'sardinia/eventtypes/SET';
 export const GET_EVENT_TYPES = 'sardinia/eventtypes/LOAD';
 export const GET_EVENT_TYPES_SUCCESS = 'sardinia/eventtypes/LOAD_SUCCESS';
 export const GET_EVENT_TYPES_FAIL = 'sardinia/eventtypes/LOAD_FAIL';

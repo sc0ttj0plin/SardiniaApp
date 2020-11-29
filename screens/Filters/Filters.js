@@ -102,18 +102,6 @@ class FiltersScreen extends Component {
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
 
-  /**
-   * If the reducer embeds a single data type then e.g. only pois:
-   *    Data is stored in this.props.pois.data
-   *    Success state is stored in this.props.pois.success
-   *    Loading state is stored in this.props.pois.loading
-   *    Error state is stored in this.props.pois.error
-   * If the reducer embeds multiple data types then (e.g. search + autocomplete):
-   *    Data is stored in this.props.searchAutocomplete.search
-   *    Success state is stored in this.props.searchAutocomplete.searchSuccess
-   *    Loading state is stored in this.props.searchAutocomplete.searchLoading
-   *    Error state is stored in this.props.searchAutocomplete.searchError
-   */
   _isSuccessData  = () => false;    /* e.g. this.props.pois.success; */
   _isLoadingData  = () => true;   /* e.g. this.props.pois.loading; */
   _isErrorData    = () => null;    /* e.g. this.props.pois.error; */

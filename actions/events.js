@@ -1,10 +1,9 @@
 import * as Constants from '../constants';
 
-export function getEvents(query, filtersByType, ubLb, props) {
+export function getEvents(query, ubLb, props) {
   return {
     type: Constants.GET_EVENTS,
     query: query,
-    filtersByType,
     ubLb,
     ...props
   };
@@ -32,3 +31,12 @@ export function getEventTypes(query, props) {
     ...props
   };
 }
+
+export function setSelectedEventTypes(types, props) {
+  return {
+    type: Constants.SET_SELECTED_EVENT_TYPES,
+    types,
+    ...props
+  };
+}
+
