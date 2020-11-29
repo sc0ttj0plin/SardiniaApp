@@ -19,7 +19,7 @@ class GeoRefHListItem extends PureComponent{
   render() {
     const { distance = 0 } = this.props;
     return (
-      <View style={[styles.container, styles.shadow, this.props.style]} onLayout={(event) => { this.setState({ width: event.nativeEvent.layout.width, height: event.nativeEvent.layout.height }) }}>
+      <View style={[styles.container, this.props.style]} onLayout={(event) => { this.setState({ width: event.nativeEvent.layout.width, height: event.nativeEvent.layout.height }) }}>
           <Image source={{ uri: this.props.image }} style={styles.image, {width: this.state.width, height: this.state.height}} PlaceholderContent={<ActivityIndicator />}>
             <View style={styles.textContainer}>
               <Text
@@ -75,8 +75,8 @@ const styles = StyleSheet.create({
       backgroundColor: "rgba(255,255,255, 0.7)",
       padding: 5,
       width: "100%",
-      borderBottomLeftRadius: 10,
-      borderBottomRightRadius: 10,
+      borderBottomLeftRadius: 8,
+      borderBottomRightRadius: 8,
       minHeight: 60
     }
 });

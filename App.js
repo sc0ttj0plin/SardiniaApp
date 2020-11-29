@@ -67,12 +67,11 @@ export default class App extends Component {
     //Login url type
     if (url.indexOf("apiKey") >=0) {
       store.dispatch(actions.passwordLessLinkHandler(url));
-      //TODO: navigate if app is closed
-      // navigation.dispatch(
+      // this._navigator && this._navigator.dispatch(
       //   CommonActions.navigate({
       //     name: Constants.NAVIGATION.NavLoginScreen,
       //     params: {},
-      //   })
+      //   })        
       // );
     }
   }
@@ -198,7 +197,7 @@ export default class App extends Component {
             <SafeAreaProvider style={{ flex: 1 }} forceInset={{ top: 'always', bottom:'always' }}>
               <View style={[styles.container]}>
                 {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-                <AppNavigator />
+                <AppNavigator ref={nav => { this._navigator = nav; }} />
               </View>
             </SafeAreaProvider>
           </ApolloProvider>

@@ -64,8 +64,8 @@ export default class LLEntitiesFlatlist extends PureComponent{
 
 const styles = StyleSheet.create({
     item: {
-        width: 160,
-        height: 160,
+        width: '100%',
+        height: '100%',
         marginRight: 5,
         borderRadius: 10,
     },

@@ -132,7 +132,7 @@ class EventsScreen extends Component {
       //compute new lower and upper bounds to date/time so the action creator knows how many empty [] it has to put in
       this._ubLb = this._getDateIntervals(dateString);
       //fetch the events using upper and lower time bounds in unix epoch time
-      console.log("event types", this.props.events.selectedTypes)
+      // console.log("event types", this.props.events.selectedTypes)
       const eventsQuery = {
         start: Math.floor(this._ubLb.lb.valueOf()/1000), 
         end: Math.floor(this._ubLb.ub.valueOf()/1000), 

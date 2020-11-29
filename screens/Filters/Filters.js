@@ -179,7 +179,7 @@ class FiltersScreen extends Component {
     return(
         <TouchableOpacity 
             style={[styles.eventFilter, Constants.styles.shadow, {
-                backgroundColor: selected ? Colors.lightGrey : "white" 
+                backgroundColor: selected ? Colors.lightGray : "white" 
             }]} 
             onPress={() => this._onFilterPress(item)} 
             activeOpacity={0.7}>
@@ -208,8 +208,8 @@ class FiltersScreen extends Component {
 
      return (
       <View style={styles.fill}>
-          <CustomText style={styles.title}>{filterBy}</CustomText>
-          {this._renderFilters()}
+        <CustomText style={styles.title}>{filterBy}</CustomText>
+        {this._renderFilters()}
       </View>
      )
   }
@@ -219,7 +219,7 @@ class FiltersScreen extends Component {
     const { render } = this.state;
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader backOnPress={this._onBackPress} />
+        <ConnectedHeader onBackPress={this._onBackPress} />
         {render && this._renderContent()}
       </View>
     )

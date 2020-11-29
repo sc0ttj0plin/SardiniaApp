@@ -460,7 +460,7 @@ class PlacesScreen extends PureComponent {
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onPageLayout}>
         <ConnectedHeader 
-          backOnPress={this._backButtonPress}
+          onBackPress={this._backButtonPress}
           iconTintColor={Colors.colorPlacesScreen}  
           backButtonVisible={this.props.others.placesTerms.length > 0}
         />

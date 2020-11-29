@@ -106,7 +106,7 @@ class EntityWidgetInMapView extends PureComponent {
         keyItem={entity.nid}
         extraStyle={{
           width: '100%',
-          borderColor: Colors.lightGrey,
+          borderColor: Colors.lightGray,
           borderWidth: 1,
           marginLeft: 0,
           height: 160,
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     borderRadius: 10,
-    backgroundColor: Colors.lightGrey
+    backgroundColor: Colors.lightGray
   },
   container: {
     backgroundColor: "#F5FCFF",

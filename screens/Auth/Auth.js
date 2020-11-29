@@ -22,6 +22,11 @@ class Login extends Component {
       email: "",
       authFSM: "emailInput", /* Possible states: emailInput, emailSent, loginSuccess, loginError */
       isVerifyingEmail: false,
+      name: "",
+      surname: "",
+      birth: "",
+      country: "",
+      sex: "",
     };
   }
 
@@ -67,24 +72,41 @@ class Login extends Component {
     }
   }
 
+  _setUserData = () => {
+    const { name, surname, birth, country, sex, } = this.state;
+    const userData = { name, surname, birth, country, sex, };
+    this.props.actions.editUser(userData);
+    this.props.navigation.goBack();
+  }
+
+  _onBackPress = () => {
+    if (this.state.authFSM === "emailInput") 
+      this.props.navigation.goBack();
+    else 
+      this.setState({ authFSM: "emailInput" });
+  }
+
   renderAuthOutcome = () => {
-    if (this.props.auth.loading) return (<Text style={styles.errorBox}>Login in corso..</Text>);
-    if (this.props.auth.error) return (<Text style={styles.errorBox}>Errore: {this.props.auth.error}</Text>);
-    if (this.props.auth.success) return (<Text style={styles.errorBox}>Autenticazione riuscita!</Text>);
+    if (this.props.auth.loading) return (<CustomText style={styles.errorBox}>Login in corso..</CustomText>);
+    if (this.props.auth.error) return (<CustomText style={styles.errorBox}>Errore: {this.props.auth.error}</CustomText>);
+    if (this.props.auth.success) return (<CustomText style={styles.errorBox}>Autenticazione riuscita!</CustomText>);
   }
 
   _renderLoginSuccess = () => {
-    return (
+    const { name, surname, birth, country, sex, confirm } = this.props.locale.messages;
+      return (
       <View style={styles.mainView}>
         <View style={styles.view0}>
           <View style={styles.view1}>
-              <Text style={styles.text0}>
-                Registration successful
-              </Text>
-              <Text style={styles.text1}>
-                Now loading...
-              </Text>
+            <Input placeholder={name} onChangeText={(text) => this.setState({name: text})} />
+            <Input placeholder={surname} onChangeText={(text) => this.setState({surname: text})} />
+            <Input placeholder={birth} onChangeText={(text) => this.setState({birth: text})} />
+            <Input placeholder={country} onChangeText={(text) => this.setState({country: text})} />
+            <Input placeholder={sex} onChangeText={(text) => this.setState({sex: text})} />
           </View>
+          <TouchableOpacity style={styles.signInButton} onPress={this._setUserData}>
+              <CustomText style={styles.registerTxt}>{confirm}</CustomText>
+          </TouchableOpacity>
         </View>
       </View>
     )
@@ -92,23 +114,23 @@ class Login extends Component {
 
   _renderMailInput = () => {
     const { isVerifyingEmail } = this.state;
+    const { next } = this.props.locale.messages;
     return (
       <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={styles.screen}>
         <View style={styles.view0}>
           <View style={styles.view01}>
-            <Text style={styles.loginText}>Email</Text>
             <Form>
               <Item style={styles.item} regular>
                 <View style={{marginLeft: 20, marginRight: 10}}>
                 </View>
-                <Input placeholder="Email" style={{ letterSpacing: 1 }}  onChangeText={(email) => this.setState({email: email.toLowerCase()})} />
+                <Input placeholder="Email" onChangeText={(email) => this.setState({email: email.toLowerCase()})} />
               </Item>
             </Form>
             <TouchableOpacity style={styles.signInButton} onPress={this._validateForm}>
               {isVerifyingEmail ? 
               <ActivityIndicator animating={isVerifyingEmail} size={"small"} color={Colors.tintColor}/>
               :
-              <Text style={styles.registerTxt}>Mandami il link</Text>
+              <CustomText style={styles.registerTxt}>{next}</CustomText>
               }
             </TouchableOpacity>
           </View>
@@ -122,12 +144,12 @@ class Login extends Component {
       <View style={styles.screen}>
         <View style={styles.view0}>
           <View style={styles.view1}>
-            <Text style={styles.text0}>
+            <CustomText style={styles.text0}>
               Ti abbiamo mandato un link
-            </Text> 
-            <Text style={styles.text1}>
+            </CustomText> 
+            <CustomText style={styles.text1}>
               Check your inbox
-            </Text>
+            </CustomText>
           </View>
         </View>
       </View>
@@ -139,11 +161,11 @@ class Login extends Component {
       <View style={styles.mainView}>
         <View style={styles.view0}>
           <View style={styles.view1}>
-              <Text style={styles.text0}>
+              <CustomText style={styles.text0}>
                 We are sorry but the login was unsuccessful
-              </Text>
+              </CustomText>
               <TouchableOpacity style={styles.signInButton} onPress={() => this.setState({ authFSM: "emailInput" })}>
-                <Text style={styles.registerTxt}>RETRY</Text>
+                <CustomText style={styles.registerTxt}>RETRY</CustomText>
               </TouchableOpacity>
           </View>
         </View>
@@ -155,9 +177,11 @@ class Login extends Component {
     if (!this.props.auth.user) {
       ///contain, cover, stretch, center, repeat.
       const { authFSM } = this.state;
+      const { register } = this.props.locale.messages;
       return (
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-          <ConnectedHeader />
+          <ConnectedHeader onBackPress={this._onBackPress} />
+          <CustomText style={styles.title}>{register}</CustomText>
           {authFSM === "emailInput" && this._renderMailInput()}
           {authFSM === "emailSent" && this._renderMailSent()}
           {authFSM === "loginError" && this._renderLoginError()}
@@ -176,6 +200,17 @@ const styles = StyleSheet.create({
   fill: {
     flex: 1,
     backgroundColor: "white"
+  },
+  title: {
+    textAlign: "center",
+    paddingTop: 10,
+    paddingBottom: 10,
+    color: "#000000E6",
+    backgroundColor: "#F2F2F2",
+    height: 40,
+    fontSize: 15,
+    fontFamily: "montserrat-bold",
+    textTransform: "uppercase"
   },
   screen: {
     flex:1, 
@@ -205,14 +240,12 @@ const styles = StyleSheet.create({
   text0: { 
     textAlign: 'center', 
     fontSize: 17, 
-    letterSpacing: 1,
     color: "#3E3E3D",
     marginBottom: 20
   },
   text1: { 
     textAlign: 'center', 
     fontSize: 15, 
-    letterSpacing: 1,
     color: "#3E3E3D",
     marginBottom: 40
   },
@@ -230,7 +263,6 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     textAlign: 'center',
     fontSize: 15,
-    letterSpacing: 1,
   },
   emailIcon: { 
     width: 20,
@@ -247,18 +279,16 @@ const styles = StyleSheet.create({
   loginText: {
     textAlign: 'center',
     fontSize: 15,
-    letterSpacing: 1,
     marginBottom: 20,
     fontWeight: "300"
   },
   registerTxt: {
-    letterSpacing: 1,
-    color: Colors.tintColor,
+    color: "white",
+    fontFamily: "montserrat-bold"
   },
   reporterText: {
     textAlign: 'center',
     fontSize: 15,
-    letterSpacing: 1,
     color: '#fff'
   },
   socialButton: {
@@ -272,34 +302,19 @@ const styles = StyleSheet.create({
     color: '#fff'
   },
   signInButton: {
-    width: '100%',
-    backgroundColor: 'white',
-    height: 50,
-    marginTop: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 0.2,
-    borderRadius: 5,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 8,
-    },
-    shadowOpacity: 0.44,
-    shadowRadius: 10.32,
-    elevation: 16,
+    marginTop: 40,
+    minWidth: 203,
+    height: 36,
+    borderRadius: 4,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "black",
+    display: "flex",
   },
   bottomText: { 
-    letterSpacing: 1,
     fontSize: 14,
     lineHeight: 18,
     color: Colors.blue 
-  },
-  registerButton: {
-    width: '100%',
-    justifyContent: 'center',
-    height: 45,
-    marginTop: 5
   },
   forgotPswButton: {
     width: '100%',
@@ -309,12 +324,10 @@ const styles = StyleSheet.create({
   registerText: {
     textAlign: 'center',
     fontSize: 17,
-    letterSpacing: 1,
   },
   forgotPswText: {
     textAlign: 'center',
     fontSize: 15,
-    letterSpacing: 1,
   },
   reporterButton: {
     width: '100%',
@@ -329,14 +342,16 @@ const styles = StyleSheet.create({
     height: 55,
     marginTop: 10,
     marginBottom: 20,
-    borderColor: Colors.tintColor,
-    backgroundColor: 'transparent'
+    borderColor: "white",
+    borderBottomColor: "black",
+    backgroundColor: Colors.lightGray,
+    borderTopLeftRadius: 4,
+    borderTopRightRadius: 4,
   },
   text: {
     textAlign: 'center',
     color: '#fff',
     fontSize: 15,
-    letterSpacing: 1,
     maxWidth: '100%',
   },
   errorBox: {
@@ -344,7 +359,6 @@ const styles = StyleSheet.create({
     maxWidth: 250, //avoid form resize!
     textAlign: 'center',
     fontSize: 15,
-    letterSpacing: 1,
     marginBottom: 10
   },
   content: {

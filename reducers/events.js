@@ -154,7 +154,6 @@ export default function reducer(state = INITIAL_STATE, action) {
         eventTypesError: 'Error while fetching eventTypes',
       };
     case Constants.SET_SELECTED_EVENT_TYPES:
-      console.log(action);
       return { 
         ...state, 
         selectedTypes: action.types

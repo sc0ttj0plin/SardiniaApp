@@ -449,7 +449,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 180,
     position: "absolute",
-    // backgroundColor: Colors.lightGrey,
+    // backgroundColor: Colors.lightGray,
     bottom: 70,
     left: 0,
     padding: 10,

@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   },
   skipButton: {
     alignSelf: "flex-end",
-    backgroundColor: Colors.lightGrey
+    backgroundColor: Colors.lightGray
   },
   skipButtonText: {
     color: "black"
