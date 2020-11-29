@@ -168,7 +168,8 @@ class ConnectedHeader extends PureComponent {
       this.props.filterPress()
     }
     else{
-      this.props.navigation.navigate(Constants.NAVIGATION.NavFiltersScreen)
+      const { filterType } = this.props;
+      this.props.navigation.navigate(Constants.NAVIGATION.NavFiltersScreen, { filterType })
     }
   }
 

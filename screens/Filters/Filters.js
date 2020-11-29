@@ -60,10 +60,11 @@ class FiltersScreen extends Component {
     super(props);
 
     /* Get props from navigation */
-    //let { someNavProps } = props.route.params; 
+    let { filterType } = props.route.params; 
 
     this.state = {
       render: USE_DR ? false : true,
+      filterType: filterType || Constants.ENTITY_TYPES.events
     };
       
   }
@@ -77,6 +78,7 @@ class FiltersScreen extends Component {
   componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
+    this._fetchFilters()
   }
 
   /**
@@ -89,6 +91,7 @@ class FiltersScreen extends Component {
      * if(prevProps.xxx !== this.props.xxx)
      *  doStuff();
      */
+    console.log("filters", this.props.events.eventsTypes)
   }
 
   /**
@@ -116,6 +119,15 @@ class FiltersScreen extends Component {
   _isErrorData    = () => null;    /* e.g. this.props.pois.error; */
 
 
+  _fetchFilters = () => {
+      const { filterType } = this.state;
+      if(filterType == Constants.ENTITY_TYPES.events)
+        this._fetchEventsFilters()
+  }
+
+  _fetchEventsFilters = () => {
+    this.props.actions.getEventTypes()
+  }
   /********************* Render methods go down here *********************/
   _renderContent = () => {
     const { filterBy } = this.props.locale.messages;
@@ -193,16 +205,7 @@ const mapStateToProps = state => {
     others: state.othersState,
     //language
     locale: state.localeState,
-    //favourites
-    favourites: state.favouritesState,
-    //graphql
-    categories: state.categoriesState,
     events: state.eventsState,
-    inspirers: state.inspirersState,
-    itineraries: state.itinerariesState,
-    nodes: state.nodesState,
-    pois: state.poisState,
-    searchAutocomplete: state.searchAutocompleteState,
   };
 };
 

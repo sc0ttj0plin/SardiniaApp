@@ -106,7 +106,8 @@ export function apolloQuery(action) {
           query: Queries.getPoi,
           variables: action.query
       }).then((resp) => {
-          processEntity(resp.data.nodes[0]);
+          if(resp.data.nodes[0])
+            processEntity(resp.data.nodes[0]);
           return resp.data.nodes;
       })
   } else if (action.type === Constants.GET_EVENT_TYPES) {
@@ -114,8 +115,10 @@ export function apolloQuery(action) {
           query: Queries.getEventTypes,
           variables: action.query
       }).then((resp) => {
-          processEntity(resp.data.nodes[0]);
-          return resp.data.nodes;
+        if(resp.data.nodes[0])  
+            processEntity(resp.data.nodes[0]);
+        // console.log("response", resp)
+        return resp.data.nodes;
       })
   } else if (action.type === Constants.GET_NEAREST_NODES_BY_TYPE) {
     return apolloClient.query({

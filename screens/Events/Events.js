@@ -72,7 +72,8 @@ class EventsScreen extends Component {
     this.state = {
       render: USE_DR ? false : true,
       selectedDay: moment().subtract(2, 'month').format('YYYY-MM-DD'),
-      currentMonth: INITIAL_MONTH
+      currentMonth: INITIAL_MONTH,
+      eventsTypes: []
     };
       
   }
@@ -98,7 +99,10 @@ class EventsScreen extends Component {
   componentDidUpdate(prevProps) {
     //  if(prevProps.events !== this.props.events)
       // console.log(this.props.events.eventsCalendarMarkers);
-     
+    if(prevProps.events.eventTypes !== this.props.events.eventTypes){
+      this.setState({eventTypes: this.props.events.eventTypes})
+      console.log("this.props.events.eventsTYpes", this.props.events.eventTypes )
+    }
   }
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
@@ -127,6 +131,7 @@ class EventsScreen extends Component {
         end: Math.floor(this._ubLb.ub.valueOf()/1000), 
       };
       this.props.actions.getEvents(eventsQuery, {}, this._ubLb);
+      // this.props.actions.getEventTypes()
       this._queriedMonths[monthFormatted] = true;
     }
     this.setState({
@@ -271,7 +276,7 @@ class EventsScreen extends Component {
     const { render } = this.state;
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader iconTintColor={Colors.colorEventsScreen} />
+        <ConnectedHeader iconTintColor={Colors.colorEventsScreen} filterType={Constants.ENTITY_TYPES.events}/>
         {render && this._renderContent()}
       </View>
     )

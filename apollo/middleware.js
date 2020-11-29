@@ -213,6 +213,7 @@ const apolloMiddleware = client => {
             variables: action.query
           }).then((resp) => {
             let dispatch = { type: Constants.GET_EVENT_TYPES_SUCCESS, payload: { eventTypes: [] } };
+            console.log("resp", resp)
             if (resp.data && resp.data.eventTypes.nodes.length > 0) 
               dispatch.payload.eventTypes = processEventTypes(resp.data.eventTypes.nodes);
             store.dispatch(dispatch);
@@ -331,7 +332,7 @@ const apolloMiddleware = client => {
               variables: action.query
           }).then((resp) => {
             let dispatch = { type: Constants.GET_ACCOMODATIONS_BY_ID_SUCCESS, payload: {} };
-            if (resp.data && resp.data.nodes.length > 0) {
+            if (resp.data && resp.data.nodes && resp.data.nodes.length > 0) {
               let data = resp.data.nodes;
               data.forEach((e) => processEntity(e));
               let dataById = data.reduce((acc, curr) => ({ ...acc, [curr.uuid]: curr}), {});
