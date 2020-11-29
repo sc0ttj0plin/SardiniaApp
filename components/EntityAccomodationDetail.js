@@ -3,6 +3,7 @@ import { View, Platform, StyleSheet, ActivityIndicator, Text, Image } from 'reac
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
+import CustomText from "./CustomText";
 
 /**
  * EntityAccomodationDetail
@@ -15,8 +16,8 @@ export default class EntityAccomodationDetail extends PureComponent {
       <TouchableOpacity style={styles.listItemButton} activeOpacity={0.7} onPress={onPress}>
         <View style={styles.listItem}>
           <View style={styles.itemDescView}>
-              <Text style={styles.listItemTitle}>{title}</Text>
-              <Text style={styles.listItemTerm}>{subtitle}</Text>
+              <CustomText style={styles.listItemTitle}>{title}</CustomText>
+              <CustomText style={styles.listItemTerm}>{subtitle}</CustomText>
           </View>
           <View style={styles.iconView}>
             <Ionicons name={iconName} size={iconSize || 25} color={iconColor || "white"}/>
@@ -84,11 +85,11 @@ const styles = StyleSheet.create({
   },
   listItemTitle: {
     fontSize: 15,
-    fontWeight: "bold",
+    fontFamily: "montserrat-bold",
   },
   listItemDate: {
     fontSize: 10,
-    fontWeight: "bold",
+    fontFamily: "montserrat-bold",
   },
   listItemTerm: {
     fontSize: 13,

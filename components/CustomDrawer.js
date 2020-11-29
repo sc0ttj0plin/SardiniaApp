@@ -6,6 +6,7 @@ import { View, Text, ScrollView, StyleSheet, TouchableNativeFeedback, TouchableO
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 import * as Constants from '../constants';
+import CustomText from "./CustomText";
 
 
 class CustomDrawer extends Component {

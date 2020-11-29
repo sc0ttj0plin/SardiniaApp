@@ -9,6 +9,7 @@ import actions from '../actions';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { DrawerActions } from '@react-navigation/native';
+import CustomText from "./CustomText";
 
 /**
  * Used in the drawer view, it shows all the different languages available for translation

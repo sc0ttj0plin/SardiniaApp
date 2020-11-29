@@ -10,6 +10,8 @@ import moment from "moment";
 import it from 'moment/locale/it'
 import en from 'moment/locale/en-gb'
 import _ from "lodash";
+import CustomText from "./CustomText";
+
 class EntityStages extends PureComponent {  
   
   constructor(props) {
@@ -179,7 +181,7 @@ const styles = StyleSheet.create({
   index: {
     color: "white",
     fontSize: 25,
-    fontWeight: "bold",
+    fontFamily: "montserrat-bold",
     flex: 1,
     textAlign: "right",
     paddingRight: 30
@@ -214,7 +216,7 @@ const styles = StyleSheet.create({
   },
   bottomButtonText: {
     fontSize: 14,
-    fontWeight: "bold",
+    fontFamily: "montserrat-bold",
     color: Colors.colorItinerariesScreen
   },
   eventStagesView: {
@@ -229,7 +231,7 @@ const styles = StyleSheet.create({
   eventStagesTitle: {
     fontSize: 19,
     color: "#D9531E",
-    fontWeight: "bold",
+    fontFamily: "montserrat-bold",
     marginBottom: 16
   },
   eventStageView: {
@@ -256,11 +258,11 @@ const styles = StyleSheet.create({
   eventStageNumber: {
     color: "white",
     fontSize: 16,
-    fontWeight: "bold"
+    fontFamily: "montserrat-bold",
   },
   eventStageLocation: {
     fontSize: 17,
-    fontWeight: "bold",
+    fontFamily: "montserrat-bold",
     maxWidth: Layout.window.width - 100,
     textAlign: "center"
   },

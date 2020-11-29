@@ -8,9 +8,13 @@ import Layout from '../constants/Layout';
 import ScrollableContainerTouchableOpacity from "./ScrollableContainerTouchableOpacity"
 import { call, useCode, useAnimatedStyle, useSharedValue} from 'react-native-reanimated'
 import { PanGestureHandler, State } from "react-native-gesture-handler";
+import CustomText from "./CustomText";
+
 const { Value, event, interpolate } = Animated;
 const { StatusBarManager } = NativeModules;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
+
+
 /**
  * ScrollableContainer 
  */
@@ -145,6 +149,11 @@ export default class ScrollableContainer extends PureComponent {
                   console.log("index 2", this._handleBorderRadius._value, this._handleBorderRadiusMin)
                   this._startHandleAnimation(32)
                 }
+
+              if(this._snapping)
+                this._snapping = false;
+              else if(this.props.onSettle)
+                this.props.onSettle()
 
               }}
               onEndReached = {({distanceFromEnd})=> onEndReached()}

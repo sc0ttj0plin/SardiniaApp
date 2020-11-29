@@ -27,7 +27,8 @@ import {
   // PoiItem, 
   // PoiItemsList, 
   // ExtrasListItem, 
-  // MapViewItinerary
+  // MapViewItinerary,
+  CustomText
  } from "../../components";
 import moment from "moment";
 import { connect, useStore } from 'react-redux';
@@ -354,7 +355,7 @@ const styles = StyleSheet.create({
   },
   toastButtonText: {
     fontSize: 14,
-    fontWeight: "bold",
+    fontFamily: "montserrat-bold",
     color: "#D9531E",
     textAlign: "right"
   }

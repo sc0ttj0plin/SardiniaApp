@@ -179,6 +179,7 @@ export const NAVIGATION = {
   NavAccomodationsScreen: "AccomodationsScreen",
   NavAccomodationScreen: "AccomodationScreen",
   NavAccomodationsStackScreen: "AccomodationsStackScreen",
+  NavFiltersScreen: "Filters",
   NavBoilerPlate: "Boilerplate",
 }
 
@@ -447,14 +448,24 @@ export const ACCOMODATIONS_DATA_DEFAULT = [
 
 export const styles = {
   html: {
-    shortText: "textAlign: center; color: #333333; font-size: 15; padding-left: 16px; padding-right: 16px;",
-    shortTextSecondary: "textAlign: center; color: #333333; font-size: 15; padding-left: 16px; padding-right: 16px;",
-    longText: "textAlign: justify; opacity: 1; font-size: 15; padding-left: 16px; padding-right: 16px;",
-    longTextLeft: "textAlign: left; opacity: 1; font-size: 15;",
+    shortText: "textAlign: center; color: #333333; font-family: montserrat-regular; font-size: 15; padding-left: 16px; padding-right: 16px;",
+    shortTextSecondary: "textAlign: center; color: #333333; font-family: montserrat-regular; font-size: 15; padding-left: 16px; padding-right: 16px;",
+    longText: "textAlign: justify; opacity: 1; font-family: montserrat-regular; font-size: 15; padding-left: 16px; padding-right: 16px;",
+    longTextLeft: "textAlign: left; opacity: 1; font-family: montserrat-regular; font-size: 15;",
   },
   innerText: {
     paddingLeft: 10,
     paddingRight: 10
+  },
+  shadow: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 5,
+    elevation: 5,
   },
   calendarTheme: {
     backgroundColor: Colors.lightGrey,
@@ -469,7 +480,7 @@ export const styles = {
     monthTextColor: "black",
     color: "black",
     textSectionTitleColor: "black",
-    textMonthFontWeight: "bold",
+    textMonthfontFamily: "montserrat-bold",
     textDisabledColor: Colors.mediumGrey,
     todayTextColor: "white",
     dotColor: Colors.lightGrey,

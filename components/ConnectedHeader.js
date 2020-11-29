@@ -9,46 +9,48 @@ import _ from 'lodash';
 import Layout from '../constants/Layout';
 import actions from '../actions';
 import Colors from '../constants/Colors';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import * as Constants from '../constants';
 import * as utils from '../helpers/utils';
+import CustomText from "./CustomText";
 
 //backButtonVisible == true: shows backButton, if set to false shows drawer menù icon
 const HEADER_BUTTONS_PER_SCREEN = {
-  [Constants.NAVIGATION.NavPlacesScreen]: {backButtonVisible: false, searchButtonVisible: true},
-  [Constants.NAVIGATION.NavInspirersScreen]: {backButtonVisible: false, searchButtonVisible: true},
-  [Constants.NAVIGATION.NavMapScreen]: {backButtonVisible: true, searchButtonVisible: true}, 
-  [Constants.NAVIGATION.NavExperiencesScreen]: {backButtonVisible: false, searchButtonVisible: true}, 
-  [Constants.NAVIGATION.NavItinerariesStack]: {backButtonVisible: false, searchButtonVisible: true}, 
-  [Constants.NAVIGATION.NavEventsStack]: {backButtonVisible: false, searchButtonVisible: true}, 
-  [Constants.NAVIGATION.NavItinerariesScreen]: {backButtonVisible: false, searchButtonVisible: true}, 
-  [Constants.NAVIGATION.NavItineraryScreen]: {backButtonVisible: true, searchButtonVisible: true}, 
-  [Constants.NAVIGATION.NavItineraryStagesMapScreen]: {backButtonVisible: true, searchButtonVisible: true}, 
-  [Constants.NAVIGATION.NavEventsScreen]: {backButtonVisible: false, searchButtonVisible: true}, 
-  [Constants.NAVIGATION.NavEventScreen]: {backButtonVisible: true, searchButtonVisible: true}, 
-  [Constants.NAVIGATION.NavEventsSubset]: {backButtonVisible: true, searchButtonVisible: true},
-  [Constants.NAVIGATION.NavEventsMapScreen]: {backButtonVisible: true, searchButtonVisible: true}, 
-  [Constants.NAVIGATION.NavExploreScreen]: {backButtonVisible: true, searchButtonVisible: true}, 
-  [Constants.NAVIGATION.NavVirtualTourScreen]: {backButtonVisible: false, searchButtonVisible: true}, 
-  [Constants.NAVIGATION.NavPlaceScreen]: {backButtonVisible: true, searchButtonVisible: true},
-  [Constants.NAVIGATION.NavInspirerScreen]: {backButtonVisible: true, searchButtonVisible: true}, 
-  [Constants.NAVIGATION.NavExtrasScreen]: {backButtonVisible: false, searchButtonVisible: true}, 
-  [Constants.NAVIGATION.NavExtraScreen]: {backButtonVisible: true, searchButtonVisible: true}, 
-  [Constants.NAVIGATION.NavExperiences]: {backButtonVisible: false, searchButtonVisible: true}, 
-  [Constants.NAVIGATION.NavInspirers]: {backButtonVisible: false, searchButtonVisible: true}, 
-  [Constants.NAVIGATION.NavExplore]: {backButtonVisible: false, searchButtonVisible: true}, 
-  [Constants.NAVIGATION.NavEvents]: {backButtonVisible: false, searchButtonVisible: true}, 
-  [Constants.NAVIGATION.NavTabNavigator]: {backButtonVisible: false, searchButtonVisible: true}, 
-  [Constants.NAVIGATION.NavLanguageScreen1]: {backButtonVisible: false, searchButtonVisible: true},
-  [Constants.NAVIGATION.NavSearchScreen]: {backButtonVisible: true, searchButtonVisible: true},
-  [Constants.NAVIGATION.NavFavouritesScreen]: {backButtonVisible: true, searchButtonVisible: true},
-  [Constants.NAVIGATION.NavFavouritesListScreen]: {backButtonVisible: true, searchButtonVisible: true},
-  [Constants.NAVIGATION.NavAccomodationsScreen]: {backButtonVisible: true, searchButtonVisible: true},
-  [Constants.NAVIGATION.NavAccomodationScreen]: {backButtonVisible: true, searchButtonVisible: true},
-  [Constants.NAVIGATION.NavPreferencesScreen]: {backButtonVisible: true, searchButtonVisible: true},
-  [Constants.NAVIGATION.NavAuthScreen]: {backButtonVisible: true, searchButtonVisible: true},
-  [Constants.NAVIGATION.NavBoilerPlate]: {backButtonVisible: true, searchButtonVisible: true},
-  ["default"]: {backButtonVisible: false, searchButtonVisible: true}
+  [Constants.NAVIGATION.NavPlacesScreen]: {backButtonVisible: false, searchButtonVisible: true, filterButtonVisible: false},
+  [Constants.NAVIGATION.NavInspirersScreen]: {backButtonVisible: false, searchButtonVisible: true, filterButtonVisible: false},
+  [Constants.NAVIGATION.NavMapScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false}, 
+  [Constants.NAVIGATION.NavExperiencesScreen]: {backButtonVisible: false, searchButtonVisible: true, filterButtonVisible: false}, 
+  [Constants.NAVIGATION.NavItinerariesStack]: {backButtonVisible: false, searchButtonVisible: true, filterButtonVisible: false}, 
+  [Constants.NAVIGATION.NavEventsStack]: {backButtonVisible: false, searchButtonVisible: true, filterButtonVisible: false}, 
+  [Constants.NAVIGATION.NavItinerariesScreen]: {backButtonVisible: false, searchButtonVisible: true, filterButtonVisible: false}, 
+  [Constants.NAVIGATION.NavItineraryScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false}, 
+  [Constants.NAVIGATION.NavItineraryStagesMapScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false}, 
+  [Constants.NAVIGATION.NavEventsScreen]: {backButtonVisible: false, searchButtonVisible: true, filterButtonVisible: true}, 
+  [Constants.NAVIGATION.NavEventScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false}, 
+  [Constants.NAVIGATION.NavEventsSubset]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
+  [Constants.NAVIGATION.NavEventsMapScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false}, 
+  [Constants.NAVIGATION.NavExploreScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false}, 
+  [Constants.NAVIGATION.NavVirtualTourScreen]: {backButtonVisible: false, searchButtonVisible: true, filterButtonVisible: false}, 
+  [Constants.NAVIGATION.NavPlaceScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
+  [Constants.NAVIGATION.NavInspirerScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false}, 
+  [Constants.NAVIGATION.NavExtrasScreen]: {backButtonVisible: false, searchButtonVisible: true, filterButtonVisible: false}, 
+  [Constants.NAVIGATION.NavExtraScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false}, 
+  [Constants.NAVIGATION.NavExperiences]: {backButtonVisible: false, searchButtonVisible: true, filterButtonVisible: false}, 
+  [Constants.NAVIGATION.NavInspirers]: {backButtonVisible: false, searchButtonVisible: true, filterButtonVisible: false}, 
+  [Constants.NAVIGATION.NavExplore]: {backButtonVisible: false, searchButtonVisible: true, filterButtonVisible: false}, 
+  [Constants.NAVIGATION.NavEvents]: {backButtonVisible: false, searchButtonVisible: true, filterButtonVisible: false}, 
+  [Constants.NAVIGATION.NavTabNavigator]: {backButtonVisible: false, searchButtonVisible: true, filterButtonVisible: false}, 
+  [Constants.NAVIGATION.NavLanguageScreen1]: {backButtonVisible: false, searchButtonVisible: true, filterButtonVisible: false},
+  [Constants.NAVIGATION.NavSearchScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
+  [Constants.NAVIGATION.NavFavouritesScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
+  [Constants.NAVIGATION.NavFavouritesListScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
+  [Constants.NAVIGATION.NavAccomodationsScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
+  [Constants.NAVIGATION.NavAccomodationScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
+  [Constants.NAVIGATION.NavPreferencesScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
+  [Constants.NAVIGATION.NavAuthScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
+  [Constants.NAVIGATION.NavFiltersScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
+  [Constants.NAVIGATION.NavBoilerPlate]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
+  ["default"]: {backButtonVisible: false, searchButtonVisible: true, filterButtonVisible: false}
 }
 
 /**
@@ -68,6 +70,8 @@ class ConnectedHeader extends PureComponent {
       searchbarVisible: routeName == Constants.NAVIGATION.NavSearchScreen ? true : false,
       backButtonVisible: props.backButtonVisible ? props.backButtonVisible : HEADER_BUTTONS_PER_SCREEN[routeName].backButtonVisible,
       searchButtonVisible: props.searchButtonVisible ? props.searchButtonVisible : HEADER_BUTTONS_PER_SCREEN[routeName].searchButtonVisible,
+      filterButtonVisible: props.filterButtonVisible ? props.filterButtonVisible : HEADER_BUTTONS_PER_SCREEN[routeName].filterButtonVisible,
+
     };
 
   }
@@ -159,6 +163,35 @@ class ConnectedHeader extends PureComponent {
     )
   }
 
+  _onFilterButtonPress = () => {
+    if(this.props.filterPress){
+      this.props.filterPress()
+    }
+    else{
+      this.props.navigation.navigate(Constants.NAVIGATION.NavFiltersScreen)
+    }
+  }
+
+  _renderFilterButton = () => {
+    return (
+      <Button
+        type="clear"
+        containerStyle={[styles.buttonContainer]}
+        buttonStyle={[styles.button, this.props.searchButton, {
+          marginRight: 0
+        }]}
+        onPress={this._onFilterButtonPress}
+        icon={
+          <FontAwesome
+            name={"sliders"}
+            size={35}
+            color={Colors.headerIconColor}
+          />
+        }
+      />
+    )
+  }
+
   _renderSearchBar = () => {
     const { searchStr } = this.props.others;
     const { insertHere } = this.props.locale.messages;
@@ -181,9 +214,12 @@ class ConnectedHeader extends PureComponent {
   }
 
   _renderLogoImage = () => {
+    let marginLeft = this.state.filterButtonVisible ? 50 : 0
     return (
       <Image
-        style={styles.logo} 
+        style={[styles.logo, {
+          marginLeft
+        }]} 
         source={require('../assets/images/header-logo.png')}
         />
     )
@@ -237,6 +273,7 @@ class ConnectedHeader extends PureComponent {
           style={[styles.searchBarContainer, this.props.style]}>
           {this.state.searchbarVisible ? this._renderSearchBar() : this._renderLogoImage()}
         </View>
+        {this.state.filterButtonVisible && this._renderFilterButton()}
         {this.state.searchButtonVisible && this._renderSearchButton()}
       </View>
       { this.props.iconTintColor && this._renderBottomLine()}
@@ -298,7 +335,7 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: "contain",
     width: "60%",
-    backgroundColor: "transparent"
+    backgroundColor: "transparent",
   },
   bottomLine: {
     width: "100%",

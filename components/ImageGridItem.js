@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { ActivityIndicator } from 'react-native';
 import { Image } from 'react-native-elements';
 import Layout from '../constants/Layout'
+import CustomText from "./CustomText";
 
 /**
  * Simple image item for grid, used in gallery screen
@@ -40,14 +41,14 @@ const styles = StyleSheet.create({
     },
     title: {
       fontSize: 12,
-      fontWeight: "bold"
+      fontFamily: "montserrat-bold",
     },
     place: {
       fontSize: 10
     },
     distance: {
       fontSize: 10,
-      fontWeight: "bold",
+      fontFamily: "montserrat-bold",
     },
     image: {
       resizeMode: "cover",

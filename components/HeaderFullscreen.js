@@ -7,6 +7,7 @@ import Layout from '../constants/Layout'
 import Colors from '../constants/Colors';
 import * as Constants from "../constants"
 import _ from 'lodash';
+import CustomText from "./CustomText";
 
 /**
  * Header used in full screen components (video, virtual tour, gallery) that only shows a back button controller

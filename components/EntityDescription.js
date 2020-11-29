@@ -2,6 +2,7 @@ import React, {PureComponent} from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import * as Constants from '../constants';
 import HTML from 'react-native-render-html';
+import CustomText from "./CustomText";
 
 export default class EntityDescription extends PureComponent {  
   
@@ -17,9 +18,9 @@ export default class EntityDescription extends PureComponent {
       <>
         { text != "" && text &&(
           <View style={[Constants.styles.innerText, styles.container]}>
-            <Text style={[styles.title, {
+            <CustomText style={[styles.title, {
               color: color || "black"
-            }]}>{title}</Text>
+            }]}>{title}</CustomText>
             {/* <View style={styles.borderLine}></View> */}
             <HTML html={"<font style=\"" + Constants.styles.html.longText + "\">" + text + "</font>"} />
           </View>
@@ -49,7 +50,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     // opacity: 0.6,
     color: "black",
-    fontWeight: "bold",
+    fontFamily: "montserrat-bold",
     fontSize: 17
   },
   container: {

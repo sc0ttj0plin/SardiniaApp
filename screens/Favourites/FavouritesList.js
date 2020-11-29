@@ -35,7 +35,8 @@ import {
   // PoiItem, 
   // PoiItemsList, 
   // ExtrasListItem, 
-  // MapViewItinerary
+  // MapViewItinerary,
+  CustomText
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -165,6 +166,7 @@ class FavouritesListScreen extends Component {
           listTitleStyle={styles.sectionTitle}
           style={styles.list}
           sideMargins={20}
+          disableSeparator
         />
       </View>
     )
@@ -275,14 +277,21 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     height: 40,
     fontSize: 15,
-    fontWeight: "bold"
+    fontFamily: "montserrat-bold",
   },
   listContainerHeader: {
   },
   list: {
-    marginBottom: 10,
-    width: "100%",
-    paddingHorizontal: 20
+    paddingTop: 10, 
+    backgroundColor: "transparent",
+    marginHorizontal: 20,
+    height: "100%",
+  },
+  listStyle: {
+    paddingTop: 10, 
+    backgroundColor: "transparent",
+    marginHorizontal: 20,
+    height: "100%",
   },
   listView: {
     width: "100%",

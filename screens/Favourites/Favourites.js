@@ -35,7 +35,8 @@ import {
   // PoiItem, 
   // PoiItemsList, 
   // ExtrasListItem, 
-  // MapViewItinerary
+  // MapViewItinerary,
+  CustomText
  } from "../../components";
 import { TouchableOpacity } from "react-native-gesture-handler"
 import { connect, useStore } from 'react-redux';
@@ -272,7 +273,6 @@ class FavouritesScreen extends Component {
           data={list ? list.slice(0, Constants.FAVOURITES_MAX_ITEMS_IN_LIST) : []} 
           extraData={this.props.locale}
           keyExtractor={item => item.uuid.toString()}
-          contentContainerStyle={styles.listContainerHeader}
           showsHorizontalScrollIndicator={false}
           locale={this.props.locale}
           numColumns={2}
@@ -282,6 +282,7 @@ class FavouritesScreen extends Component {
           listTitleStyle={styles.sectionTitle}
           style={styles.list}
           sideMargins={20}
+          disableSeparator
         />
         {list.length > 6 && 
           this._renderShowListButton(list, title, type)
@@ -298,7 +299,7 @@ class FavouritesScreen extends Component {
         index={index}
         keyItem={item.nid}
         horizontal={horizontal}
-        sizeMargins={20}
+        sideMargins={20}
         title={title}
         term={termName}
         stars={item.stars}
@@ -416,14 +417,21 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     height: 40,
     fontSize: 15,
-    fontWeight: "bold"
+    fontFamily: "montserrat-bold",
   },
   listContainerHeader: {
   },
   list: {
-    marginBottom: 10,
-    width: "100%",
-    paddingHorizontal: 20
+    paddingTop: 10, 
+    backgroundColor: "transparent",
+    marginHorizontal: 20,
+    height: "100%",
+  },
+  listStyle: {
+    paddingTop: 10, 
+    backgroundColor: "transparent",
+    marginHorizontal: 20,
+    height: "100%",
   },
   listView: {
     width: "100%",
@@ -439,7 +447,7 @@ const styles = StyleSheet.create({
   showListButtonText: {
     color: "white",
     fontSize: 15,
-    fontWeight: "bold",
+    fontFamily: "montserrat-bold",
     textTransform: "uppercase"
   },
   showListButtonView: {

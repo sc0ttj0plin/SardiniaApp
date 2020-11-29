@@ -3,6 +3,7 @@ import { Text, View } from "react-native";
 import { Icon } from "react-native-elements";
 import { connect, useStore } from 'react-redux';
 import _ from 'lodash';
+import CustomText from "./CustomText";
 
 /**
  * Generic language-aware text component that re-renders when language changes

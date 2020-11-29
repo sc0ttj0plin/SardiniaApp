@@ -13,6 +13,7 @@ import Colors from '../constants/Colors';
 import Layout from "../constants/Layout"
 import * as Constants from '../constants';
 import _ from 'lodash';
+import CustomText from "./CustomText";
 
 class ConnectedFab extends PureComponent {
 
@@ -250,7 +251,7 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 15,
-    fontWeight: "bold",
+    fontFamily: "montserrat-bold",
     marginBottom: 14,
   },
   modalDescription: {
@@ -265,7 +266,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "red"
-
   },
   modalBtnText: {
     color: "white",

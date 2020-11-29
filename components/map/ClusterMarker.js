@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Marker } from 'react-native-maps';
 import Colors from '../../constants/Colors';
 import * as Constants from '../../constants';
+import CustomText from "../CustomText";
 
 /**
  * ClusterMarker renders a set of close markers that are grouped depending 

@@ -4,6 +4,8 @@ import Colors from '../../constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import { Marker } from 'react-native-maps';
 import * as Constants from "../../constants"
+import CustomText from "../CustomText";
+
 /**
  * EntityMarker is the component that renders typed marker
  * each marker type has a different icon

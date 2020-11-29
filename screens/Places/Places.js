@@ -13,6 +13,7 @@ import {
   ScrollableContainer,
   EntityItem,
   ConnectedAuthHandler,
+  CustomText
  } from "../../components";
 import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
 import MapView from "react-native-map-clustering";
@@ -286,7 +287,7 @@ class PlacesScreen extends PureComponent {
             color={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS["places"].iconColor}
           />
       </View>
-      <Text style={styles.categorySelectorBtnText}>{item.name}</Text>
+      <CustomText style={styles.categorySelectorBtnText}>{item.name}</CustomText>
     </TouchableOpacity>
 
   /* Renders the topmost component: a category list + map in our case */
@@ -324,10 +325,10 @@ class PlacesScreen extends PureComponent {
           >
             <View>  
               <View style={styles.sectionTitleView}>
-                <Text style={[styles.sectionTitle, {
+                <CustomText style={[styles.sectionTitle, {
                   fontSize: 16,
                   marginBottom: 10
-                }]}>{nearToYou}</Text>
+                }]}>{nearToYou}</CustomText>
               </View>
               <FlatList
                 horizontal={true}
@@ -348,9 +349,9 @@ class PlacesScreen extends PureComponent {
             </View>
           </AsyncOperationStatusIndicator>
           <View style={styles.sectionTitleView}>
-            <Text style={[styles.sectionTitle, {
+            <CustomText style={[styles.sectionTitle, {
               fontSize: 20,
-            }]}>{categoryTitle}</Text>
+            }]}>{categoryTitle}</CustomText>
           </View>
         </View>
       )
@@ -378,15 +379,18 @@ class PlacesScreen extends PureComponent {
         distance={this.state.isCordsInBound ? item.distanceStr : ""}
         horizontal={horizontal}
         sideMargins={20}
+        topSpace={10}
       />
   )}
 
   /* Renders categories list */
   _renderCategoryListItem = (item, index, length) => {
-    let marginBottom = (index + 1) == length ? 20 : 0
+    let marginBottom = (index + 1) == length ? 20 : 0;
+    let marginTop = index == 0 ? 10 : 0
     return(
       <CategoryListItem onPress={() => this._selectCategory(item)} image={item.image} title={item.name} style={{
-        marginBottom
+        marginBottom,
+        marginTop
       }}/>
     )
   }
@@ -487,7 +491,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     color: "black",
-    fontWeight: "bold",
+    fontFamily: "montserrat-bold",
     padding: 10,
     textAlign: "center"
   },

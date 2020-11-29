@@ -36,6 +36,7 @@ import {
   // PoiItemsList, 
   // ExtrasListItem, 
   // MapViewItinerary
+  CustomText
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';

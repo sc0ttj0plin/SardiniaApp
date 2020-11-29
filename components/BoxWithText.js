@@ -1,5 +1,6 @@
 import React, { PureComponent } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import CustomText from "./CustomText";
 
 /**
  * Box with text component, used in PlacesScreen to show pois categories (e.g. Art..)

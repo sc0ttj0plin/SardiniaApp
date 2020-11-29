@@ -1,6 +1,7 @@
 import React, {PureComponent} from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import Colors from '../constants/Colors';
+import CustomText from "./CustomText";
 
 export default class EntityHeader extends PureComponent {  
   
@@ -19,11 +20,11 @@ export default class EntityHeader extends PureComponent {
         </View>
         { term != "" && term &&(
           <View style={[styles.categoryContainer]}>
-            <Text style={[styles.category]}>{term}</Text>
+            <CustomText style={[styles.category]}>{term}</CustomText>
             <View style={[styles.borderLine, {backgroundColor: borderColor || Colors.blue}]}></View>
           </View>
         )}
-        <Text style={[styles.title]}>{title}</Text>
+        <CustomText style={[styles.title]}>{title}</CustomText>
       </>
     );
   }
@@ -48,7 +49,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     flex: 1,
     textAlign: "center",
-    fontWeight: "bold",
+    fontFamily: "montserrat-bold",
     opacity: 0.8,
     color: "#666666"
   },
@@ -57,8 +58,8 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: "center",
     color: "#000000E6",
-    fontWeight: "bold",
-    paddingHorizontal: 70
+    fontFamily: "montserrat-bold",
+    paddingHorizontal: 30
   },
   topLineContainer: {
     width: "100%",

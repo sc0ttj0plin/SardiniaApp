@@ -36,7 +36,8 @@ import {
   // PoiItem, 
   // PoiItemsList, 
   // ExtrasListItem, 
-  // MapViewItinerary
+  // MapViewItinerary,
+  CustomText
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -276,7 +277,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     color: "#000000E6",
-    fontWeight: "bold"
+    fontFamily: "montserrat-bold",
   },
   listContainerHeader: {
     paddingLeft: 10,

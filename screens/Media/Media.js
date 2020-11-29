@@ -28,7 +28,7 @@ import {
   // Webview, 
   // ConnectedText, 
   ConnectedHeader, 
-  HeaderFullscreen
+  HeaderFullscreen,
   // ImageGridItem, 
   // ConnectedLanguageList, 
   // BoxWithText,
@@ -36,7 +36,8 @@ import {
   // PoiItem, 
   // PoiItemsList, 
   // ExtrasListItem, 
-  // MapViewItinerary
+  // MapViewItinerary,
+  CustomText
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';

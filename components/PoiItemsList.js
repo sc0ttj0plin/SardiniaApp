@@ -5,6 +5,7 @@ import PoiItem from '../components/PoiItem';
 import Colors from '../constants/Colors';
 import LLEntitiesFlatlist from "./loadingLayouts/LLEntitiesFlatlist"
 import { AsyncOperationStatusIndicator } from "."
+import CustomText from "./CustomText";
  
 /**
  * PoiItemsList renders a set of PoiItem 

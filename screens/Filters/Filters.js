@@ -23,11 +23,11 @@ import {
   // EntityVirtualTour,
   // EntityWhyVisit,
   // TopMedia,
+  AsyncOperationStatusIndicator, 
   // AsyncOperationStatusIndicatorPlaceholder,
   // Webview, 
   // ConnectedText, 
   ConnectedHeader, 
-  EventListItem, 
   // ImageGridItem, 
   // ConnectedLanguageList, 
   // BoxWithText,
@@ -35,15 +35,12 @@ import {
   // PoiItem, 
   // PoiItemsList, 
   // ExtrasListItem, 
-  // MapViewItinerary,
+  // MapViewItinerary
   CustomText
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
-import moment from 'moment';
-import it from 'moment/locale/it'
-import en from 'moment/locale/en-gb'
 import Layout from '../../constants/Layout';
 import { greedyArrayFinder, getEntityInfo, getCoordinates, getSampleVideoIndex, getGalleryImages } from '../../helpers/utils';
 import { apolloQuery } from '../../apollo/queries';
@@ -57,80 +54,75 @@ import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
    number of components loaded when the page initially mounts.
    Other components are loaded right after the mount */
 const USE_DR = false;
-class EventsSubsetScreen extends Component {
+class FiltersScreen extends Component {
 
   constructor(props) {
     super(props);
 
-    moment.locale(Constants.DEFAULT_LANGUAGE);
-
     /* Get props from navigation */
-    let { dateString, dateHeaderFormat, eventsSubset } = props.route.params; 
+    //let { someNavProps } = props.route.params; 
 
     this.state = {
       render: USE_DR ? false : true,
-      //
-      headerDate: moment(dateString).format(dateHeaderFormat),
-      eventsSubset,
     };
       
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
 
+  /**
+   * Use this function to perform data fetching
+   * e.g. this.props.actions.getPois();
+   */
   componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
   }
 
+  /**
+   * Use this function to update state based on external props 
+   * or to post-process data once it changes
+   */
   componentDidUpdate(prevProps) {
-
+    /**
+     * Is the former props different from the newly propagated prop (redux)? perform some action
+     * if(prevProps.xxx !== this.props.xxx)
+     *  doStuff();
+     */
   }
 
+  /**
+   * Use this function to unsubscribe or clear any event hooks
+   */
   componentWillUnmount() {
   }
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
 
+  /**
+   * If the reducer embeds a single data type then e.g. only pois:
+   *    Data is stored in this.props.pois.data
+   *    Success state is stored in this.props.pois.success
+   *    Loading state is stored in this.props.pois.loading
+   *    Error state is stored in this.props.pois.error
+   * If the reducer embeds multiple data types then (e.g. search + autocomplete):
+   *    Data is stored in this.props.searchAutocomplete.search
+   *    Success state is stored in this.props.searchAutocomplete.searchSuccess
+   *    Loading state is stored in this.props.searchAutocomplete.searchLoading
+   *    Error state is stored in this.props.searchAutocomplete.searchError
+   */
+  _isSuccessData  = () => false;    /* e.g. this.props.pois.success; */
+  _isLoadingData  = () => true;   /* e.g. this.props.pois.loading; */
+  _isErrorData    = () => null;    /* e.g. this.props.pois.error; */
+
 
   /********************* Render methods go down here *********************/
-  _renderEventsListItem = (item) => {
-    // console.log(item.title)
-    const { lan } = this.props.locale;
-    const title = _.get(item.title, [lan, 0, "value"], null);
-    const term = _.get(item.term, "name", "");
-    const image = item.image;
-    const date = item.date1render;
-    return(
-      <EventListItem 
-        onPress={() => this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item })}  
-        title={title} 
-        term={term}
-        image={image}
-        date={date}
-      />
-    )
-  }
-
-  _renderEventsList = () => {
-    return(
-      <FlatList
-        data={this.state.eventsSubset}
-        keyExtractor={(item) => item.title}
-        contentContainerStyle={styles.content}
-        renderItem={({ item }) => this._renderEventsListItem(item)}
-        style={styles.listContent}
-      />
-    )
-  }
-  
   _renderContent = () => {
+    const { filterBy } = this.props.locale.messages;
+
      return (
-      <View style={styles.calendarList}>
-        <View style={styles.calendarListTitleView}>
-          <Text style={styles.calendarListTitle}>{this.state.headerDate}</Text>
-        </View>
-        {this._renderEventsList()}
+      <View style={styles.fill}>
+          <CustomText style={styles.title}>{filterBy}</CustomText>
       </View>
      )
   }
@@ -140,7 +132,7 @@ class EventsSubsetScreen extends Component {
     const { render } = this.state;
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader iconTintColor={Colors.colorEventsScreen} />
+        <ConnectedHeader  />
         {render && this._renderContent()}
       </View>
     )
@@ -149,8 +141,8 @@ class EventsSubsetScreen extends Component {
 }
 
 
-EventsSubsetScreen.navigationOptions = {
-  title: 'EventsSubset',
+FiltersScreen.navigationOptions = {
+  title: 'Boilerplate',
 };
 
 
@@ -165,37 +157,26 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
   },
-  content: {
-    paddingBottom:20
-  },
-  listContent: {
-    paddingHorizontal: 17,
-    flex: 1
-  },
-  calendarList: {
-    flex: 1
-  },
-  calendarListTitleView: {
-    backgroundColor: "#F2F2F2",
-    height: 60,
-    marginBottom: 16,
-    justifyContent: 'center',
-    alignItems: "center"
-  },
-  calendarListTitle: {
+  title: {
+    textAlign: "center",
+    paddingTop: 10,
+    paddingBottom: 10,
     color: "#000000E6",
+    backgroundColor: "#F2F2F2",
+    height: 40,
+    fontSize: 15,
     fontFamily: "montserrat-bold",
-    textTransform: "capitalize"
-  }
+    textTransform: "uppercase"
+  },
 });
 
 
-function EventsSubsetScreenContainer(props) {
+function FiltersScreenContainer(props) {
   const navigation = useNavigation();
   const route = useRoute();
   const store = useStore();
 
-  return <EventsSubsetScreen 
+  return <FiltersScreen 
     {...props}
     navigation={navigation}
     route={route}
@@ -205,11 +186,23 @@ function EventsSubsetScreenContainer(props) {
 
 const mapStateToProps = state => {
   return {
+    restState: state.restState,
+    //auth
+    auth: state.authState,
+    //mixed state
     others: state.othersState,
     //language
     locale: state.localeState,
+    //favourites
+    favourites: state.favouritesState,
     //graphql
+    categories: state.categoriesState,
     events: state.eventsState,
+    inspirers: state.inspirersState,
+    itineraries: state.itinerariesState,
+    nodes: state.nodesState,
+    pois: state.poisState,
+    searchAutocomplete: state.searchAutocompleteState,
   };
 };
 
@@ -225,4 +218,4 @@ export default connect(mapStateToProps, mapDispatchToProps, (stateProps, dispatc
     actions: dispatchProps,
     ...props
   }
-})(EventsSubsetScreenContainer)
+})(FiltersScreenContainer)

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { View, StyleSheet } from "react-native";
-import { AsyncOperationStatusIndicator} from "../../components";
+import { AsyncOperationStatusIndicator, CustomText} from "../../components";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';

@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { View, Platform, StyleSheet, ActivityIndicator, Text, Image } from 'react-native';
 import { TouchableOpacity } from "react-native-gesture-handler"
 import Colors from '../constants/Colors';
+import CustomText from "./CustomText";
 
 /**
  * EventListItem
@@ -93,11 +94,11 @@ const styles = StyleSheet.create({
   },
   listItemTitle: {
     fontSize: 13,
-    fontWeight: "bold",
+    fontFamily: "montserrat-bold",
   },
   listItemDate: {
     fontSize: 10,
-    fontWeight: "bold",
+    fontFamily: "montserrat-bold",
   },
   listItemTerm: {
     fontSize: 13,

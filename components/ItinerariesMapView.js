@@ -12,6 +12,7 @@ import { Image } from "react-native-elements";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import Layout from "../constants/Layout";
 import * as Constants from '../constants';
+import CustomText from "./CustomText";
 
 /**
  * ItinerariesMapView is used in ItineraryScreen to show a set of markers in a map once the user has selected 
@@ -191,7 +192,7 @@ const styles = StyleSheet.create({
   },
   cardtitle: {
     fontSize: 12,
-    fontWeight: "bold",
+    fontFamily: "montserrat-bold",
   },
   cardDescription: {
     fontSize: 12,

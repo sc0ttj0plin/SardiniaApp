@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { ActivityIndicator } from 'react-native';
 import { Image } from 'react-native-elements';
 import {distanceToString} from '../helpers/maps'
+import CustomText from "./CustomText";
 
 /**
  * Similar to PoiItemsList but with geographical information 
@@ -54,14 +55,14 @@ const styles = StyleSheet.create({
     },
     title: {
       fontSize: 12,
-      fontWeight: "bold"
+      fontFamily: "montserrat-bold",
     },
     place: {
       fontSize: 10
     },
     distance: {
       fontSize: 10,
-      fontWeight: "bold",
+      fontFamily: "montserrat-bold",
     },
     image: {
       flex: 1,

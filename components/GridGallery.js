@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { View, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { Image } from 'react-native-elements';
 import GridGalleryImage from './GridGalleryImage';
+import CustomText from "./CustomText";
 
 /**
  * Grid gallery wrapper, used in Extra, Inspirers and Place screen to show related gallery

@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { TouchableOpacity, ActivityIndicator, View } from 'react-native';
 import { Image } from 'react-native-elements';
 import * as Animatable from 'react-native-animatable';
+import CustomText from "./CustomText";
 
 ViewAnimatable = Animatable.createAnimatableComponent(View);
 

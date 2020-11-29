@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     sectionTitle: {
         fontSize: 16,
         color: 'white',
-        fontWeight: "bold",
+        fontFamily: "montserrat-bold",
         margin: 10
     }
   });

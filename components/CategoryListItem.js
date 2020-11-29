@@ -2,6 +2,7 @@ import React, { PureComponent } from "react";
 import { StyleSheet, View, Text, ActivityIndicator } from "react-native";
 import ScrollableContainerTouchableOpacity from "../components/ScrollableContainerTouchableOpacity";
 import { Image } from 'react-native-elements';
+import CustomText from "./CustomText";
 
 /**
  * List item element that represents a category
@@ -82,7 +83,7 @@ const styles = StyleSheet.create({
     title: {
       fontSize: 18,
       color: "black",
-      fontWeight: "bold",
+      fontFamily: "montserrat-bold",
       padding: 10,
       textAlign: "center",
     },

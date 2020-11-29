@@ -14,6 +14,7 @@ import EntityMarker from './map/EntityMarker'
 import ClusterMarker from './map/ClusterMarker'
 import EntityWidgetInMapView from './map/EntityWidgetInMapView'
 import * as Constants from '../constants';
+import CustomText from "./CustomText";
 
 /**
  * Definitions:

@@ -11,6 +11,7 @@ import * as Constants from "../../constants"
 import _ from 'lodash';
 import AccomodationItem from "../AccomodationItem"
 import Colors from "../../constants/Colors"
+import CustomText from "../CustomText";
 
 /**
  * EntityWidgetInMapView 
@@ -194,14 +195,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 12,
-    fontWeight: "bold"
+    fontFamily: "montserrat-bold",
   },
   place: {
     fontSize: 10
   },
   distance: {
     fontSize: 10,
-    fontWeight: "bold",
+    fontFamily: "montserrat-bold",
   },
   image: {
     resizeMode: "cover",

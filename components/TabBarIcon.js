@@ -2,6 +2,7 @@ import React from 'react';
 import { FontAwesome } from '@expo/vector-icons';
 import { Image } from "react-native"
 import Colors from '../constants/Colors';
+import CustomText from "./CustomText";
 
 /**
  * TabBarIcon (self explanatory)

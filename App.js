@@ -22,7 +22,6 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import config from './config/config';
 import * as firebase from 'firebase';
 import * as Constants from './constants';
-
 enableScreens();
 
 export default class App extends Component {
@@ -117,6 +116,11 @@ export default class App extends Component {
         ...FontAwesome5.font,
         ...Fontisto.font,
         'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
+        'montserrat-regular': require('./assets/fonts/Montserrat-Regular.ttf'),
+        'montserrat-bold': require('./assets/fonts/Montserrat-Bold.ttf'),
+        'montserrat-semiBold': require('./assets/fonts/Montserrat-SemiBold.ttf'),
+        'montserrat-light': require('./assets/fonts/Montserrat-Light.ttf'),
+        'montserrat-medium': require('./assets/fonts/Montserrat-Medium.ttf'),
       })
     ]);
   }

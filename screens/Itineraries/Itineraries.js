@@ -12,6 +12,7 @@ import {
   ConnectedHeader, 
   ScrollableContainer,
   EntityItem,
+  CustomText
  } from "../../components";
 import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
 import MapView from "react-native-map-clustering";
@@ -228,6 +229,7 @@ class ItinerariesScreen extends PureComponent {
           place={" "}
           style={styles.itinerariesListItem}
           horizontal={false}
+          topSpace={10}
           extraStyle={{
             marginBottom: 10,
             width: "100%",
@@ -376,7 +378,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
       fontSize: 16,
       color: "black",
-      fontWeight: "bold",
+      fontFamily: "montserrat-bold",
   },
   listHeader: { 
     display: "flex",
@@ -448,7 +450,7 @@ const styles = StyleSheet.create({
     height: 180,
     position: "absolute",
     // backgroundColor: Colors.lightGrey,
-    bottom: 60,
+    bottom: 70,
     left: 0,
     padding: 10,
   },

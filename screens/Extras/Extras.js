@@ -7,6 +7,7 @@ import {
   ExtraItem,
   AsyncOperationStatusIndicator,  
   ConnectedHeader, 
+  CustomText
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';

@@ -3,6 +3,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { View, StyleSheet, Text } from 'react-native';
 import GridGallery from './GridGallery';
 import * as Constants from '../constants';
+import CustomText from "./CustomText";
 
 class EntityGallery extends PureComponent {  
   
@@ -56,7 +57,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     opacity: 0.6,
     color: "black",
-    fontWeight: "bold"
+    fontFamily: "montserrat-bold",
   },
 });
 

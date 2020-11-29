@@ -6,7 +6,8 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   AsyncOperationStatusIndicator, 
   ConnectedHeader, 
-  ConnectedAuthHandler
+  ConnectedAuthHandler,
+  CustomText
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -333,7 +334,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F2F2F2",
     height: 40,
     fontSize: 15,
-    fontWeight: "bold",
+    fontFamily: "montserrat-bold",
     textTransform: "uppercase"
   },
   firstView: {
@@ -352,7 +353,7 @@ const styles = StyleSheet.create({
   },  
   text1: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontFamily: "montserrat-bold",
     color: "black",
     textAlign: "center"
   },
@@ -384,7 +385,7 @@ const styles = StyleSheet.create({
   startButtonText: {
     color: "white",
     textTransform: "uppercase",
-    fontWeight: "bold",
+    fontFamily: "montserrat-bold",
     fontSize: 14
   },
   startedContent: {
@@ -394,7 +395,7 @@ const styles = StyleSheet.create({
   },
   startedContentText: {
     fontSize: 15,
-    fontWeight: "bold",
+    fontFamily: "montserrat-bold",
     color: "black",
     textAlign: "center"
   },
@@ -430,7 +431,7 @@ const styles = StyleSheet.create({
   entityTerm: {
     textAlign: "center",
     fontSize: 20,
-    fontWeight: "bold",
+    fontFamily: "montserrat-bold",
     marginTop: 32
   },
   entityView: {
