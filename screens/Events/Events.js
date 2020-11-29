@@ -105,7 +105,7 @@ class EventsScreen extends Component {
     }
 
     if(prevProps.events.selectedTypes !== this.props.events.selectedTypes){
-      console.log("new filters")
+      // console.log("new filters")
       this._queriedMonths = {}
       this._loadEvents(INITIAL_DATE);
     }
@@ -136,7 +136,7 @@ class EventsScreen extends Component {
       const eventsQuery = {
         start: Math.floor(this._ubLb.lb.valueOf()/1000), 
         end: Math.floor(this._ubLb.ub.valueOf()/1000), 
-        types: this.props.events.selectedTypes
+        types: this.props.events.selectedTypes.length > 0 ? this.props.events.selectedTypes : null
       };
       this.props.actions.getEvents(eventsQuery, this._ubLb);
       // this.props.actions.getEventTypes()
