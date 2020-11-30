@@ -1,6 +1,6 @@
 import React from 'react';
 import { FontAwesome } from '@expo/vector-icons';
-import { Image } from "react-native"
+import { Image, StyleSheet } from "react-native"
 import Colors from '../constants/Colors';
 import CustomText from "./CustomText";
 
@@ -10,10 +10,11 @@ import CustomText from "./CustomText";
 export default function TabBarIcon(props) {
   const defaultColor = Colors.tabIconDefault;
   const activeColor = props.activeColor ? props.activeColor : Colors.tabIconSelected;
+  let imageStyle = props.iconSourceActive && props.iconSourceDefault ? styles.defaultImage : {}
   return (
     <>
     { props.iconSourceDefault ? (
-      <Image source={props.focused && props.iconSourceActive? props.iconSourceActive : props.iconSourceDefault} style={{...props.iconStyle}}>
+      <Image source={props.focused && props.iconSourceActive? props.iconSourceActive : props.iconSourceDefault} style={[imageStyle, props.iconStyle]}>
       </Image>
     ) : (
       <FontAwesome
@@ -28,3 +29,10 @@ export default function TabBarIcon(props) {
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  defaultImage: {
+    width: 25,
+    height: 25
+  }
+})
