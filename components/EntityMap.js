@@ -91,7 +91,7 @@ class EntityMap extends PureComponent {
             <View style={[styles.markerContainer]}>
               <View
                 style={[styles.marker]}>
-                <Text style={{color: "white"}}>{marker.index}</Text>
+                <CustomText style={{color: "white"}}>{marker.index}</CustomText>
               </View>
             </View>
         </Marker.Animated>
@@ -109,7 +109,7 @@ class EntityMap extends PureComponent {
         activeOpacity={0.7}
         style={styles.button}
         onPress={() => this._openNavigator("", coordinates)}>
-        <Text style={styles.buttonText}>vai al navigatore</Text>
+        <CustomText style={styles.buttonText}>vai al navigatore</CustomText>
       </TouchableOpacity>
     )
   }
@@ -124,7 +124,7 @@ class EntityMap extends PureComponent {
           backgroundColor: Colors.colorItinerariesScreen
         }]}
         onPress={() => this._openMap(uuid)}>
-        <Text style={styles.buttonText}>apri la mappa</Text>
+        <CustomText style={styles.buttonText}>apri la mappa</CustomText>
       </TouchableOpacity>
     )
   }

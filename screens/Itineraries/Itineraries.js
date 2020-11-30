@@ -180,7 +180,7 @@ class ItinerariesScreen extends PureComponent {
         onPress={onPress}
       >
         <View style={styles.cluster}>
-          <Text style={styles.clusterText}>{points}</Text>
+          <CustomText style={styles.clusterText}>{points}</CustomText>
         </View>
       </Marker>
     )
@@ -289,7 +289,7 @@ class ItinerariesScreen extends PureComponent {
     const { nearToYou, whereToGo, exploreItineraries } = this.props.locale.messages;
       return (
         <View style={styles.listHeader}>
-          <Text style={styles.sectionTitle}>{exploreItineraries}</Text>
+          <CustomText style={styles.sectionTitle}>{exploreItineraries}</CustomText>
         </View>
       )
   }

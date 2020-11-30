@@ -27,14 +27,14 @@ class ExtraItem extends PureComponent{
           PlaceholderContent={<ActivityIndicator style={styles.spinner} color={"white"} />}
           >
         <View style={styles.imageOverlay}>
-          <Text style={styles.itemTitle}>
+          <CustomText style={styles.itemTitle}>
             {title || "text"}
-          </Text>
+          </CustomText>
             <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={onPress ? onPress : () => {}}
                 style={styles.itemButton}>
-                    <Text style={styles.itemButtonText}>{btnTitle}</Text>
+                    <CustomText style={styles.itemButtonText}>{btnTitle}</CustomText>
             </TouchableOpacity>
         </View>
           </Image>

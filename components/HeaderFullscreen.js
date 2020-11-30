@@ -25,7 +25,7 @@ class HeaderFullscreen extends PureComponent {
         <View style={[styles.buttonTopHeader]}>
             {text && 
             <View style={[styles.centerButtonContainer]}>
-                <Text style={styles.pageIndex}>{text}</Text>
+                <CustomText style={styles.pageIndex}>{text}</CustomText>
             </View>
             }
             <View style={[styles.leftButtonContainer]}>

@@ -23,9 +23,9 @@ class CategoryListItem extends PureComponent {
           <View style={[styles.titleContainerBackground, {
             backgroundColor: backgroundColor
             }]}>
-              <Text style={[styles.title]}>
+              <CustomText style={[styles.title]}>
                   {title}
-              </Text>
+              </CustomText>
               {/* {
                 showBoxes &&
                 <View style={styles.boxes}>

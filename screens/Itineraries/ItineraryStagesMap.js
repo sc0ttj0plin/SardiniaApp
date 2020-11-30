@@ -158,7 +158,7 @@ class ItineraryStagesMapScreen extends Component {
               >
                 <Animated.View style={[styles.markerWrap, opacityStyle]}>
                   <View style={styles.marker}>
-                    <Text style={styles.text}>{index+1}</Text>
+                    <CustomText style={styles.text}>{index+1}</CustomText>
                   </View>
                 </Animated.View>
               </MapView.Marker>
@@ -190,7 +190,7 @@ class ItineraryStagesMapScreen extends Component {
                 PlaceholderContent={<ActivityIndicator/>}
               />
               <View style={styles.cardTextContainer}>
-                <Text numberOfLines={1} style={styles.cardtitle}>{marker.title}</Text>
+                <CustomText numberOfLines={1} style={styles.cardtitle}>{marker.title}</CustomText>
               </View>
             </TouchableOpacity>
           ))}

@@ -222,7 +222,7 @@ class EventsMapScreen extends PureComponent {
 
   _renderTopComponentCategorySelector = (item) => 
     <TouchableOpacity style={styles.categorySelectorBtn} onPress={() => this._selectCategory(item)}>
-      <Text style={{color: 'white'}}>{item.name}</Text>
+      <CustomText style={{color: 'white'}}>{item.name}</CustomText>
     </TouchableOpacity>
 
 
@@ -240,7 +240,7 @@ class EventsMapScreen extends PureComponent {
         onPress={onPress}
       >
         <View style={styles.cluster}>
-          <Text style={styles.clusterText}>{points}</Text>
+          <CustomText style={styles.clusterText}>{points}</CustomText>
         </View>
       </Marker>
     )
@@ -351,7 +351,7 @@ class EventsMapScreen extends PureComponent {
     const { nearToYou, whereToGo, exploreEvents } = this.props.locale.messages;
       return (
         <View style={styles.listHeader}>
-          <Text style={styles.sectionTitle}>{exploreEvents}</Text>
+          <CustomText style={styles.sectionTitle}>{exploreEvents}</CustomText>
         </View>
       )
   }

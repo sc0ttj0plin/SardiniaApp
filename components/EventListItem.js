@@ -12,9 +12,9 @@ export default class EventListItem extends PureComponent {
   _renderDates = () => {
     const { startDate, endDate } = this.props
     if (startDate !== endDate) 
-      return <Text style={styles.listItemDate}>{startDate} {endDate}</Text>
+      return <CustomText style={styles.listItemDate}>{startDate} {endDate}</CustomText>
     else 
-      return <Text style={styles.listItemDate}>{startDate}</Text>
+      return <CustomText style={styles.listItemDate}>{startDate}</CustomText>
   }
 
   render() {
@@ -30,8 +30,8 @@ export default class EventListItem extends PureComponent {
               PlaceholderContent={<ActivityIndicator style={styles.spinner} color={"white"}/>}/>
           </View>
           <View style={styles.itemDescView}>
-              <Text style={styles.listItemTitle}>{title}</Text>
-              <Text style={styles.listItemTerm}>{term}</Text>
+              <CustomText style={styles.listItemTitle}>{title}</CustomText>
+              <CustomText style={styles.listItemTerm}>{term}</CustomText>
               {this._renderDates()}
           </View>
         </View>

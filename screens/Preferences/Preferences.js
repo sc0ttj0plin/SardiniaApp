@@ -194,7 +194,7 @@ class PreferencesScreen extends Component {
     // console.log("entity", entity)
     return(
       <View style={styles.entityView}>
-        <Text style={styles.entityTerm}>{term}</Text>
+        <CustomText style={styles.entityTerm}>{term}</CustomText>
         <Image
           PlaceholderContent={<ActivityIndicator color="black"/>}
           source={{ uri: image }}
@@ -209,8 +209,8 @@ class PreferencesScreen extends Component {
     return(
       <>
         <View style={styles.firstView}>
-          <Text style={styles.text1}>{preferencesText1}</Text>
-          <Text style={styles.text2}>{preferencesText2}</Text>
+          <CustomText style={styles.text1}>{preferencesText1}</CustomText>
+          <CustomText style={styles.text2}>{preferencesText2}</CustomText>
         </View>
         <View style={styles.secondView}>
           <View style={styles.icons}>
@@ -224,7 +224,7 @@ class PreferencesScreen extends Component {
               style={styles.startButton}
               activeOpacity={0.7}
               onPress={() => this.setState({started: true})}>
-                <Text style={styles.startButtonText}>{start}</Text>
+                <CustomText style={styles.startButtonText}>{start}</CustomText>
             </TouchableOpacity>
           </View>
         </View>
@@ -238,8 +238,8 @@ class PreferencesScreen extends Component {
     return(
       <>
         <View style={styles.firstView}>
-          <Text style={styles.text1}>{thanks}</Text>
-          <Text style={styles.text2}>{preferencesText3}</Text>
+          <CustomText style={styles.text1}>{thanks}</CustomText>
+          <CustomText style={styles.text2}>{preferencesText3}</CustomText>
         </View>
         <View style={styles.secondView}>
           <View style={styles.icons}>
@@ -253,7 +253,7 @@ class PreferencesScreen extends Component {
               style={styles.startButton}
               activeOpacity={0.7}
               onPress={() => this.setState({finished: false, started: false})}>
-                <Text style={styles.startButtonText}>{back}</Text>
+                <CustomText style={styles.startButtonText}>{back}</CustomText>
             </TouchableOpacity>
           </View>
         </View>
@@ -268,7 +268,7 @@ class PreferencesScreen extends Component {
     return(
       <>
         <View style={styles.startedContent}>
-          <Text style={styles.startedContentText}>{doYouLikeIt}</Text>
+          <CustomText style={styles.startedContentText}>{doYouLikeIt}</CustomText>
           {entity && this._renderEntity(entity)}
           <View style={[styles.icons, {marginTop: 70, paddingHorizontal: 50}]}>
             {this._renderIcon("dizzy", Colors.lightGray, true)}
@@ -287,7 +287,7 @@ class PreferencesScreen extends Component {
       const { preferences } = this.props.locale.messages;
       return (
         <View style={styles.fill}>
-          <Text style={styles.title}>{preferences}</Text>
+          <CustomText style={styles.title}>{preferences}</CustomText>
           {!started && this._renderNotStartedContent()}
           {started && !finished && this._renderStartedContent()}
           {finished && this._renderFinishedContent()}

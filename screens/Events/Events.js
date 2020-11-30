@@ -198,12 +198,12 @@ class EventsScreen extends Component {
     return(
       <View style={styles.toastContainer}>
         <View style={styles.toastInnerContainer}>
-          <Text style={styles.toastText}>Vuoi vedere gli eventi sulla mappa</Text>
+          <CustomText style={styles.toastText}>Vuoi vedere gli eventi sulla mappa</CustomText>
           <TouchableOpacity 
             style={styles.toastButton}
             activeOpacity={0.7}
             onPress={this._openMap}>
-            <Text style={styles.toastButtonText}>VAI</Text>
+            <CustomText style={styles.toastButtonText}>VAI</CustomText>
           </TouchableOpacity>
         </View>
       </View>

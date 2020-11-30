@@ -19,7 +19,7 @@ class ConnectedText extends PureComponent {
   render() {
     const { languageKey, textStyle } = this.props;
     const label = this.props.locale.messages[languageKey];
-    return <Text style={[textStyle]}>{label}</Text>;
+    return <CustomText style={[textStyle]}>{label}</CustomText>;
   }
 }
 

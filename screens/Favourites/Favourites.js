@@ -259,7 +259,7 @@ class FavouritesScreen extends Component {
           }]}
           activeOpacity={0.7}
           onPress={() => this._onShowListButtonPress(list, title, type, isAccomodationsList)}>
-            <Text style={styles.showListButtonText}>Visualizza tutti</Text>
+            <CustomText style={styles.showListButtonText}>Visualizza tutti</CustomText>
         </TouchableOpacity>
       </View>
     )
@@ -318,7 +318,7 @@ class FavouritesScreen extends Component {
         loadingLayout={<LLHorizontalItemsFlatlist horizontal={false} style={styles.listContainerHeader} title={title} titleStyle={styles.sectionTitle}/>}
       >
         <View style={styles.listView}>  
-          <Text style={styles.sectionTitle}>{title}</Text>
+          <CustomText style={styles.sectionTitle}>{title}</CustomText>
           <FlatList
             style={styles.list}
             horizontal={false}
@@ -347,7 +347,7 @@ class FavouritesScreen extends Component {
     const { noFavourites } = this.props.locale.messages;
     const { favPlaces, favInspirers, favItineraries, favEvents, favAccomodations } = this.state;
     if (favPlaces.length == 0 && favInspirers.length == 0 && favItineraries.length == 0 && favEvents.length == 0 && favAccomodations.length == 0)
-      return <View style={styles.center}><Text style={styles.noFavouritesText}>{noFavourites}</Text></View>
+      return <View style={styles.center}><CustomText style={styles.noFavouritesText}>{noFavourites}</CustomText></View>
     else 
       return null;
   }

@@ -20,7 +20,7 @@ export default class EntityWhyVisit extends PureComponent {
       <>
         { text != "" && text &&(
           <View style={[Constants.styles.innerText, styles.container]}>
-            <Text style={styles.title}>{title}</Text>
+            <CustomText style={styles.title}>{title}</CustomText>
             {/* <View style={styles.borderLine}></View> */}
             <HTML html={"<font style=\"" + Constants.styles.html.shortTextSecondary + "\">" + text + "</font>"} />
           </View>

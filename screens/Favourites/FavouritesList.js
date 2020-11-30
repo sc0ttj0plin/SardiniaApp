@@ -200,7 +200,7 @@ class FavouritesListScreen extends Component {
         loadingLayout={<LLHorizontalItemsFlatlist horizontal={false} style={styles.listContainerHeader} title={title} titleStyle={styles.sectionTitle}/>}
       >
         <View style={styles.listView}>  
-          <Text style={styles.sectionTitle}>{title}</Text>
+          <CustomText style={styles.sectionTitle}>{title}</CustomText>
           <FlatList
             style={styles.list}
             horizontal={false}

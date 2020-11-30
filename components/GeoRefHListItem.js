@@ -22,21 +22,21 @@ class GeoRefHListItem extends PureComponent{
       <View style={[styles.container, this.props.style]} onLayout={(event) => { this.setState({ width: event.nativeEvent.layout.width, height: event.nativeEvent.layout.height }) }}>
           <Image source={{ uri: this.props.image }} style={styles.image, {width: this.state.width, height: this.state.height}} PlaceholderContent={<ActivityIndicator />}>
             <View style={styles.textContainer}>
-              <Text
+              <CustomText
               numberOfLines={1}
               ellipsizeMode='tail'
               style={styles.title}>{this.props.title}
-              </Text>
+              </CustomText>
               { this.props.place != null && this.props.place != "" &&
-                <Text 
+                <CustomText 
                 numberOfLines={1}
                 ellipsizeMode='tail'
                 style={styles.place}>{this.props.place}
-                </Text>
+                </CustomText>
               }
               { this.props.distance != "" && this.props.distance != undefined &&
                 (
-                  <Text numberOfLines={1}ellipsizeMode='tail'style={styles.distance}>{distance}</Text>
+                  <CustomText numberOfLines={1}ellipsizeMode='tail'style={styles.distance}>{distance}</CustomText>
                 )
               }
             </View>

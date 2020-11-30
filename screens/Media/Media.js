@@ -244,7 +244,7 @@ class MediaScreen extends PureComponent {
         </HeaderFullscreen>
         {title && (
             <View style={[styles.footer]}>
-                <Text style={styles.footerText}>{title}</Text>
+                <CustomText style={styles.footerText}>{title}</CustomText>
             </View>
         )}
       </View>

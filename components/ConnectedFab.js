@@ -104,9 +104,9 @@ class ConnectedFab extends PureComponent {
       <TouchableOpacityRN activeOpacity={0.8} style={[styles.modalBtn, {
         backgroundColor
       }]} onPress={action}>
-        <Text style={[styles.modalBtnText, {
+        <CustomText style={[styles.modalBtnText, {
           backgroundColor
-        }]}>{title}</Text>
+        }]}>{title}</CustomText>
       </TouchableOpacityRN>
     )
   }
@@ -152,8 +152,8 @@ class ConnectedFab extends PureComponent {
             >
               <TouchableWithoutFeedback>
                 <View style={styles.modalWindow}>
-                  <Text style={styles.modalTitle}>{"Parcheggi nelle vicinanze!"}</Text>
-                  <Text style={styles.modalDescription}>{"Scopri i parcheggi liberi più vicini a te attraverso uno dei servizi convenzionati."}</Text>
+                  <CustomText style={styles.modalTitle}>{"Parcheggi nelle vicinanze!"}</CustomText>
+                  <CustomText style={styles.modalDescription}>{"Scopri i parcheggi liberi più vicini a te attraverso uno dei servizi convenzionati."}</CustomText>
                   <View style={styles.firstRow}>
                     {this._renderParkingButton("MYCICERO", "#7B3A95", null)}
                     <View style={styles.separator}></View>

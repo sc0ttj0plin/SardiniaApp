@@ -291,7 +291,7 @@ class AccomodationsScreen extends Component {
             color={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[Constants.ENTITY_TYPES.accomodations].iconColor}
           />
       </View>
-      <Text style={styles.categorySelectorBtnText}>{item.name}</Text>
+      <CustomText style={styles.categorySelectorBtnText}>{item.name}</CustomText>
     </TouchableOpacity>
 
   /* Renders the topmost component: a category list + map in our case */
@@ -337,7 +337,7 @@ class AccomodationsScreen extends Component {
           >
             <View>  
               <View style={styles.sectionTitleView}>
-                <Text style={styles.sectionTitle}>{nearToText}</Text>
+                <CustomText style={styles.sectionTitle}>{nearToText}</CustomText>
               </View>
               <FlatList
                 horizontal={true}
@@ -358,7 +358,7 @@ class AccomodationsScreen extends Component {
             </View>
           </AsyncOperationStatusIndicator>
           <View style={styles.sectionTitleView}>
-            <Text style={styles.sectionTitle}>{categoryTitle}</Text>
+            <CustomText style={styles.sectionTitle}>{categoryTitle}</CustomText>
           </View>
         </View>
       )

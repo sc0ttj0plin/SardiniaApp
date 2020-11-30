@@ -19,7 +19,8 @@ export default class EntityItem extends PureComponent {
     // let space = (Layout.window.width - (margins*2) - (this.width*2))/ 2;
     this.entityIconOpts = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[listType] || Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.places
     this.marginRight = 0;
-    this.marginTop = topSpace || 0;
+    this.marginTop = index == 0 && topSpace ? topSpace : 0;
+    // console.log("margin top", this.marginTop, index, topSpace, index == 0)
     this.marginLeft = horizontal==false && index && index%2 != 0 ? space*2 : 0;
     this.marginBottom = horizontal==false ? 16 : 10;
   }

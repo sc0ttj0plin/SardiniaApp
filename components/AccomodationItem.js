@@ -59,16 +59,16 @@ export default class AccomodationItem extends PureComponent {
               />
             </View>
             <View style={styles.innerContent}>
-              <Text style={styles.termText}>{term}</Text>
-              <Text style={styles.titleText}>{title}</Text>
+              <CustomText style={styles.termText}>{term}</CustomText>
+              <CustomText style={styles.titleText}>{title}</CustomText>
               <View style={styles.starsView}>
                 {this._renderStars(stars)}
               </View>
-              <Text style={styles.locationText}>{location}</Text>
+              <CustomText style={styles.locationText}>{location}</CustomText>
             </View>
           </View>
           <View style={styles.distanceView}>
-            <Text style={styles.distanceText}>Distanza {distance}</Text>
+            <CustomText style={styles.distanceText}>Distanza {distance}</CustomText>
           </View>
         </ScrollableContainerTouchableOpacity>
     );

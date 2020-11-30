@@ -46,10 +46,10 @@ class EntityStages extends PureComponent {
           <View style={styles.stageVerticalLine}></View>
         }
         <View style={styles.eventStageNumberView}>
-          <Text style={styles.eventStageNumber}>{index + 1}</Text>
+          <CustomText style={styles.eventStageNumber}>{index + 1}</CustomText>
         </View>
-        <Text style={styles.eventStageLocation}>{item.nome}</Text>
-        <Text style={styles.eventStageDate}>{formattedStartDate} - {formattedEndDate}</Text>
+        <CustomText style={styles.eventStageLocation}>{item.nome}</CustomText>
+        <CustomText style={styles.eventStageDate}>{formattedStartDate} - {formattedEndDate}</CustomText>
       </View>
     )
   }
@@ -58,7 +58,7 @@ class EntityStages extends PureComponent {
     const { stages } = this.props.locale.messages;
     return(
       <View style={styles.eventStagesView}>
-        <Text style={styles.eventStagesTitle}>{stages}</Text>
+        <CustomText style={styles.eventStagesTitle}>{stages}</CustomText>
         <FlatList 
           key={"itinerary-stages"}
           keyExtractor={item => item.name}
@@ -83,21 +83,21 @@ class EntityStages extends PureComponent {
       <View style={styles.itemContainer}>
         <View style={styles.topLine}>
           <View style={styles.titleView}>
-            <Text style={styles.title}>{title}</Text>
+            <CustomText style={styles.title}>{title}</CustomText>
           </View>
-          <Text style={styles.index}>{index + 1}</Text>
+          <CustomText style={styles.index}>{index + 1}</CustomText>
         </View>
         <View style={styles.imageCircle}>
           <Image style={{flex: 1, borderRadius: 50}} source={{ uri: stage.poi.image }}/>
         </View>
         <View style={styles.descriptionContainer}>
-          <Text style={styles.description}>{body}</Text>
+          <CustomText style={styles.description}>{body}</CustomText>
         </View>
         <View style={styles.bottomView}>
           <TouchableOpacity
             style={styles.bottomButton}
             activeOpacity={0.7} onPress={() => this._openPoi(uuid)}>
-              <Text style={styles.bottomButtonText}>{explore}</Text>
+              <CustomText style={styles.bottomButtonText}>{explore}</CustomText>
           </TouchableOpacity>
         </View>
       </View>

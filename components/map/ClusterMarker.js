@@ -44,7 +44,7 @@ export default class ClusterMarker extends PureComponent {
         tracksViewChanges={false}>
           <View
             style={[styles.marker, {borderRadius: width/2, width: width, height: width, backgroundColor: clusterBackgroundColor}]}>
-            <Text style={[styles.markerText]}>{cluster.count}</Text>
+            <CustomText style={[styles.markerText]}>{cluster.count}</CustomText>
           </View>
       </Marker.Animated>
       

@@ -61,14 +61,14 @@ class EntityAccomodations extends PureComponent {
         } = this.props; 
         return (
             <View style={[styles.fill, styles.mainView]}>
-                <Text style={styles.title}>Strutture ricettive nelle vicinanze</Text>
+                <CustomText style={styles.title}>Strutture ricettive nelle vicinanze</CustomText>
                 <AsyncOperationStatusIndicator
                     loading={true}
                     success={data && data.length > 0}
                     error={false}
                     loadingLayout={<LLEntitiesFlatlist horizontal={true} style={styles.contentContainerStyle} title={listTitle} titleStyle={this.props.listTitleStyle} error={false}/>}>
                     <View style={{flex: 1}}>   
-                        <Text style={{...listTitleStyle}}>{listTitle}</Text>
+                        <CustomText style={{...listTitleStyle}}>{listTitle}</CustomText>
                         <FlatList 
                             horizontal={horizontal ? horizontal : false}
                             key={listTitle + "-1"}
@@ -89,7 +89,7 @@ class EntityAccomodations extends PureComponent {
                 </AsyncOperationStatusIndicator>
 
                 <TouchableOpacity style={styles.showButton} activeOpacity={0.8} onPress={openMap}>
-                    <Text style={styles.showButtonText}>{showMapBtnText}</Text>
+                    <CustomText style={styles.showButtonText}>{showMapBtnText}</CustomText>
                 </TouchableOpacity>
             </View>
         )

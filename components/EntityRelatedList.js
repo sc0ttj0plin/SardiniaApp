@@ -112,7 +112,7 @@ export default class EntityRelatedList extends PureComponent {
                 error={false}
                 loadingLayout={this._renderLoadingLayout()}>
                 <View style={{flex: 1}}>   
-                    <Text style={listTitleStyle}>{listTitle}</Text>
+                    <CustomText style={listTitleStyle}>{listTitle}</CustomText>
                     <FlatList 
                         {...this.props} 
                         horizontal={horizontal || false}

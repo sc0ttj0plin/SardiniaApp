@@ -140,10 +140,10 @@ class AccomodationScreen extends Component {
           >
             <TouchableWithoutFeedback>
               <View style={styles.modalWindow}>
-                <Text style={styles.modalTitle}>{modalTitle}</Text>
-                <Text style={styles.modalDescription}>{modalDescription}</Text>
+                <CustomText style={styles.modalTitle}>{modalTitle}</CustomText>
+                <CustomText style={styles.modalDescription}>{modalDescription}</CustomText>
                 <TouchableOpacity activeOpacity={0.8} style={styles.modalBtn} onPress={modalAction}>
-                  <Text style={styles.modalBtnText}>{modalBtnTitle}</Text>
+                  <CustomText style={styles.modalBtnText}>{modalBtnTitle}</CustomText>
                 </TouchableOpacity>
               </View>
             </TouchableWithoutFeedback>

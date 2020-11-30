@@ -128,7 +128,7 @@ class EventsSubsetScreen extends Component {
      return (
       <View style={styles.calendarList}>
         <View style={styles.calendarListTitleView}>
-          <Text style={styles.calendarListTitle}>{this.state.headerDate}</Text>
+          <CustomText style={styles.calendarListTitle}>{this.state.headerDate}</CustomText>
         </View>
         {this._renderEventsList()}
       </View>

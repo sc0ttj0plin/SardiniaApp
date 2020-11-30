@@ -131,21 +131,21 @@ class EntityWidgetInMapView extends PureComponent {
           activeOpacity={0.7}>
           <Image source={{ uri: entity.image }} style={styles.image} PlaceholderContent={<ActivityIndicator />} />
           <View style={styles.textContainer}>
-            <Text
+            <CustomText
             numberOfLines={1}
             ellipsizeMode='tail'
             style={styles.title}>{title}
-            </Text>
-            <Text 
+            </CustomText>
+            <CustomText 
             numberOfLines={1}
             ellipsizeMode='tail'
             style={styles.place}>{entity.term.name}
-            </Text>
-            <Text 
+            </CustomText>
+            <CustomText 
             numberOfLines={1}
             ellipsizeMode='tail'
             style={styles.distance}>{distanceToString(entity.distance)}
-            </Text>
+            </CustomText>
           </View>
       </ScrollableContainerTouchableOpacity>
     )

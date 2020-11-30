@@ -29,7 +29,7 @@ export default class EntityHeader extends PureComponent {
             }}>
               <Fontisto name="unity" size={50} color="white" />
             </Animated.View>
-            <Text style={styles.text}>Apri modello 3D</Text>
+            <CustomText style={styles.text}>Apri modello 3D</CustomText>
           </TouchableOpacity>
         
       </>
