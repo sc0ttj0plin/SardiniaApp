@@ -12,7 +12,7 @@ import Layout from '../../constants/Layout';
 import Colors from '../../constants/Colors';
 import * as Constants from '../../constants';
 
-
+const INITIAL_AUTH_FSM_STATE = "emailInput"; /* Possible states: emailInput, emailSent, loginSuccess, loginError, logout */
 class Login extends Component {
 
   constructor(props) {
@@ -20,7 +20,7 @@ class Login extends Component {
     super(props);
     this.state = {
       email: "",
-      authFSM: "emailInput", /* Possible states: emailInput, emailSent, loginSuccess, loginError */
+      authFSM: INITIAL_AUTH_FSM_STATE, 
       isVerifyingEmail: false,
       name: "",
       surname: "",
@@ -31,23 +31,8 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    if (this.props.auth.user) {
-      Alert.alert(
-        "Auth",
-        "Logout?",[{
-            text: "Cancel",
-            onPress: () => this.props.navigation.goBack(),
-            style: "cancel"
-          }, { 
-            text: "OK", 
-            onPress: () => {
-              this.props.actions.logout();
-              this.props.navigation.goBack();
-            },
-        }],
-        { cancelable: false }
-      );
-    }
+    if (this.props.auth.user)
+      this.setState({ authFSM: "logout" });
   }
 
   componentDidUpdate(prevProps) {
@@ -79,8 +64,14 @@ class Login extends Component {
     this.props.navigation.goBack();
   }
 
+  _onLogoutPress = () => {
+    this.props.actions.logout();
+    this.props.navigation.goBack();
+  }
+
   _onBackPress = () => {
-    if (this.state.authFSM === "emailInput") 
+    const { authFSM } = this.state;
+    if (authFSM === "emailInput" || authFSM === "logout") 
       this.props.navigation.goBack();
     else 
       this.setState({ authFSM: "emailInput" });
@@ -92,17 +83,48 @@ class Login extends Component {
     if (this.props.auth.success) return (<CustomText style={styles.errorBox}>Autenticazione riuscita!</CustomText>);
   }
 
+  _renderLogout = () => {
+    const { logoutMsg, logoutBtn } = this.props.locale.messages;
+    return (
+      <View style={styles.screen}>
+        <View style={styles.view0}>
+          <View style={styles.view1}>
+            <CustomText style={styles.text0}>{logoutMsg}</CustomText> 
+            <View>
+              <TouchableOpacity style={styles.signInButton} onPress={this._onLogoutPress}>
+                <CustomText style={styles.registerTxt}>{logoutBtn}</CustomText>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
   _renderLoginSuccess = () => {
-    const { name, surname, birth, country, sex, confirm } = this.props.locale.messages;
+    const { name, surname, birth, country, sex, confirm, fillInformation } = this.props.locale.messages;
       return (
       <View style={styles.mainView}>
         <View style={styles.view0}>
-          <View style={styles.view1}>
-            <Input placeholder={name} onChangeText={(text) => this.setState({name: text})} />
-            <Input placeholder={surname} onChangeText={(text) => this.setState({surname: text})} />
-            <Input placeholder={birth} onChangeText={(text) => this.setState({birth: text})} />
-            <Input placeholder={country} onChangeText={(text) => this.setState({country: text})} />
-            <Input placeholder={sex} onChangeText={(text) => this.setState({sex: text})} />
+          <View style={styles.view1s}>
+          <CustomText style={styles.text0}>{fillInformation}</CustomText> 
+          <Form>
+            <Item style={styles.item1} regular>
+              <Input placeholder={name} onChangeText={(text) => this.setState({name: text})} />
+            </Item>
+            <Item style={styles.item1} regular>
+              <Input placeholder={surname} onChangeText={(text) => this.setState({surname: text})} />
+            </Item>
+            <Item style={styles.item1} regular>
+              <Input placeholder={birth} onChangeText={(text) => this.setState({birth: text})} />
+            </Item>
+            <Item style={styles.item1} regular>
+              <Input placeholder={country} onChangeText={(text) => this.setState({country: text})} />
+            </Item>
+            <Item style={styles.item1} regular>
+              <Input placeholder={sex} onChangeText={(text) => this.setState({sex: text})} />
+            </Item>
+          </Form>
           </View>
           <TouchableOpacity style={styles.signInButton} onPress={this._setUserData}>
               <CustomText style={styles.registerTxt}>{confirm}</CustomText>
@@ -140,15 +162,16 @@ class Login extends Component {
   }
 
   _renderMailSent = () => {
+    const { sentLink, checkInbox } = this.props.locale.messages;
     return (
       <View style={styles.screen}>
         <View style={styles.view0}>
           <View style={styles.view1}>
             <CustomText style={styles.text0}>
-              Ti abbiamo mandato un link
+              {sentLink}
             </CustomText> 
             <CustomText style={styles.text1}>
-              Check your inbox
+              {checkInbox}
             </CustomText>
           </View>
         </View>
@@ -174,9 +197,10 @@ class Login extends Component {
   }
 
   render() {
-    if (!this.props.auth.user) {
-      ///contain, cover, stretch, center, repeat.
-      const { authFSM } = this.state;
+    ///contain, cover, stretch, center, repeat.
+    const { authFSM } = this.state;
+    if (!this.props.auth.success) {
+      // Not yet authenticated (input -> sent -> error)
       const { register } = this.props.locale.messages;
       return (
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
@@ -185,9 +209,23 @@ class Login extends Component {
           {authFSM === "emailInput" && this._renderMailInput()}
           {authFSM === "emailSent" && this._renderMailSent()}
           {authFSM === "loginError" && this._renderLoginError()}
-          {authFSM === "loginSuccess" && this._renderLoginSuccess()}
         </View>
       )
+    } else if (this.props.auth.success && authFSM === "loginSuccess") {
+      return (
+        <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
+          <ConnectedHeader onBackPress={this._onBackPress} />
+          {this._renderLoginSuccess()}
+        </View>
+      );
+    } else if (this.props.auth.user) {
+      // Authenticated but yet in emailInput (initial state) logout
+      return (
+        <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
+          <ConnectedHeader onBackPress={this._onBackPress} />
+          {this._renderLogout()}
+        </View>
+      );
     } else {
       return null;
     }
@@ -235,6 +273,12 @@ const styles = StyleSheet.create({
     width: Layout.window.width - 50, 
     alignItems: 'center', 
     marginTop: 30, 
+    justifyContent: 'center' 
+  },
+  view1s: {
+    width: Layout.window.width - 50, 
+    alignItems: 'center', 
+    marginTop: 50, 
     justifyContent: 'center' 
   },
   text0: { 
@@ -335,6 +379,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 5,
     marginTop: 5
+  },
+  item1: {
+    width: '100%',
+    backgroundColor: 'rgba(255,255,255,0.75)',
+    height: 55,
+    marginTop: 5,
+    marginBottom: 5,
+    borderColor: "white",
+    borderBottomColor: "black",
+    backgroundColor: Colors.lightGray,
+    borderTopLeftRadius: 4,
+    borderTopRightRadius: 4,
   },
   item: {
     width: '100%',

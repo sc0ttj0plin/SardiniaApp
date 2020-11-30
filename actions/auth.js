@@ -7,7 +7,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 //@passwordless
 export const passwordLessSignup = (email) =>
   async (dispatch, getState) => {
-    console.log("HERE!!", Constants.AUTH)
     dispatch({ type: Constants.AUTH });
     let token = null;
     //Auth Storage is persisted (see store.js)
@@ -82,20 +81,19 @@ async (dispatch, getState) => {
 }
 
 //
-export const editUser = (el) => {
-  return async function(dispatch) {
+export const editUser = (el) =>
+  async (dispatch) => {
     try {
-      dispatch(Constants.USER_EDIT);
+      dispatch({ type: Constants.USER_EDIT });
       const user = firebase.auth().currentUser;
       let ref = firebase.database().ref(`users/${user.uid}/info`);
       ref.update(el);
-      dispatch(Constants.USER_EDIT_SUCCESS);
+      dispatch({ type: Constants.USER_EDIT_SUCCESS });
     } catch(error) { 
-      dispatch(Constants.USER_EDIT_FAIL, error);
+      dispatch({ type: Constants.USER_EDIT_FAIL });
       console.log(error); 
     }
   }  
-}
 
 export const logout = () => 
   async (dispatch) => {

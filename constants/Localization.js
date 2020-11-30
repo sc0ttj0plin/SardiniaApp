@@ -99,6 +99,11 @@ const dict = {
     confirm: "CONFERMA",
     register: "REGISTRATI",
     next: "AVANTI",
+    sentLink: "Ti abbiamo mandato un link", 
+    checkInbox: "Controlla la tua mail",
+    logoutMsg: "Vuoi disconnettere il tuo account?",
+    logoutBtn: "DISCONNETTI",
+    fillInformation: "Inserisci qui i tuoi dati personali",
   },
   "en-gb": {
     //GENERIC
@@ -199,6 +204,11 @@ const dict = {
     confirm: "CONFIRM",
     register: "REGISTER",
     next: "NEXT",
+    sentLink: "We've sent you a link", 
+    checkInbox: "Check your inbox",
+    logoutMsg: "Do you want to logout from your account?",
+    logoutBtn: "LOGOUT",
+    fillInformation: "Fill in the personal data form",
   }
 }
 
