@@ -11,6 +11,7 @@ import itinerariesReducer from '../reducers/itineraries';
 import authReducer from '../reducers/auth';
 import nodesReducer from '../reducers/nodes';
 import poisReducer from '../reducers/pois';
+import preferencesReducer from '../reducers/preferences';
 import accomodationsReducer from '../reducers/accomodations';
 import searchAutocompleteReducer from '../reducers/searchAutocomplete';
 import apolloMiddleware from '../apollo/middleware';
@@ -48,6 +49,7 @@ const rootReducer = combineReducers({
     favouritesState: favouritesReducer,
     //Graphql states
     categoriesState: categoriesReducer,
+    preferencesState: preferencesReducer,
     eventsState: eventsReducer,
     inspirersState: inspirersReducer,
     itinerariesState: itinerariesReducer,

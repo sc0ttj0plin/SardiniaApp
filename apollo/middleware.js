@@ -135,6 +135,7 @@ const apolloMiddleware = client => {
                     let dispacth = { 
                       type: Constants.GET_CATEGORIES_SUCCESS, 
                       payload: { 
+                        vid: action.query.vid,
                         terms: { [action.query.vid]: terms }, 
                         termsMap: { [action.query.vid]: termsMap }
                       }  

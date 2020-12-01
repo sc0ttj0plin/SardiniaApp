@@ -21,10 +21,32 @@ import Colors from '../../constants/Colors';
 import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
 import { FontAwesome5 } from '@expo/vector-icons';
 
-/* Deferred rendering to speedup page inital load: 
-   deferred rendering delays the rendering reducing the initial 
-   number of components loaded when the page initially mounts.
-   Other components are loaded right after the mount */
+
+// 36 e86a70a8-38b8-43b2-bc64-98f3905e3d7d Natura
+// 36 1df810c0-60ad-4d8d-b30c-a652713e3264 Mare
+// 36 2c217b84-6ab6-4702-a88b-c560970f1d3d Archeologia e Arte
+// 36 fa9a383b-5cb5-4944-9807-b96bec3dc113 Isole nell'isola
+// 36 6e49ab39-1e7f-4695-b14c-cbcf00648c25 Città e Borghi
+//    36 844ac546-4da8-406a-8258-8e5b96fc6f7f Musei e murales
+//    36 db9db33b-df26-41b2-8a86-ceaf7c4e313e Architetture
+//    36 1b3f8171-db41-4811-a824-3d9eb622e40a Archeologie
+//    36 1a8de1f9-c101-406c-87c6-8561f52a3565 Miniere
+//    36 c0d13b56-3bba-4e30-a4a4-8b85e922d9ae I borghi
+//    36 0bd1e5a1-6bab-441e-9f65-28b82c8b42fb Le città
+//    36 69d9bfcb-45ba-4d4d-99c2-822d8fad79ac Piccoli, grandi centri
+//    36 3e8150dd-23b0-4e3a-9d9e-b31b52c503e7 Parchi e foreste
+//    36 562b96e5-06f1-4ffa-ac3a-4043dec801da Aree protette
+//    36 4e06d437-5a59-4bf9-a661-fc2262379b5c Fiumi, laghi e zone umide
+//    36 11d7b6d8-23d4-44d4-bc02-73f55882c528 Alture, canyon e grotte
+//    36 318cf9f1-2835-4307-b523-41fa780ecf40 Calette e Scogliere
+//    36 93cb5320-a3b3-40a7-877e-f296a6e2381f Spiagge
+//    36 94955bfb-af7b-4a62-b459-90864873bb02 I porti turistici
+// 46 840bf9a4-f509-4774-9c93-6e1491604cfc Artigianato
+// 46 1d6b513f-9c32-48c2-b8ea-5cfeda3cba25 Momenti Speciali
+// 46 de89eb41-7597-45c1-a102-a5815ed459f3 Benessere
+// 46 76c3cba9-dc17-45b4-bca5-e4b8fb33bec5 Attività all'aperto
+// 46 306409ed-11ed-44d0-9376-697e051e5dd4 Tradizione e Gusto
+
 const USE_DR = false;
 class PreferencesScreen extends Component {
 
@@ -41,7 +63,10 @@ class PreferencesScreen extends Component {
       selectedIconName: null,
       started: false,
       finished: false,
-      selectedColors: []
+      selectedColors: [],
+      //categories parsed [{ name, image, uuid }]
+      [Constants.VIDS.poisCategories]: [],
+      [Constants.VIDS.inspirersCategories]: [],
     };
       
   }
@@ -55,7 +80,15 @@ class PreferencesScreen extends Component {
   componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
-    this._fetchEntities()
+    const { poisCategories, inspirersCategories } = Constants.VIDS;
+    if (!this.props.categories.data[poisCategories])
+      this.props.actions.getCategories({ vid: poisCategories });
+    else 
+      this._parseCategories(poisCategories);
+    if (!this.props.categories.data[inspirersCategories])
+      this.props.actions.getCategories({ vid: inspirersCategories });
+    else
+      this._parseCategories(inspirersCategories);
   }
 
   /**
@@ -63,11 +96,11 @@ class PreferencesScreen extends Component {
    * or to post-process data once it changes
    */
   componentDidUpdate(prevProps) {
-    /**
-     * Is the former props different from the newly propagated prop (redux)? perform some action
-     * if(prevProps.xxx !== this.props.xxx)
-     *  doStuff();
-     */
+    const { poisCategories, inspirersCategories } = Constants.VIDS;
+    if(prevProps.categories.data[poisCategories] !== this.props.categories.data[poisCategories])
+      this._parseCategories(poisCategories)
+    if(prevProps.categories.data[inspirersCategories] !== this.props.categories.data[inspirersCategories])
+      this._parseCategories(inspirersCategories)
   }
 
   /**
@@ -78,20 +111,17 @@ class PreferencesScreen extends Component {
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
 
-  _fetchEntities = async () => {
-    try {
-      const place1 = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.places, offset: Math.ceil(Math.random()*50), limit: 1}))
-      const itinerary = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.itineraries, offset: 0, limit: 1}))
-      const place2 = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.places, offset: Math.ceil(Math.random()*50), limit: 1}))
-      const event = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.events, offset: Math.ceil(Math.random()*50), limit: 1}))
-      const inspirer = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.inspirers, offset: 0, limit: 1}))
-      const entities = [place1[0], itinerary[0], place2[0], event[0], inspirer[0]];
-      console.log("entities", entities.length)
-      this.setState({entities: entities})
-    } catch(error){
-      console.log(error)
-    }
+  /**
+   * Parses categories returning a simplified array of [{name, uuid, image}]
+   */
+  _parseCategories = (vid) => {
+      this.setState({ [vid]: this.props.categories.data[vid].map(el => ({
+        name: el.name,
+        image: el.image,
+        uuid: el.uuid,
+      }))});
   }
+
 
   _selectActiveIcon = (iconName) => {
     this.setState({
@@ -444,21 +474,10 @@ function PreferencesScreenContainer(props) {
 
 const mapStateToProps = state => {
   return {
-    restState: state.restState,
-    //mixed state
-    others: state.othersState,
     //language
     locale: state.localeState,
-    //favourites
-    favourites: state.favouritesState,
     //graphql
     categories: state.categoriesState,
-    events: state.eventsState,
-    inspirers: state.inspirersState,
-    itineraries: state.itinerariesState,
-    nodes: state.nodesState,
-    pois: state.poisState,
-    searchAutocomplete: state.searchAutocompleteState,
   };
 };
 

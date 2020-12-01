@@ -50,6 +50,7 @@ export const processEvents = function(events) {
  *       "1a8de1f9-c101-406c-87c6-8561f52a3565",
  *     ],
  *     ...
+ *  IMPORTANT TODO: for inspirers we dont' have images just yet, adding sample images
  * @param {*} categories input categories (with nested terms)
  * @param {*} termsMap terms keys by uuid
  */
@@ -65,9 +66,8 @@ export const processCategories = function(categories, termsMap) {
         c.image = sampleImages[c.tid].image;
       else
         c.image = "https://www.sardegnainblog.it/video/wp-content/uploads/2018/06/isola-asinara-escursioni-in-barca.jpg"
-        if(c.nodes_terms_aggregate.aggregate.count > 0) {
+        if(c.nodes_terms_aggregate && c.nodes_terms_aggregate.aggregate.count > 0)
           c.childUuids = [c.uuid];
-      }
 
       if(c.terms && c.terms.length > 0) {
           var terms = processCategories(c.terms, termsMap);   
@@ -78,7 +78,7 @@ export const processCategories = function(categories, termsMap) {
           };
           c.terms = terms;
       }
-      if(c.nodes_terms_aggregate.aggregate.count > 0 || (c.terms && c.terms.length > 0) ) {
+      if(c.nodes_terms_aggregate && c.nodes_terms_aggregate.aggregate.count > 0 || (c.terms && c.terms.length > 0) ) {
           cCategories.push(c);
           termsMap[c.uuid] = c;
       }

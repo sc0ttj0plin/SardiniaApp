@@ -10,6 +10,8 @@ import * as poisActions from './pois';
 import * as restActions from './rest';
 import * as accomodationsActions from './accomodations';
 import * as searchAutocompleteActions from './searchAutocomplete';
+import * as preferencesActions from './preferences';
+
 import * as authActions from './auth';
 
 const allActions = { 
@@ -25,6 +27,7 @@ const allActions = {
    ...restActions,
    ...accomodationsActions,
    ...searchAutocompleteActions,
+   ...preferencesActions,
    ...authActions,
  }
 export default allActions;

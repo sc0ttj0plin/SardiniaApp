@@ -53,6 +53,41 @@ query ($queryStr: String, $nodeTypes: [String!]) {
 }
 `
 
+export const getCategoriesPreferences = gql`
+  query ($vids: [Int!]) {
+    terms(where: {vid: {_in: $vids}, parent: {_is_null: true}}) {
+      name
+      uuid
+      image: image_calc
+      nodes_terms_aggregate {
+        aggregate {
+          count
+        }
+      }
+      terms {
+        name
+        uuid
+        image: image_calc
+        nodes_terms_aggregate {
+          aggregate {
+            count
+          }
+        }
+        terms {
+          name
+          uuid
+          image: image_calc
+          nodes_terms_aggregate {
+            aggregate {
+              count
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const getCategoriesQuery = gql`
 query ($vid: Int) {
     terms(where: {vid: {_eq: $vid}, parent: {_is_null: true}}) {
