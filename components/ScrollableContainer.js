@@ -1,5 +1,5 @@
 import React, { PureComponent, Component } from 'react';
-import { Dimensions, StyleSheet, Text, View, TouchableOpacity, ScrollView, NativeModules, Easing } from 'react-native';
+import { Dimensions, StyleSheet, Text, View, TouchableOpacity, ScrollView, NativeModules, Easing, Platform } from 'react-native';
 import ScrollBottomSheet from 'react-native-scroll-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import MapView from 'react-native-maps';
@@ -93,12 +93,15 @@ export default class ScrollableContainer extends PureComponent {
 
   _renderHandle = () => {
     const { closeSnapIndex = 1 } = this.props;
-    return (<Animated.View style={[styles.header, { borderTopRightRadius: this._handleBorderRadius }]}>
-      <View style={styles.panelHandle} />
-      <TouchableOpacity style={styles.xView} onPress={() => this._scrollable.snapTo(closeSnapIndex)}>
-        <Feather name={'x'} size={20} color={Colors.grayHandle} />
-      </TouchableOpacity>
-    </Animated.View>);
+    return (
+      <Animated.View style={[styles.header, { borderTopRightRadius: this._handleBorderRadius }]}>
+        <View style={styles.panelHandle} />
+        { Platform.OS == 'android' && 
+          <TouchableOpacity style={styles.xView} onPress={() => this._scrollable.snapTo(closeSnapIndex)}>
+            <Feather name={'x'} size={20} color={Colors.grayHandle} />
+          </TouchableOpacity>
+        }
+      </Animated.View>);
   }
 
   render() {
