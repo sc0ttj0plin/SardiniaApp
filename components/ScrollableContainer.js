@@ -5,6 +5,8 @@ import Animated from 'react-native-reanimated';
 import MapView from 'react-native-maps';
 const windowHeight = Dimensions.get('window').height;
 import Layout from '../constants/Layout';
+import { Ionicons, Feather } from '@expo/vector-icons';
+import Colors from '../constants/Colors';
 import ScrollableContainerTouchableOpacity from "./ScrollableContainerTouchableOpacity"
 import { call, useCode, useAnimatedStyle, useSharedValue} from 'react-native-reanimated'
 import { PanGestureHandler, State } from "react-native-gesture-handler";
@@ -89,12 +91,15 @@ export default class ScrollableContainer extends PureComponent {
     this._handleBorderRadius._value = value;
   }
 
-  _renderHandle = () =>
-    <Animated.View style={[styles.header, {
-      borderTopRightRadius: this._handleBorderRadius
-    }]}>
+  _renderHandle = () => {
+    const { closeSnapIndex = 1 } = this.props;
+    return (<Animated.View style={[styles.header, { borderTopRightRadius: this._handleBorderRadius }]}>
       <View style={styles.panelHandle} />
-    </Animated.View>;
+      <TouchableOpacity style={styles.xView} onPress={() => this._scrollable.snapTo(closeSnapIndex)}>
+        <Feather name={'x'} size={20} color={Colors.grayHandle} />
+      </TouchableOpacity>
+    </Animated.View>);
+  }
 
   render() {
     const { 
@@ -195,8 +200,15 @@ const styles = StyleSheet.create({
   panelHandle: {
     width: 32,
     height: 4,
-    backgroundColor: "#0000001A",
+    backgroundColor: Colors.grayHandle,
     borderRadius: 2,
+  },
+  xView: {
+    position: 'absolute', 
+    right: 0, 
+    top: 10, 
+    height: 30, 
+    width: 30
   },
   item: {
     padding: 20,

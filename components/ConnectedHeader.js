@@ -71,7 +71,8 @@ class ConnectedHeader extends PureComponent {
       backButtonVisible: props.backButtonVisible ? props.backButtonVisible : HEADER_BUTTONS_PER_SCREEN[routeName].backButtonVisible,
       searchButtonVisible: props.searchButtonVisible ? props.searchButtonVisible : HEADER_BUTTONS_PER_SCREEN[routeName].searchButtonVisible,
       filterButtonVisible: props.filterButtonVisible ? props.filterButtonVisible : HEADER_BUTTONS_PER_SCREEN[routeName].filterButtonVisible,
-
+      //
+      searchStr: "",
     };
 
   }
@@ -113,6 +114,7 @@ class ConnectedHeader extends PureComponent {
         vidsInclude: [Constants.VIDS.poisCategories, Constants.VIDS.pois, Constants.VIDS.inspirersCategories, Constants.VIDS.events],
         typesExclude: [Constants.NODE_TYPES.events]
       });
+    this.setState({ searchStr: search });
     this.props.actions.setSearchOrAutocomplete(search);
   };
 
@@ -194,7 +196,7 @@ class ConnectedHeader extends PureComponent {
   }
 
   _renderSearchBar = () => {
-    const { searchStr } = this.props.others;
+    const { searchStr } = this.state;
     const { insertHere } = this.props.locale.messages;
     
     return(

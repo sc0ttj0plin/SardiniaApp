@@ -4,7 +4,7 @@ import ScrollableContainerTouchableOpacity from "../ScrollableContainerTouchable
 import { ActivityIndicator } from 'react-native';
 // import { Image } from 'react-native-elements';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import {distance, distanceToString} from '../../helpers/maps'
+import {distance, distanceToString} from '../../helpers/maps';
 import actions from '../../actions';
 import { apolloQuery } from '../../apollo/queries';
 import * as Constants from "../../constants"

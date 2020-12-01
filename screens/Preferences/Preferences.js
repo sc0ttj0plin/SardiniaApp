@@ -78,23 +78,6 @@ class PreferencesScreen extends Component {
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
 
-  /**
-   * If the reducer embeds a single data type then e.g. only pois:
-   *    Data is stored in this.props.pois.data
-   *    Success state is stored in this.props.pois.success
-   *    Loading state is stored in this.props.pois.loading
-   *    Error state is stored in this.props.pois.error
-   * If the reducer embeds multiple data types then (e.g. search + autocomplete):
-   *    Data is stored in this.props.searchAutocomplete.search
-   *    Success state is stored in this.props.searchAutocomplete.searchSuccess
-   *    Loading state is stored in this.props.searchAutocomplete.searchLoading
-   *    Error state is stored in this.props.searchAutocomplete.searchError
-   */
-  _isSuccessData  = () => false;    /* e.g. this.props.pois.success; */
-  _isLoadingData  = () => true;   /* e.g. this.props.pois.loading; */
-  _isErrorData    = () => null;    /* e.g. this.props.pois.error; */
-
-
   _fetchEntities = async () => {
     try {
       const place1 = await apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.places, offset: Math.ceil(Math.random()*50), limit: 1}))
@@ -135,6 +118,10 @@ class PreferencesScreen extends Component {
         })
       }
     })
+  }
+
+  _onFinished = () => {
+    this.props.navigation.goBack();
   }
 
   /********************* Render methods go down here *********************/
@@ -233,7 +220,7 @@ class PreferencesScreen extends Component {
   }
 
   _renderFinishedContent = () => {
-    const { preferencesText3, thanks, back } = this.props.locale.messages;
+    const { preferencesText3, thanks, okDoneSurvey } = this.props.locale.messages;
 
     return(
       <>
@@ -252,8 +239,8 @@ class PreferencesScreen extends Component {
             <TouchableOpacity
               style={styles.startButton}
               activeOpacity={0.7}
-              onPress={() => this.setState({finished: false, started: false})}>
-                <CustomText style={styles.startButtonText}>{back}</CustomText>
+              onPress={this._onFinished}>
+                <CustomText style={styles.startButtonText}>{okDoneSurvey}</CustomText>
             </TouchableOpacity>
           </View>
         </View>
@@ -339,7 +326,7 @@ const styles = StyleSheet.create({
   },
   firstView: {
     flex: 1,
-    paddingTop: 153,
+    paddingTop: 50,
     paddingHorizontal: 55,
     paddingBottom: 0
   },
@@ -391,7 +378,7 @@ const styles = StyleSheet.create({
   startedContent: {
     paddingHorizontal: 15,
     flex: 1,
-    paddingTop: 100
+    paddingTop: 50
   },
   startedContentText: {
     fontSize: 15,

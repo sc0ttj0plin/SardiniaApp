@@ -29,6 +29,7 @@ import { Button } from "react-native-paper";
 import { Marker } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
 import { PROVIDER_GOOGLE } from 'react-native-maps';
+import {distance, distanceToString} from '../../helpers/maps';
 import Itinerary from "./Itinerary";
 
 
@@ -213,10 +214,17 @@ class ItinerariesScreen extends PureComponent {
   }
 
   _renderWidget = () => {
-    const { selectedItinerary } = this.state;
+    const { selectedItinerary, coords } = this.state;
     const { lan } = this.props.locale;
     const title = _.get(selectedItinerary.title, [lan, 0, "value"], null);
     const image = selectedItinerary.image;
+    let distanceStr = null;
+
+    // Add distance from the first itinerary stage
+    if (selectedItinerary.stages && selectedItinerary.stages.length > 0) {
+      const firstStage = selectedItinerary.stages[0].poi;
+      distanceStr = distanceToString(distance(coords.latitude, coords.longitude, firstStage.georef.coordinates[1], firstStage.georef.coordinates[0]));
+    }
 
     return(
       <View style={styles.widget}>
@@ -230,6 +238,7 @@ class ItinerariesScreen extends PureComponent {
           style={styles.itinerariesListItem}
           horizontal={false}
           topSpace={10}
+          distance={this.state.isCordsInBound ? distanceStr : null}
           extraStyle={{
             marginBottom: 10,
             width: "100%",
@@ -259,7 +268,8 @@ class ItinerariesScreen extends PureComponent {
         <Marker.Animated
           coordinate={{ longitude: parseFloat(long),  latitude: parseFloat(lat) }}
           onPress={() => this._selectMarker(itinerary)}
-          tracksViewChanges={itinerary == this.state.selectedItinerary}
+          // tracksViewChanges={itinerary == this.state.selectedItinerary}
+          tracksViewChanges={false}
           style={{width: 42, height: 42, zIndex: 1}}>
             <View style={[styles.markerContainer, {
               backgroundColor: selected ? Colors.greenTransparent : "transparent"
@@ -336,6 +346,7 @@ class ItinerariesScreen extends PureComponent {
         initialSnapIndex={2}
         numColumns={numColumns}
         snapPoints={this.state.snapPoints}
+        closeSnapIndex={2}
         onSettle={this._onSettle}
         snapIndex={snapIndex}
         renderItem={this._renderListItem}

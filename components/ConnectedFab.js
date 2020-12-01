@@ -113,6 +113,7 @@ class ConnectedFab extends PureComponent {
 
   render() {
     const isFavourite = this.props.favourites.[this.props.type][this.state.uuid];
+    const { nearParks, discoverParks, findParkBtn } = this.props.locale.messages;
     const { shareLink, coordinates, color, title } = this.props;
     const backgroundColor = color || Colors.colorPlacesScreen;
     return (
@@ -152,12 +153,10 @@ class ConnectedFab extends PureComponent {
             >
               <TouchableWithoutFeedback>
                 <View style={styles.modalWindow}>
-                  <CustomText style={styles.modalTitle}>{"Parcheggi nelle vicinanze!"}</CustomText>
-                  <CustomText style={styles.modalDescription}>{"Scopri i parcheggi liberi più vicini a te attraverso uno dei servizi convenzionati."}</CustomText>
+                  <CustomText style={styles.modalTitle}>{nearParks}</CustomText>
+                  <CustomText style={styles.modalDescription}>{discoverParks}</CustomText>
                   <View style={styles.firstRow}>
-                    {this._renderParkingButton("MYCICERO", "#7B3A95", null)}
-                    <View style={styles.separator}></View>
-                    {this._renderParkingButton("EASYPARK", "#F1287E", null)}
+                    {this._renderParkingButton(findParkBtn, Colors.black, null)}
                   </View>
                 </View>
               </TouchableWithoutFeedback>

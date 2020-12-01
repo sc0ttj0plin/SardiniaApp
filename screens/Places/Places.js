@@ -444,6 +444,7 @@ class PlacesScreen extends PureComponent {
         ListHeaderComponent={this._renderListHeader}
         data={data}
         snapPoints={this.state.snapPoints}
+        closeSnapIndex={1}
         snapIndex={snapIndex}
         initialSnapIndex={1}
         onEndReached={this._loadMorePois}

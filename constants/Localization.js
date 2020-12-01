@@ -82,6 +82,7 @@ const dict = {
     preferencesText2: "Aiutaci a capire i tuoi gusti cliccando sulle emoticon.",
     preferencesText3: "Adesso conosciamo i tuoi gusti.",
     back: "Indietro",
+    okDoneSurvey: "OK, HAI FINITO!",
     thanks: "Grazie!",
     insertHere: "Cerca",
     favourites: "Preferiti",
@@ -104,6 +105,10 @@ const dict = {
     logoutMsg: "Vuoi disconnettere il tuo account?",
     logoutBtn: "DISCONNETTI",
     fillInformation: "Inserisci qui i tuoi dati personali",
+    //Parks
+    nearParks: "Parcheggi nelle vicinanze!", 
+    discoverParks: "Scopri i parcheggi liberi più vicini a te attraverso uno dei servizi convenzionati.",
+    findParkBtn: "TROVA UN PARCHEGGIO"
   },
   "en-gb": {
     //GENERIC
@@ -186,6 +191,7 @@ const dict = {
     preferencesText2: "Help us understand your preferences by clicking on the emoticons.",
     preferencesText3: "Now we know your preferences.",
     back: "Back",
+    okDoneSurvey: "OK, YOU ARE DONE!",
     thanks: "Thanks!",
     drawerSearch: "Search",
     insertHere: "Search",
@@ -209,6 +215,10 @@ const dict = {
     logoutMsg: "Do you want to logout from your account?",
     logoutBtn: "LOGOUT",
     fillInformation: "Fill in the personal data form",
+    //Parks
+    nearParks: "Nearest parkings!", 
+    discoverParks: "Discover the nearest free parkings provided by one of the affiliated services.",
+    findParkBtn: "FIND A PARK"
   }
 }
 

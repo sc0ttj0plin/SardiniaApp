@@ -30,7 +30,7 @@ export default class EventListItem extends PureComponent {
               PlaceholderContent={<ActivityIndicator style={styles.spinner} color={"white"}/>}/>
           </View>
           <View style={styles.itemDescView}>
-              <CustomText style={styles.listItemTitle}>{title}</CustomText>
+              <CustomText style={styles.listItemTitle} numberOfLines={1}>{title}</CustomText>
               <CustomText style={styles.listItemTerm}>{term}</CustomText>
               {this._renderDates()}
           </View>

@@ -442,6 +442,7 @@ class AccomodationsScreen extends Component {
         data={data}
         snapPoints={this.state.snapPoints}
         snapIndex={snapIndex}
+        closeSnapIndex={1}
         initialSnapIndex={1}
         onEndReached={this._loadMorePois}
         numColumns={numColumns}
