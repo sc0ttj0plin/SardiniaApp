@@ -261,13 +261,14 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 36,
     borderRadius: 4,
-    paddingVertical: 9,
+    paddingVertical: 10,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "red"
   },
   modalBtnText: {
     color: "white",
+    fontFamily: "montserrat-bold"
   },
   firstRow: {
     marginTop: 30,

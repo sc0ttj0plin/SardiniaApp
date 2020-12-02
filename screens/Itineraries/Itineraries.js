@@ -155,8 +155,8 @@ class ItinerariesScreen extends PureComponent {
     const { width, height } = event.nativeEvent.layout;
     let margins = 20
     let itemWidth = ((Layout.window.width - (margins*2))/2) - 5;
-    //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 44 (handle) - 36 (header text) - itemWidth (entityItem) - 10 (margin of entityItem)
-    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44 - 76 - itemWidth - 10, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44 - 76, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44] });
+    //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 24 (handle) - 36 (header text) - itemWidth (entityItem) - 10 (margin of entityItem)
+    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 24 - 76 - itemWidth - 10, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 24 - 76, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 34] });
   }; 
 
   _onSettle = () => {
@@ -204,6 +204,7 @@ class ItinerariesScreen extends PureComponent {
         clusterColor={Colors.colorItinerariesScreen}
         style={{flex: 1}}
         onPress={() => this._selectMarker(null)}
+        onPanDrag={() => this._selectMarker(null)}
         onRegionChangeComplete={this._onRegionChangeComplete}
       >
         {this._renderMarkers()}
@@ -461,7 +462,7 @@ const styles = StyleSheet.create({
     height: 180,
     position: "absolute",
     // backgroundColor: Colors.lightGray,
-    bottom: 70,
+    bottom: Platform.OS == "ios" ? 30 : 70,
     left: 0,
     padding: 10,
   },

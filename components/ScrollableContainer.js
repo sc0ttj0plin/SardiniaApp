@@ -97,11 +97,11 @@ export default class ScrollableContainer extends PureComponent {
     return (
       <Animated.View style={[styles.header, { borderTopRightRadius: this._handleBorderRadius }]}>
         <View style={styles.panelHandle} />
-        { Platform.OS == 'android' && 
+        {/* { Platform.OS == 'android' && 
           <TouchableOpacity style={styles.xView} onPress={() => this._scrollable.snapTo(closeSnapIndex)}>
             <Feather name={'x'} size={20} color={Colors.grayHandle} />
           </TouchableOpacity>
-        }
+        } */}
       </Animated.View>);
   }
 
@@ -201,7 +201,8 @@ const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
     backgroundColor: 'white',
-    paddingVertical: 20,
+    paddingTop: 20,
+    paddingBottom: 0,
     borderTopLeftRadius: 0,
     borderTopRightRadius: 32
   },

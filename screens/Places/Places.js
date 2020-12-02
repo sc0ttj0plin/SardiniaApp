@@ -272,8 +272,8 @@ class PlacesScreen extends PureComponent {
    */
   _onPageLayout = (event) => {
     const { width, height } = event.nativeEvent.layout;
-    //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 44 (handle) - 36 (header text) - 160 (entityItem) - 10 (margin of entityItem) - 36 (whereToGo text)
-    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44 - 36 - 160 - 10 - 36 - 10, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44] });
+    //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 24 (handle) - 36 (header text) - 160 (entityItem) - 10 (margin of entityItem) - 36 (whereToGo text)
+    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 24 - 36 - 160 - 10 - 36 + 10, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 34] });
   }; 
 
   /********************* Render methods go down here *********************/
@@ -328,7 +328,6 @@ class PlacesScreen extends PureComponent {
               <View style={styles.sectionTitleView}>
                 <CustomText style={[styles.sectionTitle, {
                   fontSize: 16,
-                  marginBottom: 10
                 }]}>{nearToYou}</CustomText>
               </View>
               <FlatList
@@ -369,7 +368,9 @@ class PlacesScreen extends PureComponent {
       <EntityItem 
         index={index}
         keyItem={item.nid}
-        extraStyle={ horizontal ? {} : {width: '100%'}}
+        extraStyle={ horizontal ? {
+          marginBottom: 0
+        } : {width: '100%'}}
         backgroundTopLeftCorner={"white"}
         iconColor={Colors.colorPlacesScreen}
         listType={Constants.ENTITY_TYPES.places}
@@ -387,7 +388,7 @@ class PlacesScreen extends PureComponent {
   /* Renders categories list */
   _renderCategoryListItem = (item, index, length) => {
     let marginBottom = (index + 1) == length ? 20 : 0;
-    let marginTop = index == 0 ? 20 : 10;
+    let marginTop = index == 0 ? 0 : 10;
     return(
       <CategoryListItem onPress={() => this._selectCategory(item)} image={item.image} title={item.name} style={{
         marginBottom,
@@ -496,7 +497,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "black",
     fontFamily: "montserrat-bold",
-    padding: 10,
     textAlign: "center"
   },
   listContainer: {
@@ -554,7 +554,9 @@ const styles = StyleSheet.create({
   },
   sectionTitleView: {
     maxHeight: 36, 
-    minHeight: 36
+    minHeight: 36,
+    justifyContent: "center",
+    alignItems: "center",
   }
 });
 

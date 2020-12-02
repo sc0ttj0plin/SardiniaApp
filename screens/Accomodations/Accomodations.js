@@ -275,8 +275,8 @@ class AccomodationsScreen extends Component {
    */
   _onPageLayout = (event) => {
     const { width, height } = event.nativeEvent.layout;
-    //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 44 (handle) - 36 (header text) - 160 (entityItem) - 10 (margin of entityItem) - 36 (whereToGo text)
-    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44 - 36 - 160 - 10 - 36, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 44] });
+    //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 24 (handle) - 36 (header text) - 160 (entityItem) - 10 (margin of entityItem) - 36 (whereToGo text)
+    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 24 - 36 - 160 - 10 - 36 + 10, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 34] });
   }; 
 
   /********************* Render methods go down here *********************/
@@ -337,7 +337,9 @@ class AccomodationsScreen extends Component {
           >
             <View>  
               <View style={styles.sectionTitleView}>
-                <CustomText style={styles.sectionTitle}>{nearToText}</CustomText>
+                <CustomText style={[styles.sectionTitle, {
+                  fontSize: 16,
+                }]}>{nearToText}</CustomText>
               </View>
               <FlatList
                 horizontal={true}
@@ -358,7 +360,9 @@ class AccomodationsScreen extends Component {
             </View>
           </AsyncOperationStatusIndicator>
           <View style={styles.sectionTitleView}>
-            <CustomText style={styles.sectionTitle}>{categoryTitle}</CustomText>
+            <CustomText style={[styles.sectionTitle, {
+              fontSize: 20,
+            }]}>{categoryTitle}</CustomText>
           </View>
         </View>
       )
@@ -377,6 +381,7 @@ class AccomodationsScreen extends Component {
         extraStyle={ horizontal ? {
           borderColor: Colors.lightGray,
           borderWidth: 1,
+          marginBottom: 0
         } : {
           width: '100%',
           borderColor: Colors.lightGray,
@@ -395,8 +400,16 @@ class AccomodationsScreen extends Component {
   )}
 
   /* Renders categories list */
-  _renderCategoryListItem = (item) => 
-      <CategoryListItem onPress={() => this._selectCategory(item)} image={item.image} title={item.name} />;
+  _renderCategoryListItem = (item, index, length) => {
+    let marginBottom = (index + 1) == length ? 20 : 0;
+    let marginTop = index == 0 ? 0 : 10;
+    return(
+      <CategoryListItem onPress={() => this._selectCategory(item)} image={item.image} title={item.name} style={{
+        marginBottom,
+        marginTop
+      }}/>
+    )
+  }
 
   _renderFiltersList = () => {
     const { term } = this._getCurrentTerm(true);
@@ -435,7 +448,7 @@ class AccomodationsScreen extends Component {
     } else {
       //initially term is null so we get terms from redux, then term is populated with nested terms (categories) 
       data = term;
-      renderItem = ({ item }) => this._renderCategoryListItem(item);
+      renderItem = ({ item, index }) => this._renderCategoryListItem(item, index, data.length);
     }
     return (
       <ScrollableContainer 
@@ -488,10 +501,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   sectionTitle: {
-      fontSize: 16,
-      color: Colors.colorAccomodationsScreen,
-      fontFamily: "montserrat-bold",
-      padding: 10
+    fontSize: 16,
+    color: "black",
+    fontFamily: "montserrat-bold",
+    textAlign: "center"
   },
   listContainer: {
     backgroundColor: Colors.colorAccomodationsScreen,
@@ -548,7 +561,9 @@ const styles = StyleSheet.create({
   },
   sectionTitleView: {
     maxHeight: 36, 
-    minHeight: 36
+    minHeight: 36,
+    justifyContent: "center",
+    alignItems: "center",
   }
 });
 

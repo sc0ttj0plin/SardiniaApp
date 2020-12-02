@@ -5,7 +5,7 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Image } from "react-native-elements";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
-import { ConnectedHeader, CustomText } from "../../components";
+import { ConnectedHeader, CustomText, EntityItem } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
@@ -13,6 +13,7 @@ import Layout from '../../constants/Layout';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
+import { distance, distanceToString, coordsInBound } from '../../helpers/maps';
 
 /* Deferred rendering to speedup page inital load: 
    deferred rendering delays the rendering reducing the initial 
@@ -30,7 +31,8 @@ class ItineraryStagesMapScreen extends Component {
       render: USE_DR ? false : true,
       //
       markers,
-      region: Constants.REGION_SARDINIA
+      region: Constants.REGION_SARDINIA,
+      coords: {},
     };
       
   }
@@ -46,11 +48,14 @@ class ItineraryStagesMapScreen extends Component {
   }
 
   componentWillUnmount() {
+    navigator.geolocation.clearWatch(this._watchID);
+    this._onFocus(); /* unsubscribe */
   }
 
   componentWillMount() {
     this.index = 0;
     this.animation = new Animated.Value(0);
+    
   }
 
   componentDidMount() {
@@ -80,11 +85,43 @@ class ItineraryStagesMapScreen extends Component {
         }
       }, 10);
     });
+
+    this._initGeolocation();
+    this._onFocus = this.props.navigation.addListener('focus', () => {
+      if(this.state.coords) {
+        this._onUpdateCoords(this.state.coords);
+      }
+    });
   }
 
   
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
   
+  _initGeolocation = () => {
+    navigator.geolocation.getCurrentPosition(
+      position => { this._onUpdateCoords(position.coords); }, 
+      ex => { console.log(ex) },
+      Constants.NAVIGATOR.watchPositionOpts
+    );
+    this._watchID = navigator.geolocation.watchPosition(
+      position => { this._onUpdateCoords(position.coords); }, 
+      ex => { console.log(ex) },
+      Constants.NAVIGATOR.watchPositionOpts
+    );
+  }
+
+  _onUpdateCoords(newCoords) {
+    // const { coords, term } = this.state;
+    const { coords } = this.state;
+    if(!coords || coords.latitude !== newCoords.latitude || coords.longitude !== newCoords.longitude) {
+      let isCordsInBound = coordsInBound(newCoords); 
+      // Are coordinates within sardinia's area? fetch the updated pois list
+      if (isCordsInBound) {
+        this.setState({ isCordsInBound, coords: newCoords, nearPoisRefreshing: true });
+      }
+    }
+  }
+
   _handleMarkerPress = (e) => {
     this._scroll.scrollTo({x: e * Layout.map.card.width, y: 0, animated: true});
   }
@@ -115,7 +152,40 @@ class ItineraryStagesMapScreen extends Component {
   }
 
   /********************* Render methods go down here *********************/
+  _renderStage = (stage) => {
+    const { coords } = this.state;
+    const { lan } = this.props.locale;
+    const title = stage.title;
+    const image = stage.image;
+    let distanceStr = null;
 
+    // Add distance from the first itinerary stage
+    distanceStr = distanceToString(distance(coords.latitude, coords.longitude, stage.coords.latitude, stage.coords.longitude));
+
+    return(
+      <View style={styles.widget}>
+        <EntityItem 
+          keyItem={stage.nid}
+          listType={Constants.ENTITY_TYPES.itineraries}
+          onPress={() => this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item: { uuid: stage.uuid } })}
+          title={`${title}`}
+          image={`${image}`}
+          place={" "}
+          style={styles.itinerariesListItem}
+          horizontal={false}
+          topSpace={10}
+          distance={this.state.isCordsInBound ? distanceStr : null}
+          extraStyle={{
+            marginBottom: 10,
+            width: Layout.map.card.width,
+            height: "100%",
+            marginLeft: 10,
+            marginRight: 10,
+          }}
+        />
+      </View>
+    )
+  }
   _renderContent = () => {
     const interpolations = this.state.markers.map((marker, index) => {
       const inputRange = [
@@ -175,25 +245,27 @@ class ItineraryStagesMapScreen extends Component {
           style={styles.flatlist}
           contentContainerStyle={{paddingRight: Layout.window.width - Layout.map.card.width}}
           >
-          {this.state.markers.map((marker, index) => (
+          {this.state.markers.map((marker, index) => this._renderStage(marker, index))}
 
-            <TouchableOpacity
-              style={[styles.card, {width: Layout.map.card.width}]}
-              onPress={() => this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item: { uuid: marker.uuid } })}
-              activeOpacity={0.7}
-              key={index}
-            >
-              <Image
-                source={{ uri: marker.image}}
-                style={[styles.cardImage, {width: Layout.map.card.width, height: 100}]}
-                resizeMode="cover"
-                PlaceholderContent={<ActivityIndicator/>}
-              />
-              <View style={styles.cardTextContainer}>
-                <CustomText numberOfLines={1} style={styles.cardtitle}>{marker.title}</CustomText>
-              </View>
-            </TouchableOpacity>
-          ))}
+          {/* (
+
+<TouchableOpacity
+  style={[styles.card, {width: Layout.map.card.width}]}
+  onPress={() => this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item: { uuid: marker.uuid } })}
+  activeOpacity={0.7}
+  key={index}
+>
+  <Image
+    source={{ uri: marker.image}}
+    style={[styles.cardImage, {width: Layout.map.card.width, height: 100}]}
+    resizeMode="cover"
+    PlaceholderContent={<ActivityIndicator/>}
+  />
+  <View style={styles.cardTextContainer}>
+    <CustomText numberOfLines={1} style={styles.cardtitle}>{marker.title}</CustomText>
+  </View>
+</TouchableOpacity>
+) */}
         </Animated.ScrollView>
       </View>
      );

@@ -25,6 +25,11 @@ export default class EntityMarker extends PureComponent {
     }
   }
 
+  componentDidUpdate(prevProps){
+    if(prevProps.selected !== this.props.selected)
+      this.setState({selected: this.props.selected})
+  }
+
   _getBackgroundColor = (entityType) => {
     switch(entityType) {
       case Constants.ENTITY_TYPES.places:
@@ -44,23 +49,23 @@ export default class EntityMarker extends PureComponent {
       <Marker.Animated
           coordinate={{ longitude: cluster.centroid.coordinates[0],  latitude: cluster.centroid.coordinates[1] }}
           onPress={this.props.onPress}
-          tracksViewChanges={false}
+          tracksViewChanges={selected}
           style={{width: 42, height: 42, zIndex: 1}}>
             <View style={[styles.markerContainer, {
-              backgroundColor: selected ? markerBackgroundColor[1] : "transparent"
+              backgroundColor: selected ? Colors.colorPlacesScreenTransparent : "transparent"
             }]}>
               <View
-                style={[styles.marker, {backgroundColor: markerBackgroundColor[0]}]}>
+                style={[styles.marker]}>
                 <Ionicons
-                  name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entityType].iconName}
+                  name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.places.iconName}
                   size={19}
                   color={"#ffffff"}
                   style={{
-                    paddingTop: Platform.OS === 'ios' ? 3 : 0
+                    paddingTop: Platform.OS === 'ios' ? 0 : 0
                   }}
                 />
               </View>
-          </View>
+            </View>
         </Marker.Animated>
     );
   }
@@ -70,7 +75,7 @@ const styles = StyleSheet.create({
   marker: {
     width: "100%",
     height: "100%",
-    backgroundColor: "blue",
+    backgroundColor: Colors.colorPlacesScreen,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",

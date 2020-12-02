@@ -188,7 +188,7 @@ class InspirersScreen extends Component {
         place={`${item.term.name}`}
         image={`${item.image}`}
         horizontal={false}
-        sideMargins={20}
+        sideMargins={10}
       />
   )}
 
@@ -307,14 +307,14 @@ const styles = StyleSheet.create({
   listStyle: {
     paddingTop: 10, 
     backgroundColor: "transparent",
-    marginHorizontal: 20,
+    marginHorizontal: 10,
     height: "100%",
   },
   listStyleLL: {
     marginTop: 16,
     paddingTop: 10, 
     backgroundColor: "transparent",
-    marginHorizontal: 20,
+    marginHorizontal: 10,
     height: "100%",
   },
   itemFlatlist: {
