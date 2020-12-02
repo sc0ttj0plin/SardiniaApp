@@ -134,9 +134,8 @@ export default class ScrollableContainer extends PureComponent {
               key={numColumns} /* NOTE always set a key to refresh only this component and avoid unmounting */
               // numColumns={numColumns || 1}
               snapPoints={snapPoints}
-              contentContainerStyle={{backgroundColor: 'red'}}
               // disableScrollViewPanResponder={true}
-              scrollEnabled={this.state.currentSnapIndex === 0 ? true : false}
+              // scrollEnabled={this.state.currentSnapIndex === 0 ? true : false}
               initialSnapIndex={initialSnapIndex >=0 ? initialSnapIndex : 0}
               renderHandle={this._renderHandle}
               data={this.state.data || []}
