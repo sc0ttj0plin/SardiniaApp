@@ -58,7 +58,7 @@ class PreferencesScreen extends Component {
 
     this.state = {
       render: USE_DR ? false : true,
-      entities: new Array(5).fill(0),
+      entities: [],
       entityIndex: 0,
       selectedIconName: null,
       started: false,
@@ -115,11 +115,20 @@ class PreferencesScreen extends Component {
    * Parses categories returning a simplified array of [{name, uuid, image}]
    */
   _parseCategories = (vid) => {
-      this.setState({ [vid]: this.props.categories.data[vid].map(el => ({
-        name: el.name,
-        image: el.image,
-        uuid: el.uuid,
-      }))});
+      this.setState({ 
+        [vid]: this.props.categories.data[vid].map(el => ({
+          name: el.name,
+          image: el.image,
+          uuid: el.uuid,
+        })),
+      }, () => {
+        this.setState({
+          entities: [
+            ...this.state.entities,
+            ...this.state[vid]
+          ]
+        })
+      });
   }
 
 
@@ -130,9 +139,15 @@ class PreferencesScreen extends Component {
       const { entityIndex, selectedColors } = this.state;
       const color = Constants.EMOTICONS[iconName].color;
       const newColors = [...selectedColors, color];
-      if(entityIndex < 5){
+      const { poisCategories, inspirersCategories } = Constants.VIDS;
+      let entities = [
+        ...this.state[poisCategories].slice(0,4),
+        ...this.state[inspirersCategories].slice(0,4)
+      ]
+      let length = entities.length
+      if(entityIndex < length){
         let timeout = setTimeout(() => {
-          const finished = (entityIndex + 1) < 5 ? false : true;
+          const finished = (entityIndex + 1) < length ? false : true;
           this.setState({
             entityIndex: entityIndex + 1,
             selectedColors: newColors,
@@ -185,7 +200,13 @@ class PreferencesScreen extends Component {
   }
 
   _renderSteps = () => {
-    return this.state.entities.map( (entity, index) => {
+    const { poisCategories, inspirersCategories } = Constants.VIDS;
+    let entities = [
+      ...this.state[poisCategories].slice(0,4),
+      ...this.state[inspirersCategories].slice(0,4)
+    ]
+    return entities.map( (entity, index) => {
+      console.log("entity", index, entity)
       return this._renderStep(entity, index);
     })
   }
@@ -206,7 +227,7 @@ class PreferencesScreen extends Component {
 
   _renderEntity = (entity) => {
     const { lan } = this.props.locale;
-    const term = _.get(entity, ["nodes_terms", 0, "term","name"], "");
+    const term = entity.name;
     const image = entity.image;
     // console.log("entity", entity)
     return(
@@ -280,7 +301,13 @@ class PreferencesScreen extends Component {
 
   _renderStartedContent = () => { 
     const { doYouLikeIt } = this.props.locale.messages;
-    const { entityIndex, entities } = this.state;
+    const { entityIndex } = this.state;
+    const { poisCategories, inspirersCategories } = Constants.VIDS;
+    let entities = [
+      ...this.state[poisCategories].slice(0,4),
+      ...this.state[inspirersCategories].slice(0,4)
+    ]
+    // console.log("entities", entities)
     const entity = entities[entityIndex] || null;
     return(
       <>
@@ -430,7 +457,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between"
   },
   step: {
-    width: 61,
+    width: Layout.window.width/8 - 10,
     height: 8
   },
   entityImage: {
