@@ -222,6 +222,7 @@ class PlacesScreen extends PureComponent {
   _selectCategory = (item) => {
     // const { region, coords, term } = this.state;
     const { region, coords } = this.state;
+    // console.log(item)
     this.props.actions.pushCurrentCategoryPlaces(item);
     this.setState({
       region,
@@ -277,8 +278,8 @@ class PlacesScreen extends PureComponent {
 
   /********************* Render methods go down here *********************/
 
-  _renderTopComponentCategorySelector = (item) => 
-    <TouchableOpacity style={styles.categorySelectorBtn} onPress={() => this._selectCategory(item)} activeOpacity={0.7}>
+  _renderTopComponentCategorySelector = (item, isLeaf=false) => 
+    <TouchableOpacity style={styles.categorySelectorBtn} onPress={() => isLeaf ? null : this._selectCategory(item)} activeOpacity={0.7}>
       <View style={styles.icon}>
           <Ionicons
             name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS["places"].iconName}
@@ -396,13 +397,15 @@ class PlacesScreen extends PureComponent {
   }
 
   _renderFiltersList = () => {
-    const { term } = this._getCurrentTerm(true);
-
+    const { term = [] } = this._getCurrentTerm(true);
+    const lastTerm = this.props.others.placesTerms[this.props.others.placesTerms.length - 1];
+    const data = term.length === 0 && lastTerm ? [lastTerm] : term;
+    const isLeaf = data.length === 1;
     return(
       <FlatList
         horizontal={true}
-        renderItem={({item}) => this._renderTopComponentCategorySelector(item)}
-        data={term}
+        renderItem={({item}) => this._renderTopComponentCategorySelector(item, isLeaf)}
+        data={data}
         extraData={this.props.locale}
         keyExtractor={item => item.uuid}
         style={styles.filtersList}

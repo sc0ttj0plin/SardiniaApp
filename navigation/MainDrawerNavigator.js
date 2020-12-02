@@ -297,6 +297,7 @@ function DrawerNavigator() {
         paddingTop: 50,
         height: '100%'
       }}
+      openByDefault={false}
       drawerContentOptions={drawerContentOptions}
       drawerContent={(props) => <CustomDrawerContent {...props} />}
     >
@@ -311,7 +312,6 @@ function DrawerNavigator() {
     </Drawer.Navigator>
   );
 }
-
 
 
 export default DrawerNavigator;

@@ -186,7 +186,6 @@ class EventsScreen extends Component {
    * @param {*} dateString: "2020-11-14"
    */
   _onDatePress = (dateString) => {
-    console.log("ONDATEPRESS", dateString)
     const { eventsByYearMonthDay } = this.props.events;
     const eventsSubset = eventsByYearMonthDay[dateString];
     if (eventsSubset)
