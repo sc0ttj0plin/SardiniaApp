@@ -414,6 +414,7 @@ export const VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS = {
     backgroundTopRightCorner: Colors.colorPlacesScreen,
     iconColor: "white",
     backgroundColor: Colors.colorPlacesScreen,
+    backgroundTransparent: Colors.colorPlacesScreenTransparent,
     iconName: Platform.OS === 'ios' ? 'ios-map' : 'md-map'
   },
   [ENTITY_TYPES.inspirers]: {
@@ -438,6 +439,7 @@ export const VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS = {
     backgroundTopRightCorner: Colors.colorAccomodationsScreen,
     iconColor: "white", 
     backgroundColor: Colors.colorAccomodationsScreen,
+    backgroundTransparent: Colors.colorAccomodationsScreenTransparent,
     iconName: Platform.OS === 'ios' ? 'ios-home' : 'md-home'
   },
 }

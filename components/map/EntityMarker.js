@@ -44,6 +44,9 @@ export default class EntityMarker extends PureComponent {
   render() {
     var {cluster, selected, markerBackgroundColor, entityType } = this.state;
     var width = selected ? 42 : 32;
+    let iconName = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entityType].iconName || Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.places.iconName; 
+    let backgroundColor = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entityType].backgroundColor || Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.places.backgroundColor; 
+    let backgroundTransparent = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entityType].backgroundTransparent || Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.places.backgroundTransparent; 
 
     return (
       <Marker.Animated
@@ -52,12 +55,14 @@ export default class EntityMarker extends PureComponent {
           tracksViewChanges={selected}
           style={{width: 42, height: 42, zIndex: 1}}>
             <View style={[styles.markerContainer, {
-              backgroundColor: selected ? Colors.colorPlacesScreenTransparent : "transparent"
+              backgroundColor: selected ? backgroundTransparent : "transparent"
             }]}>
               <View
-                style={[styles.marker]}>
+                style={[styles.marker, {
+                  backgroundColor
+                }]}>
                 <Ionicons
-                  name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.places.iconName}
+                  name={iconName}
                   size={19}
                   color={"#ffffff"}
                   style={{
