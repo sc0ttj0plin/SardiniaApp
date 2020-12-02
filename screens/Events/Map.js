@@ -325,8 +325,8 @@ class EventsMapScreen extends PureComponent {
         <Marker.Animated
           coordinate={{ longitude: parseFloat(long),  latitude: parseFloat(lat) }}
           onPress={() => this._selectMarker(event)}
-          // tracksViewChanges={event == this.state.selectedEvent}
-          tracksViewChanges={false}
+          tracksViewChanges={event == this.state.selectedEvent}
+          // tracksViewChanges={false}
           style={styles.markerAnimated}>
             <View style={[styles.markerContainer, { backgroundColor: selected ? Colors.colorEventsScreenTransparent : "transparent"}]}>
               <View

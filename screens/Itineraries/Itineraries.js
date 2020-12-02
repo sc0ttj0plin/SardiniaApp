@@ -268,8 +268,8 @@ class ItinerariesScreen extends PureComponent {
         <Marker.Animated
           coordinate={{ longitude: parseFloat(long),  latitude: parseFloat(lat) }}
           onPress={() => this._selectMarker(itinerary)}
-          // tracksViewChanges={itinerary == this.state.selectedItinerary}
-          tracksViewChanges={false}
+          tracksViewChanges={itinerary == this.state.selectedItinerary}
+          // tracksViewChanges={false}
           style={{width: 42, height: 42, zIndex: 1}}>
             <View style={[styles.markerContainer, {
               backgroundColor: selected ? Colors.greenTransparent : "transparent"
