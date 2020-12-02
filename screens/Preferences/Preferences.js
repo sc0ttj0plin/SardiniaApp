@@ -115,11 +115,11 @@ class PreferencesScreen extends Component {
    * Parses categories returning a simplified array of [{name, uuid, image}]
    */
   _parseCategories = (vid) => {
-      this.setState({ [vid]: this.props.categories.data[vid].map(el => ({
-        name: el.name,
-        image: el.image,
-        uuid: el.uuid,
-      }))});
+    this.setState({ [vid]: this.props.categories.data[vid].map(el => ({
+      name: el.name,
+      image: el.image,
+      uuid: el.uuid,
+    }))});
   }
 
 
