@@ -17,7 +17,7 @@ class GeoRefHListItem extends PureComponent{
     }
   }
   render() {
-    const { distance = 0 } = this.props;
+    const { distance = "", title = "", subtitle = "" } = this.props;
     return (
       <View style={[styles.container, this.props.style]} onLayout={(event) => { this.setState({ width: event.nativeEvent.layout.width, height: event.nativeEvent.layout.height }) }}>
           <Image source={{ uri: this.props.image }} style={styles.image, {width: this.state.width, height: this.state.height}} PlaceholderContent={<ActivityIndicator />}>
@@ -25,20 +25,14 @@ class GeoRefHListItem extends PureComponent{
               <CustomText
               numberOfLines={1}
               ellipsizeMode='tail'
-              style={styles.title}>{this.props.title}
+              style={styles.title}>{title}
               </CustomText>
-              { this.props.place != null && this.props.place != "" &&
                 <CustomText 
                 numberOfLines={1}
                 ellipsizeMode='tail'
-                style={styles.place}>{this.props.place}
+                style={styles.place}>{subtitle}
                 </CustomText>
-              }
-              { this.props.distance != "" && this.props.distance != undefined &&
-                (
-                  <CustomText numberOfLines={1}ellipsizeMode='tail'style={styles.distance}>{distance}</CustomText>
-                )
-              }
+                <CustomText numberOfLines={1}ellipsizeMode='tail'style={styles.distance}>{distance}</CustomText>
             </View>
           </Image>
       </View>

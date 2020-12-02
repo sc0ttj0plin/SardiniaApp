@@ -31,9 +31,9 @@ export default class PoiItemsList extends PureComponent {
             iconColor={this.props.cornerIconColor ? this.props.cornerIconColor : Colors.colorPlacesScreen}
             iconName={cornerIconName ? cornerIconName : ""}
             onPress={ () => this.props.onPressItem(item)}
-            title={`${title}`}
-            place={`${termName}`}
-            image={`${item.image}`}
+            title={title}
+            subtitle={termName}
+            image={item.image}
             distance={this.state.isCordsInBound && item.distance}
           />
         )

@@ -184,9 +184,9 @@ class InspirersScreen extends Component {
         listType={Constants.ENTITY_TYPES.inspirers}
         iconColor={Colors.colorInspirersScreen}
         onPress={() => this._openPoi(item)}
-        title={`${title}`}
-        place={`${item.term.name}`}
-        image={`${item.image}`}
+        title={title}
+        subtitle={item.term.name}
+        image={item.image}
         horizontal={false}
         sideMargins={10}
       />

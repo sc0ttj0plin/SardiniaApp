@@ -292,7 +292,7 @@ class EventsMapScreen extends PureComponent {
           onPress={() => this._openItem(selectedEvent)}
           title={`${title}`}
           image={`${image}`}
-          place={" "}
+          subtitle={" "}
           style={styles.itinerariesListItem}
           horizontal={false}
           topSpace={10}
@@ -372,9 +372,9 @@ class EventsMapScreen extends PureComponent {
         keyItem={item.nid}
         listType={Constants.ENTITY_TYPES.events}
         onPress={() => this._openItem(item)}
-        title={`${title}`}
-        image={`${image}`}
-        place={`${term}`}
+        title={title}
+        image={image}
+        subtitle={term}
         style={styles.eventsListItem}
         horizontal={false}
         extraStyle={styles.eventsListItem}

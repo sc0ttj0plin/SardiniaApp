@@ -375,9 +375,9 @@ class PlacesScreen extends PureComponent {
         iconColor={Colors.colorPlacesScreen}
         listType={Constants.ENTITY_TYPES.places}
         onPress={() => this._openPoi(item)}
-        title={`${title}`}
-        place={`${termName}`}
-        image={`${item.image}`}
+        title={title}
+        subtitle={termName}
+        image={item.image}
         distance={this.state.isCordsInBound ? item.distanceStr : ""}
         horizontal={horizontal}
         sideMargins={20}

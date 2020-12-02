@@ -34,9 +34,9 @@ export default class EntityRelatedList extends PureComponent {
                 listType={listType}
                 listTitle={listTitle}
                 onPress={ () => this.props.onPressItem(item, listType)}
-                title={`${title}`}
-                place={`${place}`}
-                image={`${item.image}`}
+                title={title}
+                subtitle={place}
+                image={item.image}
                 distance={this.state.isCordsInBound && item.distance}
                 style={itemStyle}
                 horizontal={horizontal}

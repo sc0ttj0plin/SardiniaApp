@@ -412,8 +412,8 @@ class AccomodationsScreen extends Component {
   }
 
   _renderFiltersList = () => {
-    const { term } = this._getCurrentTerm(true);
-    const lastTerm = this.props.others.placesTerms[this.props.others.placesTerms.length - 1];
+    const { term = [] } = this._getCurrentTerm(true);
+    const lastTerm = this.props.others.accomodationsTerms[this.props.others.accomodationsTerms.length - 1];
     const data = term.length === 0 && lastTerm ? [lastTerm] : term;
     const isLeaf = data.length === 1;
 

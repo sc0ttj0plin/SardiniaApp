@@ -218,6 +218,7 @@ class ItinerariesScreen extends PureComponent {
     const { selectedItinerary, coords } = this.state;
     const { lan } = this.props.locale;
     const title = _.get(selectedItinerary.title, [lan, 0, "value"], null);
+    const term = selectedItinerary.term.name;
     const image = selectedItinerary.image;
     let distanceStr = null;
 
@@ -233,9 +234,9 @@ class ItinerariesScreen extends PureComponent {
           keyItem={selectedItinerary.nid}
           listType={Constants.ENTITY_TYPES.itineraries}
           onPress={() => this._openItem(selectedItinerary)}
-          title={`${title}`}
-          image={`${image}`}
-          place={" "}
+          title={title}
+          image={image}
+          subtitle={term}
           style={styles.itinerariesListItem}
           horizontal={false}
           topSpace={10}
@@ -321,7 +322,7 @@ class ItinerariesScreen extends PureComponent {
         onPress={() => this._openItem(item)}
         title={`${title}`}
         image={`${image}`}
-        place={" "}
+        subtitle={" "}
         style={styles.itinerariesListItem}
         horizontal={false}
         extraStyle={{

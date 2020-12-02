@@ -170,7 +170,7 @@ class ItineraryStagesMapScreen extends Component {
           onPress={() => this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item: { uuid: stage.uuid } })}
           title={`${title}`}
           image={`${image}`}
-          place={" "}
+          subtitle={" "}
           style={styles.itinerariesListItem}
           horizontal={false}
           topSpace={10}

@@ -47,9 +47,9 @@ export default class PoiItem extends PureComponent {
             style={{flex: 1}}
         >
             <GeoRefHListItem
-                title={`${title}`}
-                place={`${place}`}
-                image={`${image}`}
+                title={title}
+                subtitle={place}
+                image={image}
                 distance={distance}
                 style={{flex: 1}} />
             <View style={[ styles.view, {borderTopColor: gui.backgroundTopLeftCorner}]}>
