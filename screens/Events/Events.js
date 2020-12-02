@@ -186,6 +186,7 @@ class EventsScreen extends Component {
    * @param {*} dateString: "2020-11-14"
    */
   _onDatePress = (dateString) => {
+    console.log("ONDATEPRESS", dateString)
     const { eventsByYearMonthDay } = this.props.events;
     const eventsSubset = eventsByYearMonthDay[dateString];
     if (eventsSubset)
@@ -217,15 +218,14 @@ class EventsScreen extends Component {
      return (
         <View style={[styles.fill, styles.calendarView]}>
           <CalendarProvider
-            onDateChanged={(date) => this._onDatePress(date)}
             onMonthChange={(date) => this._loadEvents(date)}
           >
             <ExpandableCalendar
               theme={Constants.styles.calendarTheme}
-              onDayPress={(day) => {console.log('selected day', day)}}
-              onDayLongPress={(day) => {console.log('selected day', day)}}
+              onDayPress={(date) => this._onDatePress(date.dateString)}  /* { "dateString" : "2020-12-16","day": 16,"month": 12,"timestamp": 1608076800000,"year": 2020,} */
               monthFormat={'MMMM yyyy'}
               hideExtraDays={true}
+              collapseOnDayPress={false}
               markingType={'custom'}
               markedDates={this.props.events.eventsCalendarMarkers}
               firstDay={1}

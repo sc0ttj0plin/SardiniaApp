@@ -204,20 +204,20 @@ class EventScreen extends Component {
 
   _renderRelatedList = (title, relatedList, listType) => {
     return (
-        <EntityRelatedList
-          horizontal={true}
-          data={relatedList ? relatedList : []} 
-          extraData={this.props.locale}
-          keyExtractor={item => item.nid.toString()}
-          contentContainerStyle={styles.listContainerHeader}
-          showsHorizontalScrollIndicator={false}
-          locale={this.props.locale}
-          onPressItem={this._openRelatedEntity}
-          listType={listType}
-          listTitle={title}
-          listTitleStyle={styles.sectionTitle}
-          itemStyle={styles.itemStyle}
-        />
+      <EntityRelatedList
+        horizontal={true}
+        data={relatedList ? relatedList : []} 
+        extraData={this.props.locale}
+        keyExtractor={item => item.nid.toString()}
+        contentContainerStyle={styles.listContainerHeader}
+        showsHorizontalScrollIndicator={false}
+        locale={this.props.locale}
+        onPressItem={this._openRelatedEntity}
+        listType={listType}
+        listTitle={title}
+        listTitleStyle={styles.sectionTitle}
+        itemStyle={styles.itemStyle}
+      />
     )
   }
 

@@ -266,7 +266,7 @@ export const SCREENS = {
         customStyles: {
           container: {
             backgroundColor: Colors.lightRed
-          }
+          },
         }
       },
       //Today color
@@ -275,6 +275,9 @@ export const SCREENS = {
         customStyles: {
           container: {
             backgroundColor: Colors.red
+          },
+          text: {
+            color: 'white',
           }
         }
       }

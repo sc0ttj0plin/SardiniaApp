@@ -26,6 +26,7 @@ export default class ScrollableContainer extends PureComponent {
     // Scrollable refernce
     this.state = {
       data: props.data,
+      currentSnapIndex: null
     }
     this._scrollable = {}
     //Drag 
@@ -133,6 +134,9 @@ export default class ScrollableContainer extends PureComponent {
               key={numColumns} /* NOTE always set a key to refresh only this component and avoid unmounting */
               // numColumns={numColumns || 1}
               snapPoints={snapPoints}
+              contentContainerStyle={{backgroundColor: 'red'}}
+              // disableScrollViewPanResponder={true}
+              scrollEnabled={this.state.currentSnapIndex === 0 ? true : false}
               initialSnapIndex={initialSnapIndex >=0 ? initialSnapIndex : 0}
               renderHandle={this._renderHandle}
               data={this.state.data || []}
@@ -146,6 +150,7 @@ export default class ScrollableContainer extends PureComponent {
               maxToRenderPerBatch={2}
               //onEndReachedThreshold={0.5} 
               onSettle = {(index) => {
+                this.setState({ currentSnapIndex: index });
                 if(Platform.OS === 'android')
                   setTimeout(() => {this._scrollableInner.getNode().scrollToOffset({ animated: false, offset: 0 })}, 100);
 
