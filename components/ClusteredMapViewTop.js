@@ -297,7 +297,9 @@ class ClusteredMapViewTop extends PureComponent {
    * @param {*} selectedPoi 
    */
   _renderSelectedPoi = (selectedPoi) => {
+    const { selectedCluster } = this.state;
     const {term, entityType} = this.props;
+    const selected = selectedCluster == selectedPoi;
     if (selectedPoi)
       return (
         <EntityMarker
@@ -306,7 +308,7 @@ class ClusteredMapViewTop extends PureComponent {
           key={this._clusterKeyExtractor(selectedPoi)+"_selected"}
           onPress={(e) => this._onPoiPress(selectedPoi, e)}
           term={term && term[selectedPoi.terms_objs[0].term]}
-          selected={true}
+          selected={selected}
         />
       )
     else 

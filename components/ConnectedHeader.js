@@ -187,7 +187,7 @@ class ConnectedHeader extends PureComponent {
         icon={
           <FontAwesome
             name={"sliders"}
-            size={35}
+            size={30}
             color={Colors.headerIconColor}
           />
         }

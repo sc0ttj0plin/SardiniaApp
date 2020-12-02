@@ -214,7 +214,6 @@ class InspirerScreen extends Component {
             <EntityDescription title={descriptionTitle} text={description} color={Colors.colorInspirersScreen}/>
             <View style={styles.separator}/>
             {this._renderRelatedList(canBeOfInterest, relatedEntities, Constants.ENTITY_TYPES.inspirers)}
-            <EntityAccomodations data={[]} locale={locale} showMapBtnText={showMap} horizontal/>
           </View>
          </ScrollView>
        </View>
