@@ -53,6 +53,8 @@ const styles = StyleSheet.create({
     buttonTopHeader: {
         zIndex: 999,
         position: "absolute",
+        top: 0,
+        left: 0,
         flexDirection: "row",
         width: "100%",
         height: Layout.header.height,
