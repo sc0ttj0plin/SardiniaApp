@@ -10,6 +10,7 @@ import { apolloQuery } from '../../apollo/queries';
 import * as Constants from "../../constants"
 import _ from 'lodash';
 import AccomodationItem from "../AccomodationItem"
+import EntityItem from "../EntityItem";
 import Colors from "../../constants/Colors"
 import CustomText from "../CustomText";
 
@@ -124,30 +125,26 @@ class EntityWidgetInMapView extends PureComponent {
   _renderPoi = () => {
     var {entity} = this.state;
     const title = _.get(entity.title, [this.props.locale.lan, 0, "value"], null);
+    const termName = _.get(entity, "term.name", "")
+
     return(
-      <ScrollableContainerTouchableOpacity
-          style={[styles.entityButton]}
-          onPress={() => this._openEntity(entity)}
-          activeOpacity={0.7}>
-          <Image source={{ uri: entity.image }} style={styles.image} PlaceholderContent={<ActivityIndicator />} />
-          <View style={styles.textContainer}>
-            <CustomText
-            numberOfLines={1}
-            ellipsizeMode='tail'
-            style={styles.title}>{title}
-            </CustomText>
-            <CustomText 
-            numberOfLines={1}
-            ellipsizeMode='tail'
-            style={styles.place}>{entity.term.name}
-            </CustomText>
-            <CustomText 
-            numberOfLines={1}
-            ellipsizeMode='tail'
-            style={styles.distance}>{distanceToString(entity.distance)}
-            </CustomText>
-          </View>
-      </ScrollableContainerTouchableOpacity>
+      <EntityItem 
+        keyItem={entity.nid}
+        listType={Constants.ENTITY_TYPES.places}
+        onPress={() => this._openEntity(entity)}
+        title={`${title}`}
+        image={`${entity.image}`}
+        distance={distanceToString(entity.distance)}
+        subtitle={termName}
+        // style={styles.itinerariesListItem}
+        horizontal={false}
+        topSpace={10}
+        extraStyle={{
+          marginBottom: 10,
+          width: "100%",
+          height: "100%"
+        }}
+      />
     )
   }
   _renderEntity = () => {
