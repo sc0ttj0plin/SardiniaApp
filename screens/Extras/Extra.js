@@ -158,7 +158,7 @@ class ExtraScreen extends Component {
   }
 
   _openVRContent = () => {
-    if(this.state.entity.uuid  == "7a432c9f-fbf1-41b0-bd10-9f2440eb1c9f")
+    if(this.state.entity.uuid  == "eae5bf1e-1358-49a4-8681-a82b824a031c")
       this.props.navigation.navigate(Constants.NAVIGATION.NavMediaScreen, {
           source: "https://my.matterport.com/show/?m=Sbi2Lko9jqf",
           type: "virtualTour"

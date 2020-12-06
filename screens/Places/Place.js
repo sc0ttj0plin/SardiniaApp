@@ -89,6 +89,7 @@ class PlaceScreen extends Component {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
     this.props.actions.getPoi({ uuid: this.state.uuid });
+    console.log(this.state.uuid);
   }
 
   /* NOTE: since this screen is not */

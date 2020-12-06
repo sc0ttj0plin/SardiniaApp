@@ -45,8 +45,8 @@ class ExtrasScreen extends Component {
   componentDidUpdate(prevProps) {
     if(prevProps.pois !== this.props.pois){
       // Replace title with temporary custom title
-      const { extrasWildNature, extrasMythIsland, extrasCentenaryLand, extrasLiveTheSea } = this.props.locale.messages;
-      const titles = [extrasWildNature, extrasLiveTheSea, extrasCentenaryLand, extrasMythIsland];
+      const { extrasLiveTheSea, extrasWildNature, extrasMythIsland, extrasCentenaryLand, extrasCulture, extrasStarredPlaces } = this.props.locale.messages;
+      const titles = [extrasStarredPlaces, extrasLiveTheSea, extrasWildNature, extrasMythIsland, extrasCentenaryLand, extrasCulture];
       const { lan } = this.props.locale;
       let extras = [];
       Constants.SCREENS.extras.defaultUuids.forEach((uuid, index) => {
