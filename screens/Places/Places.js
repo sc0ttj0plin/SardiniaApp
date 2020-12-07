@@ -317,40 +317,45 @@ class PlacesScreen extends PureComponent {
     const { term } = this._getCurrentTerm();
     const categoryTitle = term ? `${explore} ${term.name}` : whereToGo;
       return (
-        <View style={styles.listHeaderView}>
-          <AsyncOperationStatusIndicator
-            loading={true}
-            success={nearPois && nearPois.length > 0}
-            loadingLayout={<LLHorizontalItemsFlatlist horizontal={true} style={styles.listContainerHeader} title={nearToYou} titleStyle={styles.sectionTitle}/>}
-          >
-            <View>  
-              <View style={styles.sectionTitleView}>
-                <CustomText style={[styles.sectionTitle, {
-                  fontSize: 16,
-                }]}>{nearToYou}</CustomText>
+        <View>
+          <View style={styles.header}>
+            <View style={styles.panelHandle} />
+          </View>
+          <View style={styles.listHeaderView}>
+            <AsyncOperationStatusIndicator
+              loading={true}
+              success={nearPois && nearPois.length > 0}
+              loadingLayout={<LLHorizontalItemsFlatlist horizontal={true} style={styles.listContainerHeader} title={nearToYou} titleStyle={styles.sectionTitle}/>}
+            >
+              <View>  
+                <View style={styles.sectionTitleView}>
+                  <CustomText style={[styles.sectionTitle, {
+                    fontSize: 16,
+                  }]}>{nearToYou}</CustomText>
+                </View>
+                <FlatList
+                  horizontal={true}
+                  renderItem={({item}) => this._renderPoiListItem(item, null, true)}
+                  data={nearPois}
+                  extraData={this.props.locale}
+                  keyExtractor={item => item.uuid}
+                  onEndReachedThreshold={0.5} 
+                  onEndReached={() => this._fetchNearestPois(coords)}
+                  ItemSeparatorComponent={this._renderHorizontalSeparator}
+                  contentContainerStyle={styles.listContainerHeader}
+                  showsHorizontalScrollIndicator={false}
+                  initialNumToRender={3} // Reduce initial render amount
+                  maxToRenderPerBatch={2}
+                  updateCellsBatchingPeriod={4000} // Increase time between renders
+                  windowSize={5} // Reduce the window size
+                />
               </View>
-              <FlatList
-                horizontal={true}
-                renderItem={({item}) => this._renderPoiListItem(item, null, true)}
-                data={nearPois}
-                extraData={this.props.locale}
-                keyExtractor={item => item.uuid}
-                onEndReachedThreshold={0.5} 
-                onEndReached={() => this._fetchNearestPois(coords)}
-                ItemSeparatorComponent={this._renderHorizontalSeparator}
-                contentContainerStyle={styles.listContainerHeader}
-                showsHorizontalScrollIndicator={false}
-                initialNumToRender={3} // Reduce initial render amount
-                maxToRenderPerBatch={2}
-                updateCellsBatchingPeriod={4000} // Increase time between renders
-                windowSize={5} // Reduce the window size
-              />
+            </AsyncOperationStatusIndicator>
+            <View style={styles.sectionTitleView}>
+              <CustomText style={[styles.sectionTitle, {
+                fontSize: 20,
+              }]}>{categoryTitle}</CustomText>
             </View>
-          </AsyncOperationStatusIndicator>
-          <View style={styles.sectionTitleView}>
-            <CustomText style={[styles.sectionTitle, {
-              fontSize: 20,
-            }]}>{categoryTitle}</CustomText>
           </View>
         </View>
       )
@@ -556,7 +561,22 @@ const styles = StyleSheet.create({
     minHeight: 36,
     justifyContent: "center",
     alignItems: "center",
-  }
+  },
+  //Pane Handl
+  header: {
+    alignItems: 'center',
+    backgroundColor: 'white',
+    paddingTop: 20,
+    paddingBottom: 0,
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 32
+  },
+  panelHandle: {
+    width: 32,
+    height: 4,
+    backgroundColor: Colors.grayHandle,
+    borderRadius: 2,
+  },
 });
 
 
