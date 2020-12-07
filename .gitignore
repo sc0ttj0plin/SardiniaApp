@@ -54,3 +54,4 @@ Thumbs.db
 #expo generated files
 .expo/packager-info.json
 .expo/settings.json
+.expo-shared
