@@ -238,6 +238,8 @@ class ClusteredMapViewTop extends PureComponent {
     )
   }
 
+  
+
 
   /**
    * Renders single poi marker

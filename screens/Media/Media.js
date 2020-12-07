@@ -127,16 +127,16 @@ class MediaScreen extends PureComponent {
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
 
   _isOrientationLandscape = (orientation) => 
-     orientation === OrientationLock.LANDSCAPE || orientation === OrientationLock.LANDSCAPE_RIGHT || orientation === OrientationLock.LANDSCAPE_LEFT;
+     orientation === OrientationLock.LANDSCAPE || orientation === OrientationLock.LANDSCAPE_RIGHT || orientation === OrientationLock.LANDSCAPE_LEFT || orientation === 4 || orientation === 3; 
 
   _isOrientationPortrait = (orientation) => 
-    orientation === OrientationLock.PORTRAIT || orientation === OrientationLock.PORTRAIT_UP || orientation === OrientationLock.PORTRAIT_DOWN;
+    orientation === OrientationLock.PORTRAIT || orientation === OrientationLock.PORTRAIT_UP || orientation === OrientationLock.PORTRAIT_DOWN || orientation === 1 || orientation === 0;
 
   _onOrientationChange = async ({ orientationInfo: { orientation } }) => {
     this.setState({ orientation });
 
     // console.log(orientation, this._isOrientationPortrait(orientation), this._isOrientationLandscape(orientation));
-    console.log("orientation", orientation)
+    console.log("orientation", orientation);
     //Note: using player embedded fullscreen capabilities
     if (this._vPlayer && this._isOrientationLandscape(orientation)){
       await this._vPlayer.presentFullscreenPlayer();

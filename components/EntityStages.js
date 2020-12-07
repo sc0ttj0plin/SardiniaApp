@@ -83,7 +83,7 @@ class EntityStages extends PureComponent {
       <View style={styles.itemContainer}>
         <View style={styles.topLine}>
           <View style={styles.titleView}>
-            <CustomText style={styles.title}>{title}</CustomText>
+            <CustomText numberOfLines={1} style={styles.title}>{title}</CustomText>
           </View>
           <CustomText style={styles.index}>{index + 1}</CustomText>
         </View>
@@ -171,6 +171,8 @@ const styles = StyleSheet.create({
     height: 36,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingLeft: 15,
+    marginRight: 15,
   },
   title: {
     color: "white",
