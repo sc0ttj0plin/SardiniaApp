@@ -332,7 +332,7 @@ class ClusteredMapViewTop extends PureComponent {
             left: 0
           }}
           provider={ PROVIDER_GOOGLE }
-          style={styles.fill}
+          style={[styles.fill]}
           showsUserLocation={ true }
           initialRegion={initRegion}
           mapType='standard'
