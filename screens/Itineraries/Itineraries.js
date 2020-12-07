@@ -15,7 +15,7 @@ import {
   CustomText
  } from "../../components";
 import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
-import MapView from "react-native-map-clustering";
+import MapView from "react-native-maps";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { apolloQuery } from '../../apollo/queries';
@@ -282,7 +282,7 @@ class ItinerariesScreen extends PureComponent {
           coordinate={{ longitude: parseFloat(long),  latitude: parseFloat(lat) }}
           onPress={() => this._selectMarker(itinerary)}
           tracksViewChanges={this.state.tracksViewChanges}
-          // tracksViewChanges={false}
+          //tracksViewChanges={false}
           style={{width: 42, height: 42, zIndex: 1}}>
             <View style={[styles.markerContainer, {
               backgroundColor: selected ? Colors.greenTransparent : "transparent"
