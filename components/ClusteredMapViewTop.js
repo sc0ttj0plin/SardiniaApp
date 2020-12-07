@@ -324,6 +324,13 @@ class ClusteredMapViewTop extends PureComponent {
       <>
         <MapView
           ref={ref => this._mapRef = ref}
+          showsMyLocationButton={true}
+          mapPadding={{
+            top: 0,
+            right: 0,
+            bottom: 30,
+            left: 0
+          }}
           provider={ PROVIDER_GOOGLE }
           style={styles.fill}
           showsUserLocation={ true }
