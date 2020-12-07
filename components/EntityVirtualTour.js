@@ -29,7 +29,8 @@ export default class EntityHeader extends PureComponent {
             }}>
               <Fontisto name="unity" size={50} color="white" />
             </Animated.View>
-            <CustomText style={styles.text}>Apri modello 3D</CustomText>
+            <CustomText style={styles.text}>Esplora la</CustomText>
+            <CustomText style={[styles.text, {marginTop: 2}]}>realtà virtuale</CustomText>
           </TouchableOpacity>
         
       </>
@@ -52,7 +53,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "white",
-    marginTop: 10,
+    marginTop: 15,
     textTransform: "uppercase",
     fontFamily: "montserrat-bold",
   }

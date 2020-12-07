@@ -77,6 +77,9 @@ class ExtrasScreen extends Component {
     const { lan } = this.props.locale;
     const { findOutMore } = this.props.locale.messages;
     const title = _.get(item.title, [lan, 0, "value"], null);
+    if(item.uuid == "fdabb67f-fc45-40fc-83da-ac3ab6f4672e") {
+      item.image = "https://www.sardegnaturismo.it/sites/default/files/styles/top_pagina/public/petalirossi_saramadura_0.jpg?itok=N3tibLym"
+    }
     return(
       <ExtraItem 
         onPress={ () => this.props.navigation.navigate(Constants.NAVIGATION.NavExtraScreen, { item })}

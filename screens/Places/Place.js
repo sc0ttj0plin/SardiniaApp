@@ -89,7 +89,6 @@ class PlaceScreen extends Component {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
     this.props.actions.getPoi({ uuid: this.state.uuid });
-    console.log(this.state.uuid);
   }
 
   /* NOTE: since this screen is not */
@@ -147,6 +146,7 @@ class PlaceScreen extends Component {
     const { locale } = this.props;
     const { lan } = locale;
     const { abstract, title, description, whyVisit } = getEntityInfo(entity, ["abstract", "title", "description", "whyVisit"], [lan, 0, "value"]);
+    console.log(this.state.uuid, entity.nid);
     const coordinates = getCoordinates(entity);
     const socialUrl = `${Constants.WEBSITE_URL}${greedyArrayFinder(entity.url_alias, "language", lan, "alias", "")}`;
     const sampleVideoUrl = getSampleVideoIndex(entity.nid);

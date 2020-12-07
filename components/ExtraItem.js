@@ -22,7 +22,7 @@ class ExtraItem extends PureComponent{
     return (
       <View style={styles.container} onLayout={(event) => { this.setState({ width: event.nativeEvent.layout.width }); }}>
         <Image 
-          source={{ uri: image }} 
+          source={{ uri: image}} 
           style={[styles.image, { width: this.state.width, height: this.state.height }, imageStyle]} 
           PlaceholderContent={<ActivityIndicator style={styles.spinner} color={"white"} />}
           >
@@ -55,11 +55,14 @@ const styles = StyleSheet.create({
       textTransform: "uppercase",
       fontFamily: "montserrat-bold",
       fontSize: 28,
-      lineHeight: 26,
+      lineHeight: 28,
       alignSelf: "center",
       width: 200,
       textAlign: "center",
       marginBottom: 30,
+      textShadowColor: 'rgba(0, 0, 0, 0.75)',
+      textShadowOffset: {width: 1, height: 1},
+      textShadowRadius: 1
     },
     itemButton: {
       justifyContent: "center",

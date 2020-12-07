@@ -286,10 +286,10 @@ export const SCREENS = {
   extras: {
     defaultUuids: [
       "83650f2a-ccab-44bc-a938-2cdb5bb2f1e3", 
-      "d065c9c3-070c-4965-9ee5-072e893f990d",
+      "a149c57b-9973-4a2a-a5e9-2a9d95c3f676",
       "deba536c-a275-4c54-8848-25fa3244593d",
-      "a67d6b6d-716d-40ae-8a49-c845e85f68f2",
-      "7a432c9f-fbf1-41b0-bd10-9f2440eb1c9f",
+      "60910491-48ce-480d-9f3c-9ce08c086070",
+      "fdabb67f-fc45-40fc-83da-ac3ab6f4672e",
       "eae5bf1e-1358-49a4-8681-a82b824a031c",
     ]
   }

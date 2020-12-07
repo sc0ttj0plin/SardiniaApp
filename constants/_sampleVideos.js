@@ -6,7 +6,7 @@ export default [{
 },
 {
   // Abbasanta Losa
-  nid: 14166,
+  nid: 14876,
   video_url: "https://dev-sinnos-content-bucket.s3.eu-west-1.amazonaws.com/89970ed0-09d4-456e-a607-c7eeeb306aaa.mp4"
 },
 {
