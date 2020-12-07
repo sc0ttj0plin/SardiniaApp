@@ -300,7 +300,6 @@ class PlacesScreen extends PureComponent {
         term={term}
         coords={coords}
         region={region}
-        nearPois={nearPois}
         entityType={Constants.ENTITY_TYPES.places}
         types={[Constants.NODE_TYPES.places]}
         uuids={childUuids}
