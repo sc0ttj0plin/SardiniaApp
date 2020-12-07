@@ -51,7 +51,8 @@ class ItinerariesScreen extends PureComponent {
       coords: {},
       region: Constants.MAP.defaultRegion,
       selectedItinerary: null,
-      snapPoints: null
+      snapPoints: null,
+      tracksViewChanges: false
     };
       
   }
@@ -136,12 +137,22 @@ class ItinerariesScreen extends PureComponent {
       this.setState({ selectedItinerary: null }, () => {
         this.setState({ 
           selectedItinerary: itinerary,
+          tracksViewChanges: true
+        }, () => {
+          this.setState({
+            tracksViewChanges: false
+          })
         });
       })
     }
     else{
       this.setState({ 
-        selectedItinerary: null
+        selectedItinerary: null,
+        tracksViewChanges: true
+      }, () => {
+        this.setState({
+          tracksViewChanges: false
+        })
       });
     }
   }
@@ -270,7 +281,7 @@ class ItinerariesScreen extends PureComponent {
         <Marker.Animated
           coordinate={{ longitude: parseFloat(long),  latitude: parseFloat(lat) }}
           onPress={() => this._selectMarker(itinerary)}
-          tracksViewChanges={itinerary == this.state.selectedItinerary}
+          tracksViewChanges={this.state.tracksViewChanges}
           // tracksViewChanges={false}
           style={{width: 42, height: 42, zIndex: 1}}>
             <View style={[styles.markerContainer, {
