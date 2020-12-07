@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         width: "100%",
         height: Layout.header.height,
-        backgroundColor: 'black',
+        backgroundColor: 'transparent',
         height: Constants.COMPONENTS.header.height,
         maxHeight: Constants.COMPONENTS.header.height,
         minHeight: Constants.COMPONENTS.header.height,
