@@ -120,7 +120,7 @@ const TabBar = props => {
                   }
                  
                   <Animated.View style={{
-                    height: isRouteActive ? 20 : 0,
+                    display: isRouteActive ? 'flex' : 'none',
                   }}>
                     <ConnectedText textStyle={[Styles.iconText, {
                         color: route.backgroundActiveColor,
