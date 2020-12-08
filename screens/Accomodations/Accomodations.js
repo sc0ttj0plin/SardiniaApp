@@ -413,15 +413,16 @@ class AccomodationsScreen extends Component {
 
   _renderFiltersList = () => {
     const { term = [] } = this._getCurrentTerm(true);
-    const lastTerm = this.props.others.accomodationsTerms[this.props.others.accomodationsTerms.length - 1];
+    /* Enable show last selected category, add _renderTopComponentCategorySelector(item, isLeaf)
+    const lastTerm = this.props.others.placesTerms[this.props.others.placesTerms.length - 1];
     const data = term.length === 0 && lastTerm ? [lastTerm] : term;
     const isLeaf = data.length === 1;
-
+    */
     return(
       <FlatList
         horizontal={true}
-        renderItem={({item}) => this._renderTopComponentCategorySelector(item, isLeaf)}
-        data={data}
+        renderItem={({item}) => this._renderTopComponentCategorySelector(item)}
+        data={term}
         extraData={this.props.locale}
         keyExtractor={item => item.uuid}
         style={styles.filtersList}

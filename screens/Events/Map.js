@@ -15,7 +15,8 @@ import {
   CustomText
  } from "../../components";
 import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
-import MapView from "react-native-map-clustering";
+// import MapView from "react-native-map-clustering";
+import MapView from "react-native-maps";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { apolloQuery } from '../../apollo/queries';
@@ -61,6 +62,7 @@ class EventsMapScreen extends PureComponent {
       region: Constants.MAP.defaultRegion,
       selectedEvent: null,
       snapPoints: null,
+      tracksViewChanges: false,
     };
       
   }
@@ -189,17 +191,30 @@ class EventsMapScreen extends PureComponent {
     this.state.region = region;
   }
 
+
   _selectMarker = (event) => {
-    if(event){
+    if(event) {
       this.setState({ selectedEvent: null }, () => {
+        this._tracksViewChanges = true;
         this.setState({ 
-          selectedEvent: event
+          selectedEvent: event,
+          tracksViewChanges: true
+        }, () => {
+          this._tracksViewChanges = false;
+          // this.setState({
+          //   tracksViewChanges: false
+          // })
         });
       })
-    }
-    else{
+    } else {
       this.setState({ 
-        selectedEvent: null
+        selectedEvent: null,
+        tracksViewChanges: true
+      }, () => {
+        this._tracksViewChanges = false;
+        // this.setState({
+        //   tracksViewChanges: false
+        // })
       });
     }
   }
@@ -265,7 +280,7 @@ class EventsMapScreen extends PureComponent {
         clusterColor={Colors.colorEventsScreen}
         style={{flex: 1}}
         onPress={() => this._selectMarker(null)}
-        onPanDrag={() => this._selectMarker(null)}
+        onPanDrag={() => selectedEvent && this._selectMarker(null)}
         onRegionChangeComplete={this._onRegionChangeComplete}
       >
         {this._renderMarkers()}
@@ -325,8 +340,7 @@ class EventsMapScreen extends PureComponent {
         <Marker.Animated
           coordinate={{ longitude: parseFloat(long),  latitude: parseFloat(lat) }}
           onPress={() => this._selectMarker(event)}
-          tracksViewChanges={event == this.state.selectedEvent}
-          // tracksViewChanges={false}
+          tracksViewChanges={this.state.tracksViewChanges}
           style={styles.markerAnimated}>
             <View style={[styles.markerContainer, { backgroundColor: selected ? Colors.colorEventsScreenTransparent : "transparent"}]}>
               <View

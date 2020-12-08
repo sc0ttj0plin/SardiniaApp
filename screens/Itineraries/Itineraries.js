@@ -15,7 +15,8 @@ import {
   CustomText
  } from "../../components";
 import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
-import MapView from "react-native-map-clustering";
+// import MapView from "react-native-map-clustering";
+import MapView from "react-native-maps";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { apolloQuery } from '../../apollo/queries';
@@ -144,8 +145,7 @@ class ItinerariesScreen extends PureComponent {
           })
         });
       })
-    }
-    else{
+    } else {
       this.setState({ 
         selectedItinerary: null,
         tracksViewChanges: true
@@ -215,7 +215,7 @@ class ItinerariesScreen extends PureComponent {
         clusterColor={Colors.colorItinerariesScreen}
         style={{flex: 1}}
         onPress={() => this._selectMarker(null)}
-        onPanDrag={() => this._selectMarker(null)}
+        onPanDrag={() => selectedItinerary && this._selectMarker(null)}
         onRegionChangeComplete={this._onRegionChangeComplete}
       >
         {this._renderMarkers()}
