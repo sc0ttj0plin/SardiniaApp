@@ -59,6 +59,14 @@ class ClusteredMapViewTop extends PureComponent {
       this._geoLocationInitialized = true;
     }
 
+    // On scrollable container press hide selected element
+    const prevScrollablePressIn = prevProps.others.scrollablePressIn[this.props.entityType];
+    const currScrollablePressIn = this.props.others.scrollablePressIn[this.props.entityType];
+    if (prevScrollablePressIn !== currScrollablePressIn && typeof(currScrollablePressIn) === 'boolean')
+      this._clearClusterSelection();
+
+
+
     // If the term changes reload pois
     const prevTerm = this._getTerm(prevProps).term;
     const currentTerm = this._getTerm(this.props).term;
@@ -174,7 +182,10 @@ class ClusteredMapViewTop extends PureComponent {
   /**
    * When user moves the map clears current cluster selection
    */
-  _onRegionChange = () => {
+  _onPanDrag = () => {
+    // console.log('here')
+    if (!this.props.others.mapIsDragging[this.props.entityType])
+      this.props.actions.setMapIsDragging(this.props.entityType, true);
     if(!this.state.animationToPoi)
       this._clearClusterSelection();
   }
@@ -188,6 +199,9 @@ class ClusteredMapViewTop extends PureComponent {
     this._region = region;
     if (region)
       this._fetchClusters();
+
+    if (this.props.others.mapIsDragging[this.props.entityType])
+      this.props.actions.setMapIsDragging(this.props.entityType, false);
   }
 
   /**
@@ -339,7 +353,7 @@ class ClusteredMapViewTop extends PureComponent {
           showsIndoorLevelPicker={true}
           showsCompass={false}
           onPress={this._clearClusterSelection}
-          onRegionChange={this._onRegionChange}
+          onPanDrag={this._onPanDrag}
           onRegionChangeComplete={this._onRegionChangeComplete}
           >
           {this._renderClustersOrPoi(clusters)}

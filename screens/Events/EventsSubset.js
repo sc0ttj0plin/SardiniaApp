@@ -93,7 +93,28 @@ class EventsSubsetScreen extends Component {
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
 
 
+  _openMap = () => {
+    const { eventsSubset } = this.state;
+    this.props.navigation.navigate(Constants.NAVIGATION.NavEventsMapScreen, {events: eventsSubset});
+  }
+  
   /********************* Render methods go down here *********************/
+  _renderBottomToast = () => {
+    return(
+      <View style={styles.toastContainer}>
+        <View style={styles.toastInnerContainer}>
+          <CustomText style={styles.toastText}>Vuoi vedere gli eventi sulla mappa</CustomText>
+          <TouchableOpacity 
+            style={styles.toastButton}
+            activeOpacity={0.7}
+            onPress={this._openMap}>
+            <CustomText style={styles.toastButtonText}>VAI</CustomText>
+          </TouchableOpacity>
+        </View>
+      </View>
+    )
+  }
+
   _renderEventsListItem = (item) => {
     // console.log(item.title)
     const { lan } = this.props.locale;
@@ -131,6 +152,7 @@ class EventsSubsetScreen extends Component {
           <CustomText style={styles.calendarListTitle}>{this.state.headerDate}</CustomText>
         </View>
         {this._renderEventsList()}
+        {this._renderBottomToast()}
       </View>
      )
   }
@@ -186,6 +208,43 @@ const styles = StyleSheet.create({
     color: "#000000E6",
     fontFamily: "montserrat-bold",
     textTransform: "capitalize"
+  },
+  toastContainer: {
+    position: "absolute",
+    bottom: 10,
+    left: 0,
+    width: "100%",
+    height: 48,
+    paddingHorizontal: 16
+    // marginHorizontal: 16,
+  },
+  toastInnerContainer: {
+    width: "100%",
+    height: 48,
+    paddingVertical: 16,
+    backgroundColor: "#000000",
+    borderRadius: 4,
+    paddingLeft: 13,
+    paddingRight: 29,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  toastText: {
+    fontSize: 13,
+    color: "white",
+    flex: 1,
+  },
+  toastButton: {
+    display: "flex",
+    alignItems: "flex-end",
+    justifyContent: "center"
+  },
+  toastButtonText: {
+    fontSize: 14,
+    fontFamily: "montserrat-bold",
+    color: "#D9531E",
+    textAlign: "right"
   }
 });
 

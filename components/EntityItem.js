@@ -42,7 +42,7 @@ export default class EntityItem extends PureComponent {
               height: this.height,
               maxHeight: this.height,
               minHeight: this.height,
-            }, extraStyle, styles.shadow]}
+            }, extraStyle, /*styles.shadow*/]}
         >
             <GeoRefHListItem
                 title={title}

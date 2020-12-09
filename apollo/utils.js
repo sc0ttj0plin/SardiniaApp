@@ -123,8 +123,8 @@ export const processEntity = function(entity, coords=null) {
   
   
   if (entity.distance)
-    entity.distanceStr = distanceToString(entity.distance * 100);
-  
+    entity.distanceStr = distanceToString(entity.distance * 100); 
+
   // Hasn't a distance, but user coords -> compute distance from user
   if (!entity.distance && coords && entity.georef) {
     entity.distance = distanceToString(distance(coords[0], coords[1], entity.georef.coordinates[0], entity.georef.coordinates[1]));

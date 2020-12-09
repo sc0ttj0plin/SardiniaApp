@@ -52,10 +52,8 @@ class EntityWidgetInMapView extends PureComponent {
   _fetchEntity = () => {
     const { isAccomodationItem } = this.props;
     const entity = this.props.cluster.terms_objs[0];
-    if(isAccomodationItem){
-      console.log("entity", entity)
+    if(isAccomodationItem)
       this._fetchAccomodation(entity.uuid)
-    }
     else
       this._fetchPoi(entity.nid);
   }

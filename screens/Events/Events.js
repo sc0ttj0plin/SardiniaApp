@@ -360,9 +360,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   toastButton: {
-    flex: 1,
     display: "flex",
-    alignItems: "center",
+    alignItems: "flex-end",
     justifyContent: "center"
   },
   toastButtonText: {

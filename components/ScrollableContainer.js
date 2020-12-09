@@ -1,16 +1,14 @@
 import React, { PureComponent, Component } from 'react';
-import { Dimensions, StyleSheet, Text, View, TouchableOpacity, ScrollView, NativeModules, Easing, Platform } from 'react-native';
+import { Dimensions, StyleSheet, Text, View, Pressable, TouchableOpacity, TouchableWithoutFeedback, ScrollView, NativeModules, Easing, Platform } from 'react-native';
 import ScrollBottomSheet from 'react-native-scroll-bottom-sheet';
 import Animated from 'react-native-reanimated';
-import MapView from 'react-native-maps';
-const windowHeight = Dimensions.get('window').height;
+import { connect, useStore } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import _ from 'lodash';
+import actions from '../actions';
 import Layout from '../constants/Layout';
 import { Ionicons, Feather } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
-import ScrollableContainerTouchableOpacity from "./ScrollableContainerTouchableOpacity"
-import { call, useCode, useAnimatedStyle, useSharedValue} from 'react-native-reanimated'
-import { PanGestureHandler, State } from "react-native-gesture-handler";
-import CustomText from "./CustomText";
 
 const { Value, event, interpolate } = Animated;
 const { StatusBarManager } = NativeModules;
@@ -20,7 +18,7 @@ const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
 /**
  * ScrollableContainer 
  */
-export default class ScrollableContainer extends PureComponent {
+class ScrollableContainer extends PureComponent {
   constructor(props){
     super(props);
     // Scrollable refernce
@@ -35,16 +33,17 @@ export default class ScrollableContainer extends PureComponent {
     this._handleBorderRadius = new Value(32)
     this._handleBorderRadiusMax = 32;
     this._handleBorderRadiusMin = 0;
-    //Topmost component translation animations when scrolling
+    /* Topmost component translation animations when scrolling: 0 (is fully closed), 1 (is fully open) */
     this._translateAnim = new Value(0);
+    /* uses translateAnim (from scrollable position) to map to an output range: map scroll */
     this._translateAnimY = interpolate(this._translateAnim, {
       inputRange: [0, 1],
       outputRange: [0, -Layout.window.height/2],
     });
-
+    /* uses translateAnim (from scrollable position) to map to an output range: extra component scroll */
     this._translateAnimY2 = interpolate(this._translateAnim, {
-      inputRange: [0, 0.5, 0.8, 1],
-      outputRange: [10, 10, -10, -35],
+      inputRange: [0, 0.2, 0.5, 1],
+      outputRange: [10, -10, -35, -35],
     });
 
     this._snapping = false;
@@ -55,13 +54,13 @@ export default class ScrollableContainer extends PureComponent {
   }
 
   componentDidUpdate(prevProps){
-    if(prevProps.snapIndex !== this.props.snapIndex){
+    const prevSnap = prevProps.others.scrollableSnapIndex[this.props.entityType];
+    const currentSnap = this.props.others.scrollableSnapIndex[this.props.entityType];
+    if (prevSnap !== currentSnap && typeof(currentSnap) === 'number') {
       this._snapping = true;
-      let timeout = setTimeout( () => {
-        this._scrollable.snapTo(this.props.snapIndex)
-        clearTimeout(timeout)
-        // this._snapping = false;
-      }, 300)
+      setTimeout( () => { 
+        this._scrollable.snapTo(currentSnap) 
+      }, 300);
     }
     if(prevProps.data !== this.props.data){
       this.setState({
@@ -92,16 +91,41 @@ export default class ScrollableContainer extends PureComponent {
     this._handleBorderRadius._value = value;
   }
 
+  /* NOTE: moved to enclosing screens */
   _renderHandle = () => {
-    const { closeSnapIndex = 1 } = this.props;
+   const { closeSnapIndex = 1 } = this.props;
     return (
       <Animated.View style={[styles.header, { borderTopRightRadius: this._handleBorderRadius }]}>
         <View style={styles.panelHandle} />
-        {/* { Platform.OS == 'android' &&  */}
           <TouchableOpacity style={styles.xView} onPress={() => this._scrollable.snapTo(closeSnapIndex)}>
             <Feather name={'x'} size={20} color={Colors.grayHandle} />
           </TouchableOpacity>
       </Animated.View>);
+  }
+  
+  _onPressIn = () => {
+    this.props.actions.setScrollablePressIn(this.props.entityType, !this.props.others.scrollablePressIn[this.props.entityType])
+  }
+
+  _onSettle = (index) => {
+    //Set global snap index for the current entityType
+    this.props.actions.setScrollableSnapIndex(this.props.entityType, index);
+    if(Platform.OS === 'android')
+      setTimeout(() => {this._scrollableInner.getNode().scrollToOffset({ animated: false, offset: 0 })}, 100);
+
+    if(index == 0 && this._handleBorderRadius._value != this._handleBorderRadiusMin){
+      console.log("index 1", this._handleBorderRadius._value, this._handleBorderRadiusMax)
+      this._startHandleAnimation(0)
+    }
+    else if(index != 0 && this._handleBorderRadius._value != this._handleBorderRadiusMax){
+      console.log("index 2", this._handleBorderRadius._value, this._handleBorderRadiusMin)
+      this._startHandleAnimation(32)
+    }
+
+    if(this._snapping)
+      this._snapping = false;
+    else if(this.props.onSettle)
+      this.props.onSettle()
   }
 
   render() {
@@ -117,9 +141,10 @@ export default class ScrollableContainer extends PureComponent {
       data,
       onEndReached = ()=>{} } = this.props;
 
+      //onStartShouldSetResponder={(e) => { console.log('touchup'); return true;}} 
     if (snapPoints && snapPoints.length > 0)
       return (
-          <View style={[styles.fill, {backgroundColor: "transparent", zIndex: -1,}]}>
+          <View style={[styles.fill, {backgroundColor: "white"}]}>
             <Animated.View style={[styles.fill, { transform: [{ translateY: this._translateAnimY } ]}]}>
               {topComponent()}
             </Animated.View>
@@ -128,51 +153,30 @@ export default class ScrollableContainer extends PureComponent {
                 {extraComponent()}
               </Animated.View>
             }
-            <ScrollBottomSheet
-              componentType="FlatList"
-              key={numColumns} /* NOTE always set a key to refresh only this component and avoid unmounting */
-              // numColumns={numColumns || 1}
-              snapPoints={snapPoints}
-              // disableScrollViewPanResponder={true}
-              // scrollEnabled={this.state.currentSnapIndex === 0 ? true : false}
-              initialSnapIndex={initialSnapIndex >=0 ? initialSnapIndex : 0}
-              // renderHandle={this.state.currentSnapIndex !== 0 ? this._renderHandle : () => <View/>}
-              renderHandle={() => <View/>}
-              data={this.state.data || []}
-              keyExtractor={keyExtractor}
-              renderItem={renderItem}
-              innerRef = {(ref) => this._scrollableInner = ref}
-              ref={(ref)=>this._scrollable = ref}
-              ListHeaderComponent={ListHeaderComponent || null}
-              animatedPosition={this._translateAnim}
-              initialNumToRender={8}
-              maxToRenderPerBatch={2}
-              //onEndReachedThreshold={0.5} 
-              onSettle = {(index) => {
-                this.setState({ currentSnapIndex: index });
-                if(Platform.OS === 'android')
-                  setTimeout(() => {this._scrollableInner.getNode().scrollToOffset({ animated: false, offset: 0 })}, 100);
-
-                if(index == 0 && this._handleBorderRadius._value != this._handleBorderRadiusMin){
-                  console.log("index 1", this._handleBorderRadius._value, this._handleBorderRadiusMax)
-                  this._startHandleAnimation(0)
-                }
-                else if(index != 0 && this._handleBorderRadius._value != this._handleBorderRadiusMax){
-                  console.log("index 2", this._handleBorderRadius._value, this._handleBorderRadiusMin)
-                  this._startHandleAnimation(32)
-                }
-
-              if(this._snapping)
-                this._snapping = false;
-              else if(this.props.onSettle)
-                this.props.onSettle()
-
-              }}
-              onEndReached = {({distanceFromEnd})=> onEndReached()}
-              contentContainerStyle={[styles.contentContainerStyle, {
-                flex:  data && data.length == 0 ? 1 : null
-              }]}/>
-            
+              <ScrollBottomSheet
+                componentType="FlatList"
+                key={numColumns} /* NOTE always set a key to refresh only this component and avoid unmounting */
+                // numColumns={numColumns || 1}
+                snapPoints={snapPoints}
+                // scrollEnabled={this.state.currentSnapIndex === 0 ? true : false}
+                initialSnapIndex={initialSnapIndex >=0 ? initialSnapIndex : 0}
+                // renderHandle={this._renderHandle}
+                renderHandle={() => null}
+                data={this.state.data || []}
+                keyExtractor={keyExtractor}
+                renderItem={renderItem}
+                innerRef = {(ref) => this._scrollableInner = ref}
+                ref={(ref)=>this._scrollable = ref}
+                ListHeaderComponent={ListHeaderComponent || null}
+                animatedPosition={this._translateAnim} /* 0->1 increases as scroll is moved up */
+                initialNumToRender={8}
+                maxToRenderPerBatch={2}
+                onSettle = {(index) => this._onSettle(index) }
+                onEndReached = {({distanceFromEnd})=> onEndReached()}
+                contentContainerStyle={[styles.contentContainerStyle, {
+                  flex:  data && data.length == 0 ? 1 : null
+                }]}
+              />
         </View>
       )
     else 
@@ -234,3 +238,28 @@ const styles = StyleSheet.create({
     // backgroundColor: "red"
   }
 })
+
+
+function ScrollableContainerContainer(props) {
+  const store = useStore();
+  return <ScrollableContainer {...props} store={store} />;
+}
+
+const mapStateToProps = state => {
+  return {
+    //mixed state
+    others: state.othersState,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {...bindActionCreators({ ...actions}, dispatch)};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps, (stateProps, dispatchProps, props) => {
+  return {
+    ...stateProps,
+    actions: dispatchProps,
+    ...props
+  }
+})(ScrollableContainerContainer)

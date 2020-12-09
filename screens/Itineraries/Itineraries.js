@@ -116,14 +116,6 @@ class ItinerariesScreen extends PureComponent {
   }
 
   /**
-   * When user stops dragging the map, change selected region
-   * @param {*} region: region
-   */
-  _onRegionChangeComplete = (region) => {
-    this.state.region = region;
-  }
-
-  /**
    * Open single poi screen
    * @param {*} item: item list
    */
@@ -133,7 +125,8 @@ class ItinerariesScreen extends PureComponent {
 
 
   _selectMarker = (itinerary) => {
-    if(itinerary){
+    if(itinerary) {
+      this.props.actions.setScrollableSnapIndex(Constants.ENTITY_TYPES.itineraries, 2);
       this.setState({ selectedItinerary: null }, () => {
         this.setState({ 
           selectedItinerary: itinerary,
@@ -166,13 +159,23 @@ class ItinerariesScreen extends PureComponent {
     let margins = 20
     let itemWidth = ((Layout.window.width - (margins*2))/2) - 5;
     //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 24 (handle) - 36 (header text) - itemWidth (entityItem) - 10 (margin of entityItem)
-    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 24 - 76 - itemWidth - 10, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 24 - 76, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 34] });
+    /* Old: 3 snap points: this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 24 - 76 - itemWidth - 10, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 24 - 76, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 34] }); */
+    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 24 - 76, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 34] });
   }; 
 
   _onSettle = () => {
     this.setState({
       selectedItinerary: null
     })
+  }
+
+  /**
+   * On scrollBottomSheet touch clear selection
+   * @param {*} e 
+   */
+  _onListHeaderPressIn = (e) => {
+    this._selectMarker(null)
+    return true;
   }
 
   /********************* Render methods go down here *********************/
@@ -215,7 +218,6 @@ class ItinerariesScreen extends PureComponent {
         style={{flex: 1}}
         onPress={() => this._selectMarker(null)}
         onPanDrag={() => selectedItinerary && this._selectMarker(null)}
-        onRegionChangeComplete={this._onRegionChangeComplete}
       >
         {this._renderMarkers()}
       </MapView>
@@ -310,8 +312,13 @@ class ItinerariesScreen extends PureComponent {
   _renderListHeader = () => {
     const { nearToYou, whereToGo, exploreItineraries } = this.props.locale.messages;
       return (
-        <View style={styles.listHeader}>
-          <CustomText style={styles.sectionTitle}>{exploreItineraries}</CustomText>
+        <View onStartShouldSetResponder={this._onListHeaderPressIn}>
+          <View style={styles.header}>
+            <View style={styles.panelHandle} />
+          </View>
+          <View style={styles.listHeader}>
+            <CustomText style={styles.sectionTitle}>{exploreItineraries}</CustomText>
+          </View>
         </View>
       )
   }
@@ -352,15 +359,14 @@ class ItinerariesScreen extends PureComponent {
     let numColumns = 2;
     return (
       <ScrollableContainer 
+        entityType={Constants.ENTITY_TYPES.itineraries}
         topComponent={this._renderTopComponent}
         ListHeaderComponent={this._renderListHeader} 
         data={data}
-        initialSnapIndex={2}
+        initialSnapIndex={1}
         numColumns={numColumns}
         snapPoints={this.state.snapPoints}
-        closeSnapIndex={2}
         onSettle={this._onSettle}
-        snapIndex={snapIndex}
         renderItem={this._renderListItem}
         keyExtractor={item => item.uuid}
       />
@@ -487,7 +493,22 @@ const styles = StyleSheet.create({
   },
   clusterText: {
     color: "white"
-  }
+  },
+  //Pane Handle
+  header: {
+    alignItems: 'center',
+    backgroundColor: 'white',
+    paddingTop: 20,
+    paddingBottom: 0,
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 32
+  },
+  panelHandle: {
+    width: 32,
+    height: 4,
+    backgroundColor: Colors.grayHandle,
+    borderRadius: 2,
+  },
 });
 
 

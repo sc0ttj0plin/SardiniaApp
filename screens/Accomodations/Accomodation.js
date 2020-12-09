@@ -108,7 +108,7 @@ class AccomodationScreen extends Component {
   _parseEntity = (entity) => {
     const { locale } = this.props;
     const { lan } = locale;
-    const { abstract, title, description, whyVisit } = getEntityInfo(entity, ["abstract", "title", "description", "whyVisit"], [lan, 0, "value"]);
+    const { abstract, title, description, whyVisit } = getEntityInfo(entity, ["abstract", "title", "description", "whyVisit"], [lan, 0, "value"], null, {"description": {s: /\. /g, d: ".<br/>"}});
     const coordinates = getCoordinates(entity);
     const socialUrl = entity.website;
     const sampleVideoUrl = getSampleVideoIndex(entity.nid);

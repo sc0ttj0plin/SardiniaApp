@@ -1,5 +1,5 @@
 
-import _ from 'lodash';
+import _, { replace } from 'lodash';
 import videos from '../constants/_sampleVideos';
 import { Linking, Alert } from 'react-native';
 import * as Constants from "../constants"
@@ -63,11 +63,13 @@ export const linkingOpenUrl = url => Linking.openURL(url);
  * @param {*} fields e.g. { "coordinates": 1, "image": 1, }
  * @param {*} path 
  */
-export const getEntityInfo = (entity, fields=[], path=["it", 0, "value"], defaultVal=null) => {
+export const getEntityInfo = (entity, fields=[], path=["it", 0, "value"], defaultVal=null, replaceObj={}) => {
   if(entity){
     let returnObj = _.reduce(fields, (acc, el) => {
-      if (entity[el])
-        acc[el] = _.get(entity[el], path, defaultVal);
+      if (entity[el]) {
+        let value = _.get(entity[el], path, defaultVal);
+        acc[el] = (replaceObj[el] && value) ? value.replace(replaceObj[el].s, replaceObj[el].d) : value; 
+      }
       return acc;
     }, {});
     return returnObj;

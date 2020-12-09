@@ -74,7 +74,18 @@ class ConnectedHeader extends PureComponent {
       //
       searchStr: "",
     };
+    this._searchBarRef = null;
+  }
 
+  componentDidUpdate(prevProps){
+    if(prevProps.backButtonVisible != this.props.backButtonVisible)
+      this.setState({
+        backButtonVisible: this.props.backButtonVisible
+      })
+  }
+
+  componentDidMount() {
+    this._searchBarRef && this._searchBarRef.focus();
   }
 
   
@@ -118,12 +129,6 @@ class ConnectedHeader extends PureComponent {
     this.props.actions.setSearchOrAutocomplete(search);
   };
 
-  componentDidUpdate(prevProps){
-    if(prevProps.backButtonVisible != this.props.backButtonVisible)
-      this.setState({
-        backButtonVisible: this.props.backButtonVisible
-      })
-  }
 
   _renderDrawerButton = () => {
     return(
@@ -202,6 +207,7 @@ class ConnectedHeader extends PureComponent {
     return(
       <SearchBar
         lightTheme={true}
+        ref={ref => (this._searchBarRef = ref)}
         placeholder={insertHere}
         onChangeText={this._updateSearch}
         value={searchStr}

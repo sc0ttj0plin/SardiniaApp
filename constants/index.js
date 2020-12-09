@@ -119,6 +119,9 @@ export const SET_CURRENT_MAP_ENTITY = 'sardinia/map/SET_CURRENT_MAP_ENTITY'; /* 
 export const USER_EDIT = 'sardinia/user/LOAD';
 export const USER_EDIT_SUCCESS = 'sardinia/user/LOAD_SUCCESS';
 export const USER_EDIT_FAIL = 'sardinia/user/LOAD_FAIL';
+export const MAP_SET_DRAGGING = 'sardinia/others/MAP_SET_DRAGGING';
+export const SCROLLABLE_SET_PRESSIN = 'sardinia/others/SCROLLABLE_SET_PRESSIN';
+export const SCROLLABLE_SET_SCROLLINDEX = 'sardinia/others/SCROLLABLE_SET_SCROLLINDEX';
 
 
 // API

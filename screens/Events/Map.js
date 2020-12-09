@@ -183,17 +183,9 @@ class EventsMapScreen extends PureComponent {
     this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item });
   }
 
-  /**
-   * When user stops dragging the map, change selected region
-   * @param {*} region: region
-   */
-  _onRegionChangeComplete = (region) => {
-    this.state.region = region;
-  }
-
-
   _selectMarker = (event) => {
     if(event) {
+      this.props.actions.setScrollableSnapIndex(Constants.ENTITY_TYPES.events, 2);
       this.setState({ selectedEvent: null }, () => {
         this._tracksViewChanges = true;
         this.setState({ 
@@ -228,18 +220,19 @@ class EventsMapScreen extends PureComponent {
     let margins = 20
     let itemWidth = ((Layout.window.width - (margins*2))/2) - 5;
     //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 24 (handle) - 36 (header text) - itemWidth (entityItem) - 10 (margin of entityItem)
-    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 24 - 76 - itemWidth - 10, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 24 - 76, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 34] });
+    /* OLD: 4 snap points this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 24 - 76 - itemWidth - 10, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 24 - 76, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 34] }); */
+    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 24 - 76, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 34] });
   }; 
 
-  // _backButtonPress = () => this.props.actions.popCurrentCategoryPlaces();
-
+  /**
+   * On scrollBottomSheet touch clear selection
+   * @param {*} e 
+   */
+  _onListHeaderPressIn = (e) => {
+    this._selectMarker(null)
+    return true;
+  }
   /********************* Render methods go down here *********************/
-
-  _renderTopComponentCategorySelector = (item) => 
-    <TouchableOpacity style={styles.categorySelectorBtn} onPress={() => this._selectCategory(item)}>
-      <CustomText style={{color: 'white'}}>{item.name}</CustomText>
-    </TouchableOpacity>
-
 
   _renderCluster = (cluster) => {
     const { id, geometry, onPress, properties } = cluster;
@@ -281,7 +274,6 @@ class EventsMapScreen extends PureComponent {
         style={{flex: 1}}
         onPress={() => this._selectMarker(null)}
         onPanDrag={() => selectedEvent && this._selectMarker(null)}
-        onRegionChangeComplete={this._onRegionChangeComplete}
       >
         {this._renderMarkers()}
         {/* {this.state.selectedEvent && this._renderMarker(this.state.selectedEvent, true)} */}
@@ -365,8 +357,13 @@ class EventsMapScreen extends PureComponent {
   _renderListHeader = () => {
     const { nearToYou, whereToGo, exploreEvents } = this.props.locale.messages;
       return (
-        <View style={styles.listHeader}>
-          <CustomText style={styles.sectionTitle}>{exploreEvents}</CustomText>
+        <View onStartShouldSetResponder={this._onListHeaderPressIn}>
+          <View style={styles.header}>
+            <View style={styles.panelHandle} />
+          </View>
+          <View style={styles.listHeader}>
+            <CustomText style={styles.sectionTitle}>{exploreEvents}</CustomText>
+          </View>
         </View>
       )
   }
@@ -403,12 +400,12 @@ class EventsMapScreen extends PureComponent {
 
     return (
       <ScrollableContainer 
+        entityType={Constants.ENTITY_TYPES.events}
         topComponent={this._renderTopComponent}
         ListHeaderComponent={this._renderListHeader}
         data={data}
-        initialSnapIndex={2}
+        initialSnapIndex={1}
         snapIndex={snapIndex}
-        closeSnapIndex={2}
         snapPoints={this.state.snapPoints}
         numColums={1}
         renderItem={this._renderListItem}
@@ -543,7 +540,22 @@ const styles = StyleSheet.create({
   },
   clusterText: {
     color: "white"
-  }
+  },
+  //Pane Handle
+  header: {
+    alignItems: 'center',
+    backgroundColor: 'white',
+    paddingTop: 20,
+    paddingBottom: 0,
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 32
+  },
+  panelHandle: {
+    width: 32,
+    height: 4,
+    backgroundColor: Colors.grayHandle,
+    borderRadius: 2,
+  },
 });
 
 

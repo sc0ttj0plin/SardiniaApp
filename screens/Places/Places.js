@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import { 
-  View, Text, ActivityIndicator, 
+  View, Text, ActivityIndicator, Pressable,
   StyleSheet, BackHandler, Platform, ScrollView, NativeModules } from "react-native";
 
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler"
@@ -58,8 +58,8 @@ class PlacesScreen extends PureComponent {
       region: Constants.MAP.defaultRegion,
       currentTerm: null,
       //
-      snapPoints: null,
-      snapIndex: 1,
+      snapPoints: [],
+      // snapIndex: 1, //TODO: snap-edit
       //
       didRender: false,
     };
@@ -98,8 +98,12 @@ class PlacesScreen extends PureComponent {
       // this.setState({ nearPois: [] }, () => this._fetchNearestPois(this.state.coords)); 
       this._loadMorePois();
     }
+    //TODO: snap-edit
+    const entityType = Constants.ENTITY_TYPES.places;
     if (prevProps.others.currentMapEntity !== this.props.others.currentMapEntity)
-      this.setState({ snapIndex: 2 });
+      this.props.actions.setScrollableSnapIndex(entityType, this.state.snapPoints.length-1);
+    if (prevProps.others.mapIsDragging[entityType] !== this.props.others.mapIsDragging[entityType]) 
+      this.props.actions.setScrollableSnapIndex(entityType, this.state.snapPoints.length-1);
   }
 
   componentWillUnmount() {
@@ -240,14 +244,6 @@ class PlacesScreen extends PureComponent {
   }
 
   /**
-   * When user stops dragging the map, change selected region
-   * @param {*} region: region
-   */
-  _onRegionChangeComplete = (region) => {
-    this.state.region = region;
-  }
-
-  /**
    * Is poi list returns true if we reached the end of the three (no more sub categories)
    */
   _isPoiList = () => {
@@ -276,10 +272,20 @@ class PlacesScreen extends PureComponent {
     this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 24 - 36 - 160 - 10 - 36 + 10, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 34] });
   }; 
 
+  /**
+   * On scrollBottomSheet touch clear selection
+   * @param {*} e 
+   */
+  _onListHeaderPressIn = (e) => {
+    const entityType = Constants.ENTITY_TYPES.places;
+    this.props.actions.setScrollablePressIn(entityType, !this.props.others.scrollablePressIn[entityType]); 
+    return true;
+  }
+
   /********************* Render methods go down here *********************/
 
-  _renderTopComponentCategorySelector = (item, isLeaf=false) => 
-    <TouchableOpacity style={styles.categorySelectorBtn} onPress={() => isLeaf ? null : this._selectCategory(item)} activeOpacity={0.7}>
+  _renderTopComponentCategorySelector = (item) => 
+    <TouchableOpacity style={styles.categorySelectorBtn} onPress={() => this._selectCategory(item)} activeOpacity={0.7}>
       <View style={styles.icon}>
           <Ionicons
             name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS["places"].iconName}
@@ -317,7 +323,7 @@ class PlacesScreen extends PureComponent {
     const { term } = this._getCurrentTerm();
     const categoryTitle = term ? `${explore} ${term.name}` : whereToGo;
       return (
-        <View>
+        <View onStartShouldSetResponder={this._onListHeaderPressIn}>
           <View style={styles.header}>
             <View style={styles.panelHandle} />
           </View>
@@ -427,6 +433,8 @@ class PlacesScreen extends PureComponent {
   _renderContent = () => {
     const { term } = this._getCurrentTerm(true);
     const { pois, snapIndex } = this.state;
+    // const { scrollableSnapIndex } = this.props.others;
+    // const showExtraComponent = scrollableSnapIndex[Constants.ENTITY_TYPES.places];
     const isPoiList = this._isPoiList();
     let data = [];
     let renderItem = null;
@@ -442,6 +450,7 @@ class PlacesScreen extends PureComponent {
       renderItem = ({ item, index }) => this._renderCategoryListItem(item, index, data.length);
     }
 
+
     /** 
      * NOTE: changing numColums on the fly isn't supported and causes the component to unmount, 
      * thus slowing down the process
@@ -449,13 +458,12 @@ class PlacesScreen extends PureComponent {
     */
     return (
       <ScrollableContainer 
+        entityType={Constants.ENTITY_TYPES.places}
         topComponent={this._renderTopComponent}
         extraComponent={this._renderFiltersList}
         ListHeaderComponent={this._renderListHeader}
         data={data}
         snapPoints={this.state.snapPoints}
-        closeSnapIndex={1}
-        snapIndex={snapIndex}
         initialSnapIndex={1}
         onEndReached={this._loadMorePois}
         numColumns={numColumns} 
@@ -564,14 +572,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  //Pane Handl
+  //Pane Handle
   header: {
     alignItems: 'center',
     backgroundColor: 'white',
     paddingTop: 20,
     paddingBottom: 0,
     borderTopLeftRadius: 0,
-    borderTopRightRadius: 32
+    borderTopRightRadius: 32,
   },
   panelHandle: {
     width: 32,

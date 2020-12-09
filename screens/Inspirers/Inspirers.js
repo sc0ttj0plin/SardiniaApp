@@ -238,10 +238,12 @@ class InspirersScreen extends Component {
               keyExtractor={item => item.uuid}
               initialNumToRender={3} // Reduce initial render amount
               maxToRenderPerBatch={2}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.listContainerStyle}
               style={styles.listStyle}
               updateCellsBatchingPeriod={400} // Increase time between renders
               windowSize={5} // Reduce the window size
-              />
+            />
           </View>   
       </AsyncOperationStatusIndicator>
     );
@@ -282,7 +284,7 @@ const styles = StyleSheet.create({
   },
   listView: {
     width: "100%",
-    marginTop: 16
+    marginTop: 16,
   },
   header: {
     backgroundColor: "white"
@@ -309,6 +311,9 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     marginHorizontal: 10,
     height: "100%",
+  },
+  listContainerStyle: {
+    paddingBottom: 100
   },
   listStyleLL: {
     marginTop: 16,

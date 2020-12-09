@@ -48,7 +48,7 @@ export default class AccomodationItem extends PureComponent {
             width: this.width, 
             height: this.height,
             borderColor: hideBorder ? "transparent" : Colors.lightGray
-          }, extraStyle, Constants.styles.shadow]} activeOpacity={0.8}>
+          }, extraStyle, /*Constants.styles.shadow*/]} activeOpacity={0.8}>
           <View style={styles.content}>
             <View style={[styles.corner]}>
               <Ionicons

@@ -115,7 +115,7 @@ class ItineraryScreen extends Component {
       const { locale } = this.props;
       const { lan } = locale;
       // console.log("language", lan)
-      const { abstract, title, description } = getEntityInfo(entity, ["abstract", "title", "description"], [lan, 0, "value"]);
+      const { abstract, title, description } = getEntityInfo(entity, ["abstract", "title", "description"], [lan, 0, "value"], null, {"description": {s: /\. /g, d: ".<br/>"}});
       const socialUrl = `${Constants.WEBSITE_URL}${greedyArrayFinder(entity.url_alias, "language", lan, "alias", "")}`;
       const { stages, stagesMarkers } = this._getItineraryStages(entity.stages)
       const coordinates = _.get(entity, ["stages", 0, "poi", "georef", "coordinates"], null)

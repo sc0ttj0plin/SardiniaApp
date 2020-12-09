@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
       width: "100%",
       borderBottomLeftRadius: 8,
       borderBottomRightRadius: 8,
-      minHeight: 60
+      minHeight: 50
     }
 });
 

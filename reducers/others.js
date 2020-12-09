@@ -7,6 +7,9 @@ const INITIAL_STATE = {
   inspirersTerms: [],
   accomodationsTerms: [],
   currentMapEntity: null,
+  mapIsDragging: {},
+  scrollableSnapIndex: {},
+  scrollablePressIn: {},
 }
 
 
@@ -101,6 +104,24 @@ export default function reducer(state = INITIAL_STATE, action) {
       return { 
         ...state, 
         url: action.payload, 
+      };
+    // DRAGGING
+    case Constants.MAP_SET_DRAGGING:
+      return { 
+        ...state, 
+        mapIsDragging: { ...state.mapIsDragging, [action.payload.id]: action.payload.val }, 
+      };
+    // SNAP INDEX
+    case Constants.SCROLLABLE_SET_SCROLLINDEX:
+      return { 
+        ...state, 
+        scrollableSnapIndex: { ...state.scrollableSnapIndex, [action.payload.id]: action.payload.val }, 
+      };
+    // SNAP INDEX
+    case Constants.SCROLLABLE_SET_PRESSIN:
+      return { 
+        ...state, 
+        scrollablePressIn: { ...state.scrollablePressIn, [action.payload.id]: action.payload.val }, 
       };
     default:
       return state;

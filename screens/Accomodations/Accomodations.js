@@ -55,7 +55,6 @@ class AccomodationsScreen extends Component {
       sourceEntityCoordinates,
       //
       snapPoints: null,
-      snapIndex: 1,
     };
       
   }
@@ -91,8 +90,11 @@ class AccomodationsScreen extends Component {
       this._loadMorePois();
     }
 
+    const entityType = Constants.ENTITY_TYPES.accomodations;
     if (prevProps.others.currentMapEntity !== this.props.others.currentMapEntity)
-      this.setState({ snapIndex: 2 });
+      this.props.actions.setScrollableSnapIndex(entityType, this.state.snapPoints.length-1);
+    if (prevProps.others.mapIsDragging[entityType] !== this.props.others.mapIsDragging[entityType]) 
+      this.props.actions.setScrollableSnapIndex(entityType, this.state.snapPoints.length-1);
   }
 
   componentWillUnmount() {
@@ -240,14 +242,6 @@ class AccomodationsScreen extends Component {
   }
 
   /**
-   * When user stops dragging the map, change selected region
-   * @param {*} region: region
-   */
-  _onRegionChangeComplete = (region) => {
-    this.state.region = region;
-  }
-
-  /**
    * Is poi list returns true if we reached the end of the three (no more sub categories)
    */
   _isPoiList = () => {
@@ -279,10 +273,20 @@ class AccomodationsScreen extends Component {
     this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 24 - 36 - 160 - 10 - 36 + 10, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 34] });
   }; 
 
+  /**
+   * On scrollBottomSheet touch clear selection
+   * @param {*} e 
+   */
+  _onListHeaderPressIn = (e) => {
+    const entityType = Constants.ENTITY_TYPES.accomodations;
+    this.props.actions.setScrollablePressIn(entityType, !this.props.others.scrollablePressIn[entityType]); 
+    return true;
+  }
+
   /********************* Render methods go down here *********************/
 
-  _renderTopComponentCategorySelector = (item, isLeaf) => 
-    <TouchableOpacity style={styles.categorySelectorBtn} onPress={() => isLeaf ? null : this._selectCategory(item)} activeOpacity={0.7}>
+  _renderTopComponentCategorySelector = (item) => 
+    <TouchableOpacity style={styles.categorySelectorBtn} onPress={() => this._selectCategory(item)} activeOpacity={0.7}>
       <View style={styles.icon}>
           <Ionicons
             name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[Constants.ENTITY_TYPES.accomodations].iconName}
@@ -329,40 +333,45 @@ class AccomodationsScreen extends Component {
 
     const categoryTitle = term ? `${explore} ${term.name}` : exploreAccomodation;
       return (
-        <View style={styles.listHeaderView}>
-          <AsyncOperationStatusIndicator
-            loading={true}
-            success={nearPois && nearPois.length > 0}
-            loadingLayout={<LLHorizontalItemsFlatlist horizontal={true} style={styles.listContainerHeader} title={nearToYou} titleStyle={styles.sectionTitle}/>}
-          >
-            <View>  
-              <View style={styles.sectionTitleView}>
-                <CustomText style={[styles.sectionTitle, {
-                  fontSize: 16,
-                }]}>{nearToText}</CustomText>
+        <View onStartShouldSetResponder={this._onListHeaderPressIn} >
+          <View style={styles.header}>
+            <View style={styles.panelHandle} />
+          </View>
+          <View style={styles.listHeaderView}>
+            <AsyncOperationStatusIndicator
+              loading={true}
+              success={nearPois && nearPois.length > 0}
+              loadingLayout={<LLHorizontalItemsFlatlist horizontal={true} style={styles.listContainerHeader} title={nearToYou} titleStyle={styles.sectionTitle}/>}
+            >
+              <View>  
+                <View style={styles.sectionTitleView}>
+                  <CustomText style={[styles.sectionTitle, {
+                    fontSize: 16,
+                  }]}>{nearToText}</CustomText>
+                </View>
+                <FlatList
+                  horizontal={true}
+                  renderItem={({item}) => this._renderPoiListItem(item, null, true)}
+                  data={nearPois}
+                  extraData={this.props.locale}
+                  keyExtractor={item => item.uuid}
+                  onEndReachedThreshold={0.5} 
+                  onEndReached={() => this._fetchNearestPois(coords)}
+                  ItemSeparatorComponent={this._renderHorizontalSeparator}
+                  contentContainerStyle={styles.listContainerHeader}
+                  showsHorizontalScrollIndicator={false}
+                  initialNumToRender={3} // Reduce initial render amount
+                  maxToRenderPerBatch={2}
+                  updateCellsBatchingPeriod={4000} // Increase time between renders
+                  windowSize={5} // Reduce the window size
+                />
               </View>
-              <FlatList
-                horizontal={true}
-                renderItem={({item}) => this._renderPoiListItem(item, null, true)}
-                data={nearPois}
-                extraData={this.props.locale}
-                keyExtractor={item => item.uuid}
-                onEndReachedThreshold={0.5} 
-                onEndReached={() => this._fetchNearestPois(coords)}
-                ItemSeparatorComponent={this._renderHorizontalSeparator}
-                contentContainerStyle={styles.listContainerHeader}
-                showsHorizontalScrollIndicator={false}
-                initialNumToRender={3} // Reduce initial render amount
-                maxToRenderPerBatch={2}
-                updateCellsBatchingPeriod={4000} // Increase time between renders
-                windowSize={5} // Reduce the window size
-              />
+            </AsyncOperationStatusIndicator>
+            <View style={styles.sectionTitleView}>
+              <CustomText style={[styles.sectionTitle, {
+                fontSize: 20,
+              }]}>{categoryTitle}</CustomText>
             </View>
-          </AsyncOperationStatusIndicator>
-          <View style={styles.sectionTitleView}>
-            <CustomText style={[styles.sectionTitle, {
-              fontSize: 20,
-            }]}>{categoryTitle}</CustomText>
           </View>
         </View>
       )
@@ -453,13 +462,12 @@ class AccomodationsScreen extends Component {
     }
     return (
       <ScrollableContainer 
+        entityType={Constants.ENTITY_TYPES.accomodations}
         topComponent={this._renderTopComponent}
         extraComponent={this._renderFiltersList}
         ListHeaderComponent={this._renderListHeader}
         data={data}
         snapPoints={this.state.snapPoints}
-        snapIndex={snapIndex}
-        closeSnapIndex={1}
         initialSnapIndex={1}
         onEndReached={this._loadMorePois}
         numColumns={numColumns}
@@ -565,7 +573,22 @@ const styles = StyleSheet.create({
     minHeight: 36,
     justifyContent: "center",
     alignItems: "center",
-  }
+  },
+  //Pane Handle
+  header: {
+    alignItems: 'center',
+    backgroundColor: 'white',
+    paddingTop: 20,
+    paddingBottom: 0,
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 32
+  },
+  panelHandle: {
+    width: 32,
+    height: 4,
+    backgroundColor: Colors.grayHandle,
+    borderRadius: 2,
+  },
 });
 
 

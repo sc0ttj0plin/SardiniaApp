@@ -91,4 +91,20 @@ export const setUrl = (url) =>
   async (dispatch) => {
     dispatch({ type: Constants.SET_URL, payload: url });
   }
+
+export const setScrollableSnapIndex = (id, val) => 
+  async (dispatch) => {
+    dispatch({ type: Constants.SCROLLABLE_SET_SCROLLINDEX, payload: { id, val } });
+  }
+
+export const setScrollablePressIn = (id, val) => 
+  async (dispatch) => {
+    dispatch({ type: Constants.SCROLLABLE_SET_PRESSIN, payload: { id, val } });
+  }
+ 
+
+export const setMapIsDragging = (id, val) => 
+  async (dispatch) => {
+    dispatch({ type: Constants.MAP_SET_DRAGGING, payload: { id, val } });
+  }
  

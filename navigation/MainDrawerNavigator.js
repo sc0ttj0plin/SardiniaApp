@@ -174,18 +174,26 @@ function MainStackScreen() {
       {/* TabNavigator */}
       <MainStack.Screen name={NavTabNavigator} component={TabNavigator} />
       {/* Inner screens */}
+      {/* Places */}
       <MainStack.Screen name={NavPlaceScreen} component={PlaceScreen}/>
+      {/* Events */}
       <MainStack.Screen name={NavEventScreen} component={EventScreen} />
-      <MainStack.Screen name={NavExtraScreen} component={ExtraScreen} />
       <MainStack.Screen name={NavEventsSubset} component={EventsSubset} />
       <MainStack.Screen name={NavEventsMapScreen} component={EventsMapScreen} options={{...FromTopTransition}} />
+      <MainStack.Screen name={NavFiltersScreen} component={FiltersScreen}/>
+      {/* Extra */}
+      <MainStack.Screen name={NavExtraScreen} component={ExtraScreen} />
+      {/* Itineraries */}
       <MainStack.Screen name={NavItineraryScreen} component={ItineraryScreen}  />
       <MainStack.Screen name={NavItineraryStagesMapScreen} component={ItineraryStagesMapScreen}  />
+      {/* Inspirers */}
       <MainStack.Screen name={NavInspirerScreen} component={InspirerScreen}/>
+      {/* Media */}
       <MainStack.Screen name={NavMediaScreen} component={MediaScreen}/>
+      {/* Accomodation */}
       <MainStack.Screen name={NavAccomodationsScreen} component={AccomodationsScreen}/>
       <MainStack.Screen name={NavAccomodationScreen} component={AccomodationScreen}/>
-      <MainStack.Screen name={NavFiltersScreen} component={FiltersScreen}/>
+
     </MainStack.Navigator>
     </>
   );
@@ -202,9 +210,24 @@ function FavouritesStackScreen() {
     <FavouritesStack.Navigator headerMode="none" initialRouteName={NavFavouritesScreen}>
       <FavouritesStack.Screen name={NavFavouritesScreen} component={FavouritesScreen} />
       <FavouritesStack.Screen name={NavFavouritesListScreen} component={FavouritesListScreen} />
+      {/* Places */}
       <FavouritesStack.Screen name={NavPlaceScreen} component={PlaceScreen}/>
-      <FavouritesStack.Screen name={NavEventScreen} component={EventScreen}/>
-      <FavouritesStack.Screen name={NavItineraryScreen} component={ItineraryScreen}/>
+      {/* Events */}
+      <FavouritesStack.Screen name={NavEventScreen} component={EventScreen} />
+      <FavouritesStack.Screen name={NavEventsSubset} component={EventsSubset} />
+      <FavouritesStack.Screen name={NavEventsMapScreen} component={EventsMapScreen} options={{...FromTopTransition}} />
+      <FavouritesStack.Screen name={NavFiltersScreen} component={FiltersScreen}/>
+      {/* Extra */}
+      <FavouritesStack.Screen name={NavExtraScreen} component={ExtraScreen} />
+      {/* Itineraries */}
+      <FavouritesStack.Screen name={NavItineraryScreen} component={ItineraryScreen}  />
+      <FavouritesStack.Screen name={NavItineraryStagesMapScreen} component={ItineraryStagesMapScreen}  />
+      {/* Inspirers */}
+      <FavouritesStack.Screen name={NavInspirerScreen} component={InspirerScreen}/>
+      {/* Media */}
+      <FavouritesStack.Screen name={NavMediaScreen} component={MediaScreen}/>
+      {/* Accomodation */}
+      <FavouritesStack.Screen name={NavAccomodationsScreen} component={AccomodationsScreen}/>
       <FavouritesStack.Screen name={NavAccomodationScreen} component={AccomodationScreen}/>
     </FavouritesStack.Navigator>
   )
@@ -221,8 +244,25 @@ function SearchStackScreen() {
   return (
     <SearchStack.Navigator headerMode="none" initialRouteName={NavPlacesScreen}>
       <SearchStack.Screen name={NavSearchScreen} component={SearchScreen} />
+      {/* Places */}
       <SearchStack.Screen name={NavPlaceScreen} component={PlaceScreen}/>
+      {/* Events */}
       <SearchStack.Screen name={NavEventScreen} component={EventScreen} />
+      <SearchStack.Screen name={NavEventsSubset} component={EventsSubset} />
+      <SearchStack.Screen name={NavEventsMapScreen} component={EventsMapScreen} options={{...FromTopTransition}} />
+      <SearchStack.Screen name={NavFiltersScreen} component={FiltersScreen}/>
+      {/* Extra */}
+      <SearchStack.Screen name={NavExtraScreen} component={ExtraScreen} />
+      {/* Itineraries */}
+      <SearchStack.Screen name={NavItineraryScreen} component={ItineraryScreen}  />
+      <SearchStack.Screen name={NavItineraryStagesMapScreen} component={ItineraryStagesMapScreen}  />
+      {/* Inspirers */}
+      <SearchStack.Screen name={NavInspirerScreen} component={InspirerScreen}/>
+      {/* Media */}
+      <SearchStack.Screen name={NavMediaScreen} component={MediaScreen}/>
+      {/* Accomodation */}
+      <SearchStack.Screen name={NavAccomodationsScreen} component={AccomodationsScreen}/>
+      <SearchStack.Screen name={NavAccomodationScreen} component={AccomodationScreen}/>
     </SearchStack.Navigator>
   );
 }

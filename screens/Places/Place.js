@@ -145,7 +145,7 @@ class PlaceScreen extends Component {
   _parseEntity = (entity) => {
     const { locale } = this.props;
     const { lan } = locale;
-    const { abstract, title, description, whyVisit } = getEntityInfo(entity, ["abstract", "title", "description", "whyVisit"], [lan, 0, "value"]);
+    const { abstract, title, description, whyVisit } = getEntityInfo(entity, ["abstract", "title", "description", "whyVisit"], [lan, 0, "value"], null, {"description": {s: /\. /g, d: ".<br/>"}});
     console.log(this.state.uuid, entity.nid);
     const coordinates = getCoordinates(entity);
     const socialUrl = `${Constants.WEBSITE_URL}${greedyArrayFinder(entity.url_alias, "language", lan, "alias", "")}`;
