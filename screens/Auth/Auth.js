@@ -212,6 +212,7 @@ class Login extends Component {
                 textStyle={{ color: "black", width: Layout.window.width - 50, fontFamily: "montserrat-bold"}}
                 onDateChange={(date) => this.setState({birth: date, birthError: false})}
                 disabled={false}/>
+                
             </Item>
             <Item style={[styles.item1, countryError ? styles.itemError : {}]} regular>
               <Picker
