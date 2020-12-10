@@ -64,6 +64,8 @@ class PlacesScreen extends PureComponent {
       didRender: false,
     };
       
+    this._pageLayoutHeight = Layout.window.height;
+    this._filterList = null;
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
@@ -225,6 +227,8 @@ class PlacesScreen extends PureComponent {
    */
   _selectCategory = (item) => {
     // const { region, coords, term } = this.state;
+    if(this._filterList)
+      this._filterList.scrollToOffset({ animated: false, offset: 0 })
     const { region, coords } = this.state;
     // console.log(item)
     this.props.actions.pushCurrentCategoryPlaces(item);
@@ -268,6 +272,7 @@ class PlacesScreen extends PureComponent {
    */
   _onPageLayout = (event) => {
     const { width, height } = event.nativeEvent.layout;
+    this._pageLayoutHeight = height;
     //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 24 (handle) - 36 (header text) - 160 (entityItem) - 10 (margin of entityItem) - 36 (whereToGo text)
     this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 24 - 36 - 160 - 10 - 36 + 10, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 34] });
   }; 
@@ -331,7 +336,8 @@ class PlacesScreen extends PureComponent {
             <AsyncOperationStatusIndicator
               loading={true}
               success={nearPois && nearPois.length > 0}
-              loadingLayout={<LLHorizontalItemsFlatlist horizontal={true} style={styles.listContainerHeader} title={nearToYou} titleStyle={styles.sectionTitle}/>}
+
+              loadingLayout={<LLHorizontalItemsFlatlist horizontal={true} contentContainerStyle={styles.listContainerHeader} title={nearToYou} titleStyle={styles.sectionTitle}/>}
             >
               <View>  
                 <View style={styles.sectionTitleView}>
@@ -420,6 +426,7 @@ class PlacesScreen extends PureComponent {
         renderItem={({item}) => this._renderTopComponentCategorySelector(item)}
         data={term}
         extraData={this.props.locale}
+        ref={(ref)=>this._filterList = ref}
         keyExtractor={item => item.uuid}
         style={styles.filtersList}
         ItemSeparatorComponent={this._renderHorizontalSeparator}
@@ -461,6 +468,7 @@ class PlacesScreen extends PureComponent {
         entityType={Constants.ENTITY_TYPES.places}
         topComponent={this._renderTopComponent}
         extraComponent={this._renderFiltersList}
+        pageLayoutHeight={this._pageLayoutHeight}
         ListHeaderComponent={this._renderListHeader}
         data={data}
         snapPoints={this.state.snapPoints}

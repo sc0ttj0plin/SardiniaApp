@@ -78,10 +78,15 @@ class ConnectedHeader extends PureComponent {
   }
 
   componentDidUpdate(prevProps){
-    if(prevProps.backButtonVisible != this.props.backButtonVisible)
+    if(prevProps.backButtonVisible != this.props.backButtonVisible){
       this.setState({
         backButtonVisible: this.props.backButtonVisible
       })
+    }
+    if(prevProps.others.searchStr !== this.props.others.searchStr){
+      this.setState({searchStr: this.props.others.searchStr})
+      this.props.actions.resetSearchAndAutocompleteResults();
+    }
   }
 
   componentDidMount() {
@@ -103,7 +108,6 @@ class ConnectedHeader extends PureComponent {
       });
     } else {
       this.props.actions.resetSearchAndAutocompleteStr();
-      this.props.actions.resetSearchAndAutocompleteResults();
       this.props.navigation.navigate(Constants.NAVIGATION.NavSearchStackScreen, { screen: Constants.NAVIGATION.NavSearchScreen });
     }
   }

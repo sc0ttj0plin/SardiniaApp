@@ -35,10 +35,10 @@ class ScrollableContainer extends PureComponent {
     this._handleBorderRadiusMax = 32;
     this._handleBorderRadiusMin = 0;
     //Topmost component translation animations when scrolling
-    const { initialSnapIndex, snapPoints } = props;
+    const { initialSnapIndex, snapPoints, pageLayoutHeight } = props;
     if(initialSnapIndex && snapPoints[initialSnapIndex]){
-      let screenHeight = Layout.window.height;
-      let percentage = ((snapPoints[initialSnapIndex] * 100) / screenHeight);
+      // let pageLayoutHeight = Layout.window.height;
+      let percentage = ((snapPoints[initialSnapIndex] * 100) / pageLayoutHeight);
       let anim_value = percentage / 100;
       console.log("anim value", anim_value)
       this._translateAnim = new Value(anim_value);
@@ -83,10 +83,10 @@ class ScrollableContainer extends PureComponent {
     }
     if(prevProps.snapPoints !== this.props.snapPoints){
       console.log("snap point")
-      const { initialSnapIndex, snapPoints } = this.props;
+      const { initialSnapIndex, snapPoints, pageLayoutHeight } = this.props;
       if(initialSnapIndex && snapPoints[initialSnapIndex]){
-        let screenHeight = Layout.window.height;
-        let percentage = ((snapPoints[initialSnapIndex] * 100) / screenHeight); 
+        // let pageLayoutHeight = Layout.window.height;
+        let percentage = ((snapPoints[initialSnapIndex] * 100) / pageLayoutHeight); 
         let anim_value = percentage / 100;
         console.log("anim value", anim_value)
         this._translateAnim = new Value(anim_value);
@@ -168,7 +168,7 @@ class ScrollableContainer extends PureComponent {
 
     if (snapPoints && snapPoints.length > 0)
       return (
-          <View style={[styles.fill, {backgroundColor: "transparent", zIndex: -1,}]}>
+          <View style={[styles.fill, {backgroundColor: "white", zIndex: -1,}]}>
             <Animated.View style={[styles.fill, { transform: [{ translateY: this._translateAnimY } ]}]}>
               {topComponent()}
             </Animated.View>

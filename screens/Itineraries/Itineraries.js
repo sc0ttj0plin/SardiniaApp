@@ -51,9 +51,12 @@ class ItinerariesScreen extends PureComponent {
       coords: {},
       region: Constants.MAP.defaultRegion,
       selectedItinerary: null,
-      snapPoints: null,
+      snapPoints: [],
       tracksViewChanges: false
     };
+
+    this._pageLayoutHeight = Layout.window.height;
+
       
   }
 
@@ -156,6 +159,7 @@ class ItinerariesScreen extends PureComponent {
    */
   _onPageLayout = (event) => {
     const { width, height } = event.nativeEvent.layout;
+    this._pageLayoutHeight = height;
     let margins = 20
     let itemWidth = ((Layout.window.width - (margins*2))/2) - 5;
     //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 24 (handle) - 36 (header text) - itemWidth (entityItem) - 10 (margin of entityItem)
@@ -364,6 +368,7 @@ class ItinerariesScreen extends PureComponent {
         ListHeaderComponent={this._renderListHeader} 
         data={data}
         initialSnapIndex={1}
+        pageLayoutHeight={this._pageLayoutHeight}
         numColumns={numColumns}
         snapPoints={this.state.snapPoints}
         onSettle={this._onSettle}

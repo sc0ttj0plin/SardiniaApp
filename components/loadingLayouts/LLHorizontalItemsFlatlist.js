@@ -19,9 +19,11 @@ class LLHorizontalItemsFlatlist extends PureComponent {
     render(){
         let listTitle = this.props.title ? this.props.title : null;
         return (
-            <> 
+            <View> 
                 { listTitle &&
-                    <Text style={[styles.sectionTitle, this.props.titleStyle]}>{listTitle}</Text>
+                    <View style={styles.sectionTitleView}>
+                        <Text style={[styles.sectionTitle, this.props.titleStyle]}>{listTitle}</Text>
+                    </View>
                 }
                 { !this.props.error &&
                     <FlatList 
@@ -29,14 +31,14 @@ class LLHorizontalItemsFlatlist extends PureComponent {
                         data={Array.from({ length: 5 }).map((_, i) => String(i))}
                         keyExtractor={i => i}
                         numColumns={this.props.numColumns ? this.props.numColumns : 1}
-                        bodyContainerStyle={this.props.bodyContainerStyle ? this.props.bodyContainerStyle : 1}
+                        bodyContainerStyle={this.props.bodyContainerStyle ? this.props.bodyContainerStyle : {}}
                         renderItem={this._renderItem}
                         showsHorizontalScrollIndicator={false}
                         style={this.props.style}
-                        contentContainerStyle={[styles.container]}>
+                        contentContainerStyle={[styles.container, this.props.contentContainerStyle]}>
                     </FlatList>
                 }
-            </>
+            </View>
         )
     }
 }
@@ -45,18 +47,25 @@ const styles = StyleSheet.create({
     item: {
         width: 160,
         height: 160,
-        marginRight: 5,
-        borderRadius: 10,
+        marginRight: 10,
+        borderRadius: 8,
     },
     container: {
         backgroundColor: "transparent",
+        marginBottom: 0
     },
     sectionTitle: {
         fontSize: 16,
         color: 'white',
         fontFamily: "montserrat-bold",
-        margin: 10
-    }
+        // margin: 10
+    },
+    sectionTitleView: {
+        maxHeight: 36, 
+        minHeight: 36,
+        justifyContent: "center",
+        alignItems: "center",
+      },
   });
 
 

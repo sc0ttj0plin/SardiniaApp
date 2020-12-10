@@ -61,10 +61,12 @@ class EventsMapScreen extends PureComponent {
       poisLimit: Constants.PAGINATION.poisLimit,
       region: Constants.MAP.defaultRegion,
       selectedEvent: null,
-      snapPoints: null,
+      snapPoints: [],
       tracksViewChanges: false,
     };
       
+    this._pageLayoutHeight = Layout.window.height;
+
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
@@ -217,6 +219,8 @@ class EventsMapScreen extends PureComponent {
    */
   _onPageLayout = (event) => {
     const { width, height } = event.nativeEvent.layout;
+    this._pageLayoutHeight = height;
+
     let margins = 20
     let itemWidth = ((Layout.window.width - (margins*2))/2) - 5;
     //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 24 (handle) - 36 (header text) - itemWidth (entityItem) - 10 (margin of entityItem)
@@ -405,6 +409,7 @@ class EventsMapScreen extends PureComponent {
         ListHeaderComponent={this._renderListHeader}
         data={data}
         initialSnapIndex={1}
+        pageLayoutHeight={this._pageLayoutHeight}
         snapIndex={snapIndex}
         snapPoints={this.state.snapPoints}
         numColums={1}
