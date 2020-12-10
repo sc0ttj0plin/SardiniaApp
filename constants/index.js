@@ -1,6 +1,5 @@
 import Colors from './Colors';
 import { Platform } from "react-native"
-
 // Actions
 export const SET_URL = 'sardinia/others/SET_URL';
 export const AUTH = 'sardinia/auth/AUTH';
@@ -458,7 +457,6 @@ export const ACCOMODATIONS_DATA_DEFAULT = [
   {term: "categoria 4", title: "titolo 4", stars: 4, distance: 5, location: "città"},
   {term: "categoria 5", title: "titolo 5", stars: 5, distance: 6, location: "città"}
 ]
-
 
 export const styles = {
   html: {

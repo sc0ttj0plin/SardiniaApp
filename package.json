@@ -90,7 +90,8 @@
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0",
     "remove": "^0.1.5",
-    "rn-placeholder": "^3.0.1"
+    "rn-placeholder": "^3.0.1",
+    "world_countries_lists": "^2.1.0"
   },
   "devDependencies": {
     "babel-preset-expo": "^8.3.0",

@@ -1,17 +1,20 @@
 import React, { Component } from 'react';
-import {  Platform, KeyboardAvoidingView, StyleSheet, Text, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
+import {  Platform, KeyboardAvoidingView, StyleSheet, Text, ActivityIndicator, TouchableOpacity, Alert, TextInput } from 'react-native';
 import { NavigationEvents, useNavigation, useRoute } from '@react-navigation/native';
 import { ConnectedHeader, CustomText } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import actions from '../../actions';
-import { View, Form, Item, Input } from 'native-base';
+import { View, Form, Item, Input, Picker, DatePicker } from 'native-base';
 import { validateFields } from '../../helpers/utils';
 import _ from 'lodash';
 import Layout from '../../constants/Layout';
 import Colors from '../../constants/Colors';
 import * as Constants from '../../constants';
+import itCountries from "world_countries_lists/data/it/countries.json";
+// import enCountries from "world_countries_lists/data/en/countries.json";
 
+// console.log("itcountries", itCountries)
 const INITIAL_AUTH_FSM_STATE = "emailInput"; /* Possible states: emailInput, emailSent, loginSuccess, loginError, logout */
 class Login extends Component {
 
@@ -20,19 +23,24 @@ class Login extends Component {
     super(props);
     this.state = {
       email: "",
-      authFSM: INITIAL_AUTH_FSM_STATE, 
+      authFSM: "loginSuccess", 
       isVerifyingEmail: false,
       name: "",
+      nameError: false,
       surname: "",
+      surnameError: false,
       birth: "",
+      birthError: false,
       country: "",
+      countryError: false,
       sex: "",
+      sexError: false,
     };
   }
 
   componentDidMount() {
-    if (this.props.auth.user)
-      this.setState({ authFSM: "logout" });
+    // if (this.props.auth.user)
+    //   this.setState({ authFSM: "logout" });
   }
 
   componentDidUpdate(prevProps) {
@@ -59,9 +67,45 @@ class Login extends Component {
 
   _setUserData = () => {
     const { name, surname, birth, country, sex, } = this.state;
-    const userData = { name, surname, birth, country, sex, };
-    this.props.actions.editUser(userData);
-    this.props.navigation.goBack();
+    const { country: countryText, sex: sexText, birth: birthText } = this.props.locale.messages;
+    let nameError = false 
+    let surnameError = false 
+    let birthError = false 
+    let countryError = false 
+    let sexError = false
+
+    if(!this._validateName(name)){
+      nameError = true;
+    }
+    if(!this._validateName(surname)){
+      surnameError = true;
+    }
+    if(birth == "" || birth == birthText){
+      birthError = true;
+    }
+    if(country == "" || country == countryText){
+      countryError = true;
+    }
+    if(sex == "" || sex == sexText){
+      sexError = true;
+    }
+
+    if(!nameError && !surnameError && !birthError && !countryError && !sexError){
+      const userData = { name, surname, birth, country, sex, };
+      this.props.actions.editUser(userData);
+      this.props.navigation.goBack();
+    }
+    else{
+      this.setState({
+        nameError,  
+        surnameError, 
+        birthError, 
+        countryError, 
+        sexError, 
+      })
+
+    }
+
   }
 
   _onLogoutPress = () => {
@@ -75,6 +119,30 @@ class Login extends Component {
       this.props.navigation.goBack();
     else 
       this.setState({ authFSM: "emailInput" });
+  }
+
+  _validateName = (value) => {
+    let pattern = null;
+    if(value && value.length <= 1)
+      pattern = new RegExp("^[A-Z, a-z]{0,30}$");
+    else
+      pattern = new RegExp("^[A-Z, a-z]{2,30}$");
+    let validation = pattern.exec(value);
+    if(validation !== null){
+      return true;
+    }
+    else
+      return false
+  }
+
+
+  _setNameField = (stateField, stateFieldError, value) => {
+    if(this._validateName(value) || value == ""){
+      this.setState({
+        [stateField]: value,
+        [stateFieldError]: false
+      })
+    }
   }
 
   renderAuthOutcome = () => {
@@ -101,28 +169,77 @@ class Login extends Component {
     );
   }
 
+  _renderCountries = () => {
+    return itCountries.map( country => {
+      return this._renderCountry(country)
+    })
+  }
+
+  _renderCountry = (country) => <Picker.Item label={country.name} value={country.name} />
+
   _renderLoginSuccess = () => {
-    const { name, surname, birth, country, sex, confirm, fillInformation } = this.props.locale.messages;
+    const { name, surname, birth, country, sex, confirm, fillInformation, man, woman } = this.props.locale.messages;
+    const {nameError, surnameError, birthError, countryError, sexError} = this.state;
+
       return (
       <View style={styles.mainView}>
         <View style={styles.view0}>
           <View style={styles.view1s}>
           <CustomText style={styles.text0}>{fillInformation}</CustomText> 
           <Form>
-            <Item style={styles.item1} regular>
-              <Input placeholder={name} onChangeText={(text) => this.setState({name: text})} />
+            <Item style={[styles.item1, nameError ? styles.itemError : {}]} regular>
+              <Input placeholder={name}  style={{fontFamily: "montserrat-regular"}} value={this.state.name} onChangeText={(text) => this._setNameField("name", "nameError",text)} />
             </Item>
-            <Item style={styles.item1} regular>
-              <Input placeholder={surname} onChangeText={(text) => this.setState({surname: text})} />
+            <Item style={[styles.item1, surnameError ? styles.itemError : {}]} regular>
+              <Input placeholder={surname} style={{fontFamily: "montserrat-regular"}} value={this.state.surname} onChangeText={(text) => this._setNameField("surname", "surnameError",text)} />
             </Item>
-            <Item style={styles.item1} regular>
-              <Input placeholder={birth} onChangeText={(text) => this.setState({birth: text})} />
+            <Item style={[styles.item1, birthError ? styles.itemError : {}]} regular>
+              {/* <Input placeholder={birth} onChangeText={(text) => this.setState({birth: text})} /> */}
+              <DatePicker
+                defaultDate={new Date(2018, 4, 4)}
+                minimumDate={new Date(2018, 1, 1)}
+                maximumDate={new Date(2018, 12, 31)}
+                locale={"it"}
+                timeZoneOffsetInMinutes={undefined}
+                modalTransparent={false}
+                animationType={"fade"}
+                androidMode={"default"}
+                placeHolderText={birth}
+                contentStyle={{
+                  backgroundColor: "red"
+                }}
+                placeHolderTextStyle={{width: Layout.window.width - 50, fontFamily: "montserrat-regular"}}
+                textStyle={{ color: "black", width: Layout.window.width - 50, fontFamily: "montserrat-bold"}}
+                onDateChange={(date) => this.setState({birth: date, birthError: false})}
+                disabled={false}/>
             </Item>
-            <Item style={styles.item1} regular>
-              <Input placeholder={country} onChangeText={(text) => this.setState({country: text})} />
+            <Item style={[styles.item1, countryError ? styles.itemError : {}]} regular>
+              <Picker
+                  mode="dropdown"
+                  style={{ width: undefined, fontFamily: "montserrat-regular" }}
+                  placeholder={country}
+                  textStyle={{fontFamily: "montserrat-regular"}}
+                  placeholderStyle={{ color: "#bfc6ea", fontFamily: "montserrat-regular" }}
+                  selectedValue={this.state.country}
+                  onValueChange={(value) => this.setState({country: value, countryError: false})}>
+                  <Picker.Item label={country} value={country} />
+                  {this._renderCountries()}
+                </Picker>
             </Item>
-            <Item style={styles.item1} regular>
-              <Input placeholder={sex} onChangeText={(text) => this.setState({sex: text})} />
+            <Item style={[styles.item1, sexError ? styles.itemError : {}]} regular>
+              {/* <Input placeholder={sex} onChangeText={(text) => this.setState({sex: text})} /> */}
+              <Picker
+                  mode="dropdown"
+                  style={{ width: undefined, fontFamily: "montserrat-regular" }}
+                  placeholder={sex}
+                  textStyle={{fontFamily: "montserrat-regular"}}
+                  placeholderStyle={{ color: "#bfc6ea", fontFamily: "montserrat-regular" }}
+                  selectedValue={this.state.sex}
+                  onValueChange={(value) => this.setState({sex: value, sexError: false})}>
+                    <Picker.Item label={sex} value={sex} />
+                    <Picker.Item label={woman} value={woman} />
+                    <Picker.Item label={man} value={man} />
+              </Picker>
             </Item>
           </Form>
           </View>
@@ -382,7 +499,7 @@ const styles = StyleSheet.create({
   },
   item1: {
     width: '100%',
-    backgroundColor: 'rgba(255,255,255,0.75)',
+    backgroundColor: 'white',
     height: 55,
     marginTop: 5,
     marginBottom: 5,
@@ -430,6 +547,14 @@ const styles = StyleSheet.create({
     resizeMode: "contain", 
     borderRadius: 60 
   },
+  itemError: {
+    borderColor: "red",
+    borderBottomColor: "red",
+    borderBottomWidth: 2,
+    borderTopWidth: 2,
+    borderLeftWidth: 2,
+    borderRightWidth: 2
+  }
 });
 
 

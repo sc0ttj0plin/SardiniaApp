@@ -1,6 +1,8 @@
 const dict = {
   it: {
     //GENERIC
+    man: "Uomo",
+    woman: "Donna",
     welcome: "Benvenuto",
     start: "Inizia",
     openNavigator: "Apri navigatore",
@@ -117,6 +119,8 @@ const dict = {
   },
   "en-gb": {
     //GENERIC
+    man: "Man",
+    woman: "Woman",
     welcome: "Hello",
     start: "Start",
     openNavigator: "Open navigator",
