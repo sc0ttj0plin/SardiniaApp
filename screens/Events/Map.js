@@ -537,7 +537,7 @@ const styles = StyleSheet.create({
     height: 180,
     position: "absolute",
     // backgroundColor: Colors.lightGray,
-    bottom: Platform.OS == "ios" ? 30 : 70,
+    bottom: Platform.OS == "ios" ? 80 : 100,
     left: 0,
     padding: 10,
   },
