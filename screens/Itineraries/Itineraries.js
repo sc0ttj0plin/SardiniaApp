@@ -488,7 +488,7 @@ const styles = StyleSheet.create({
     height: 180,
     position: "absolute",
     // backgroundColor: Colors.lightGray,
-    bottom: 65,
+    bottom: Platform.OS == "ios" ? 65 : 85,
     left: 0,
     padding: 10,
   },
