@@ -404,14 +404,6 @@ const styles = StyleSheet.create({
   },
   markerText: {
     fontSize: 16
-  },
-  entityWidget: {
-    width: "100%",
-    height: 180,
-    position: "absolute",
-    bottom: 50,
-    left: 0,
-    padding: 10
   }
 });
 

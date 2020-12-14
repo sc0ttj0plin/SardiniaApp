@@ -43,16 +43,7 @@ class ScrollableContainer extends PureComponent {
     this._handleBorderRadiusMax = 32;
     this._handleBorderRadiusMin = 0;
     //Topmost component translation animations when scrolling
-    const { initialSnapIndex, snapPoints, pageLayoutHeight } = props;
-    if(initialSnapIndex && snapPoints[initialSnapIndex]){
-      // let pageLayoutHeight = Layout.window.height;
-      let percentage = ((snapPoints[initialSnapIndex] * 100) / pageLayoutHeight);
-      let anim_value = 1 - percentage / 100;
-      console.log("anim value", anim_value)
-      this._translateAnim = new Value(anim_value);
-    }
-    else
-      this._translateAnim = new Value(0);
+    this._translateAnim = new Value(1);
     this._translateAnimY = interpolate(this._translateAnim, {
       inputRange: [0, 1],
       outputRange: [-Layout.window.height/2, 0],
@@ -73,12 +64,13 @@ class ScrollableContainer extends PureComponent {
   componentDidUpdate(prevProps){
     const prevSnap = prevProps.others.scrollableSnapIndex[this.props.entityType];
     const currentSnap = this.props.others.scrollableSnapIndex[this.props.entityType];
-    /*if (prevSnap !== currentSnap && typeof(currentSnap) === 'number') {
+    console.log(prevSnap, currentSnap);
+    if (prevSnap !== currentSnap && currentSnap !== this.state.currentSnapIndex && typeof(currentSnap) === 'number') {
       this._snapping = true;
       setTimeout( () => { 
         this._scrollable.snapTo(currentSnap) 
       }, 300);
-    }*/
+    }
     if(prevProps.data !== this.props.data){
       this.setState({
         data: []
@@ -89,21 +81,6 @@ class ScrollableContainer extends PureComponent {
 
       })
     }
-    if(prevProps.snapPoints !== this.props.snapPoints){
-      console.log("snap point")
-      const { initialSnapIndex, snapPoints, pageLayoutHeight } = this.props;
-      if(initialSnapIndex && snapPoints[initialSnapIndex]){
-        // let pageLayoutHeight = Layout.window.height;
-        let percentage = ((snapPoints[initialSnapIndex] * 100) / pageLayoutHeight); 
-        let anim_value = percentage / 100;
-        console.log("anim value", anim_value)
-        this._translateAnim = new Value(anim_value);
-        this._translateAnimY2 = interpolate(this._translateAnim, {
-          inputRange: [0, 0.2, 0.3, 1],
-          outputRange: [-35, -35, -10, 10],
-        });
-      }
-    }
   }
 
   _onHandlePress = () => {
@@ -112,9 +89,6 @@ class ScrollableContainer extends PureComponent {
   }
 
   _onSettle = (index) => {
-    //Set global snap index for the current entityType
-    this.props.actions.setScrollableSnapIndex(this.props.entityType, index);
-
     if(index == 0 && this._handleBorderRadius._value != this._handleBorderRadiusMin){
       console.log("index 1", this._handleBorderRadius._value, this._handleBorderRadiusMax)
       this._startHandleAnimation(0)
@@ -128,12 +102,16 @@ class ScrollableContainer extends PureComponent {
       this._snapping = false;
     else if(this.props.onSettle)
       this.props.onSettle();
-
-    this.setState({currentSnapIndex: index});
-
-    if(this.props.onSettleIndex) {
+    else if(this.props.onSettleIndex) {
       this.props.onSettleIndex(index);
     }
+
+    this.setState({currentSnapIndex: index}, () => {
+      //Set global snap index for the current entityType
+      this.props.actions.setScrollableSnapIndex(this.props.entityType, index);
+    });
+
+    
 
     if(index !== 0) {
       this._scrollableInner.scrollToOffset({offset: 0, animated: true});
@@ -165,7 +143,7 @@ class ScrollableContainer extends PureComponent {
       HeaderTextComponent
      } = this.props;
     return (
-      <Animated.View style={[styles.header, { borderTopRightRadius: this._handleBorderRadius}]}>
+      <Animated.View onStartShouldSetResponder={this.props.onListHeaderPressed} style={[styles.header, { borderTopRightRadius: this._handleBorderRadius}]}>
         <View style={[styles.panelHandle]} />
         {this.state.currentSnapIndex == 0 && 
         <View style={[styles.xView, {marginTop: 15}]}>

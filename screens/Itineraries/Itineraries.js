@@ -129,7 +129,7 @@ class ItinerariesScreen extends PureComponent {
 
   _selectMarker = (itinerary) => {
     if(itinerary) {
-      this.props.actions.setScrollableSnapIndex(Constants.ENTITY_TYPES.itineraries, 2);
+      this.props.actions.setScrollableSnapIndex(Constants.ENTITY_TYPES.itineraries, 1);
       this.setState({ selectedItinerary: null }, () => {
         this.setState({ 
           selectedItinerary: itinerary,
@@ -164,7 +164,7 @@ class ItinerariesScreen extends PureComponent {
     let itemWidth = ((Layout.window.width - (margins*2))/2) - 5;
     //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 24 (handle) - 36 (header text) - itemWidth (entityItem) - 10 (margin of entityItem)
     /* Old: 3 snap points: this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 24 - 76 - itemWidth - 10, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 24 - 76, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 34] }); */
-    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 24 - 76, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 34] });
+    this.setState({ snapPoints: [height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight, 65] });
   }; 
 
   _onSettle = () => {
@@ -312,13 +312,12 @@ class ItinerariesScreen extends PureComponent {
       return null
   }
 
-  /* Renders the Header of the scrollable container */
-  _renderListHeader = () => {
-    const { nearToYou, whereToGo, exploreItineraries } = this.props.locale.messages;
+  _renderHeaderText = () => {
+    const { exploreItineraries } = this.props.locale.messages;
       return (
         <View onStartShouldSetResponder={this._onListHeaderPressIn}>
-          <View style={styles.listHeader}>
-            <CustomText style={styles.sectionTitle}>{exploreItineraries}</CustomText>
+          <View style={styles.sectionTitleView}>
+            <CustomText style={[styles.sectionTitle, {fontSize: 20}]}>{exploreItineraries}</CustomText>
           </View>
         </View>
       )
@@ -357,12 +356,12 @@ class ItinerariesScreen extends PureComponent {
     if(!data.length)
       data = []
     let snapIndex = selectedItinerary ? 3 : 2;
-    let numColumns = 2;
+    let numColumns = 1;
     return (
       <ScrollableContainer 
         entityType={Constants.ENTITY_TYPES.itineraries}
         topComponent={this._renderTopComponent}
-        ListHeaderComponent={this._renderListHeader} 
+        onListHeaderPressed={this._onListHeaderPressIn}
         data={data}
         initialSnapIndex={1}
         pageLayoutHeight={this._pageLayoutHeight}
@@ -371,6 +370,8 @@ class ItinerariesScreen extends PureComponent {
         onSettle={this._onSettle}
         renderItem={this._renderListItem}
         keyExtractor={item => item.uuid}
+        HeaderTextComponent={this._renderHeaderText}
+        closeSnapIndex={1}
       />
     )
   }
@@ -410,6 +411,12 @@ const styles = StyleSheet.create({
       fontSize: 16,
       color: "black",
       fontFamily: "montserrat-bold",
+  },
+  sectionTitleView: {
+    maxHeight: 40, 
+    minHeight: 40,
+    justifyContent: "center",
+    alignItems: "center",
   },
   listHeader: { 
     display: "flex",
@@ -481,7 +488,7 @@ const styles = StyleSheet.create({
     height: 180,
     position: "absolute",
     // backgroundColor: Colors.lightGray,
-    bottom: Platform.OS == "ios" ? 30 : 70,
+    bottom: 65,
     left: 0,
     padding: 10,
   },

@@ -66,8 +66,6 @@ class PlacesScreen extends PureComponent {
       //
       didRender: false
     };
-
-    this._nearPoisHeight = new Value(0);
       
     this._pageLayoutHeight = Layout.window.height;
     this._filterList = null;
@@ -108,9 +106,9 @@ class PlacesScreen extends PureComponent {
     //TODO: snap-edit
     const entityType = Constants.ENTITY_TYPES.places;
     if (prevProps.others.currentMapEntity !== this.props.others.currentMapEntity)
-      this.props.actions.setScrollableSnapIndex(entityType, 0);
+      this.props.actions.setScrollableSnapIndex(entityType, 2);
     if (prevProps.others.mapIsDragging[entityType] !== this.props.others.mapIsDragging[entityType]) 
-      this.props.actions.setScrollableSnapIndex(entityType, 0);
+      this.props.actions.setScrollableSnapIndex(entityType, 2);
   }
 
   componentWillUnmount() {
@@ -306,7 +304,7 @@ class PlacesScreen extends PureComponent {
     const { term } = this._getCurrentTerm();
     const categoryTitle = term ? `${explore} ${term.name}` : whereToGo;
     return (
-    <View style={[styles.sectionTitleView, {marginBottom: -5}]}>
+    <View onStartShouldSetResponder={this._onListHeaderPressIn} style={[styles.sectionTitleView]}>
       <CustomText style={[styles.sectionTitle, {
         fontSize: 20
       }]}>{categoryTitle}</CustomText>
@@ -361,7 +359,7 @@ class PlacesScreen extends PureComponent {
 
               loadingLayout={<LLHorizontalItemsFlatlist horizontal={true} contentContainerStyle={styles.listContainerHeader} title={nearToYou} titleStyle={styles.sectionTitle}/>}
             >
-              <Animated.View style={{height: this.state._nearPoisHeight, display: this.state._nearPoisHeight == 0 ? 'none' : 'flex'}}>  
+              <View>  
                 <View style={styles.sectionTitleView}>
                   <CustomText style={[styles.sectionTitle, {
                     fontSize: 16
@@ -383,7 +381,7 @@ class PlacesScreen extends PureComponent {
                   updateCellsBatchingPeriod={4000} // Increase time between renders
                   windowSize={5} // Reduce the window size
                 />
-              </Animated.View>
+              </View>
             </AsyncOperationStatusIndicator>
             <View style={[styles.sectionTitleView, {paddingTop: 15}]}>
               <CustomText style={[styles.sectionTitle, {
@@ -492,6 +490,7 @@ class PlacesScreen extends PureComponent {
         extraComponent={this._renderFiltersList}
         pageLayoutHeight={this._pageLayoutHeight}
         ListHeaderComponent={this._renderListHeader}
+        onListHeaderPressed={this._onListHeaderPressIn}
         data={data}
         snapPoints={this.state.snapPoints}
         initialSnapIndex={2}
@@ -593,6 +592,7 @@ const styles = StyleSheet.create({
     marginRight: 8
   },
   listHeaderView: { 
+    marginTop: -5,
     marginLeft: -10, 
     marginRight: -10, 
     minHeight: 36 + 160 + 10 + 40, //36 (text) + 160 (entityitem) + 10 (margin entityItem) + 36 (other text)
