@@ -1,10 +1,11 @@
 import React, { PureComponent } from "react";
 import { 
   View, Text, ActivityIndicator, Pressable,
-  StyleSheet, BackHandler, Platform, ScrollView, NativeModules } from "react-native";
+  StyleSheet, BackHandler, Platform, ScrollView, NativeModules, Easing } from "react-native";
 
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler"
 import { useNavigation, useRoute } from '@react-navigation/native';
+import Animated from 'react-native-reanimated';
 import { 
   CategoryListItem, 
   AsyncOperationStatusIndicator, 
@@ -17,6 +18,7 @@ import {
  } from "../../components";
 import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
 import MapView from "react-native-map-clustering";
+import ScrollableAnimatedHandle from '../../components/ScrollableAnimatedHandle';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { apolloQuery } from '../../apollo/queries';
@@ -28,6 +30,7 @@ import Colors from '../../constants/Colors';
 import { LLHorizontalItemsFlatlist } from "../../components/loadingLayouts";
 import { Button } from "react-native-paper";
 import { Ionicons } from '@expo/vector-icons';
+const { Value, event, interpolate } = Animated;
 
 /**
  * Map:             Clusters + pois that update with user map's interaction
@@ -61,8 +64,10 @@ class PlacesScreen extends PureComponent {
       snapPoints: [],
       // snapIndex: 1, //TODO: snap-edit
       //
-      didRender: false,
+      didRender: false
     };
+
+    this._nearPoisHeight = new Value(0);
       
     this._pageLayoutHeight = Layout.window.height;
     this._filterList = null;
@@ -103,9 +108,9 @@ class PlacesScreen extends PureComponent {
     //TODO: snap-edit
     const entityType = Constants.ENTITY_TYPES.places;
     if (prevProps.others.currentMapEntity !== this.props.others.currentMapEntity)
-      this.props.actions.setScrollableSnapIndex(entityType, this.state.snapPoints.length-1);
+      this.props.actions.setScrollableSnapIndex(entityType, 0);
     if (prevProps.others.mapIsDragging[entityType] !== this.props.others.mapIsDragging[entityType]) 
-      this.props.actions.setScrollableSnapIndex(entityType, this.state.snapPoints.length-1);
+      this.props.actions.setScrollableSnapIndex(entityType, 0);
   }
 
   componentWillUnmount() {
@@ -274,7 +279,7 @@ class PlacesScreen extends PureComponent {
     const { width, height } = event.nativeEvent.layout;
     this._pageLayoutHeight = height;
     //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 24 (handle) - 36 (header text) - 160 (entityItem) - 10 (margin of entityItem) - 36 (whereToGo text)
-    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 24 - 36 - 160 - 10 - 36 + 10, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 34] });
+    this.setState({ snapPoints: [height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight, 24 + 36 + 160 + 10 + 36, 65] });
   }; 
 
   /**
@@ -287,7 +292,27 @@ class PlacesScreen extends PureComponent {
     return true;
   }
 
+  _onSettleIndex = (index) => {
+    //Set global snap index for the current entityType
+    this.setState({
+      snapIndex: index
+    })
+  }
+
   /********************* Render methods go down here *********************/
+
+  _renderHeaderText = () => {
+    const { whereToGo, explore } = this.props.locale.messages;
+    const { term } = this._getCurrentTerm();
+    const categoryTitle = term ? `${explore} ${term.name}` : whereToGo;
+    return (
+    <View style={[styles.sectionTitleView, {marginBottom: -5}]}>
+      <CustomText style={[styles.sectionTitle, {
+        fontSize: 20
+      }]}>{categoryTitle}</CustomText>
+    </View>
+    );
+  }
 
   _renderTopComponentCategorySelector = (item) => 
     <TouchableOpacity style={styles.categorySelectorBtn} onPress={() => this._selectCategory(item)} activeOpacity={0.7}>
@@ -324,14 +349,11 @@ class PlacesScreen extends PureComponent {
   /* Renders the Header of the scrollable container */
   _renderListHeader = () => {
     const { nearPois, coords } = this.state;
-    const { nearToYou, whereToGo, explore } = this.props.locale.messages;
+    const { nearToYou, startTrip } = this.props.locale.messages;
     const { term } = this._getCurrentTerm();
-    const categoryTitle = term ? `${explore} ${term.name}` : whereToGo;
       return (
         <View onStartShouldSetResponder={this._onListHeaderPressIn}>
-          <View style={styles.header}>
-            <View style={styles.panelHandle} />
-          </View>
+          {false && <ScrollableAnimatedHandle />}
           <View style={styles.listHeaderView}>
             <AsyncOperationStatusIndicator
               loading={true}
@@ -339,10 +361,10 @@ class PlacesScreen extends PureComponent {
 
               loadingLayout={<LLHorizontalItemsFlatlist horizontal={true} contentContainerStyle={styles.listContainerHeader} title={nearToYou} titleStyle={styles.sectionTitle}/>}
             >
-              <View>  
+              <Animated.View style={{height: this.state._nearPoisHeight, display: this.state._nearPoisHeight == 0 ? 'none' : 'flex'}}>  
                 <View style={styles.sectionTitleView}>
                   <CustomText style={[styles.sectionTitle, {
-                    fontSize: 16,
+                    fontSize: 16
                   }]}>{nearToYou}</CustomText>
                 </View>
                 <FlatList
@@ -361,12 +383,12 @@ class PlacesScreen extends PureComponent {
                   updateCellsBatchingPeriod={4000} // Increase time between renders
                   windowSize={5} // Reduce the window size
                 />
-              </View>
+              </Animated.View>
             </AsyncOperationStatusIndicator>
-            <View style={styles.sectionTitleView}>
+            <View style={[styles.sectionTitleView, {paddingTop: 15}]}>
               <CustomText style={[styles.sectionTitle, {
-                fontSize: 20,
-              }]}>{categoryTitle}</CustomText>
+                fontSize: 20
+              }]}>{startTrip}</CustomText>
             </View>
           </View>
         </View>
@@ -472,11 +494,13 @@ class PlacesScreen extends PureComponent {
         ListHeaderComponent={this._renderListHeader}
         data={data}
         snapPoints={this.state.snapPoints}
-        initialSnapIndex={1}
+        initialSnapIndex={2}
         onEndReached={this._loadMorePois}
         numColumns={numColumns} 
         renderItem={renderItem}
         keyExtractor={item => item.uuid}
+        onSettleIndex={this._onSettleIndex}
+        HeaderTextComponent={this._renderHeaderText}
       />
     )
   }
@@ -571,30 +595,16 @@ const styles = StyleSheet.create({
   listHeaderView: { 
     marginLeft: -10, 
     marginRight: -10, 
-    minHeight: 36 + 160 + 10 + 36, //36 (text) + 160 (entityitem) + 10 (margin entityItem) + 36 (other text)
-    maxHeight: 36 + 160 + 10 + 36 
+    minHeight: 36 + 160 + 10 + 40, //36 (text) + 160 (entityitem) + 10 (margin entityItem) + 36 (other text)
+    maxHeight: 36 + 160 + 10 + 40 ,
+    backgroundColor: "white"
   },
   sectionTitleView: {
-    maxHeight: 36, 
-    minHeight: 36,
+    maxHeight: 40, 
+    minHeight: 40,
     justifyContent: "center",
     alignItems: "center",
-  },
-  //Pane Handle
-  header: {
-    alignItems: 'center',
-    backgroundColor: 'white',
-    paddingTop: 20,
-    paddingBottom: 0,
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 32,
-  },
-  panelHandle: {
-    width: 32,
-    height: 4,
-    backgroundColor: Colors.grayHandle,
-    borderRadius: 2,
-  },
+  }
 });
 
 

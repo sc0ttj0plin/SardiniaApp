@@ -31,7 +31,7 @@ export default {
   tabIconDefault: '#A7A7A7', 
   lightCyan: 'rgb(224,239,254)',
   tabIconSelected: "white",
-  grayHandle: "#0000001A",
+  grayHandle: "#000000aa",
   tabBackgroundSelected: '#2f95dc',
   tabBar: '#fefefe',
   salmon: 'rgba(217, 83, 30, 0.5)',

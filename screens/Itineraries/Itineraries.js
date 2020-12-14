@@ -317,9 +317,6 @@ class ItinerariesScreen extends PureComponent {
     const { nearToYou, whereToGo, exploreItineraries } = this.props.locale.messages;
       return (
         <View onStartShouldSetResponder={this._onListHeaderPressIn}>
-          <View style={styles.header}>
-            <View style={styles.panelHandle} />
-          </View>
           <View style={styles.listHeader}>
             <CustomText style={styles.sectionTitle}>{exploreItineraries}</CustomText>
           </View>
@@ -498,22 +495,7 @@ const styles = StyleSheet.create({
   },
   clusterText: {
     color: "white"
-  },
-  //Pane Handle
-  header: {
-    alignItems: 'center',
-    backgroundColor: 'white',
-    paddingTop: 20,
-    paddingBottom: 0,
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 32
-  },
-  panelHandle: {
-    width: 32,
-    height: 4,
-    backgroundColor: Colors.grayHandle,
-    borderRadius: 2,
-  },
+  }
 });
 
 
