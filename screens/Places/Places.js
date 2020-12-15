@@ -347,11 +347,10 @@ class PlacesScreen extends PureComponent {
   /* Renders the Header of the scrollable container */
   _renderListHeader = () => {
     const { nearPois, coords } = this.state;
-    const { nearToYou, startTrip } = this.props.locale.messages;
+    const { nearToYou, whatToSee } = this.props.locale.messages;
     const { term } = this._getCurrentTerm();
       return (
         <View onStartShouldSetResponder={this._onListHeaderPressIn}>
-          {false && <ScrollableAnimatedHandle />}
           <View style={styles.listHeaderView}>
             <AsyncOperationStatusIndicator
               loading={true}
@@ -386,7 +385,7 @@ class PlacesScreen extends PureComponent {
             <View style={[styles.sectionTitleView, {paddingTop: 15}]}>
               <CustomText style={[styles.sectionTitle, {
                 fontSize: 20
-              }]}>{startTrip}</CustomText>
+              }]}>{whatToSee}</CustomText>
             </View>
           </View>
         </View>

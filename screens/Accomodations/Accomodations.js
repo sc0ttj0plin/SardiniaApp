@@ -270,7 +270,7 @@ class AccomodationsScreen extends Component {
   _onPageLayout = (event) => {
     const { width, height } = event.nativeEvent.layout;
     //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 24 (handle) - 36 (header text) - 160 (entityItem) - 10 (margin of entityItem) - 36 (whereToGo text)
-    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 24 - 36 - 160 - 10 - 36 + 10, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 34] });
+    this.setState({ snapPoints: [height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight, 80 + 24 + 36 + 160, + 80] });
   }; 
 
   /**
@@ -320,23 +320,38 @@ class AccomodationsScreen extends Component {
 
   }
 
-  /* Renders the Header of the scrollable container */
-  _renderListHeader = () => {
-    const { nearPois, coords, sourceEntity } = this.state;
-    const { nearToYou, nearTo, exploreAccomodation, explore } = this.props.locale.messages;
+  _renderHeaderText = () => {
+    const { sourceEntity } = this.state;
+    const { nearTo, exploreAccomodation, explore } = this.props.locale.messages;
     const { term } = this._getCurrentTerm();
 
-    let nearToText = nearToYou;
     // If we have a source entity it becomes near to "sourceEntity" title
     if (sourceEntity)
       nearToText = `${nearTo} ${_.get(sourceEntity.title, [this.props.locale.lan, 0, "value"], null)}`;
 
-    const categoryTitle = term ? `${explore} ${term.name}` : exploreAccomodation;
+      const categoryTitle = term ? `${explore} ${term.name}` : exploreAccomodation;
+      return (
+        <View onStartShouldSetResponder={this._onListHeaderPressIn}>
+          <View style={[styles.sectionTitleView, {marginBottom: 15}]}>
+          <CustomText style={[styles.sectionTitle, {
+                fontSize: 20,
+              }]}>{categoryTitle}</CustomText>
+          </View>
+        </View>
+      )
+  }
+
+  /* Renders the Header of the scrollable container */
+  _renderListHeader = () => {
+    const { nearPois, coords } = this.state;
+    const { nearToYou, chooseAccomodation } = this.props.locale.messages;
+
+    let nearToText = nearToYou;
+    
+
+    
       return (
         <View onStartShouldSetResponder={this._onListHeaderPressIn} >
-          <View style={styles.header}>
-            <View style={styles.panelHandle} />
-          </View>
           <View style={styles.listHeaderView}>
             <AsyncOperationStatusIndicator
               loading={true}
@@ -367,10 +382,10 @@ class AccomodationsScreen extends Component {
                 />
               </View>
             </AsyncOperationStatusIndicator>
-            <View style={styles.sectionTitleView}>
+            <View style={[styles.sectionTitleView, {marginTop: 20}]}>
               <CustomText style={[styles.sectionTitle, {
                 fontSize: 20,
-              }]}>{categoryTitle}</CustomText>
+              }]}>{chooseAccomodation}</CustomText>
             </View>
           </View>
         </View>
@@ -473,6 +488,8 @@ class AccomodationsScreen extends Component {
         numColumns={numColumns}
         renderItem={renderItem}
         keyExtractor={item => item.uuid}
+        HeaderTextComponent={this._renderHeaderText}
+        closeSnapIndex={2}
       />
     )
   }
@@ -565,8 +582,8 @@ const styles = StyleSheet.create({
   listHeaderView: { 
     marginLeft: -10, 
     marginRight: -10, 
-    minHeight: 36 + 160 + 10 + 36, //36 (text) + 160 (entityitem) + 10 (margin entityItem) + 36 (other text)
-    maxHeight: 36 + 160 + 10 + 36 
+    minHeight: 36 + 160 + 10 + 36 + 15, //36 (text) + 160 (entityitem) + 10 (margin entityItem) + 36 (other text)
+    maxHeight: 36 + 160 + 10 + 36 + 15 
   },
   sectionTitleView: {
     maxHeight: 36, 

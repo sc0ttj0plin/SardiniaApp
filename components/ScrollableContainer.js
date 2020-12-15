@@ -64,7 +64,7 @@ class ScrollableContainer extends PureComponent {
   componentDidUpdate(prevProps){
     const prevSnap = prevProps.others.scrollableSnapIndex[this.props.entityType];
     const currentSnap = this.props.others.scrollableSnapIndex[this.props.entityType];
-    console.log(prevSnap, currentSnap);
+    //console.log(prevSnap, currentSnap);
     if (prevSnap !== currentSnap && currentSnap !== this.state.currentSnapIndex && typeof(currentSnap) === 'number') {
       this._snapping = true;
       setTimeout( () => { 
@@ -89,13 +89,26 @@ class ScrollableContainer extends PureComponent {
   }
 
   _onSettle = (index) => {
-    if(index == 0 && this._handleBorderRadius._value != this._handleBorderRadiusMin){
-      console.log("index 1", this._handleBorderRadius._value, this._handleBorderRadiusMax)
-      this._startHandleAnimation(0)
-    }
-    else if(index != 0 && this._handleBorderRadius._value != this._handleBorderRadiusMax){
-      console.log("index 2", this._handleBorderRadius._value, this._handleBorderRadiusMin)
-      this._startHandleAnimation(32)
+    console.log("_onSettle", index);
+
+    this.setState({currentSnapIndex: index}, () => {
+      //Set global snap index for the current entityType
+      this._updating = false;
+      this.props.actions.setScrollableSnapIndex(this.props.entityType, index);
+    }); 
+
+    if(index == 0) {
+      if(this._handleBorderRadius._value != this._handleBorderRadiusMin){
+        console.log("index 1", this._handleBorderRadius._value, this._handleBorderRadiusMax)
+        this._startHandleAnimation(0)
+      }
+    } else {
+      if(this._handleBorderRadius._value != this._handleBorderRadiusMax){
+        console.log("index 2", this._handleBorderRadius._value, this._handleBorderRadiusMin)
+        this._startHandleAnimation(32)
+      }
+      if(this._scrollableInner)
+        this._scrollableInner.scrollToOffset({offset: 0, animated: true});
     }
 
     if(this._snapping)
@@ -106,16 +119,6 @@ class ScrollableContainer extends PureComponent {
       this.props.onSettleIndex(index);
     }
 
-    this.setState({currentSnapIndex: index}, () => {
-      //Set global snap index for the current entityType
-      this.props.actions.setScrollableSnapIndex(this.props.entityType, index);
-    });
-
-    
-
-    if(index !== 0) {
-      this._scrollableInner.scrollToOffset({offset: 0, animated: true});
-    }
   }
 
   _startHandleAnimation = (value) => {
@@ -135,7 +138,8 @@ class ScrollableContainer extends PureComponent {
       closeSnapIndex = 2
     } = this.props;
     this._scrollable.snapTo(closeSnapIndex);
-    this._scrollableInner.scrollToOffset({offset: 0, animated: true});
+    if(this._scrollableInner)
+      this._scrollableInner.scrollToOffset({offset: 0, animated: true});
   }
 
   _renderHandle = () => {
@@ -160,11 +164,15 @@ class ScrollableContainer extends PureComponent {
   }
 
   _onOpenEnd = (v) => {
-    console.log("_onOpenEnd", v);
+    console.log("_onOpenEnd");
+    if(!this._updating){
+      this._onSettle(0);
+      this._updating;
+    }
   }
 
   _onCloseEnd = (v) => {
-    console.log("_onCloseEnd", v);
+    console.log("_onCloseEnd");
     this.setState({currentSnapIndex: 2});
   }
 
@@ -191,27 +199,33 @@ class ScrollableContainer extends PureComponent {
       ListHeaderComponent,
       onEndReached = ()=>{} } = this.props;
 
-    return (
-    <FlatList
-        style={[styles.contentContainerStyle]}
-        data={this.state.data || []}
-        keyExtractor={keyExtractor}
-        renderItem={renderItem}
-        ListHeaderComponent={ListHeaderComponent || null}
-        onEndReached = {({distanceFromEnd})=> onEndReached()}
-        scrollEnabled ={this.state.currentSnapIndex == 0 ? true : false}
-        ref={(ref) => this._scrollableInner = ref}
-        onScroll={this._onScroll}
-        onMomentumScrollEnd={this._onScrollEndDrag}
-        onScrollBeginDrag={this._onScrollBeginDrag}
-        onEndReachedThreshold={0.5} 
-        initialNumToRender={8}
-        maxToRenderPerBatch={2}
-        numColumns={numColumns || 1}
-        
-        >
-    </FlatList>
-    );
+      if(this.state.data && this.state.data.length > 0)
+        return (
+        <FlatList
+            style={[styles.contentContainerStyle]}
+            data={this.state.data || []}
+            keyExtractor={keyExtractor}
+            renderItem={renderItem}
+            ListHeaderComponent={ListHeaderComponent || null}
+            onEndReached = {({distanceFromEnd})=> onEndReached()}
+            scrollEnabled ={this.state.currentSnapIndex == 0 ? true : false}
+            ref={(ref) => this._scrollableInner = ref}
+            onScroll={this._onScroll}
+            onMomentumScrollEnd={this._onScrollEndDrag}
+            onScrollBeginDrag={this._onScrollBeginDrag}
+            onEndReachedThreshold={0.5} 
+            initialNumToRender={8}
+            maxToRenderPerBatch={2}
+            numColumns={numColumns || 1}
+            
+            >
+        </FlatList>
+        );
+      else return (
+        <View style={styles.loadingView}>
+          
+        </View>
+      )
   }
 
   render() {
@@ -247,15 +261,17 @@ class ScrollableContainer extends PureComponent {
                 }
                 else if(v != 0 && this.state.currentSnapIndex == 0 && !this.state.scrollToTop && this._scrolling !== true) {
                   this._scrolling = true;
-                  this._scrollableInner.scrollToOffset({offset: 0, animated: true});
+                  if(this._scrollableInner)
+                    this._scrollableInner.scrollToOffset({offset: 0, animated: true});
                 }
                 else if(v > 0.8) {
                     index = 2;
                 }
-                else if (v > 0.6) {
+                else if (v > 0.1) {
                   index = 1;
                 }
-                if(this.state.currentSnapIndex != index){
+                if(!this._updating && this.state.currentSnapIndex != index){
+                  this._updating = true;
                   this._onSettle(index);
                 }
               })
@@ -271,9 +287,9 @@ class ScrollableContainer extends PureComponent {
               renderHeader={this._renderHandle}
               ref={(ref)=>this._scrollable = ref}
               onSettle = {(index) => this._onSettle(index) }
-              onOpenStart={this._onOpenEnd}
+              onOpenEnd={this._onOpenEnd}
               onCloseEnd={this._onCloseEnd} 
-              
+              enabledContentGestureInteraction = {false}
               callbackNode={this._translateAnim}
               //
               //
@@ -296,6 +312,11 @@ class ScrollableContainer extends PureComponent {
 const styles = StyleSheet.create({
   fill: {
     flex: 1
+  },
+  loadingView: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'white'
   },
   dragHandler: {
     alignSelf: 'stretch',
