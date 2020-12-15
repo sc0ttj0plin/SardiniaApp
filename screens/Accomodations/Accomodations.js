@@ -321,13 +321,8 @@ class AccomodationsScreen extends Component {
   }
 
   _renderHeaderText = () => {
-    const { sourceEntity } = this.state;
-    const { nearTo, exploreAccomodation, explore } = this.props.locale.messages;
+    const { exploreAccomodation, explore } = this.props.locale.messages;
     const { term } = this._getCurrentTerm();
-
-    // If we have a source entity it becomes near to "sourceEntity" title
-    if (sourceEntity)
-      nearToText = `${nearTo} ${_.get(sourceEntity.title, [this.props.locale.lan, 0, "value"], null)}`;
 
       const categoryTitle = term ? `${explore} ${term.name}` : exploreAccomodation;
       return (
@@ -343,12 +338,15 @@ class AccomodationsScreen extends Component {
 
   /* Renders the Header of the scrollable container */
   _renderListHeader = () => {
+    const { sourceEntity } = this.state;
     const { nearPois, coords } = this.state;
-    const { nearToYou, chooseAccomodation } = this.props.locale.messages;
+    const { nearTo, nearToYou, chooseAccomodation } = this.props.locale.messages;
 
     let nearToText = nearToYou;
     
-
+     // If we have a source entity it becomes near to "sourceEntity" title
+    if (sourceEntity)
+      nearToText = `${nearTo} ${_.get(sourceEntity.title, [this.props.locale.lan, 0, "value"], null)}`;
     
       return (
         <View onStartShouldSetResponder={this._onListHeaderPressIn} >
