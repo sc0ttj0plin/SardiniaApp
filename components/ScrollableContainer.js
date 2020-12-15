@@ -50,8 +50,8 @@ class ScrollableContainer extends PureComponent {
     });
 
     this._translateAnimY2 = interpolate(this._translateAnim, {
-      inputRange: [0, 0.2, 0.3, 1],
-      outputRange: [-35, -35, -10, 10],
+      inputRange: [0, 0.7, 1],
+      outputRange: [-35, -35, 10],
     });
 
     this._snapping = false;
