@@ -22,6 +22,7 @@ export default class EntityMarker extends PureComponent {
       selected: props.selected,
       entityType: props.entityType,
       markerBackgroundColor: this._getBackgroundColor(props.entityType),
+      tracksViewChanges: false,
     }
   }
 
@@ -41,8 +42,13 @@ export default class EntityMarker extends PureComponent {
     }
   }
 
+  _onPress = (e) => {
+    this.setState({ tracksViewChanges: true }, () => this.setState({ tracksViewChanges: false }));
+    this.props.onPress(e);
+  }
+
   render() {
-    var {cluster, selected, markerBackgroundColor, entityType } = this.state;
+    var {cluster, selected, tracksViewChanges, markerBackgroundColor, entityType } = this.state;
     var width = selected ? 42 : 32;
     let iconName = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entityType].iconName || Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.places.iconName; 
     let backgroundColor = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entityType].backgroundColor || Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.places.backgroundColor; 
@@ -51,8 +57,8 @@ export default class EntityMarker extends PureComponent {
     return (
       <Marker.Animated
           coordinate={{ longitude: cluster.centroid.coordinates[0],  latitude: cluster.centroid.coordinates[1] }}
-          onPress={this.props.onPress}
-          tracksViewChanges={selected}
+          onPress={(e) => this._onPress(e)}
+          tracksViewChanges={tracksViewChanges}
           style={{width: 42, height: 42, zIndex: 1}}>
             <View style={[styles.markerContainer, {
               backgroundColor: selected ? backgroundTransparent : "transparent"

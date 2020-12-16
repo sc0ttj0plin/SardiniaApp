@@ -134,7 +134,7 @@ class PlaceScreen extends Component {
           y: coordinates.latitude,
         }));
         // Compute dataRegion, the smallest enclosing region of the pois (center is current poi location)
-        const centerCoords = [coordinates.longitude, coordinates.latitude]
+        const centerCoords = [coordinates.longitude, coordinates.latitude];
         const nearAccomodationsRegion = boundingRect(nearAccomodations, centerCoords, (p) => p.georef.coordinates);
         this.setState({ nearAccomodations, nearAccomodationsRegion });
       } catch(error) {

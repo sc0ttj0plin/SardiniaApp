@@ -169,9 +169,8 @@ class PlacesScreen extends PureComponent {
       }
     }
     // Update list of pois if we are at the bottom of the category tree
-    if(this._isPoiList()){
+    if(this._isPoiList())
       this._loadMorePois();
-    } 
   }
 
   /**

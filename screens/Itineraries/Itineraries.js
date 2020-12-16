@@ -274,7 +274,8 @@ class ItinerariesScreen extends PureComponent {
   }
 
   _renderMarker = (itinerary) => {
-    const coordinates = _.get(itinerary, ["stages", 0, "poi", "georef", "coordinates"], null)
+    const { lan } = this.props.locale;
+    const coordinates = _.get(itinerary, ["stages", lan, 0, "poi", "georef", "coordinates"], null)
     if(coordinates){
       const lat = _.get(coordinates, [1], null)
       const long = _.get(coordinates, [0], null)

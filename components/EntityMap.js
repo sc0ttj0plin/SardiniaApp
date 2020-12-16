@@ -48,7 +48,6 @@ class EntityMap extends PureComponent {
   
 
   _setRegion = () => {
-    console.log("set region")
     const { coordinates } = this.props;
     let region = boundingRect(coordinates, null, (p) => [p.coords.longitude, p.coords.latitude], 5);
     this._onRegionChangeComplete(region)
@@ -117,17 +116,16 @@ class EntityMap extends PureComponent {
   _renderOpenMapButton = () => {
     const { uuid } = this.props;
 
-    return(
+    return (
       <TouchableOpacity
         activeOpacity={0.7}
-        style={[styles.button, {
-          backgroundColor: Colors.colorItinerariesScreen
-        }]}
+        style={[styles.button, { backgroundColor: Colors.colorItinerariesScreen}]}
         onPress={() => this._openMap(uuid)}>
         <CustomText style={styles.buttonText}>apri la mappa</CustomText>
       </TouchableOpacity>
     )
   }
+
   render() {
     const { coordinates, hasMarkers, hideOpenNavigatorButton, containerStyle } = this.props;
     return (

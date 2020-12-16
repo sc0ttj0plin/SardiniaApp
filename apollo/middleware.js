@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import * as Constants from '../constants';
 import * as Queries from './queryTemplates';
-import { processEvents, processCategories, processEventTypes, processEntity, _tmpAddMockPois } from "./utils";
+import { processCategories, processEventTypes, processEntity, _tmpAddMockPois } from "./utils";
 
 /**
  * Creates the apollo middleware to intercept actions and dispatch success/error actions through redux
@@ -162,9 +162,6 @@ const apolloMiddleware = client => {
             if (resp.data && resp.data.events.length > 0) {
               //also store events by id
               resp.data.events.forEach((e) => processEntity(e));
-              // let eventsById = resp.data.events.reduce((acc, curr) => ({ ...acc, [curr.uuid]: curr}), {});
-              // dispatch.payload.events = processEvents(resp.data.events, action.filtersByType);
-              // dispatch.payload.eventsById = eventsById;
               dispatch.payload.events = resp.data.events;
             }
             else

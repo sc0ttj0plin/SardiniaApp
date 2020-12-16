@@ -27,11 +27,21 @@ export const greedyArrayFinder = (array, findKey, match, returnKey, notFoundRetu
 
 
 /**
- * Extracts coordinates from an entity and returns {latitude: x, longitude: y}
- * @param {*} entity: node item
+ * Normalizes coordinates in accordance with React Native Maps format { latitude: lat, longitude: lng }
+ * @param {*} entity input entity
  */
-export const getCoordinates = (entity) => {
-  return entity && entity.georef ? { latitude: entity.georef.coordinates[1], longitude: entity.georef.coordinates[0] } : null;
+export const getCoordinates = (entity, locale='it') => {
+  // // Itineraries (array)
+  // if (entity.steps && entity.steps[locale])
+  //   return entity.steps[locale].map(c => ({ latitude: c.georef.coordinates[1], longitude: c.georef.coordinates[0] }));
+  // // Events steps (array)
+  // if (entity.steps && entity.steps[locale])
+  //   return entity.steps[locale].map(c => ({ latitude: c.georef.coordinates[1], longitude: c.georef.coordinates[0] }));
+  // Generic 
+  if (entity.georef)
+    return ({ latitude: entity.georef.coordinates[1], longitude: entity.georef.coordinates[0] });
+  else 
+    return null;
 }
 
 export const linkingOpenMail = (email, subject="", body="") => Linking.openURL(`mailto:${email}?subject=${subject}&body=${body}`);

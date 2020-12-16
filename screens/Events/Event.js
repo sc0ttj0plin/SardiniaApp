@@ -124,7 +124,7 @@ class EventScreen extends Component {
           y: stepsCoordinatesCenter.latitude,
         }));
         // Compute dataRegion, the smallest enclosing region of the pois (center is current poi location)
-        const centerCoords = [stepsCoordinatesCenter.longitude, stepsCoordinatesCenter.latitude]
+        const centerCoords = [stepsCoordinatesCenter.longitude, stepsCoordinatesCenter.latitude];
         const nearAccomodationsRegion = boundingRect(nearAccomodations, centerCoords, (p) => p.georef.coordinates);
         this.setState({ nearAccomodations, nearAccomodationsRegion });
       } catch(error) {
@@ -134,22 +134,45 @@ class EventScreen extends Component {
   }
 
   _parseEntity = (entity) => {
+    console.log(entity.abstract, entity.title, entity.steps)
     const { locale } = this.props;
     const { lan } = locale;
     const { abstract, title, description } = getEntityInfo(entity, ["abstract", "title", "description"], [lan, 0, "value"], null, {"description": {s: /\. /g, d: ".<br/>"}});
     const socialUrl = `${Constants.WEBSITE_URL}${greedyArrayFinder(entity.url_alias, "language", lan, "alias", "")}`;
     const sampleVideoUrl = getSampleVideoIndex(entity.nid);
     const steps = _.get(entity, ["steps", lan], []);
-    const stepsCoordinates = steps.reduce((acc, el, idx) => {
-      acc.push([el.georef.lon, el.georef.lat]);
-      return acc;
-    }, []);
-    const stepsCoordinatesCenter = getCenterFromPoints(stepsCoordinates, p => p);
+    // const stepsCoordinates =  getCoordinates(entity, 'it');
+    const stepsCoordinates = this._getEventStepsMarkers(entity.steps[lan]);
+    // const stepsCoordinates = steps.reduce((acc, el, idx) => {
+    //   acc.push([el.georef.lon, el.georef.lat]);
+    //   return acc;
+    // }, []);
+    const stepsCoordinatesCenter = getCenterFromPoints(stepsCoordinates, p => p.coords);
     // console.log("steps", steps, entity.nid)
     this.setState({ entity, abstract,  title,  description,  socialUrl, sampleVideoUrl, steps, stepsCoordinates, stepsCoordinatesCenter }, () => {
       // After parsing the entity fetch near accomodations  and nodes, both depend on state
       this._fetchNearAccomodations();
     });
+  }
+
+  _getEventStepsMarkers = (steps) => {
+    let stepsMarkers = [];
+    steps.map( (step, index) => {
+        const coordinates = _.get(step, ["georef", "coordinates"], null) 
+        if (coordinates) {
+          let marker = {
+            coords: {
+              latitude: coordinates[1],
+              longitude: coordinates[0],
+            },
+            index: index + 1,
+            title: step.title,
+          }
+          stepsMarkers.push(marker)
+        }
+    })
+    // console.log("steps marker", stepsMarkers, steps)
+    return stepsMarkers;
   }
 
   _openRelatedEntity = (item) => {
@@ -233,6 +256,7 @@ class EventScreen extends Component {
       socialUrl, 
       sampleVideoUrl, 
       relatedEntities, 
+      stepsCoordinates,
       nearAccomodations } = this.state;
     const { locale, pois, favourites, } = this.props;
     const { lan } = locale;
@@ -245,9 +269,6 @@ class EventScreen extends Component {
       showMap,
     } = locale.messages;
     
-    const { orientation } = this.state;
-    const isFavourite = favourites.places[uuid];
-
      return (
        <View style={styles.fill}>
          <ScrollView style={styles.fill}>
@@ -259,6 +280,7 @@ class EventScreen extends Component {
           <View style={[styles.container]}>
             <EntityDescription title={descriptionTitle} text={description} color={Colors.colorEventsScreen}/>
             <EntityStages stages={steps} locale={locale}/>
+            {/* <EntityMap coordinates={stepsCoordinates} hasMarkers uuid={uuid}/> */}
             <View style={styles.separator}/>
             {this._renderRelatedList(canBeOfInterest, relatedEntities, Constants.ENTITY_TYPES.events)}
             <EntityAccomodations 

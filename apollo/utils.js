@@ -12,31 +12,6 @@ const IMAGE_REPLACE_DST = "http://sinnos.andreamontaldo.com:81/img/621x/"; //wid
 
 
 /**
- * Process events after fetching: normalizes date and image fields
- * Builds an object consisting of events keyed by their date: YYYY-MM-DD
- * @param {*} events The events array
- * @param {*} filtersByType Filter
- */
-export const processEvents = function(events) {
-  let eventsObj = {};
-  events.forEach((e) => {
-      if (e.date1) {
-        //TODO: remove .add(1,"year")
-        let dateFormatted = moment.unix(e.date1).add(1,"year").format(Constants.DATE_FORMAT);
-        // let dateFormatted = moment.unix(e.date1).format(Constants.DATE_FORMAT);
-        let singleEvent = { 
-          ...e,
-          // image: e.image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST),
-          image: e.image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST),
-          date1Str: moment.unix(e.date1).format('DD MMMM YYYY'),
-        };
-        eventsObj[dateFormatted] = eventsObj[dateFormatted] ? [...eventsObj[dateFormatted], singleEvent] : [singleEvent] 
-      }
-  });
-  return eventsObj;
-}
-
-/**
  * Process categories 
  * Process each category adding the field: "uuids" which adds the current category's sub-categories
  * e.g.:
@@ -119,8 +94,7 @@ export const processEntity = function(entity, coords=null) {
       });
 
   if (entity && entity.nodes_terms && entity.nodes_terms[0]) 
-    entity.term = entity.nodes_terms[0].term
-  
+    entity.term = entity.nodes_terms[0].term;
   
   if (entity.distance)
     entity.distanceStr = distanceToString(entity.distance * 100); 
@@ -138,10 +112,26 @@ export const processEntity = function(entity, coords=null) {
     }, []);
   }
 
-  if (entity.stages)
+  // Itineraries
+  if (entity.stages && entity.stages.length) {
+    let stages = {}; 
     entity.stages.forEach((el) => {
+      if (!stages[el.language])
+        stages[el.language] = [];
       el.poi.image = el.poi.image.replace("public://", "https://www.sardegnaturismo.it/sites/default/files/");
+      stages[el.language].push(el);
     });
+    entity.stages = stages;
+  }
+
+
+
+  //Events (normalize georef)
+  // if (entity.steps) {
+  //   for (let lan in entity.steps) 
+  //     for (let step of entity.steps[lan])
+  //       step.georef = {coordinates: [step.georef.lon, step.georef.lat]}
+  // }
 }
 
 /**

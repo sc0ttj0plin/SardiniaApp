@@ -111,27 +111,24 @@ class ItineraryScreen extends Component {
 
   _parseEntity = (entity) => {
     // console.log(entity)
-    if(entity){
+    if(entity) {
       const { locale } = this.props;
       const { lan } = locale;
       // console.log("language", lan)
       const { abstract, title, description } = getEntityInfo(entity, ["abstract", "title", "description"], [lan, 0, "value"], null, {"description": {s: /\. /g, d: ".<br/>"}});
       const socialUrl = `${Constants.WEBSITE_URL}${greedyArrayFinder(entity.url_alias, "language", lan, "alias", "")}`;
-      const { stages, stagesMarkers } = this._getItineraryStages(entity.stages)
-      const coordinates = _.get(entity, ["stages", 0, "poi", "georef", "coordinates"], null)
-      this.setState({ entity, abstract,  title,  description, coordinates, socialUrl, stages, stagesMarkers });
+      const stagesMarkers = this._getItineraryStagesMarkers(entity.stages[lan]);
+      //Get the first stage coordinates to show on map
+      const coordinates = _.get(entity, ["stages", lan, 0, "poi", "georef", "coordinates"], null);
+      this.setState({ entity, abstract,  title,  description, coordinates, socialUrl, stages: entity.stages[lan], stagesMarkers });
     }
   }
 
-  _getItineraryStages = (stages) => {
-    let stages_result = []
-    let stagesMarkers = []
-    const { lan } = this.props.locale;
+  _getItineraryStagesMarkers = (stages) => {
+    let stagesMarkers = [];
     stages.map( stage => {
-      if(stage.language == lan){
-        stages_result.push(stage)
         const coordinates = _.get(stage, ["poi", "georef", "coordinates"], null) 
-        if(coordinates){
+        if (coordinates) {
           let marker = {
             coords: {
               latitude: coordinates[1],
@@ -144,10 +141,9 @@ class ItineraryScreen extends Component {
           }
           stagesMarkers.push(marker)
         }
-      }
     })
     // console.log("stages marker", stagesMarkers, stages)
-    return { stages: stages_result, stagesMarkers };
+    return stagesMarkers;
   }
 
   _openRelatedEntity = (item, listType) => {
