@@ -59,16 +59,21 @@ export const linkingOpenUrl = url => Linking.openURL(url);
 
 /**
  * Safe multiple fields _.get
- * @param {*} entity: node
- * @param {*} fields e.g. { "coordinates": 1, "image": 1, }
- * @param {*} path 
+ * @param {*} entity: A db entity to parse having "fields" fields
+ * @param {*} fields the fields to extract e.g. ["coordinates", "image", ...]
+ * @param {*} path the path where to search the final value of the field (might recurse)
+ * @param {*} defaultVal a default value to assign to the output field variable if it doesn't exist 
+ * @param {*} replaceObj apply replace to the output value  { "fieldName": { s: "sourceText", d: "destinationText" } }
  */
 export const getEntityInfo = (entity, fields=[], path=["it", 0, "value"], defaultVal=null, replaceObj={}) => {
   if(entity){
     let returnObj = _.reduce(fields, (acc, el) => {
       if (entity[el]) {
         let value = _.get(entity[el], path, defaultVal);
-        acc[el] = (replaceObj[el] && value) ? value.replace(replaceObj[el].s, replaceObj[el].d) : value; 
+        if (replaceObj[el] && typeof(value) === 'string')
+          acc[el] = value.replace(replaceObj[el].s, replaceObj[el].d);
+        else 
+          acc[el] = value;
       }
       return acc;
     }, {});
