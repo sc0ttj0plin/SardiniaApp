@@ -149,9 +149,9 @@ class AccomodationsScreen extends Component {
       // Are coordinates within sardinia's area? fetch the updated pois list
       if (isCordsInBound) {
         this.setState({ isCordsInBound, coords: newCoords, nearPoisRefreshing: true });
-        this._fetchNearestPois(newCoords).then(() => {
+        /*this._fetchNearestPois(newCoords).then(() => {
           this.setState({ nearPoisRefreshing: false });
-        });
+        });*/
       }
     }
     // Update list of pois if we are at the bottom of the category tree
