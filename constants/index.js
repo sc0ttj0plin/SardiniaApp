@@ -168,6 +168,7 @@ export const NAVIGATION = {
   NavLogoutScreen: "LogoutScreen",
   NavAuthScreen: "AuthScreen",
   NavGalleryScreen: "GalleryScreen",
+  NavGalleryStackScreen: "GalleryStackScreen",
   NavExplore: "Explore",
   NavEvents: "Events",
   NavExtrasScreen: "Extras",

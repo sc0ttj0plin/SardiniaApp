@@ -15,6 +15,7 @@ import {
   CustomText
  } from "../../components";
 import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
+import {Image} from 'react-native-elements';
 // import MapView from "react-native-map-clustering";
 import MapView from "react-native-maps";
 import { connect, useStore } from 'react-redux';
@@ -99,6 +100,16 @@ class GalleryMapScreen extends PureComponent {
     navigator.geolocation.clearWatch(this._watchID);
     this._onFocus(); /* unsubscribe */
   }
+
+    /**
+   * Used to compute snap points
+   * @param {*} event layout event
+   */
+  _onPageLayout = (event) => {
+    const { width, height } = event.nativeEvent.layout;
+    //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 24 (handle) - 36 (header text) - 160 (entityItem) - 10 (margin of entityItem) - 36 (whereToGo text)
+    this._generateGrid(width, height);
+  }; 
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
 
@@ -185,37 +196,114 @@ class GalleryMapScreen extends PureComponent {
   }
 
 
-  _generateGrid = () => {
+  _generateGrid = (w,h) => {
+    if(!w && !h)
+      return;
+    var nCol = 6, nRow = 6;
+    var dY = h/nRow;
+    var dX = w/nCol;
+    var cells = [];
+    for(var i = 0; i < nRow; i++) {
+      for(var j = 0; j < nCol; j++) {
+        if(!(Math.floor(i/2) == 1 && Math.floor(j/2) == 1)){
+          var cell = {
+            rect: {
+              tl: {
+                x: dX*i,
+                y: dY*j
+              },
+              br: {
+                x: dX*i + dX,
+                y: dY*j + dY
+              },
+              w: dX,
+              h: dY
+            }
+          };
+          cell.centroid = {
+            pixels: {
+              x: dX*i + dX/2,
+              y: dY*j + dY/2,
+            },
+          };
+          cell.centroid.norm = {
+            x: cell.centroid.x/w,
+            y: cell.centroid.y/h,
+          };
+        }
+        cells.push(cell);
+      }
+    }
+    var cell = {
+      rect: {
+        tl: {
+          x: dX*2,
+          y: dY*2
+        },
+        br: {
+          x: dX*2 + dX*2,
+          y: dY*2 + dY*2
+        },
+        w: dX*2,
+        h: dY*2
+      },
+      centroid: {
+        pixels: {
+          x: w/2,
+          y: h/2,
+        }
+      },
+    }
+    cell.centroid.norm = {
+      x: cell.centroid.x/w,
+      y: cell.centroid.y/h,
+    }
+    cells.push(cell);
 
+    this.setState({cells: cells, cellW: dX, cellH: dY});
   }
   
   
   /* Render content */
   _renderContent = () => {
 
-    const { coords, region, selectedEvent } = this.state;
+    const { coords, region, cells } = this.state;
+
+    if(cells)
+      console.log("Cells", cells.length);
+
     return (
-      <>
-      <MapView
-        coords={coords}
-        initialRegion={region}
-        provider={ PROVIDER_GOOGLE }
-        mapType='standard'
-        provider={PROVIDER_GOOGLE}
-        showsUserLocation={ true }
-        showsIndoorLevelPicker={false}
-        showsCompass={false}
-        renderCluster={this._renderCluster}
-        clusteringEnabled={true}
-        clusterColor={Colors.colorEventsScreen}
-        style={{flex: 1}}
-        onPress={() => this._selectMarker(null)}
-      >
-      </MapView>
-      <View gridView>
+      <View style={styles.fill} onLayout={this._onPageLayout}>
+        <MapView
+          coords={coords}
+          initialRegion={region}
+          provider={ PROVIDER_GOOGLE }
+          mapType='standard'
+          provider={PROVIDER_GOOGLE}
+          showsUserLocation={ true }
+          showsIndoorLevelPicker={false}
+          showsCompass={false}
+          renderCluster={this._renderCluster}
+          clusteringEnabled={true}
+          clusterColor={Colors.colorEventsScreen}
+          style={{flex: 1}}
+          onPress={() => this._selectMarker(null)}
+        >
+        </MapView>
+        {cells && <View style={styles.gridView}>
+          {cells.map(cell => {
+            return <Image style={{
+              position: 'absolute',
+              left: cell.rect.tl.x,
+              top: cell.rect.tl.y,
+              width: cell.rect.w,
+              height: cell.rect.h,
+              borderColor: "red",
+              borderWidth: 1}}/>
+          })}
+        </View>}
         
       </View>
-      </>
     )
   }
 
@@ -223,7 +311,7 @@ class GalleryMapScreen extends PureComponent {
   render() {
     const { render } = this.state;
     return (
-      <View style={[styles.fill]}>
+      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} >
         <ConnectedHeader 
           iconTintColor={Colors.colorEventsScreen}  
           backButtonVisible={true}
@@ -259,7 +347,10 @@ const styles = StyleSheet.create({
     zIndex: 2, 
     backgroundColor: "transparent"
   },
-
+  gridView: {
+    position: "absolute",
+    flex: 1
+  }
 });
 
 
