@@ -291,6 +291,7 @@ class ScrollableContainer extends PureComponent {
               onCloseEnd={this._onCloseEnd} 
               enabledContentGestureInteraction = {false}
               callbackNode={this._translateAnim}
+              springConfig={{toss: 0.05}}
               //
               //
               
