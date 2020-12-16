@@ -302,7 +302,7 @@ let ConnectedTextSearch = () => <ConnectedText languageKey="drawerSearch" textSt
 let ConnectedTextFavourites = () => <ConnectedText languageKey="favourites" textStyle={{ color: "black" }} />;
 let ConnectedTextAccomodations = () => <ConnectedText languageKey="accomodations" textStyle={{ color: "black" }} />;
 let ConnectedTextPreferences = () => <ConnectedText languageKey="preferences" textStyle={{ color: "black" }} />;
-let ConnectedTextGallery = () => <ConnectedAuthText languageKey="gallery" textStyle={{ color: "black" }} />;
+let ConnectedTextGallery = () => <ConnectedText languageKey="gallery" textStyle={{ color: "black" }} />;
 let ConnectedTextLoginLogout = () => <ConnectedAuthText textStyle={{ color: "black" }} />;
 
 /**
