@@ -1,7 +1,9 @@
 import React, { PureComponent, Component } from 'react';
-import { Dimensions, StyleSheet, Text, View, TouchableOpacity, ScrollView, NativeModules, Easing, Platform } from 'react-native';
+import { Dimensions, StyleSheet, Text, View, ScrollView, NativeModules, Easing, Platform } from 'react-native';
 import ScrollBottomSheet from 'react-native-scroll-bottom-sheet';
+import ScrollableContainerTouchableOpacity from "./ScrollableContainerTouchableOpacity";
 import Animated from 'react-native-reanimated';
+import { Feather } from '@expo/vector-icons';
 import MapView from 'react-native-maps';
 const windowHeight = Dimensions.get('window').height;
 import Layout from '../constants/Layout';
@@ -10,8 +12,13 @@ import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 import actions from '../actions';
+import BottomSheet from 'reanimated-bottom-sheet';
+import {FlatList} from 'react-native-gesture-handler';
+
 
 const { Value, event, interpolate } = Animated;
+import { call, useCode } from 'react-native-reanimated';
+
 const { StatusBarManager } = NativeModules;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
 
@@ -25,7 +32,8 @@ class ScrollableContainer extends PureComponent {
     // Scrollable refernce
     this.state = {
       data: props.data,
-      currentSnapIndex: null
+      currentSnapIndex: 2,
+      scrollToTop: true
     }
     this._scrollable = {}
     //Drag 
@@ -35,24 +43,15 @@ class ScrollableContainer extends PureComponent {
     this._handleBorderRadiusMax = 32;
     this._handleBorderRadiusMin = 0;
     //Topmost component translation animations when scrolling
-    const { initialSnapIndex, snapPoints, pageLayoutHeight } = props;
-    if(initialSnapIndex && snapPoints[initialSnapIndex]){
-      // let pageLayoutHeight = Layout.window.height;
-      let percentage = ((snapPoints[initialSnapIndex] * 100) / pageLayoutHeight);
-      let anim_value = percentage / 100;
-      console.log("anim value", anim_value)
-      this._translateAnim = new Value(anim_value);
-    }
-    else
-      this._translateAnim = new Value(0);
+    this._translateAnim = new Value(1);
     this._translateAnimY = interpolate(this._translateAnim, {
       inputRange: [0, 1],
-      outputRange: [0, -Layout.window.height/2],
+      outputRange: [-Layout.window.height/2, 0],
     });
 
     this._translateAnimY2 = interpolate(this._translateAnim, {
-      inputRange: [0, 0.2, 0.3, 1],
-      outputRange: [10, -10, -35, -35],
+      inputRange: [0, 0.7, 1],
+      outputRange: [-35, -35, 10],
     });
 
     this._snapping = false;
@@ -65,7 +64,8 @@ class ScrollableContainer extends PureComponent {
   componentDidUpdate(prevProps){
     const prevSnap = prevProps.others.scrollableSnapIndex[this.props.entityType];
     const currentSnap = this.props.others.scrollableSnapIndex[this.props.entityType];
-    if (prevSnap !== currentSnap && typeof(currentSnap) === 'number') {
+    //console.log(prevSnap, currentSnap);
+    if (prevSnap !== currentSnap && currentSnap !== this.state.currentSnapIndex && typeof(currentSnap) === 'number') {
       this._snapping = true;
       setTimeout( () => { 
         this._scrollable.snapTo(currentSnap) 
@@ -81,21 +81,6 @@ class ScrollableContainer extends PureComponent {
 
       })
     }
-    if(prevProps.snapPoints !== this.props.snapPoints){
-      console.log("snap point")
-      const { initialSnapIndex, snapPoints, pageLayoutHeight } = this.props;
-      if(initialSnapIndex && snapPoints[initialSnapIndex]){
-        // let pageLayoutHeight = Layout.window.height;
-        let percentage = ((snapPoints[initialSnapIndex] * 100) / pageLayoutHeight); 
-        let anim_value = percentage / 100;
-        console.log("anim value", anim_value)
-        this._translateAnim = new Value(anim_value);
-        this._translateAnimY2 = interpolate(this._translateAnim, {
-          inputRange: [0, 0.2, 0.3, 1],
-          outputRange: [10, -10, -35, -35],
-        });
-      }
-    }
   }
 
   _onHandlePress = () => {
@@ -104,24 +89,36 @@ class ScrollableContainer extends PureComponent {
   }
 
   _onSettle = (index) => {
-    //Set global snap index for the current entityType
-    this.props.actions.setScrollableSnapIndex(this.props.entityType, index);
-    if(Platform.OS === 'android')
-      setTimeout(() => {this._scrollableInner.getNode().scrollToOffset({ animated: false, offset: 0 })}, 100);
+    console.log("_onSettle", index);
 
-    if(index == 0 && this._handleBorderRadius._value != this._handleBorderRadiusMin){
-      console.log("index 1", this._handleBorderRadius._value, this._handleBorderRadiusMax)
-      this._startHandleAnimation(0)
-    }
-    else if(index != 0 && this._handleBorderRadius._value != this._handleBorderRadiusMax){
-      console.log("index 2", this._handleBorderRadius._value, this._handleBorderRadiusMin)
-      this._startHandleAnimation(32)
+    this.setState({currentSnapIndex: index}, () => {
+      //Set global snap index for the current entityType
+      this._updating = false;
+      this.props.actions.setScrollableSnapIndex(this.props.entityType, index);
+    }); 
+
+    if(index == 0) {
+      if(this._handleBorderRadius._value != this._handleBorderRadiusMin){
+        console.log("index 1", this._handleBorderRadius._value, this._handleBorderRadiusMax)
+        this._startHandleAnimation(0)
+      }
+    } else {
+      if(this._handleBorderRadius._value != this._handleBorderRadiusMax){
+        console.log("index 2", this._handleBorderRadius._value, this._handleBorderRadiusMin)
+        this._startHandleAnimation(32)
+      }
+      if(this._scrollableInner)
+        this._scrollableInner.scrollToOffset({offset: 0, animated: true});
     }
 
     if(this._snapping)
       this._snapping = false;
     else if(this.props.onSettle)
-      this.props.onSettle()
+      this.props.onSettle();
+    else if(this.props.onSettleIndex) {
+      this.props.onSettleIndex(index);
+    }
+
   }
 
   _startHandleAnimation = (value) => {
@@ -136,21 +133,99 @@ class ScrollableContainer extends PureComponent {
     this._handleBorderRadius._value = value;
   }
 
+  _closePressed = () => {
+    const { 
+      closeSnapIndex = 2
+    } = this.props;
+    this._scrollable.snapTo(closeSnapIndex);
+    if(this._scrollableInner)
+      this._scrollableInner.scrollToOffset({offset: 0, animated: true});
+  }
+
   _renderHandle = () => {
-    const { closeSnapIndex = 1 } = this.props;
+    const {
+      HeaderTextComponent
+     } = this.props;
     return (
-      <Animated.View style={[styles.header, { borderTopRightRadius: this._handleBorderRadius }]}>
-        <View style={styles.panelHandle} />
-        {/* { Platform.OS == 'android' && 
-          <TouchableOpacity style={styles.xView} onPress={() => this._scrollable.snapTo(closeSnapIndex)}>
-            <Feather name={'x'} size={20} color={Colors.grayHandle} />
-          </TouchableOpacity>
-        } */}
+      <Animated.View onStartShouldSetResponder={this.props.onListHeaderPressed} style={[styles.header, { borderTopRightRadius: this._handleBorderRadius}]}>
+        <View style={[styles.panelHandle]} />
+        {this.state.currentSnapIndex == 0 && 
+        <View style={[styles.xView, {marginTop: 15}]}>
+            <ScrollableContainerTouchableOpacity  onPress={this._closePressed}>
+              <Feather name={'x'} size={30} color={Colors.grayHandle} />
+          </ScrollableContainerTouchableOpacity> 
+        </View>}
+        <HeaderTextComponent></HeaderTextComponent>
       </Animated.View>);
   }
 
   _onPressIn = () => {
     this.props.actions.setScrollablePressIn(this.props.entityType, !this.props.others.scrollablePressIn[this.props.entityType])
+  }
+
+  _onOpenEnd = (v) => {
+    console.log("_onOpenEnd");
+    if(!this._updating){
+      this._onSettle(0);
+      this._updating;
+    }
+  }
+
+  _onCloseEnd = (v) => {
+    console.log("_onCloseEnd");
+    this.setState({currentSnapIndex: 2});
+  }
+
+  _onScroll = (event) => {
+    this.scollY = event.nativeEvent.contentOffset.y;
+    setTimeout(() => this.setState({scrollToTop: this.scollY <= 0}), 10);
+  }
+
+  _onScrollBeginDrag = () => {
+    if(this.scollY > 0)
+      this.setState({scrollToTop: false})
+  }
+
+  _onScrollEndDrag = () => {
+    this.setState({scrollToTop: this.scollY <= 0})
+    this._scrolling = false;
+  }
+
+  _renderContent = () => {
+    const {
+      numColumns,
+      keyExtractor,
+      renderItem,
+      ListHeaderComponent,
+      onEndReached = ()=>{} } = this.props;
+
+      if(this.state.data && this.state.data.length > 0)
+        return (
+        <FlatList
+            style={[styles.contentContainerStyle]}
+            data={this.state.data || []}
+            keyExtractor={keyExtractor}
+            renderItem={renderItem}
+            ListHeaderComponent={ListHeaderComponent || null}
+            onEndReached = {({distanceFromEnd})=> onEndReached()}
+            scrollEnabled ={this.state.currentSnapIndex == 0 ? true : false}
+            ref={(ref) => this._scrollableInner = ref}
+            onScroll={this._onScroll}
+            onMomentumScrollEnd={this._onScrollEndDrag}
+            onScrollBeginDrag={this._onScrollBeginDrag}
+            onEndReachedThreshold={0.5} 
+            initialNumToRender={8}
+            maxToRenderPerBatch={2}
+            numColumns={numColumns || 1}
+            
+            >
+        </FlatList>
+        );
+      else return (
+        <View style={styles.loadingView}>
+          
+        </View>
+      )
   }
 
   render() {
@@ -177,30 +252,54 @@ class ScrollableContainer extends PureComponent {
                 {extraComponent()}
               </Animated.View>
             }
-            <ScrollBottomSheet
+            <Animated.Code>
+            {
+              () => call([this._translateAnim], ([v]) => {
+                var index = this.state.currentSnapIndex;
+                if(v == 0) {
+                  index = 0;
+                }
+                else if(v != 0 && this.state.currentSnapIndex == 0 && !this.state.scrollToTop && this._scrolling !== true) {
+                  this._scrolling = true;
+                  if(this._scrollableInner)
+                    this._scrollableInner.scrollToOffset({offset: 0, animated: true});
+                }
+                else if(v > 0.8) {
+                    index = 2;
+                }
+                else if (v > 0.1) {
+                  index = 1;
+                }
+                if(!this._updating && this.state.currentSnapIndex != index){
+                  this._updating = true;
+                  this._onSettle(index);
+                }
+              })
+            }
+            </Animated.Code>
+            <BottomSheet
               componentType="FlatList"
               key={numColumns} /* NOTE always set a key to refresh only this component and avoid unmounting */
-              // numColumns={numColumns || 1}
               snapPoints={snapPoints}
-              // disableScrollViewPanResponder={true}
-              // scrollEnabled={this.state.currentSnapIndex === 0 ? true : false}
-              initialSnapIndex={initialSnapIndex >=0 ? initialSnapIndex : 0}
-              renderHandle={() => null}
-              data={this.state.data || []}
-              keyExtractor={keyExtractor}
-              renderItem={renderItem}
-              innerRef = {(ref) => this._scrollableInner = ref}
+              renderContent={this._renderContent}
+              //scrollEnabled={this.state.currentSnapIndex === 0 ? true : false}
+              initialSnap={initialSnapIndex}
+              renderHeader={this._renderHandle}
               ref={(ref)=>this._scrollable = ref}
-              ListHeaderComponent={ListHeaderComponent || null}
-              animatedPosition={this._translateAnim}
-              initialNumToRender={8}
-              maxToRenderPerBatch={2}
-              //onEndReachedThreshold={0.5} 
               onSettle = {(index) => this._onSettle(index) }
-              onEndReached = {({distanceFromEnd})=> onEndReached()}
+              onOpenEnd={this._onOpenEnd}
+              onCloseEnd={this._onCloseEnd} 
+              enabledContentGestureInteraction = {false}
+              callbackNode={this._translateAnim}
+              //
+              //
+              
               contentContainerStyle={[styles.contentContainerStyle, {
                 flex:  data && data.length == 0 ? 1 : null
-              }]}/>
+              }]}
+              
+              enabledContentGestureInteraction={this.state.currentSnapIndex == 0 ? false : true}
+              />
             
         </View>
       )
@@ -214,6 +313,11 @@ const styles = StyleSheet.create({
   fill: {
     flex: 1
   },
+  loadingView: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'white'
+  },
   dragHandler: {
     alignSelf: 'stretch',
     height: 64,
@@ -222,9 +326,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#ccc'
   },
   contentContainerStyle: {
-    // flex: 1,
-    paddingHorizontal: 10,
     backgroundColor: 'white',
+    paddingHorizontal: 5
   },
   header: {
     alignItems: 'center',
@@ -242,8 +345,8 @@ const styles = StyleSheet.create({
   },
   xView: {
     position: 'absolute', 
-    right: 0, 
-    top: 10, 
+    right: 8, 
+    top: 0, 
     height: 30, 
     width: 30
   },

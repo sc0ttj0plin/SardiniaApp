@@ -225,7 +225,7 @@ class EventsMapScreen extends PureComponent {
     let itemWidth = ((Layout.window.width - (margins*2))/2) - 5;
     //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 24 (handle) - 36 (header text) - itemWidth (entityItem) - 10 (margin of entityItem)
     /* OLD: 4 snap points this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 24 - 76 - itemWidth - 10, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 24 - 76, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 34] }); */
-    this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 24 - 76, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 34] });
+    this.setState({ snapPoints: [height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight, 80] });
   }; 
 
   /**
@@ -358,15 +358,12 @@ class EventsMapScreen extends PureComponent {
   }
 
   /* Renders the Header of the scrollable container */
-  _renderListHeader = () => {
-    const { nearToYou, whereToGo, exploreEvents } = this.props.locale.messages;
+  _renderHeaderText = () => {
+    const { exploreEvents } = this.props.locale.messages;
       return (
         <View onStartShouldSetResponder={this._onListHeaderPressIn}>
-          <View style={styles.header}>
-            <View style={styles.panelHandle} />
-          </View>
-          <View style={styles.listHeader}>
-            <CustomText style={styles.sectionTitle}>{exploreEvents}</CustomText>
+          <View style={[styles.sectionTitleView, {marginBottom: 15}]}>
+            <CustomText style={[styles.sectionTitle, {fontSize: 20}]}>{exploreEvents}</CustomText>
           </View>
         </View>
       )
@@ -407,6 +404,7 @@ class EventsMapScreen extends PureComponent {
         entityType={Constants.ENTITY_TYPES.events}
         topComponent={this._renderTopComponent}
         ListHeaderComponent={this._renderListHeader}
+        onListHeaderPressed={this._onListHeaderPressIn}
         data={data}
         initialSnapIndex={1}
         pageLayoutHeight={this._pageLayoutHeight}
@@ -415,6 +413,8 @@ class EventsMapScreen extends PureComponent {
         numColums={1}
         renderItem={this._renderListItem}
         keyExtractor={item => item.uuid}
+        HeaderTextComponent={this._renderHeaderText}
+        closeSnapIndex={1}
       />
     )
   }
@@ -462,6 +462,12 @@ const styles = StyleSheet.create({
       fontSize: 16,
       color: "black",
       fontFamily: "montserrat-bold",
+  },
+  sectionTitleView: {
+    maxHeight: 40, 
+    minHeight: 40,
+    justifyContent: "center",
+    alignItems: "center",
   },
   listContainer: {
     backgroundColor: Colors.colorPlacesScreen,
@@ -531,7 +537,7 @@ const styles = StyleSheet.create({
     height: 180,
     position: "absolute",
     // backgroundColor: Colors.lightGray,
-    bottom: Platform.OS == "ios" ? 30 : 70,
+    bottom: Platform.OS == "ios" ? 80 : 100,
     left: 0,
     padding: 10,
   },
@@ -545,22 +551,7 @@ const styles = StyleSheet.create({
   },
   clusterText: {
     color: "white"
-  },
-  //Pane Handle
-  header: {
-    alignItems: 'center',
-    backgroundColor: 'white',
-    paddingTop: 20,
-    paddingBottom: 0,
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 32
-  },
-  panelHandle: {
-    width: 32,
-    height: 4,
-    backgroundColor: Colors.grayHandle,
-    borderRadius: 2,
-  },
+  }
 });
 
 

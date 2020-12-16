@@ -333,16 +333,17 @@ class ClusteredMapViewTop extends PureComponent {
 
   render() {
     var {initRegion, pois, clusters, selectedCluster} = this.state;
+    var {mapPaddingBottom = 65} = this.props;
     // console.log("Render", this._region)
     return (
       <>
         <MapView
           ref={ref => this._mapRef = ref}
-          showsMyLocationButton={true}
+          //showsMyLocationButton={true}
           mapPadding={{
             top: 0,
             right: 0,
-            bottom: 30,
+            bottom: mapPaddingBottom,
             left: 0
           }}
           provider={ PROVIDER_GOOGLE }
@@ -403,14 +404,6 @@ const styles = StyleSheet.create({
   },
   markerText: {
     fontSize: 16
-  },
-  entityWidget: {
-    width: "100%",
-    height: 180,
-    position: "absolute",
-    bottom: 50,
-    left: 0,
-    padding: 10
   }
 });
 

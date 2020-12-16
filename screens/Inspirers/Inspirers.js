@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
   },
   listView: {
     width: "100%",
-    marginTop: 16,
+    marginTop: 0,
   },
   header: {
     backgroundColor: "white"
@@ -307,7 +307,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   listStyle: {
-    paddingTop: 10, 
     backgroundColor: "transparent",
     marginHorizontal: 10,
     height: "100%",
