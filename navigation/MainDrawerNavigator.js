@@ -32,6 +32,7 @@ import FavouritesListScreen from '../screens/Favourites/FavouritesList';
 import AuthScreen from '../screens/Auth/Auth';
 import PreferencesScreen from "../screens/Preferences/Preferences"
 import FiltersScreen from '../screens/Filters/Filters';
+import GalleryScreen from '../screens/Gallery/Map';
 
 import Boilerplate from '../screens/Boilerplates/Boilerplate';
 import { ConnectedText, ConnectedLanguageList, TabBar, CustomDrawer, ConnectedAuthText } from '../components';
@@ -41,7 +42,7 @@ import Colors from '../constants/Colors';
 import * as Constants from '../constants';
 const {
   NavPlacesScreen, NavInspirersScreen ,NavMapScreen, NavLoadingScreen, NavLoginScreen, NavLogoutScreen, NavAuthScreen,
-  NavItinerariesScreen, NavAccomodationsScreen, NavAccomodationScreen, NavAccomodationsStackScreen,
+  NavItinerariesScreen, NavAccomodationsScreen, NavAccomodationScreen, NavAccomodationsStackScreen, NavGalleryStackScreen, NavGalleryScreen,
   NavItineraryScreen, NavEventsScreen, NavEventScreen, NavItineraryStagesMapScreen,NavEventsMapScreen, NavEventsSubset, NavExploreScreen, 
   NavVirtualTourScreen, NavPlaceScreen, NavInspirerScreen, NavPreferencesScreen,
   NavExtrasScreen, NavExtraScreen, NavTabNavigator, NavSearchScreen, NavSearchStackScreen, 
@@ -282,12 +283,26 @@ function AccomodationStackScreen() {
   );
 }
 
+/**
+ * Accomodation Stack (level: 1, parent DrawerNavigator)
+ */
+var GalleryStack = createStackNavigator();
+
+function GalleryStackScreen() {
+  return (
+    <GalleryStack.Navigator headerMode="none" initialRouteName={NavGalleryScreen}>
+      <GalleryStack.Screen name={NavGalleryScreen} component={GalleryScreen} />
+    </GalleryStack.Navigator>
+  );
+}
+
 
 let ConnectedTextTabName = () => <ConnectedText languageKey="drawerTab" textStyle={{ color: "black" }}/>;
 let ConnectedTextSearch = () => <ConnectedText languageKey="drawerSearch" textStyle={{ color: "black" }} />;
 let ConnectedTextFavourites = () => <ConnectedText languageKey="favourites" textStyle={{ color: "black" }} />;
 let ConnectedTextAccomodations = () => <ConnectedText languageKey="accomodations" textStyle={{ color: "black" }} />;
 let ConnectedTextPreferences = () => <ConnectedText languageKey="preferences" textStyle={{ color: "black" }} />;
+let ConnectedTextGallery = () => <ConnectedAuthText languageKey="gallery" textStyle={{ color: "black" }} />;
 let ConnectedTextLoginLogout = () => <ConnectedAuthText textStyle={{ color: "black" }} />;
 
 /**
@@ -312,8 +327,9 @@ function CustomDrawerContent(props) {
       <CustomDrawer.Item {...props} routeIndex={3} label={ConnectedTextPreferences} screenName={Constants.NAVIGATION.NavPreferencesScreen} iconOpts={{name: 'user', size: 20, color: Colors.mediumGray}} />
       <CustomDrawer.Separator />
       <CustomDrawer.Item {...props} routeIndex={4} label={ConnectedTextFavourites} screenName={Constants.NAVIGATION.NavFavouritesStackScreen} iconOpts={{name: 'heart', size: 20, color: Colors.mediumGray}} />
+      <CustomDrawer.Item {...props} routeIndex={5} label={ConnectedTextGallery} screenName={Constants.NAVIGATION.NavGalleryStackScreen} iconOpts={{name: 'image', size: 20, color: Colors.mediumGray}} />
       <CustomDrawer.Separator />
-      <CustomDrawer.Item {...props} routeIndex={5} label={ConnectedTextLoginLogout} screenName={Constants.NAVIGATION.NavAuthScreen} iconOpts={{name: 'key', size: 20, color: Colors.mediumGray}} />
+      <CustomDrawer.Item {...props} routeIndex={6} label={ConnectedTextLoginLogout} screenName={Constants.NAVIGATION.NavAuthScreen} iconOpts={{name: 'key', size: 20, color: Colors.mediumGray}} />
       <ConnectedLanguageList />
     </DrawerContentScrollView>
   );
@@ -346,6 +362,7 @@ function DrawerNavigator() {
       <Drawer.Screen name={NavAccomodationsStackScreen} component={AccomodationStackScreen} options={{unmountOnBlur:true}} />
       <Drawer.Screen name={NavSearchStackScreen} component={SearchStackScreen} />
       <Drawer.Screen name={NavFavouritesStackScreen} component={FavouritesStackScreen} options={{unmountOnBlur:true}} />
+      <Drawer.Screen name={NavGalleryStackScreen} component={GalleryStackScreen} options={{unmountOnBlur:true}} />
       <Drawer.Screen name={NavPreferencesScreen} component={PreferencesScreen} options={{unmountOnBlur:true}} />
       {/* The login screen is not shown in the navigation */}
       <Drawer.Screen name={NavAuthScreen} component={AuthScreen} options={{unmountOnBlur:true}} />
