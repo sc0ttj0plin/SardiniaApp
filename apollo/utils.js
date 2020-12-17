@@ -82,6 +82,7 @@ export const processEntity = function(entity, coords=null) {
   if (entity.image)
       // entity.image = entity.image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST_621x);
       entity.image = entity.image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST_621x);
+      
   if (entity.image350x)
     entity.image350x = entity.image350x.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST_350x);
 
