@@ -379,6 +379,20 @@ query ($x: float8, $y: float8, $limit: Int, $offset: Int, $uuids: [String!]) {
 }
 `;
 
+export const getNearestPoisLight = gql`
+query ($x: float8, $y: float8, $limit: Int) {
+  nearest_neighbour_no_limits(args: {x: $x, y: $y}, where: {type: {_eq: "${Constants.NODE_TYPES.places}"}}, limit: $limit, order_by: {distance: asc}) {
+    uuid
+    nid
+    georef
+    distance
+    type
+    title: legacy(path: "title_field")
+    image: legacy(path: "field_immagine_top.und[0].uri")
+  }
+}
+`;
+
 export const getNearestByType = gql`
 query ($x: float8, $y: float8, $type: String!, $limit: Int!, $offset: Int!, $excludeUuids: [String!]) {
   nearest_neighbour_no_limits(args: {x: $x, y: $y}, where: {type: {_eq: $type}, uuid: {_nin: $excludeUuids}}, limit: $limit, offset: $offset, order_by: {distance: asc}) {

@@ -292,6 +292,13 @@ function GalleryStackScreen() {
   return (
     <GalleryStack.Navigator headerMode="none" initialRouteName={NavGalleryScreen}>
       <GalleryStack.Screen name={NavGalleryScreen} component={GalleryScreen} />
+      {/* Places */}
+      <GalleryStack.Screen name={NavPlaceScreen} component={PlaceScreen}/>
+      {/* Media */}
+      <GalleryStack.Screen name={NavMediaScreen} component={MediaScreen}/>
+      {/* Accomodation */}
+      <GalleryStack.Screen name={NavAccomodationsScreen} component={AccomodationsScreen}/>
+      <GalleryStack.Screen name={NavAccomodationScreen} component={AccomodationScreen}/>
     </GalleryStack.Navigator>
   );
 }

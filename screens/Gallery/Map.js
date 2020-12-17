@@ -1,9 +1,9 @@
 import React, { PureComponent } from "react";
 import { 
-  View, Text, ActivityIndicator, TouchableOpacity, 
-  StyleSheet, BackHandler, Platform, ScrollView, NativeModules } from "react-native";
+  View, Text, ActivityIndicator,
+  StyleSheet, Image, BackHandler, Platform, ScrollView, NativeModules, PointPropType } from "react-native";
 
-import { FlatList } from "react-native-gesture-handler"
+import { Flablist } from "react-native-gesture-handler"
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   CategoryListItem, 
@@ -15,7 +15,6 @@ import {
   CustomText
  } from "../../components";
 import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
-import {Image} from 'react-native-elements';
 // import MapView from "react-native-map-clustering";
 import MapView from "react-native-maps";
 import { connect, useStore } from 'react-redux';
@@ -26,10 +25,11 @@ import Layout from '../../constants/Layout';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
+import { LLEntitiesFlablist } from "../../components/loadingLayouts";
 import { Button } from "react-native-paper";
 import { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
+import {TouchableWithoutFeedback} from "react-native-gesture-handler";
 
 /**
  * Map:             Clusters + pois that update with user map's interaction
@@ -59,12 +59,17 @@ class GalleryMapScreen extends PureComponent {
       tid: -1,
       coords: {},
       poisLimit: Constants.PAGINATION.poisLimit,
-      region: Constants.MAP.defaultRegion,
+      region: Constants.MAP.defaultRegionZoomed,
       selectedEvent: null,
       snapPoints: [],
       tracksViewChanges: false,
+      pois: {},
+      cells: [],
+      debug: false
     };
-      
+
+    this._region = this.state.region;
+    this._selected = false;
     this._pageLayoutHeight = Layout.window.height;
 
   }
@@ -157,35 +162,6 @@ class GalleryMapScreen extends PureComponent {
     // } 
   }
 
-  /**
-   * Get more pois when the user changes position and/or 
-   * we reach the end of the category tree . 
-   * Pois are loaded in order of distance from the user and are "categorized"
-   * to load pois in the bottom scrollable container list (not header)
-   * uuids controls the category of the pois
-   */
-  _loadMorePois = () => {
-    const { childUuids } = this._getCurrentTerm();
-    var { coords } = this.state;
-    if(coords && this._isPoiList() && !this.state.poisRefreshing){
-      this.setState({
-        poisRefreshing: true
-      }, () => {
-        apolloQuery(actions.getNearestPois({
-          limit: this.state.poisLimit,
-          offset: this.state.pois ? this.state.pois.length : 0,
-          x: coords.longitude,
-          y: coords.latitude,
-          uuids: childUuids
-        })).then((pois) => {
-          this.setState({
-            pois: this.state.pois ? [...this.state.pois, ...pois] : pois,
-            poisRefreshing: false
-          });
-        })
-      });
-    }
-  }
 
   /**
    * Open single poi screen
@@ -203,44 +179,14 @@ class GalleryMapScreen extends PureComponent {
     var dY = h/nRow;
     var dX = w/nCol;
     var cells = [];
-    for(var i = 0; i < nRow; i++) {
-      for(var j = 0; j < nCol; j++) {
-        if(!(Math.floor(i/2) == 1 && Math.floor(j/2) == 1)){
-          var cell = {
-            rect: {
-              tl: {
-                x: dX*i,
-                y: dY*j
-              },
-              br: {
-                x: dX*i + dX,
-                y: dY*j + dY
-              },
-              w: dX,
-              h: dY
-            }
-          };
-          cell.centroid = {
-            pixels: {
-              x: dX*i + dX/2,
-              y: dY*j + dY/2,
-            },
-          };
-          cell.centroid.norm = {
-            x: cell.centroid.x/w,
-            y: cell.centroid.y/h,
-          };
-        }
-        cells.push(cell);
-      }
-    }
+
     var cell = {
       rect: {
-        tl: {
+        bl: {
           x: dX*2,
           y: dY*2
         },
-        br: {
+        tr: {
           x: dX*2 + dX*2,
           y: dY*2 + dY*2
         },
@@ -254,27 +200,232 @@ class GalleryMapScreen extends PureComponent {
         }
       },
     }
+    cell.rectNorm = {
+      bl: {
+        x: cell.rect.bl.x / w,
+        y: cell.rect.bl.y / h,
+      },
+      tr: {
+        x: cell.rect.tr.x / w,
+        y: cell.rect.tr.y / h,
+      },
+      w: dX / w,
+      h: dY / h
+    },
     cell.centroid.norm = {
-      x: cell.centroid.x/w,
-      y: cell.centroid.y/h,
+      x: cell.centroid.pixels.x/w,
+      y: cell.centroid.pixels.y/h,
     }
     cells.push(cell);
 
-    this.setState({cells: cells, cellW: dX, cellH: dY});
+    for(var j = 0; j < nCol; j++) {
+      for(var i = 0; i < nRow; i++) {
+        if(!(Math.floor(i/2) == 1 && Math.floor(j/2) == 1)){
+          var cell = {
+            rect: {
+              bl: {
+                x: dX*i,
+                y: dY*j
+              },
+              tr: {
+                x: dX*i + dX,
+                y: dY*j + dY
+              },
+              w: dX,
+              h: dY
+            }
+          };
+          cell.rectNorm = {
+            bl: {
+              x: cell.rect.bl.x / w,
+              y: cell.rect.bl.y / h,
+            },
+            tr: {
+              x: cell.rect.tr.x / w,
+              y: cell.rect.tr.y / h,
+            },
+            w: dX / w,
+            h: dY / h
+          },
+          cell.centroid = {
+            pixels: {
+              x: dX*i + dX/2,
+              y: dY*j + dY/2,
+            },
+          };
+          cell.centroid.norm = {
+            x: cell.centroid.pixels.x/w,
+            y: cell.centroid.pixels.y/h,
+          };
+          cells.push(cell);
+        }
+      }
+    }
+
+    this.setState({cells: cells, cellW: dX, cellH: dY}, () => {
+      this._getPois(this.state.region);
+    });
+    
+  }
+
+  _getPois = (region)  => {
+    console.log("getPois");
+    
+    this._region = region;
+
+    var cells = this.state.cells;
+    var tasks = [];
+
+    if(!cells)
+      return;
+
+    for(var i = 0; i<cells.length; i++){
+      var cell = cells[i];
+      var dX = region.longitudeDelta;
+      var dY = region.latitudeDelta;
+      var x = region.longitude - dX/2 + cell.centroid.norm.x * dX;
+      var y = region.latitude + dY/2 - cell.centroid.norm.y * dY;
+      tasks[i] = apolloQuery(actions.getNearestPoisLight({
+        limit: 33,
+        x: x,
+        y: y
+      }))
+    }
+    var pois = [];
+    Promise.all(tasks).then((res)=>{
+      for(var i = 0; i<res.length; i++){
+        var j = 0;
+        if(i > 0) {
+          for(var k = 0; k < i; k++){
+            while(j < res[i].length  && res[i][j].uuid == pois[k].uuid){
+              //console.log(i, k, j, res[i][j].title.it[0].value, pois[k].title.it[0].value);
+              j++;
+              k=0;
+            }
+          }
+        }
+        //console.log("accepted", i, j, res[i][j].title.it[0].value);
+        pois[i] = res[i][j];
+      }
+      if(this._selected) {
+        pois[0]=this._selected.poi;
+      }
+      this._selected = null;
+      this.setState({pois: {...pois}});
+    });
+    
+  }
+
+  _onRegionChangeComplete = (region) => {
+    var pois = {};
+    if(!this._selected)
+      this.setState({pois: {...pois}},() => {this.forceUpdate()});
+    if(this._panTimeout){
+      clearTimeout(this._panTimeout);
+    }
+    this._panTimeout = setTimeout(() => {
+      
+      this._getPois(region);
+    }, 1500);
+  }
+
+  _getPressedCell = (position) => {
+    var cells = this.state.cells;
+    var dX = this._region.longitudeDelta;
+    var dY = this._region.latitudeDelta;
+    for(var i = 0; i < cells.length; i++){
+      var cell = cells[i];
+      var rect = {
+        bl: {
+          x: this._region.longitude - dX/2 + cell.rectNorm.bl.x * dX,
+          y: this._region.latitude + dY/2 - cell.rectNorm.bl.y * dY,
+        },
+        tr: {
+          x: this._region.longitude - dX/2 + cell.rectNorm.tr.x * dX,
+          y: this._region.latitude + dY/2 - cell.rectNorm.tr.y * dY,
+        }
+      }
+
+      if(position.y < rect.bl.y && position.y > rect.tr.y && position.x > rect.bl.x && position.x < rect.tr.x){
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  _onPress = (e) => {
+
+    this._decreaseImagesOpacity(2000);
+
+    var point = {
+      x: e.nativeEvent.coordinate.longitude,
+      y: e.nativeEvent.coordinate.latitude,
+    }
+    var index = this._getPressedCell(point);
+    
+    if(index >= 1) {
+      console.log("animate", index);
+      this._selectPoi(index);
+    } else if (index==0){
+      console.log("open poi");
+      this._selected = null;
+      this._openPoi(this.state.pois[index]);
+    } else {
+      this._selected = null;
+    }
+    
+  }
+
+  _selectPoi = (index) => {
+    var selectedPoi = this.state.pois[index];
+    var latlng = {
+      latitude: selectedPoi.georef.coordinates[1],
+      longitude: selectedPoi.georef.coordinates[0]
+    }
+    this._selected = {
+      poi: selectedPoi,
+      index: index
+    }
+    var pois = {};
+    pois[0] = this._selected.poi;
+    this.setState({pois: {...pois}},() => {this.forceUpdate()});
+    this._mapRef.animateCamera({center: latlng}, {duration: 1000});
+  }
+  
+  _onPanDrag = () => {
+    this._decreaseImagesOpacity(100);
+  }
+
+  _onDoublePress = () => {
+    this._decreaseImagesOpacity(2000);
+  }
+
+  _decreaseImagesOpacity = (t) => {
+    this.setState({panning: true});
+
+    if(this.panningT){
+      clearTimeout(this.panningT);
+    }
+
+    this.panningT = setTimeout(() => {
+      this.setState({panning: false});
+    }, t);
+  }
+
+  _onPressCell = (i) => {
+    console.log(i);
   }
   
   
   /* Render content */
   _renderContent = () => {
 
-    const { coords, region, cells } = this.state;
-
-    if(cells)
-      console.log("Cells", cells.length);
+    const { coords, region, panning, cells, pois } = this.state;
 
     return (
       <View style={styles.fill} onLayout={this._onPageLayout}>
         <MapView
+          ref={(ref) => this._mapRef = ref}
           coords={coords}
           initialRegion={region}
           provider={ PROVIDER_GOOGLE }
@@ -287,21 +438,74 @@ class GalleryMapScreen extends PureComponent {
           clusteringEnabled={true}
           clusterColor={Colors.colorEventsScreen}
           style={{flex: 1}}
-          onPress={() => this._selectMarker(null)}
+          onRegionChangeComplete={this._onRegionChangeComplete}
+          onPanDrag={this._onPanDrag}
+          onPress={this._onPress}
+          onDoublePress={this._onDoublePress}
+          moveOnMarkerPress={true}
         >
+          {Object.keys(pois).length > 0 && Object.keys(pois).map((key) => {
+            var poi = pois[key];
+            if(poi && poi.georef) {
+              var coordinate = {latitude: poi.georef.coordinates[1], longitude: poi.georef.coordinates[0]};
+              if(key == 0)
+                return (<Marker id={key} coordinate={coordinate} onMarkerPress={() => this._selectPoi(key)}>
+                  {this.state.debug && <Text style={{height: 20, width: 20, textAlign: "center", textAlignVertical: "center", backgroundColor: "white", borderRadius: 30, borderWidth: 1, borderColor: "black"}}>{key}</Text>}
+                  </Marker>)
+              }
+            })
+          }
         </MapView>
+        {!this.state.debug && Object.keys(pois).length > 0 && <View style={[styles.gridView, {opacity: panning ? 0.3 : 1}]}>
+          {Object.keys(pois).map((key) => {
+            var poi = pois[key];
+            var cell = this.state.cells[key];
+            if(poi && poi.image && poi.image.length > 0) {
+              return <Image pointerEvents="none" style={{
+                position: 'absolute',
+                left: cell.rect.bl.x,
+                top: cell.rect.bl.y,
+                width: cell.rect.w,
+                height: cell.rect.h,
+                borderWidth: 0.5,
+              }}
+            source={{uri: poi.image}}
+            PlaceholderContent={<ActivityIndicator />}
+              />
+          }})}
+        </View>}
         {cells && <View style={styles.gridView}>
-          {cells.map(cell => {
-            return <Image style={{
+          {cells.map((cell, i) => {
+            return (
+              <View pointerEvents="none"
+              style={{
               position: 'absolute',
-              left: cell.rect.tl.x,
-              top: cell.rect.tl.y,
+              left: cell.rect.bl.x,
+              top: cell.rect.bl.y,
               width: cell.rect.w,
               height: cell.rect.h,
-              borderColor: "red",
-              borderWidth: 1}}/>
-          })}
+              borderColor: Colors.colorPlacesScreen,
+              borderWidth: 0.5,
+
+            }}
+              >
+                {this.state.debug && <View style={{height: "100%", width: "100%", alignItems: "center", display: "flex", flexDirection: "column", alignContent: "center"}}> 
+                  <Text style={{fontSize: 10, color: "red" }}>{i}</Text>
+                  <Text style={{fontSize: 10, color: "red" }}>{cell.centroid.norm.x.toFixed(2) + " " + cell.centroid.norm.y.toFixed(2)}</Text>
+
+                  <Text style={{fontSize: 10, color: "red" }}>{cell.centroid.pixels.x.toFixed(0) + " " + cell.centroid.pixels.y.toFixed(0)}</Text>
+                  <Text style={{fontSize: 10, color: "red" }}>BL</Text>
+                  <Text style={{fontSize: 10, color: "red" }}>{cell.rectNorm.bl.x.toFixed(2) + " " + cell.rectNorm.bl.y.toFixed(2)}</Text>
+                  <Text style={{fontSize: 10, color: "red" }}>TR</Text>
+                  <Text style={{fontSize: 10, color: "red" }}>{cell.rectNorm.tr.x.toFixed(2) + " " + cell.rectNorm.tr.y.toFixed(2)}</Text>
+                </View>}
+              </View>
+          )})}
+          
+                
         </View>}
+
+
         
       </View>
     )
@@ -313,7 +517,7 @@ class GalleryMapScreen extends PureComponent {
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} >
         <ConnectedHeader 
-          iconTintColor={Colors.colorEventsScreen}  
+          iconTintColor={Colors.colorPlacesScreen}  
           backButtonVisible={true}
         />
         {render && this._renderContent()}
@@ -325,7 +529,7 @@ class GalleryMapScreen extends PureComponent {
 
 
 GalleryMapScreen.navigationOptions = {
-  title: 'GalleryMapScreen',
+  tible: 'GalleryMapScreen',
 };
 
 
@@ -333,7 +537,7 @@ const styles = StyleSheet.create({
   fill: {
     flex: 1,
   },
-  sectionTitle: {
+  sectionTible: {
       fontSize: 16,
       color: "black",
       fontFamily: "montserrat-bold",

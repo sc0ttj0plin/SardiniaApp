@@ -16,6 +16,13 @@ export function getNearestPois(query, tid) {
     };
 }
 
+export function getNearestPoisLight(query, tid) {
+  return {
+    type: Constants.GET_NEARESTPOISLIGHT,
+    query: query,
+    tid: tid
+  };
+}
 
 export function getNearPois(query, tid) {
   return {

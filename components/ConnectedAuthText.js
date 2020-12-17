@@ -19,7 +19,7 @@ class ConnectedAuthText extends PureComponent {
     const loginLabel = this.props.locale.messages.login;
     const logoutLabel = this.props.locale.messages.logout;
 
-    return auth.user ? <Text style={[textStyle]}>{logoutLabel}</Text> : <Text style={[textStyle]}>{loginLabel}</Text>;
+    return auth.user ? <CustomText style={[textStyle]}>{logoutLabel}</CustomText> : <CustomText style={[textStyle]}>{loginLabel}</CustomText>;
   }
 }
 

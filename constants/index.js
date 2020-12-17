@@ -31,6 +31,9 @@ export const GET_NEARPOIS_FAIL = 'sardinia/nearpois/LOAD_FAIL';
 export const GET_NEARESTPOIS = 'sardinia/nearestpois/LOAD';
 export const GET_NEARESTPOIS_SUCCESS = 'sardinia/nearestpois/LOAD_SUCCESS';
 export const GET_NEARESTPOIS_FAIL = 'sardinia/nearestpois/LOAD_FAIL';
+export const GET_NEARESTPOISLIGHT = 'sardinia/nearestpoislight/LOAD';
+export const GET_NEARESTPOISLIGHT_SUCCESS = 'sardinia/nearestpoislight/LOAD_SUCCESS';
+export const GET_NEARESTPOISLIGHT_FAIL = 'sardinia/nearestpoislight/LOAD_FAIL';
 export const GET_NEARESTPOISIMAGES = 'sardinia/nearestpoisimages/LOAD';
 export const GET_NEARESTPOISIMAGES_SUCCESS = 'sardinia/nearestpoisimages/LOAD_SUCCESS';
 export const GET_NEARESTPOISIMAGES_FAIL = 'sardinia/nearestpoisimages/LOAD_FAIL';
@@ -321,6 +324,12 @@ export const MAP = {
     latitude: 40.0711,
     latitudeDelta: 3,
     longitudeDelta: 3
+  },
+  defaultRegionZoomed: {
+    longitude: 9.053451,
+    latitude: 40.0711,
+    latitudeDelta: 2,
+    longitudeDelta: 2
   },
 }
 
