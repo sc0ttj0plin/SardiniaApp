@@ -448,9 +448,9 @@ class GalleryMapScreen extends PureComponent {
             var poi = pois[key];
             if(poi && poi.georef) {
               var coordinate = {latitude: poi.georef.coordinates[1], longitude: poi.georef.coordinates[0]};
-              if(key == 0)
+              if(!this.state.debug && key == 0 || this.state.debug)
                 return (<Marker id={key} coordinate={coordinate} onMarkerPress={() => this._selectPoi(key)}>
-                  {this.state.debug && <Text style={{height: 20, width: 20, textAlign: "center", textAlignVertical: "center", backgroundColor: "white", borderRadius: 30, borderWidth: 1, borderColor: "black"}}>{key}</Text>}
+                  {this.state.debug && <Text style={{height: 20, fontWeight: "800", width: 20, textAlign: "center", textAlignVertical: "center", backgroundColor: "white"}}>{key}</Text>}
                   </Marker>)
               }
             })
