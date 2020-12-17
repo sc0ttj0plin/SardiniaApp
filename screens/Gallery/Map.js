@@ -460,7 +460,7 @@ class GalleryMapScreen extends PureComponent {
           {Object.keys(pois).map((key) => {
             var poi = pois[key];
             var cell = this.state.cells[key];
-            if(poi && poi.image && poi.image.length > 0) {
+            if(poi && poi.image200x && poi.image200x.length > 0) {
               return <Image pointerEvents="none" style={{
                 position: 'absolute',
                 left: cell.rect.bl.x,
@@ -469,7 +469,7 @@ class GalleryMapScreen extends PureComponent {
                 height: cell.rect.h,
                 borderWidth: 0.5,
               }}
-            source={{uri: poi.image}}
+            source={{uri: poi.image200x}}
             PlaceholderContent={<ActivityIndicator />}
               />
           }})}

@@ -388,7 +388,7 @@ query ($x: float8, $y: float8, $limit: Int) {
     distance
     type
     title: legacy(path: "title_field")
-    image: legacy(path: "field_immagine_top.und[0].uri")
+    image350x: legacy(path: "field_immagine_top.und[0].uri")
   }
 }
 `;

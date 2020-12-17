@@ -8,8 +8,8 @@ import sampleImages from '../constants/_sampleImages';
 const IMAGE_REPLACE_SRC = "public://";
 // const IMAGE_REPLACE_DST = "https://www.sardegnaturismo.it/sites/default/files/";
 // const IMAGE_REPLACE_DST = "http://sinnos.andreamontaldo.com:81/img/400x300/";
-const IMAGE_REPLACE_DST = "http://sinnos.andreamontaldo.com:81/img/621x/"; //width only
-
+const IMAGE_REPLACE_DST_621x = "http://sinnos.andreamontaldo.com:81/img/621x/"; //width only
+const IMAGE_REPLACE_DST_350x = "http://sinnos.andreamontaldo.com:81/img/350x/";
 
 /**
  * Process categories 
@@ -36,7 +36,7 @@ export const processCategories = function(categories, termsMap) {
       processEntity(c);
       if(c.image)
         // c.image = c.image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST);
-        c.image = c.image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST);
+        c.image = c.image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST_621x);
       else if(sampleImages[c.tid]) 
         c.image = sampleImages[c.tid].image;
       else
@@ -48,8 +48,8 @@ export const processCategories = function(categories, termsMap) {
           var terms = processCategories(c.terms, termsMap);   
           for(var j=0; j<terms.length; j++){
               c.childUuids = c.childUuids ? c.childUuids.concat(terms[j].childUuids) : terms[j].childUuids;
-              // c.image = terms[j].image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST);
-              c.image = terms[j].image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST);
+              // c.image = terms[j].image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST_621x);
+              c.image = terms[j].image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST_621x);
           };
           c.terms = terms;
       }
@@ -80,17 +80,19 @@ export const processEventTypes = function(eventTypes) {
  */
 export const processEntity = function(entity, coords=null) {
   if (entity.image)
-      // entity.image = entity.image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST);
-      entity.image = entity.image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST);
+      // entity.image = entity.image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST_621x);
+      entity.image = entity.image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST_621x);
+  if (entity.image350x)
+    entity.image350x = entity.image350x.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST_350x);
 
   if (entity.marker) 
-      // entity.marker = entity.marker.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST);
-      entity.marker = entity.marker.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST);
+      // entity.marker = entity.marker.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST_621x);
+      entity.marker = entity.marker.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST_621x);
 
   if (entity.gallery) 
       entity.gallery.forEach((item) => {
-          // item.uri = item.uri.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST);
-          item.uri = item.uri.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST);
+          // item.uri = item.uri.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST_621x);
+          item.uri = item.uri.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST_621x);
       });
 
   if (entity && entity.nodes_terms && entity.nodes_terms[0]) 
