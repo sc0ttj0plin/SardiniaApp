@@ -38,7 +38,7 @@ import {
   // MapViewItinerary,
   CustomText
  } from "../../components";
-import { TouchableOpacity } from "react-native-gesture-handler"
+import TouchableOpacity from "../../components/ScrollableContainerTouchableOpacity"
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
@@ -319,6 +319,7 @@ class FavouritesScreen extends Component {
       >
         <View style={styles.listView}>  
           <CustomText style={styles.sectionTitle}>{title}</CustomText>
+          <View style={{alignItems: "center"}}>
           <FlatList
             style={styles.list}
             horizontal={false}
@@ -333,10 +334,12 @@ class FavouritesScreen extends Component {
             maxToRenderPerBatch={2}
             updateCellsBatchingPeriod={4000} // Increase time between renders
             windowSize={5} // Reduce the window size
+            ItemSeparatorComponent={() => <View style={{height: 10}}></View>}
           />
           {list.length > 6 && 
             this._renderShowListButton(list, title, type, true)
           }
+          </View>
         </View>
       </AsyncOperationStatusIndicator>
     </View>
@@ -418,27 +421,29 @@ const styles = StyleSheet.create({
     height: 40,
     fontSize: 15,
     fontFamily: "montserrat-bold",
+    width: "100%"
   },
   listContainerHeader: {
   },
   list: {
     paddingTop: 10, 
     backgroundColor: "transparent",
-    marginHorizontal: 20,
+    marginHorizontal: 10,
     height: "100%",
+    paddingBottom: 10,
   },
   listStyle: {
     paddingTop: 10, 
     backgroundColor: "transparent",
-    marginHorizontal: 20,
+    marginHorizontal: 10,
     height: "100%",
   },
   listView: {
-    width: "100%",
+    flex: 1,
   },
   showListButton: {
     width: 200,
-    height: 60,
+    height: 50,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -452,11 +457,10 @@ const styles = StyleSheet.create({
   },
   showListButtonView: {
     marginHorizontal: 20,
-    flex: 1,
-    display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 20
+    marginBottom: 20,
+    marginTop: 10,
   },
   noFavouritesText: {
     alignSelf: 'center',

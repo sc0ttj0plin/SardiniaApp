@@ -113,6 +113,7 @@ export default class EntityRelatedList extends PureComponent {
                 loadingLayout={this._renderLoadingLayout()}>
                 <View style={{flex: 1}}>   
                     <CustomText style={[listTitleStyle, {paddingBottom: 10}]}>{listTitle}</CustomText>
+                    <View style={{alignItems: "center"}}>
                     <FlatList 
                         {...this.props} 
                         horizontal={horizontal || false}
@@ -127,7 +128,9 @@ export default class EntityRelatedList extends PureComponent {
                         initialNumToRender={2} // Reduce initial render amount
                         updateCellsBatchingPeriod={400} // Increase time between renders
                         windowSize={10} // Reduce the window size
+                        ItemSeparatorComponent={() => <View style={{height: 10}}></View>}
                     />
+                    </View>
                 </View>
             </AsyncOperationStatusIndicator>
         )
