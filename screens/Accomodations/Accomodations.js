@@ -13,7 +13,8 @@ import {
   ScrollableContainer,
   EntityItem,
   AccomodationItem,
-  CustomText
+  CustomText,
+  SectionTitle
  } from "../../components";
  import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
 import { Ionicons } from '@expo/vector-icons';
@@ -149,9 +150,9 @@ class AccomodationsScreen extends Component {
       // Are coordinates within sardinia's area? fetch the updated pois list
       if (isCordsInBound) {
         this.setState({ isCordsInBound, coords: newCoords, nearPoisRefreshing: true });
-        /*this._fetchNearestPois(newCoords).then(() => {
+        this._fetchNearestPois(newCoords).then(() => {
           this.setState({ nearPoisRefreshing: false });
-        });*/
+        });
       }
     }
     // Update list of pois if we are at the bottom of the category tree
@@ -326,13 +327,7 @@ class AccomodationsScreen extends Component {
 
       const categoryTitle = term ? `${explore} ${term.name}` : exploreAccomodation;
       return (
-        <View onStartShouldSetResponder={this._onListHeaderPressIn}>
-          <View style={[styles.sectionTitleView, {marginBottom: 15}]}>
-          <CustomText style={[styles.sectionTitle, {
-                fontSize: 20,
-              }]}>{categoryTitle}</CustomText>
-          </View>
-        </View>
+        <SectionTitle text={categoryTitle} textStyle={{ fontSize: 20 }} style={{marginBottom: 15}} />
       )
   }
 
@@ -343,6 +338,8 @@ class AccomodationsScreen extends Component {
     const { nearTo, nearToYou, chooseAccomodation } = this.props.locale.messages;
 
     let nearToText = nearToYou;
+
+    console.log(sourceEntity, nearPois.length);
     
      // If we have a source entity it becomes near to "sourceEntity" title
     if (sourceEntity)

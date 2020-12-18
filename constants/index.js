@@ -520,6 +520,6 @@ export const styles = {
     textMonthFontSize: 18,
     textDayHeaderFontSize: 16,
     // textDayStyle: {marginTop: Platform.OS === 'android' ? 2 : 4},
-  },
+  }
 }
 

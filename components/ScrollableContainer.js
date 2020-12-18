@@ -32,7 +32,7 @@ class ScrollableContainer extends PureComponent {
     // Scrollable refernce
     this.state = {
       data: props.data,
-      currentSnapIndex: 2,
+      currentSnapIndex: props.initialSnapIndex || this.props.snapPoints.length - 1,
       scrollToTop: true
     }
     this._scrollable = {}
@@ -55,6 +55,21 @@ class ScrollableContainer extends PureComponent {
     });
 
     this._snapping = false;
+  }
+
+  componentDidMount() {
+    const { initialSnapIndex } = this.props;
+
+    //set correct scrollable index when mounting view for the first 
+    if(initialSnapIndex) {
+      this._initScrollableIndexTimer = setInterval( () => {
+        if(this._scrollable) {
+          console.log("this._initScrollableIndexTimer");
+          this._scrollable.snapTo(initialSnapIndex);
+          clearInterval(this._initScrollableIndexTimer);
+        }
+      }, 300);
+    }
   }
 
   componentWillUnmount() {
@@ -93,6 +108,7 @@ class ScrollableContainer extends PureComponent {
 
     this.setState({currentSnapIndex: index}, () => {
       //Set global snap index for the current entityType
+      this.forceUpdate();
       this._updating = false;
       this.props.actions.setScrollableSnapIndex(this.props.entityType, index);
     }); 
@@ -137,6 +153,8 @@ class ScrollableContainer extends PureComponent {
     const { 
       closeSnapIndex = 2
     } = this.props;
+    this._updating = true;
+    this._onSettle(closeSnapIndex);
     this._scrollable.snapTo(closeSnapIndex);
     if(this._scrollableInner)
       this._scrollableInner.scrollToOffset({offset: 0, animated: true});
@@ -147,7 +165,7 @@ class ScrollableContainer extends PureComponent {
       HeaderTextComponent
      } = this.props;
     return (
-      <Animated.View onStartShouldSetResponder={this.props.onListHeaderPressed} style={[styles.header, { borderTopRightRadius: this._handleBorderRadius}]}>
+      <Animated.View onStartShouldSetResponder={this.props.onPressedHeader} style={[styles.header, { borderTopRightRadius: this._handleBorderRadius}]}>
         <View style={[styles.panelHandle]} />
         {this.state.currentSnapIndex == 0 && 
         <View style={[styles.xView, {marginTop: 15}]}>
@@ -283,7 +301,7 @@ class ScrollableContainer extends PureComponent {
               snapPoints={snapPoints}
               renderContent={this._renderContent}
               //scrollEnabled={this.state.currentSnapIndex === 0 ? true : false}
-              initialSnap={initialSnapIndex}
+              initialSnap={snapPoints.length-1}
               renderHeader={this._renderHandle}
               ref={(ref)=>this._scrollable = ref}
               onSettle = {(index) => this._onSettle(index) }

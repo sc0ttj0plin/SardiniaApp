@@ -12,7 +12,8 @@ import {
   ConnectedHeader, 
   ScrollableContainer,
   EntityItem,
-  CustomText
+  CustomText,
+  SectionTitle
  } from "../../components";
 import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
 // import MapView from "react-native-map-clustering";
@@ -361,11 +362,8 @@ class EventsMapScreen extends PureComponent {
   _renderHeaderText = () => {
     const { exploreEvents } = this.props.locale.messages;
       return (
-        <View onStartShouldSetResponder={this._onListHeaderPressIn}>
-          <View style={[styles.sectionTitleView, {marginBottom: 15}]}>
-            <CustomText style={[styles.sectionTitle, {fontSize: 20}]}>{exploreEvents}</CustomText>
-          </View>
-        </View>
+        //onStartShouldSetResponder={this._onListHeaderPressIn}
+        <SectionTitle text={exploreEvents} textStyle={{ fontSize: 20 }} style={{marginBottom: 15}} />
       )
   }
 
@@ -457,17 +455,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     height: 76,
-  },
-  sectionTitle: {
-      fontSize: 16,
-      color: "black",
-      fontFamily: "montserrat-bold",
-  },
-  sectionTitleView: {
-    maxHeight: 40, 
-    minHeight: 40,
-    justifyContent: "center",
-    alignItems: "center",
   },
   listContainer: {
     backgroundColor: Colors.colorPlacesScreen,

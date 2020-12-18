@@ -14,7 +14,8 @@ import {
   ScrollableContainer,
   EntityItem,
   ConnectedAuthHandler,
-  CustomText
+  CustomText,
+  SectionTitle
  } from "../../components";
 import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
 import MapView from "react-native-map-clustering";
@@ -303,11 +304,7 @@ class PlacesScreen extends PureComponent {
     const { term } = this._getCurrentTerm();
     const categoryTitle = term ? `${explore} ${term.name}` : whereToGo;
     return (
-    <View onStartShouldSetResponder={this._onListHeaderPressIn} style={[styles.sectionTitleView]}>
-      <CustomText style={[styles.sectionTitle, {
-        fontSize: 20
-      }]}>{categoryTitle}</CustomText>
-    </View>
+    <SectionTitle text={categoryTitle} textStyle={{ fontSize: 20 }} style={{ paddingBottom: 5 }}/>
     );
   }
 
@@ -358,11 +355,7 @@ class PlacesScreen extends PureComponent {
               loadingLayout={<LLHorizontalItemsFlatlist horizontal={true} contentContainerStyle={styles.listContainerHeader} title={nearToYou} titleStyle={styles.sectionTitle}/>}
             >
               <View>  
-                <View style={styles.sectionTitleView}>
-                  <CustomText style={[styles.sectionTitle, {
-                    fontSize: 16
-                  }]}>{nearToYou}</CustomText>
-                </View>
+                <SectionTitle text={nearToYou} />
                 <FlatList
                   horizontal={true}
                   renderItem={({item}) => this._renderPoiListItem(item, null, true)}
@@ -381,11 +374,7 @@ class PlacesScreen extends PureComponent {
                 />
               </View>
             </AsyncOperationStatusIndicator>
-            <View style={[styles.sectionTitleView, {paddingTop: 15}]}>
-              <CustomText style={[styles.sectionTitle, {
-                fontSize: 20
-              }]}>{whatToSee}</CustomText>
-            </View>
+            <SectionTitle text={whatToSee} style={{ marginBottom: 5 }} textStyle={{fontSize: 20, paddingTop: 15}} />
           </View>
         </View>
       )
@@ -531,12 +520,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
     flex: 1,
   },
-  sectionTitle: {
-    fontSize: 16,
-    color: "black",
-    fontFamily: "montserrat-bold",
-    textAlign: "center"
-  },
   listContainer: {
     backgroundColor: Colors.colorPlacesScreen,
     height: "100%"
@@ -587,16 +570,8 @@ const styles = StyleSheet.create({
   listHeaderView: { 
     marginTop: -5,
     marginLeft: -10, 
-    marginRight: -10, 
-    minHeight: 36 + 160 + 10 + 40, //36 (text) + 160 (entityitem) + 10 (margin entityItem) + 36 (other text)
-    maxHeight: 36 + 160 + 10 + 40 ,
+    marginRight: -10,
     backgroundColor: "white"
-  },
-  sectionTitleView: {
-    maxHeight: 40, 
-    minHeight: 40,
-    justifyContent: "center",
-    alignItems: "center",
   }
 });
 

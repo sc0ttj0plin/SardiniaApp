@@ -457,6 +457,8 @@ const styles = StyleSheet.create({
   },
   showListButtonView: {
     marginHorizontal: 20,
+    flex: 1,
+    display: "flex",
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 20,

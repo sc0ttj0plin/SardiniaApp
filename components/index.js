@@ -46,6 +46,7 @@ export ExtraItem from './ExtraItem';
 export EntityAccomodationDetail from './EntityAccomodationDetail';
 export ConnectedAuthHandler from './ConnectedAuthHandler';
 export CustomText from './CustomText';
+export SectionTitle from './SectionTitle';
 
 
 

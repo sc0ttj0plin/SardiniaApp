@@ -12,7 +12,8 @@ import {
   ConnectedHeader, 
   ScrollableContainer,
   EntityItem,
-  CustomText
+  CustomText,
+  SectionTitle
  } from "../../components";
 import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
 import MapView from "react-native-maps";
@@ -43,6 +44,7 @@ class ItinerariesScreen extends PureComponent {
     this._onFocus = null;
     this._refs = {};
     this._map = null
+    this._iconLoaded = 0;
 
     this.state = {
       render: USE_DR ? false : true,
@@ -52,7 +54,7 @@ class ItinerariesScreen extends PureComponent {
       region: Constants.MAP.defaultRegion,
       selectedItinerary: null,
       snapPoints: [],
-      tracksViewChanges: true
+      tracksViewChanges: true,
     };
 
     this._pageLayoutHeight = Layout.window.height;
@@ -74,9 +76,6 @@ class ItinerariesScreen extends PureComponent {
       if(this.state.coords) {
         this._onUpdateCoords(this.state.coords);
       }
-    });
-    this.setState({tracksViewChanges: true}, () => {
-      setTimeout(() => this.setState({tracksViewChanges: false}), 2000);
     });
   }
 
@@ -183,6 +182,13 @@ class ItinerariesScreen extends PureComponent {
   _onListHeaderPressIn = (e) => {
     this._selectMarker(null)
     return true;
+  }
+
+  _imageLoaded = () => {
+    this._iconLoaded++;
+    if(this._iconLoaded == this.state.itineraries.length) {
+      setTimeout(() => this.setState({tracksViewChanges: false}), 500);
+    }
   }
 
   /********************* Render methods go down here *********************/
@@ -300,6 +306,7 @@ class ItinerariesScreen extends PureComponent {
                 style={[styles.marker]}>
                 <Image
                   source={require("./../../assets/icons/itineraries_icon.png")}
+                  onLoad={this._imageLoaded}
                   style={{
                     paddingTop: Platform.OS === 'ios' ? 3 : 0,
                     width: 20,
@@ -319,11 +326,7 @@ class ItinerariesScreen extends PureComponent {
   _renderHeaderText = () => {
     const { exploreItineraries } = this.props.locale.messages;
       return (
-        <View onStartShouldSetResponder={this._onListHeaderPressIn}>
-          <View style={styles.sectionTitleView}>
-            <CustomText style={[styles.sectionTitle, {fontSize: 20}]}>{exploreItineraries}</CustomText>
-          </View>
-        </View>
+        <SectionTitle text={exploreItineraries} textStyle={{ fontSize: 20 }} onStartShouldSetResponder={this._onListHeaderPressIn}/>
       )
   }
 
