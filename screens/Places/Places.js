@@ -421,13 +421,8 @@ class PlacesScreen extends PureComponent {
 
   /* Renders categories list */
   _renderCategoryListItem = (item, index, length) => {
-    let marginBottom = (index + 1) == length ? 20 : 0;
-    let marginTop = index == 0 ? 0 : 10;
     return(
-      <CategoryListItem onPress={() => this._selectCategory(item)} image={item.image} title={item.name} style={{
-        marginBottom,
-        marginTop
-      }}/>
+      <CategoryListItem onPress={() => this._selectCategory(item)} image={item.image} title={item.name}/>
     )
   }
 

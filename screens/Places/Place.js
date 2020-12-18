@@ -145,8 +145,7 @@ class PlaceScreen extends Component {
   _parseEntity = (entity) => {
     const { locale } = this.props;
     const { lan } = locale;
-    const { abstract, title, description, whyVisit } = getEntityInfo(entity, ["abstract", "title", "description", "whyVisit"], [lan, 0, "value"], null, {"description": {s: /\. /g, d: ".<br/>"}});
-    console.log(this.state.uuid, entity.nid);
+    const { abstract, title, description, whyVisit } = getEntityInfo(entity, ["abstract", "title", "description", "whyVisit"], [lan, 0, "value"], null, {"description": {s: /\. /g, d: ".<br/>"}, "whyVisit": {s: /<\/?[^>]+(>|$)/g, d: ""}});
     const coordinates = getCoordinates(entity);
     const socialUrl = `${Constants.WEBSITE_URL}${greedyArrayFinder(entity.url_alias, "language", lan, "alias", "")}`;
     const sampleVideoUrl = getSampleVideoIndex(entity.nid);
@@ -179,6 +178,9 @@ class PlaceScreen extends Component {
   }
 
   _openAccomodationsMap = () => {
+    if(!this.state.entity.georef)
+      return;
+
     //Compute region of nearest pois and send to accomodations screen
     this.props.navigation.navigate(Constants.NAVIGATION.NavAccomodationsScreen, { 
       region: this.state.nearAccomodationsRegion, 
@@ -339,7 +341,7 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: "center",
     paddingTop: 10,
-    paddingBottom: 10,
+    paddingBottom: 0,
     color: "#000000E6",
     fontFamily: "montserrat-bold",
   },

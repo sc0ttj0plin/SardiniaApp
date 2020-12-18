@@ -60,14 +60,14 @@ class CategoryListItem extends PureComponent {
 
 const styles = StyleSheet.create({ 
     spinner: {
-      marginTop: 40
+      marginBottom: 30
     },
     container: {
       flex: 1,
       borderRadius: 8,
       overflow: "hidden",
       height: 160,
-      marginTop: 10,
+      marginTop: 0,
       flexDirection: "column",
       justifyContent: 'center',
       alignItems: 'center',

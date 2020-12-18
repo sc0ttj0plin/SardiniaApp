@@ -472,7 +472,7 @@ export const styles = {
   html: {
     shortText: "textAlign: center; color: #333333; font-family: montserrat-regular; font-size: 15; padding-left: 16px; padding-right: 16px;",
     shortTextSecondary: "textAlign: center; color: #333333; font-family: montserrat-regular; font-size: 15; padding-left: 16px; padding-right: 16px;",
-    longText: "textAlign: justify; opacity: 1; font-family: montserrat-regular; font-size: 15; padding-left: 16px; padding-right: 16px;",
+    longText: "textAlign: justify; opacity: 1; font-family: montserrat-regular; font-size: 15; padding-left: 5px; padding-right: 5px;",
     longTextLeft: "textAlign: left; opacity: 1; font-family: montserrat-regular; font-size: 15;",
   },
   innerText: {
@@ -517,7 +517,7 @@ export const styles = {
     textMonthFontWeight: 'bold',
     textDayHeaderFontWeight: '300',
     textDayFontSize: 16,
-    textMonthFontSize: 16,
+    textMonthFontSize: 18,
     textDayHeaderFontSize: 16,
     // textDayStyle: {marginTop: Platform.OS === 'android' ? 2 : 4},
   },

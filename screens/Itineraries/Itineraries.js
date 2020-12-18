@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { 
   View, Text, ActivityIndicator, TouchableOpacity, 
-  StyleSheet, BackHandler, Platform, ScrollView, NativeModules, Dimensions, StatusBar } from "react-native";
+  StyleSheet, Image, BackHandler, Platform, ScrollView, NativeModules, Dimensions, StatusBar } from "react-native";
 
 import { FlatList } from "react-native-gesture-handler"
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -52,7 +52,7 @@ class ItinerariesScreen extends PureComponent {
       region: Constants.MAP.defaultRegion,
       selectedItinerary: null,
       snapPoints: [],
-      tracksViewChanges: false
+      tracksViewChanges: true
     };
 
     this._pageLayoutHeight = Layout.window.height;
@@ -74,6 +74,9 @@ class ItinerariesScreen extends PureComponent {
       if(this.state.coords) {
         this._onUpdateCoords(this.state.coords);
       }
+    });
+    this.setState({tracksViewChanges: true}, () => {
+      setTimeout(() => this.setState({tracksViewChanges: false}), 2000);
     });
   }
 
@@ -295,12 +298,12 @@ class ItinerariesScreen extends PureComponent {
             }]}>
               <View
                 style={[styles.marker]}>
-                <Ionicons
-                  name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.itineraries.iconName}
-                  size={19}
-                  color={"#ffffff"}
+                <Image
+                  source={require("./../../assets/icons/itineraries_icon.png")}
                   style={{
-                    paddingTop: Platform.OS === 'ios' ? 3 : 0
+                    paddingTop: Platform.OS === 'ios' ? 3 : 0,
+                    width: 20,
+                    height: 20
                   }}
                 />
               </View>
@@ -344,7 +347,6 @@ class ItinerariesScreen extends PureComponent {
         style={styles.itinerariesListItem}
         horizontal={false}
         extraStyle={{
-          marginBottom: 10,
           width: "100%"
         }}
       />
@@ -479,7 +481,6 @@ const styles = StyleSheet.create({
     borderRadius: 21
   },
   itinerariesListItem: {
-    marginBottom: 10,
     borderWidth: 1,
     borderColor: "#0000001A",
     borderRadius: 10

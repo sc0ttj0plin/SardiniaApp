@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { View, Platform, StyleSheet, ActivityIndicator, Text, Image } from 'react-native';
-import { TouchableOpacity } from "react-native-gesture-handler"
+import ScrollableContainerTouchableOpacity from "./ScrollableContainerTouchableOpacity"
 import Colors from '../constants/Colors';
 import CustomText from "./CustomText";
 
@@ -21,7 +21,7 @@ export default class EventListItem extends PureComponent {
     const { title, term, image } = this.props
     
     return (
-      <TouchableOpacity style={styles.listItemButton} activeOpacity={0.7} onPress={this.props.onPress}>
+      <ScrollableContainerTouchableOpacity style={styles.listItemButton} activeOpacity={0.7} onPress={this.props.onPress}>
         <View style={styles.listItem}>
           <View style={styles.imageView}>
             <Image
@@ -35,7 +35,7 @@ export default class EventListItem extends PureComponent {
               {this._renderDates()}
           </View>
         </View>
-      </TouchableOpacity>
+      </ScrollableContainerTouchableOpacity>
     );
   }
 }
@@ -55,17 +55,7 @@ const styles = StyleSheet.create({
   },
   listItem: {
     minHeight: 78,
-    backgroundColor: "white",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 5,
-    elevation: 5,
-    marginBottom: 13,
-    marginTop: 3,
+    backgroundColor: "#00000010",
     // borderTopLeftRadius: 5,
     // borderBottomLeftRadius: 5,
     borderRadius: 8,
@@ -97,7 +87,7 @@ const styles = StyleSheet.create({
     fontFamily: "montserrat-bold",
   },
   listItemDate: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: "montserrat-bold",
   },
   listItemTerm: {

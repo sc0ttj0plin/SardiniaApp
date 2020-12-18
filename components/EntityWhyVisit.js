@@ -15,7 +15,6 @@ export default class EntityWhyVisit extends PureComponent {
   render() {
     const { text, title } = this.props;
     let show = text != "" && text != null ? true : false
-
     return (
       <>
         { text != "" && text &&(

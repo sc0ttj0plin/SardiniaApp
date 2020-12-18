@@ -18,7 +18,9 @@ class TopMedia extends PureComponent {
   }
 
   componentWillUnmount() {
-    
+    this.state = {
+      loadedImage: false
+    };
   }
 
   _renderVideoPlayer = () => {
@@ -47,17 +49,16 @@ class TopMedia extends PureComponent {
       <View style={{
         position: "relative"
       }}>
+        <ShimmerWrapper shimmerStyle={styles.shimmer} />
         <ImageBackground style={[styles.image, styles.imageBackground]}
           source={{uri: urlImage}}
-          onLoad={() => this.setState({loadedImage: true})}
+          onLoad={() => setTimeout(() => {this.setState({loadedImage: true})}, 5000)}
         >
           { this.props.urlVideo != "" && this.props.urlVideo&&
             this._renderVideoPlayer()
           }
-          { !this.state.loadedImage &&
-            <ShimmerWrapper shimmerStyle={styles.shimmer}/>
-          }
         </ImageBackground>
+        
       </View>
     );
   }
@@ -68,17 +69,18 @@ const styles = StyleSheet.create({
     flex: 1
   },
   shimmer: {
-    maxHeight: 200,
-    height: 200,
-    width: "100%"
+    position: "absolute",
+    maxHeight: 300,
+    height: 300,
+    width: "100%",
   },
   image: {
-    maxHeight: 200,
-    height: 200,
+    maxHeight: 300,
+    height: 300,
     resizeMode: "cover"
   },
   imageBackground: {
-    backgroundColor: "#aaaaaa",
+    backgroundColor: "transparent",
     alignItems: "flex-start"
   },
   playImage: {

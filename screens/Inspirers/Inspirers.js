@@ -230,6 +230,7 @@ class InspirersScreen extends Component {
             bodyContainerStyle={styles.listContainer}/>}>
           <View style={styles.listView}> 
             <FlatList
+              ItemSeparatorComponent={() => <View style={{width: "100%", height: 10}}></View>}
               data={flatListData}
               renderItem={renderItem}
               numColumns={numColumns}
@@ -312,7 +313,8 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   listContainerStyle: {
-    paddingBottom: 100
+    paddingBottom: 100,
+    paddingTop: 10
   },
   listStyleLL: {
     marginTop: 16,

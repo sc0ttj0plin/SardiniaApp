@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: "center",
     paddingTop: 10,
-    paddingBottom: 10,
+    paddingBottom: 5,
     color: "#000000E6",
     fontFamily: "montserrat-bold",
   },

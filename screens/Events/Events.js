@@ -253,6 +253,7 @@ class EventsScreen extends Component {
         data={this.props.events.eventsByYearMonth[currentMonth]}
         keyExtractor={(item) => item.title}
         contentContainerStyle={styles.content}
+        ItemSeparatorComponent={() => <View style={{height: 10, backgroundColor: "transparent"}}></View>}
         renderItem={({ item }) => this._renderEventsListItem(item)}
         style={styles.listContent}
       />
@@ -322,7 +323,7 @@ const styles = StyleSheet.create({
     paddingBottom:50
   },
   listContent: {
-    paddingHorizontal: 17,
+    paddingHorizontal: 5,
     flex: 1
   },
   calendarList: {
@@ -331,7 +332,7 @@ const styles = StyleSheet.create({
   },
   calendarView: {
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
   },
   toastContainer: {
     position: "absolute",

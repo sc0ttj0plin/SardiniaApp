@@ -526,7 +526,6 @@ const styles = StyleSheet.create({
     borderRadius: 21,
   },
   eventsListItem: {
-    marginBottom: 10,
     borderWidth: 1,
     borderColor: "#0000001A",
     borderRadius: 10,

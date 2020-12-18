@@ -141,6 +141,7 @@ class EventsSubsetScreen extends Component {
         contentContainerStyle={styles.content}
         renderItem={({ item }) => this._renderEventsListItem(item)}
         style={styles.listContent}
+        ItemSeparatorComponent={() => <View style={{height: 10}}></View>}
       />
     )
   }
@@ -191,7 +192,7 @@ const styles = StyleSheet.create({
     paddingBottom:20
   },
   listContent: {
-    paddingHorizontal: 17,
+    paddingHorizontal: 5,
     flex: 1
   },
   calendarList: {
@@ -205,6 +206,7 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   calendarListTitle: {
+    fontSize: 16,
     color: "#000000E6",
     fontFamily: "montserrat-bold",
     textTransform: "capitalize"

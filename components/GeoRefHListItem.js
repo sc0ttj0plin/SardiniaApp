@@ -20,7 +20,7 @@ class GeoRefHListItem extends PureComponent{
     const { distance = "", title = "", subtitle = "" } = this.props;
     return (
       <View style={[styles.container, this.props.style]} onLayout={(event) => { this.setState({ width: event.nativeEvent.layout.width, height: event.nativeEvent.layout.height }) }}>
-          <Image source={{ uri: this.props.image }} style={styles.image, {width: this.state.width, height: this.state.height}} PlaceholderContent={<ActivityIndicator />}>
+          <Image source={{ uri: this.props.image }} style={styles.image, {width: this.state.width, height: this.state.height}} PlaceholderContent={<ActivityIndicator style={styles.spinner} />}>
             <View style={styles.textContainer}>
               <CustomText
               numberOfLines={1}
@@ -41,6 +41,9 @@ class GeoRefHListItem extends PureComponent{
 }
 
 const styles = StyleSheet.create({  
+    spinner: {
+      marginBottom: 20
+    },
     container: {
       backgroundColor: "white",
       alignItems: "flex-start",

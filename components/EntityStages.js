@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 23,
     left: 10,
-    backgroundColor: "grey",
+    backgroundColor: "#ccc",
   },
   bottomView: {
     width: "100%",
