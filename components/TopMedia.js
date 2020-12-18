@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   },
   videoPlayerView: {
     width: "100%",
-    maxHeight: 200 - 20,
+    maxHeight: 300 - 20,
     backgroundColor: "transparent",
     alignItems: "center",
     justifyContent: "center"}

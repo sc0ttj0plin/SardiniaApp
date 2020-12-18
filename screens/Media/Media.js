@@ -263,6 +263,7 @@ class MediaScreen extends PureComponent {
   }
 
   _renderVideo = (url) => {
+    
     return (
       <Video
         source={{ uri: url }}
@@ -328,9 +329,9 @@ const styles = StyleSheet.create({
   },
   portraitVideo: {
     width: "100%",
-    height: 230,
+    height: "100%",
     marginBottom: 10,
-    backgroundColor: "white"
+    backgroundColor: "black"
   },
   mainView: {
     flex: 1,
