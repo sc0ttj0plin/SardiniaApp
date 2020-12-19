@@ -1,23 +1,23 @@
 import React, { PureComponent } from "react";
 import { StyleSheet, Text, View, ImageBackground, Image } from "react-native";
-import ScrollableContainerTouchableOpacity from "../ScrollableContainerTouchableOpacity";
+import ScrollableContainerTouchableOpacity from "./ScrollableContainerTouchableOpacity";
 import { ActivityIndicator } from 'react-native';
 // import { Image } from 'react-native-elements';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import {distance, distanceToString} from '../../helpers/maps';
-import actions from '../../actions';
-import { apolloQuery } from '../../apollo/queries';
-import * as Constants from "../../constants"
+import {distance, distanceToString} from '../helpers/maps';
+import actions from '../actions';
+import { apolloQuery } from '../apollo/queries';
+import * as Constants from "../constants"
 import _ from 'lodash';
-import AccomodationItem from "../AccomodationItem"
-import EntityItemInModal from "../EntityItemInModal";
-import Colors from "../../constants/Colors"
-import CustomText from "../CustomText";
+import AccomodationItem from "./AccomodationItem"
+import EntityItemInModal from "./EntityItemInModal";
+import Colors from "../constants/Colors"
+import CustomText from "./CustomText";
 
 /**
- * EntityWidgetInMapView 
+ * EntityWidgetInModal 
  */
-class EntityWidgetInMapView extends PureComponent {  
+class EntityWidgetInModal extends PureComponent {  
   constructor(props){ 
     super(props);
 
@@ -26,8 +26,6 @@ class EntityWidgetInMapView extends PureComponent {
     entity.distance = this._computeDistance(cluster, coords)
     
     this.state = {
-      width: 160,
-      height: 160,
       entity
     };
   }
@@ -136,14 +134,6 @@ class EntityWidgetInMapView extends PureComponent {
         image={`${entity.image}`}
         distance={distanceToString(entity.distance)}
         subtitle={termName}
-        // style={styles.itinerariesListItem}
-        horizontal={false}
-        topSpace={10}
-        extraStyle={{
-          marginBottom: 10,
-          width: "100%",
-          height: "100%"
-        }}
       />
     )
   }
@@ -159,7 +149,7 @@ class EntityWidgetInMapView extends PureComponent {
     const { isAccomodationItem } = this.props;
     const {entity} = this.state;
     return (
-      <View style={[styles.entityWidget]} onLayout={(event) => { this.setState({ width: event.nativeEvent.layout.width, height: event.nativeEvent.layout.height }) }}>
+      <View style={[styles.container]}>
         {this._renderEntity()}
       </View>
       );
@@ -170,61 +160,20 @@ const styles = StyleSheet.create({
   fill: {
     flex: 1
   },
-  entityButton: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 10,
-    backgroundColor: Colors.lightGray
-  },
   container: {
-    backgroundColor: "#F5FCFF",
-    alignItems: "flex-start",
-    borderRadius: 10,
+    flex: 1,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
     overflow: "hidden"
   },
-  entityWidget: {
-    width: "100%",
-    height: 180,
-    position: "absolute",
-    //bottom: Platform.OS == "ios" ? 65 : 85,
-    left: 0,
-    padding: 10,
-  },
-  title: {
-    fontSize: 12,
-    fontFamily: "montserrat-bold",
-  },
-  place: {
-    fontSize: 10
-  },
-  distance: {
-    fontSize: 10,
-    fontFamily: "montserrat-bold",
-  },
-  image: {
-    resizeMode: "cover",
-    width: "100%",
-    height: "100%",
-    borderRadius: 10
-  },
-  textContainer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    backgroundColor: "rgba(255,255,255,0.7)",
-    padding: 5,
-    width: "100%",
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10
-  }
 });
 
 
-export default function EntityWidgetInMapViewContainer(props) {
+export default function EntityWidgetInModalContainer(props) {
   const navigation = useNavigation();
   const route = useRoute();
 
-  return <EntityWidgetInMapView 
+  return <EntityWidgetInModal 
     {...props}
     navigation={navigation}
     route={route}/>;

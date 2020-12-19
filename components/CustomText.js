@@ -6,7 +6,7 @@ export default function CustomText(props) {
     <Text {...props} 
       numberOfLines={props.numberOfLines || undefined} 
       style={[styles.default, props.style]}>
-        {props.children}
+        {props.children == null || props.children == "null" ? "" : props.children}
     </Text>
   )
 }

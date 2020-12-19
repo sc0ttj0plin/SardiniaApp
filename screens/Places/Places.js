@@ -23,7 +23,7 @@ import ScrollableAnimatedHandle from '../../components/ScrollableAnimatedHandle'
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { apolloQuery } from '../../apollo/queries';
-import _ from 'lodash';
+import _, { set } from 'lodash';
 import Layout from '../../constants/Layout';
 import actions from '../../actions';
 import * as Constants from '../../constants';
@@ -32,6 +32,8 @@ import { LLHorizontalItemsFlatlist } from "../../components/loadingLayouts";
 import { Button } from "react-native-paper";
 import { Ionicons } from '@expo/vector-icons';
 const { Value, event, interpolate } = Animated;
+import {Modalize} from 'react-native-modalize';
+import EntityWidgetInModal from '../../components/EntityWidgetInModal';
 
 /**
  * Map:             Clusters + pois that update with user map's interaction
@@ -106,8 +108,10 @@ class PlacesScreen extends PureComponent {
     }
     //TODO: snap-edit
     const entityType = Constants.ENTITY_TYPES.places;
-    if (prevProps.others.currentMapEntity !== this.props.others.currentMapEntity)
+    if (prevProps.others.currentMapEntity !== this.props.others.currentMapEntity){
       this.props.actions.setScrollableSnapIndex(entityType, 2);
+    }
+      
     if (prevProps.others.mapIsDragging[entityType] !== this.props.others.mapIsDragging[entityType]) 
       this.props.actions.setScrollableSnapIndex(entityType, 2);
   }
@@ -297,7 +301,31 @@ class PlacesScreen extends PureComponent {
     })
   }
 
+  _onSelectedEntity = (entity) => {
+    this.setState({selectedCluster: entity});
+    if(entity) {
+      this._refs["nearPoisModalRef"].open();
+      this._refs["nearPoisModalRef"].open();
+    } else {
+      this._refs["nearPoisModalRef"].close();
+    }
+  }
+
   /********************* Render methods go down here *********************/
+
+    /**
+   * Render single poi on bottom of mapview on press (outside scrollableContainer)
+   */
+  _renderEntityWidget() {
+    return (
+      <EntityWidgetInModal 
+        locale={this.props.locale} 
+        isAccomodationItem={false} 
+        cluster={this.state.selectedCluster} 
+        coords={this.state.coords}
+      />
+    )
+  }
 
   _renderHeaderText = () => {
     const { whereToGo, explore } = this.props.locale.messages;
@@ -335,6 +363,7 @@ class PlacesScreen extends PureComponent {
         uuids={childUuids}
         style={{flex: 1}}
         mapRef={ref => (this._refs["ClusteredMapViewTop"] = ref)}
+        onSelectedEntity={this._onSelectedEntity}
       />
     )
 
@@ -482,6 +511,7 @@ class PlacesScreen extends PureComponent {
         keyExtractor={item => item.uuid}
         onSettleIndex={this._onSettleIndex}
         HeaderTextComponent={this._renderHeaderText}
+        ref={ref => (this._refs["ScrollableContainer"] = ref)}
       />
     )
   }
@@ -498,6 +528,15 @@ class PlacesScreen extends PureComponent {
         />
         <ConnectedAuthHandler loginOptional={true} />
         {render && this._renderContent()}
+        <Modalize 
+          ref={(ref) => this._refs["nearPoisModalRef"] = ref}
+          adjustToContentHeight={true}
+          withOverlay={false}
+          modalStyle={{borderTopRightRadius: 16, borderTopLeftRadius: 16}}
+          closeAnimationConfig={{timing: { duration: 800, easing: Easing.ease }} }
+          >
+          {this._renderEntityWidget()}
+        </Modalize>
       </View>
     )
   }

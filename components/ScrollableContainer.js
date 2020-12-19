@@ -63,7 +63,7 @@ class ScrollableContainer extends PureComponent {
     //set correct scrollable index when mounting view for the first 
     if(initialSnapIndex) {
       this._initScrollableIndexTimer = setInterval( () => {
-        if(this._scrollable) {
+        if(this._scrollable && this._scrollable.snapTo) {
           console.log("this._initScrollableIndexTimer");
           this._scrollable.snapTo(initialSnapIndex);
           clearInterval(this._initScrollableIndexTimer);
@@ -96,6 +96,10 @@ class ScrollableContainer extends PureComponent {
 
       })
     }
+  }
+
+  snapTo = (index) => {
+    this._scrollable.snapTo(index);
   }
 
   _onHandlePress = () => {

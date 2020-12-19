@@ -1,6 +1,6 @@
-import React, {Component, PureComponent} from 'react';
+import React, {Component, PureComponent, useRef} from 'react';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Dimensions, Platform} from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Dimensions, Platform, Easing} from 'react-native';
 import Layout from '../constants/Layout';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { connect, useStore } from 'react-redux';
@@ -12,7 +12,6 @@ import { boundingRect, regionToPoligon, regionDiagonalKm } from '../helpers/maps
 import Colors from '../constants/Colors';
 import EntityMarker from './map/EntityMarker'
 import ClusterMarker from './map/ClusterMarker'
-import EntityWidgetInMapView from './map/EntityWidgetInMapView'
 import * as Constants from '../constants';
 import CustomText from "./CustomText";
 
@@ -27,6 +26,7 @@ class ClusteredMapViewTop extends PureComponent {
     var { region, coords, types = [], nearPois, } = props; /* cluster type is like an array of Constants.NODE_TYPES */
 
     this._watchID = null; /* navigation watch hook */
+    this._refs = [];
 
     const typesForQuery = `{${types.join(",")}}`; /* needs a list like: {"attrattori","strutture_ricettive", ...} */
     this._mapRef = null; /* used for animation */
@@ -166,8 +166,12 @@ class ClusteredMapViewTop extends PureComponent {
   _onPoiPress(item, e) {
     e.stopPropagation();
     if(item.count == 1) {
-      let animationToPoi = Platform.OS === "android" ? true : false;
+      let animationToPoi = Platform.OS === "android" ? true : false;      
       this.setState({ selectedCluster: item, animationToPoi: animationToPoi });
+      if(this.props.onSelectedEntity)
+      {
+        this.props.onSelectedEntity(item);
+      }
       this.props.actions.setCurrentMapEntity(item);
     } else {
       let region = this._region;
@@ -209,6 +213,10 @@ class ClusteredMapViewTop extends PureComponent {
    * When user presses on map clears the selected cluster
    */
   _clearClusterSelection = () => {
+    if(this.props.onSelectedEntity)
+    {
+      this.props.onSelectedEntity(null);
+    }
     if(this.state.selectedCluster)
       this.setState({ selectedCluster: null });
   }
@@ -238,22 +246,6 @@ class ClusteredMapViewTop extends PureComponent {
   }
 
 
-  /**
-   * Render single poi on bottom of mapview on press (outside scrollableContainer)
-   */
-  _renderEntityWidget() {
-    const { isAccomodationsMap } = this.props;
-    return (
-      <EntityWidgetInMapView 
-        locale={this.props.locale} 
-        isAccomodationItem={isAccomodationsMap} 
-        cluster={this.state.selectedCluster} 
-        coords={this._coords} 
-      />
-    )
-  }
-
-  
 
 
   /**
@@ -361,7 +353,6 @@ class ClusteredMapViewTop extends PureComponent {
           {this._renderClustersOrPoi(clusters)}
           {this._renderSelectedPoi(selectedCluster)}
         </MapView>
-        {selectedCluster && this._renderEntityWidget()}
       </>
 
     );
