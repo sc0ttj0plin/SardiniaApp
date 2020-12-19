@@ -7,6 +7,8 @@ import * as Constants from '../constants';
 import Layout from "../constants/Layout";
 import CustomText from "./CustomText";
 import ShimmerWrapper from "./ShimmerWrapper";
+import LLEntityTextWidget from './loadingLayouts/LLEntityTextWidget';
+import AsyncOperationStatusIndicator from '../components/AsyncOperationStatusIndicator'
 
 export default class EntityItemInModal extends PureComponent {
   constructor(props){
@@ -25,27 +27,35 @@ export default class EntityItemInModal extends PureComponent {
             style={[styles.fill, extraStyle]}
         >
             <>
-                <View style={styles.imageContainer}>
+                <View style={[styles.imageContainer, {height: Layout.window.height / 3.5}]}>
                     <ShimmerWrapper shimmerStyle={styles.shimmer} />
                     <Image source={{ uri: image}} style={styles.image} />
                 </View>
-                <View style={styles.textContainer}>
-                    <CustomText
-                    numberOfLines={1}
-                    ellipsizeMode='tail'
-                    style={styles.title}>{title}
-                    </CustomText>
-                    <CustomText 
-                    numberOfLines={1}
-                    ellipsizeMode='tail'
-                    style={styles.place}>{subtitle}
-                    </CustomText>
-                    <CustomText 
-                    numberOfLines={1}
-                    ellipsizeMode='tail'
-                    style={styles.distance}>{distance}
-                    </CustomText>
-                </View>
+                <AsyncOperationStatusIndicator
+                    loading={true}
+                    success={title && title != "null"}
+                    loadingLayout={<LLEntityTextWidget />}
+                    >
+                    <View style={styles.textContainer}>
+                        <CustomText
+                        numberOfLines={1}
+                        ellipsizeMode='tail'
+                        style={styles.title}>{title}
+                        </CustomText>
+                        <View>
+                            <CustomText 
+                            numberOfLines={1}
+                            ellipsizeMode='tail'
+                            style={styles.place}>{subtitle}
+                            </CustomText>
+                            <CustomText 
+                            numberOfLines={1}
+                            ellipsizeMode='tail'
+                            style={styles.distance}>{distance}
+                            </CustomText>
+                        </View>
+                    </View>
+                </AsyncOperationStatusIndicator>
             </>
       </ScrollableContainerTouchableOpacity>
     );
@@ -59,7 +69,7 @@ const styles = StyleSheet.create({
   },
   imageContainer:{
     width: "100%",
-    height: 214
+    height: 220
   },
   image: {
     resizeMode: "cover",
@@ -73,8 +83,7 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   textContainer: {
-    backgroundColor: "rgba(255,255,255, 0.7)",
-    padding: 5,
+    padding: 8,
     width: "100%",
   },
   title: {
@@ -85,9 +94,6 @@ const styles = StyleSheet.create({
     fontSize: 13
   },
   distance: {
-    position: "absolute",
-    bottom: 5,
-    right: 5,
     fontSize: 13,
     fontFamily: "montserrat-bold",
   },

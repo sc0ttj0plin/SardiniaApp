@@ -155,7 +155,7 @@ class ScrollableContainer extends PureComponent {
 
   _closePressed = () => {
     const { 
-      closeSnapIndex = 2
+      closeSnapIndex = this.props.snapPoints.length - 1
     } = this.props;
     this._updating = true;
     this._onSettle(closeSnapIndex);

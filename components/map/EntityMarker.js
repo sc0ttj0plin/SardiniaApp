@@ -43,8 +43,8 @@ export default class EntityMarker extends PureComponent {
   }
 
   _onPress = (e) => {
-    this.setState({ tracksViewChanges: true }, () => this.setState({ tracksViewChanges: false }));
     this.props.onPress(e);
+    //this.setState({ tracksViewChanges: true }, () => this.setState({ tracksViewChanges: false }));
   }
 
   render() {

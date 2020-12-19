@@ -139,7 +139,7 @@ class ConnectedHeader extends PureComponent {
     return(
       <Button
         type="clear"
-        containerStyle={[styles.buttonContainer, this.props.buttonContainer, this.props.buttonContainer, this.props.buttonContainer]}
+        containerStyle={[styles.buttonContainer, this.props.buttonContainer]}
         buttonStyle={[styles.button, {
           marginLeft: 5
         }]}

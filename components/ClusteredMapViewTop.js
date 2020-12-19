@@ -3,18 +3,20 @@ import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Dimensions, Platform, Easing} from 'react-native';
 import Layout from '../constants/Layout';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { Button } from "react-native-elements";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 import actions from '../actions';
 import { apolloQuery } from '../apollo/queries';
 import { boundingRect, regionToPoligon, regionDiagonalKm } from '../helpers/maps';
-import Colors from '../constants/Colors';
 import EntityMarker from './map/EntityMarker'
 import ClusterMarker from './map/ClusterMarker'
 import * as Constants from '../constants';
+import { Ionicons } from '@expo/vector-icons';
 import CustomText from "./CustomText";
-
+import Colors from '../constants/Colors';
+import { FontAwesome5 } from '@expo/vector-icons'; 
 /**
  * Definitions:
  *  cluster = poi inside > 1 ? then is just a number of inner pois, else is a poi
@@ -35,7 +37,7 @@ class ClusteredMapViewTop extends PureComponent {
       clusters: [],
       nearPois, /* to calculate the smallest enclosing polygon and zoom to it */
       types: typesForQuery,
-      animationToPoi: false, 
+      
       selectedCluster: null, /* currently selected cluster/poi */
     };
 
@@ -101,11 +103,19 @@ class ClusteredMapViewTop extends PureComponent {
     this._coords = position.coords;
     if (nearPois)
       this._region = boundingRect(nearPois, [this._coords.longitude, this._coords.latitude], (p) => _.get(p, "georef.coordinates", []));
-    this._animateMapToRegion(this._coords);
+    this._animateMapToRegion(this._coords, 10, 1000, 500);
   }
 
-  _animateMapToRegion = (coords) => {
-    setTimeout(() => this._mapRef && this._mapRef.animateCamera({center: coords, zoom: 10}, 1000), 500); 
+  _animateMapToRegion = (coords, zoom, duration = 200, delay = 0) => {
+    var camera = {center: coords}
+    if(zoom) {
+      camera.zoom = zoom;
+    }
+    if(delay && delay > 0) {
+      setTimeout(() => this._mapRef && this._mapRef.animateCamera(camera, {duration: duration}), delay); 
+    } else {
+      this._mapRef.animateCamera(camera, {duration: duration});
+    }
   }
 
   /**
@@ -165,21 +175,24 @@ class ClusteredMapViewTop extends PureComponent {
    */
   _onPoiPress(item, e) {
     e.stopPropagation();
-    if(item.count == 1) {
-      let animationToPoi = Platform.OS === "android" ? true : false;      
-      this.setState({ selectedCluster: item, animationToPoi: animationToPoi });
+    console.log("_onPoiPress");
+    if(item.count == 1) { 
+      if(Platform.OS == "ios")
+        this._animateMapToRegion({latitude: item.centroid.coordinates[1], longitude: item.centroid.coordinates[0]});
+      this.setState({ selectedCluster: item });
       if(this.props.onSelectedEntity)
-      {
         this.props.onSelectedEntity(item);
-      }
       this.props.actions.setCurrentMapEntity(item);
     } else {
       let region = this._region;
       region.latitude = item.centroid.coordinates[1];
       region.longitude = item.centroid.coordinates[0];
-      region.longitudeDelta = region.longitudeDelta/2;
-      region.latitudeDelta = region.latitudeDelta/2;
+      region.longitudeDelta = region.longitudeDelta/2.1;
+      region.latitudeDelta = region.latitudeDelta/2.1;
       this._mapRef.animateToRegion(region);
+      this.setState({ selectedCluster: null });
+      if(this.props.onSelectedEntity)
+        this.props.onSelectedEntity(null);
     }
 
   }
@@ -191,8 +204,8 @@ class ClusteredMapViewTop extends PureComponent {
     // console.log('here')
     if (!this.props.others.mapIsDragging[this.props.entityType])
       this.props.actions.setMapIsDragging(this.props.entityType, true);
-    if(!this.state.animationToPoi)
-      this._clearClusterSelection();
+    this._clearClusterSelection();
+      
   }
 
   /**
@@ -200,7 +213,7 @@ class ClusteredMapViewTop extends PureComponent {
    * @param {*} region: region boundaries that describe current view
    */
   _onRegionChangeComplete = (region) => {
-    this.setState({ animationToPoi: false });
+    console.log("_onRegionChangeComplete", region);
     this._region = region;
     if (region)
       this._fetchClusters();
@@ -234,6 +247,13 @@ class ClusteredMapViewTop extends PureComponent {
       const { centroid: { coordinates }, count } = cluster;
       return `${coordinates[0]}-${coordinates[0]}-${count}`;
     }
+  }
+
+
+  _onGoToMyLocationPressed = () => {
+    this._animateMapToRegion(this._coords, 15, 1500);
+    if(this.props.goToMyLocationPressed)
+      this.props.goToMyLocationPressed()
   }
 
   /**
@@ -332,7 +352,6 @@ class ClusteredMapViewTop extends PureComponent {
       <>
         <MapView
           ref={ref => this._mapRef = ref}
-          //showsMyLocationButton={true}
           mapPadding={{
             top: 0,
             right: 0,
@@ -353,6 +372,15 @@ class ClusteredMapViewTop extends PureComponent {
           {this._renderClustersOrPoi(clusters)}
           {this._renderSelectedPoi(selectedCluster)}
         </MapView>
+        <Button
+        type="clear"
+        containerStyle={[styles.buttonGoToMyLocationContainer]}
+        buttonStyle={[styles.buttonGoToMyLocation]}
+        onPress={this._onGoToMyLocationPressed}
+        icon={
+          <FontAwesome5 name={"street-view"} size={25} color={"black"} />
+          }
+      />
       </>
 
     );
@@ -396,7 +424,20 @@ const styles = StyleSheet.create({
   },
   markerText: {
     fontSize: 16
-  }
+  },
+  buttonGoToMyLocationContainer:{
+    position: "absolute",
+    bottom: 85,
+    right: 20,
+    backgroundColor: "white",
+    borderRadius: 50,
+    width: 50,
+    height: 50,
+    padding: 0,
+    overflow: "hidden",
+    paddingTop: 5
+  },
+  
 });
 
 

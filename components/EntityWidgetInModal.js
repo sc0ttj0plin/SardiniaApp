@@ -23,7 +23,8 @@ class EntityWidgetInModal extends PureComponent {
 
     var {coords, cluster} = props;
     var entity = cluster.terms_objs[0];
-    entity.distance = this._computeDistance(cluster, coords)
+    if(cluster.centroid)
+      entity.distance = this._computeDistance(cluster, coords);
     
     this.state = {
       entity
@@ -54,7 +55,7 @@ class EntityWidgetInModal extends PureComponent {
       if(isAccomodationItem)
         this._fetchAccomodation(entity.uuid)
       else
-        this._fetchPoi(entity.nid);
+        setTimeout(()=>this._fetchPoi(entity.nid), 1000);
     }
   }
 

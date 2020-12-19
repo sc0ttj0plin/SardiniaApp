@@ -112,8 +112,10 @@ class PlacesScreen extends PureComponent {
       this.props.actions.setScrollableSnapIndex(entityType, 2);
     }
       
-    if (prevProps.others.mapIsDragging[entityType] !== this.props.others.mapIsDragging[entityType]) 
+    if (prevProps.others.mapIsDragging[entityType] !== this.props.others.mapIsDragging[entityType]){
+      this._setNearPoisWidgetVisible(false);
       this.props.actions.setScrollableSnapIndex(entityType, 2);
+    }
   }
 
   componentWillUnmount() {
@@ -281,7 +283,7 @@ class PlacesScreen extends PureComponent {
     const { width, height } = event.nativeEvent.layout;
     this._pageLayoutHeight = height;
     //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 24 (handle) - 36 (header text) - 160 (entityItem) - 10 (margin of entityItem) - 36 (whereToGo text)
-    this.setState({ snapPoints: [height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight, 24 + 36 + 160 + 10 + 36, 65] });
+    this.setState({ snapPoints: [height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight, 72] });
   }; 
 
   /**
@@ -304,10 +306,27 @@ class PlacesScreen extends PureComponent {
   _onSelectedEntity = (entity) => {
     this.setState({selectedCluster: entity});
     if(entity) {
-      this._refs["nearPoisModalRef"].open();
-      this._refs["nearPoisModalRef"].open();
+      this._setNearPoisWidgetVisible(false);
+      if(this._refs["selectedEntityModalRef"]) {
+        this._refs["selectedEntityModalRef"].open();
+        this._refs["selectedEntityModalRef"].open();
+      }
     } else {
-      this._refs["nearPoisModalRef"].close();
+      this._setNearPoisWidgetVisible(false);
+      if(this._refs["selectedEntityModalRef"])
+        this._refs["selectedEntityModalRef"].close();
+    }
+  }
+
+  _setNearPoisWidgetVisible = (state) => {
+    if(state) {
+      if (this._refs["nearPoisModalRef"]){
+        this._refs["nearPoisModalRef"].open();
+        this._refs["nearPoisModalRef"].open();
+      }
+    } else {
+      if(this._refs["nearPoisModalRef"])
+        this._refs["nearPoisModalRef"].close();
     }
   }
 
@@ -332,7 +351,7 @@ class PlacesScreen extends PureComponent {
     const { term } = this._getCurrentTerm();
     const categoryTitle = term ? `${explore} ${term.name}` : whereToGo;
     return (
-    <SectionTitle text={categoryTitle} textStyle={{ fontSize: 20 }} style={{ paddingBottom: 5 }}/>
+    <SectionTitle text={categoryTitle} textStyle={{ fontSize: 20 }} style={{ paddingBottom: 15 }}/>
     );
   }
 
@@ -364,19 +383,19 @@ class PlacesScreen extends PureComponent {
         style={{flex: 1}}
         mapRef={ref => (this._refs["ClusteredMapViewTop"] = ref)}
         onSelectedEntity={this._onSelectedEntity}
+        goToMyLocationPressed={() => this._setNearPoisWidgetVisible(true)}
       />
     )
 
   }
 
   /* Renders the Header of the scrollable container */
-  _renderListHeader = () => {
+  _renderNearToYou = () => {
     const { nearPois, coords } = this.state;
     const { nearToYou, whatToSee } = this.props.locale.messages;
     const { term } = this._getCurrentTerm();
       return (
-        <View onStartShouldSetResponder={this._onListHeaderPressIn}>
-          <View style={styles.listHeaderView}>
+          <View style={styles.listNearPoisView}>
             <AsyncOperationStatusIndicator
               loading={true}
               success={nearPois && nearPois.length > 0}
@@ -403,9 +422,7 @@ class PlacesScreen extends PureComponent {
                 />
               </View>
             </AsyncOperationStatusIndicator>
-            <SectionTitle text={whatToSee} style={{ marginBottom: 5 }} textStyle={{fontSize: 20, paddingTop: 15}} />
           </View>
-        </View>
       )
   }
 
@@ -504,7 +521,7 @@ class PlacesScreen extends PureComponent {
         onListHeaderPressed={this._onListHeaderPressIn}
         data={data}
         snapPoints={this.state.snapPoints}
-        initialSnapIndex={2}
+        initialSnapIndex={1}
         onEndReached={this._loadMorePois}
         numColumns={numColumns} 
         renderItem={renderItem}
@@ -529,13 +546,22 @@ class PlacesScreen extends PureComponent {
         <ConnectedAuthHandler loginOptional={true} />
         {render && this._renderContent()}
         <Modalize 
-          ref={(ref) => this._refs["nearPoisModalRef"] = ref}
+          ref={(ref) => this._refs["selectedEntityModalRef"] = ref}
           adjustToContentHeight={true}
           withOverlay={false}
           modalStyle={{borderTopRightRadius: 16, borderTopLeftRadius: 16}}
           closeAnimationConfig={{timing: { duration: 800, easing: Easing.ease }} }
           >
           {this._renderEntityWidget()}
+        </Modalize>
+        <Modalize 
+          ref={(ref) => this._refs["nearPoisModalRef"] = ref}
+          adjustToContentHeight={true}
+          withOverlay={false}
+          modalStyle={{borderTopRightRadius: 16, borderTopLeftRadius: 16}}
+          closeAnimationConfig={{timing: { duration: 800, easing: Easing.ease }} }
+          >
+          {this._renderNearToYou()}
         </Modalize>
       </View>
     )
@@ -606,11 +632,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginRight: 8
   },
-  listHeaderView: { 
-    marginTop: -5,
-    marginLeft: -10, 
-    marginRight: -10,
-    backgroundColor: "white"
+  listNearPoisView: {
+    marginBottom: 10
   }
 });
 

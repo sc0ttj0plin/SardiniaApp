@@ -43,7 +43,7 @@ export default class ClusterMarker extends PureComponent {
         onPress={this.props.onPress}
         tracksViewChanges={false}>
           <View
-            style={[styles.marker, {borderRadius: width/2, width: width, height: width, backgroundColor: clusterBackgroundColor}]}>
+            style={[styles.marker, {borderRadius: width/2 + 10, width: width, height: width, backgroundColor: clusterBackgroundColor}]}>
             <CustomText style={[styles.markerText]}>{cluster.count}</CustomText>
           </View>
       </Marker.Animated>
@@ -58,10 +58,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#3a23a2",
     borderColor: '#3a23a2',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   markerText: {
-    fontSize: 16,
+    fontSize: 15,
     color: "#ffffff"
   }
 });
