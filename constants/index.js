@@ -435,18 +435,21 @@ export const VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS = {
     backgroundTopRightCorner: Colors.colorInspirersScreen,
     iconColor: "white",
     backgroundColor: Colors.colorInspirersScreen,
+    backgroundTransparent: Colors.colorInspirersScreen,
     iconName: Platform.OS === 'ios' ? 'ios-flag' : 'md-flag'
   }, 
   [ENTITY_TYPES.itineraries]: {
     backgroundTopRightCorner: Colors.colorItinerariesScreen,
     iconColor: "white",
     backgroundColor: Colors.colorItinerariesScreen,
+    backgroundTransparent: Colors.colorItinerariesScreenTransparent,
     iconName: Platform.OS === 'ios' ? 'ios-analytics' : 'md-analytics'
   },
   [ENTITY_TYPES.events]: {
     backgroundTopRightCorner: Colors.colorEventsScreen,
     iconColor: "white",
     backgroundColor: Colors.colorEventsScreen,
+    backgroundTransparent: Colors.colorEventsScreenTransparent,
     iconName: Platform.OS === 'ios' ? 'ios-calendar' : "md-calendar"
   },
   [ENTITY_TYPES.accomodations]: {

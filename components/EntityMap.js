@@ -4,13 +4,16 @@ import * as Constants from '../constants';
 import MapView from "react-native-map-clustering";
 import { PROVIDER_GOOGLE, Marker } from "react-native-maps";
 import Colors from '../constants/Colors';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { getCenter } from 'geolib';
 import Layout from '../constants/Layout';
 import { has } from 'lodash';
 import {boundingRect} from '../helpers/maps';
 import CustomText from "./CustomText";
+import { connect, useStore } from 'react-redux';
+import actions from '../actions';
 
+import { bindActionCreators } from 'redux';
 // import { TouchableOpacity } from 'react-native-gesture-handler';
 
 class EntityMap extends PureComponent {  
@@ -80,6 +83,13 @@ class EntityMap extends PureComponent {
   }
 
   _renderMarker = (marker) => {
+    const { entityType } = this.props;
+    let bgColor = Colors.colorItinerariesScreen;
+    let bgColorTransparent = Colors.colorItinerariesScreenTransparent;
+    if(entityType){
+      bgColor = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entityType].backgroundColor || Colors.colorItinerariesScreen;
+      bgColorTransparent = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entityType].backgroundTransparent || Colors.colorItinerariesScreenTransparent;
+    }
     if(marker.coords){
       return(
         <Marker.Animated
@@ -87,9 +97,9 @@ class EntityMap extends PureComponent {
           tracksViewChanges={false}
           isPreselected={true}
           style={styles.markerView}>
-            <View style={[styles.markerContainer]}>
+            <View style={[styles.markerContainer, { backgroundColor: bgColorTransparent }]}>
               <View
-                style={[styles.marker]}>
+                style={[styles.marker, { backgroundColor: bgColor }]}>
                 <CustomText style={{color: "white"}}>{marker.index}</CustomText>
               </View>
             </View>
@@ -102,26 +112,32 @@ class EntityMap extends PureComponent {
 
   _renderOpenNavigatorButton = () => {
     const { coordinates } = this.props;
-
+    const { locale } = this.props;
+    const { openNavigator } = locale.messages;
     return(
       <TouchableOpacity
         activeOpacity={0.7}
         style={styles.button}
         onPress={() => this._openNavigator("", coordinates)}>
-        <CustomText style={styles.buttonText}>vai al navigatore</CustomText>
+        <CustomText style={styles.buttonText}>{openNavigator}</CustomText>
       </TouchableOpacity>
     )
   }
 
   _renderOpenMapButton = () => {
-    const { uuid } = this.props;
+    const { uuid, entityType } = this.props;
+    const { locale } = this.props;
+    const { openMap } = locale.messages;
+    let bgColor = Colors.colorItinerariesScreen;
+    if(entityType)
+      bgColor = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entityType].backgroundColor || Colors.colorItinerariesScreen;
 
     return (
       <TouchableOpacity
         activeOpacity={0.7}
-        style={[styles.button, { backgroundColor: Colors.colorItinerariesScreen}]}
+        style={[styles.button, { backgroundColor: bgColor}]}
         onPress={() => this._openMap(uuid)}>
-        <CustomText style={styles.buttonText}>apri la mappa</CustomText>
+        <CustomText style={styles.buttonText}>{openMap}</CustomText>
       </TouchableOpacity>
     )
   }
@@ -212,7 +228,6 @@ const styles = StyleSheet.create({
     height: 42,
     padding: 6,
     borderRadius: 50,
-    backgroundColor: "rgba(93, 127, 32, 0.5)"
   },
   markerView: {
     width: 42, 
@@ -224,10 +239,33 @@ const styles = StyleSheet.create({
 
 function EntityMapContainer(props) {
   const navigation = useNavigation();
+  const route = useRoute();
+  const store = useStore();
 
   return <EntityMap 
     {...props}
-    navigation={navigation}/>;
+    navigation={navigation}
+    route={route}
+    store={store}/>;
 }
 
-export default EntityMapContainer
+const mapStateToProps = state => {
+  return {
+    //language
+    locale: state.localeState,
+  };
+};
+
+
+const mapDispatchToProps = dispatch => {
+  return {...bindActionCreators({ ...actions }, dispatch)};
+};
+
+
+export default connect(mapStateToProps, mapDispatchToProps, (stateProps, dispatchProps, props) => {
+  return {
+    ...stateProps,
+    actions: dispatchProps,
+    ...props
+  }
+})(EntityMapContainer)
