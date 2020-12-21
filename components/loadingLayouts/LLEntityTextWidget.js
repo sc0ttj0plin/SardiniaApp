@@ -1,6 +1,6 @@
 
 import React, { PureComponent } from 'react';
-import { FlatList, StyleSheet, View, Text, PixelRatio } from 'react-native';
+import { FlatList, StyleSheet, View, Text, PixelRatio, Platform } from 'react-native';
 import ShimmerWrapper from "../ShimmerWrapper";
 
 
@@ -17,11 +17,11 @@ export default class LLEntityTextWidget extends PureComponent {
         return (
             <View style={styles.textContainer}>
                 <ShimmerWrapper
-                shimmerStyle={[styles.title, {height: this._fontScale * 15, marginBottom: this._fontScale * 8 }]}>
+                shimmerStyle={[styles.title, {height: this._fontScale * 15, marginBottom: Platform.OS == "ios" ? this._fontScale * 5 : this._fontScale * 8 }]}>
                 </ShimmerWrapper>
                 <View>
                     <ShimmerWrapper 
-                    shimmerStyle={[styles.place, {height: this._fontScale * 13, marginBottom: this._fontScale * 7}]}>
+                    shimmerStyle={[styles.place, {height: this._fontScale * 13, marginBottom: Platform.OS == "ios" ? this._fontScale * 5 : this._fontScale * 7}]}>
                     </ShimmerWrapper>
                     <ShimmerWrapper 
                     shimmerStyle={[styles.distance, {height: this._fontScale * 13}]}>

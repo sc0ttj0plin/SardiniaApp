@@ -139,9 +139,13 @@ class ClusteredMapViewTop extends PureComponent {
    *   clusters === pois when the cluster count is 1
    */
   _fetchClusters() {
+    if(this._query)
+      return;
     const { term, childUuids } = this._getTerm();
     const { types } = this.state;
     let region = this._region;
+
+    console.log("_fetchClusters ..")
     
     let km = regionDiagonalKm(region);
     let dEps = (km / 1000) / (Layout.window.diagonal / Layout.map.markerPixels);
@@ -156,13 +160,18 @@ class ClusteredMapViewTop extends PureComponent {
     }
     uuidString += "}";
 
-    apolloQuery(actions.getClusters({
+    this._query = apolloQuery(actions.getClusters({
       polygon: regionString,
       cats: uuidString,
       dbscan_eps: dEps,
       types,
     })).then((clusters) => {
-      this.setState({ clusters });
+      this._query = null;
+      if(!this._panTimeout){
+        console.log(clusters.length);
+        this.setState({ clusters });
+      }
+      
     });
   }
 
@@ -177,12 +186,14 @@ class ClusteredMapViewTop extends PureComponent {
     e.stopPropagation();
     console.log("_onPoiPress");
     if(item.count == 1) { 
+      this._disableRegionChangeCallback = true;
       if(Platform.OS == "ios")
         this._animateMapToRegion({latitude: item.centroid.coordinates[1], longitude: item.centroid.coordinates[0]});
       this.setState({ selectedCluster: item });
+      setTimeout(() => this._disableRegionChangeCallback = false, 3000);
       if(this.props.onSelectedEntity)
         this.props.onSelectedEntity(item);
-      this.props.actions.setCurrentMapEntity(item);
+      //this.props.actions.setCurrentMapEntity(item);
     } else {
       let region = this._region;
       region.latitude = item.centroid.coordinates[1];
@@ -198,28 +209,33 @@ class ClusteredMapViewTop extends PureComponent {
   }
 
   /**
-   * When user moves the map clears current cluster selection
-   */
-  _onPanDrag = () => {
-    // console.log('here')
-    if (!this.props.others.mapIsDragging[this.props.entityType])
-      this.props.actions.setMapIsDragging(this.props.entityType, true);
-    this._clearClusterSelection();
-      
-  }
-
-  /**
    * Set current region to view and re-fetch pois for that region
    * @param {*} region: region boundaries that describe current view
    */
   _onRegionChangeComplete = (region) => {
-    console.log("_onRegionChangeComplete", region);
-    this._region = region;
-    if (region)
-      this._fetchClusters();
+    if(this.props._onMapRegionChanged)
+      this.props._onMapRegionChanged();
 
-    if (this.props.others.mapIsDragging[this.props.entityType])
-      this.props.actions.setMapIsDragging(this.props.entityType, false);
+    if(this._disableRegionChangeCallback) {
+      return;
+    } else {
+      this._clearClusterSelection();
+    }
+    this._region = region;
+    if (region) {
+      if(this._panTimeout){
+        clearTimeout(this._panTimeout);
+        this._panTimeout = null;
+      }
+      this._panTimeout = setTimeout(() => {
+        this._panTimeout = null;
+        this._fetchClusters();
+      }, 800);
+    }
+      
+
+    //if (this.props.others.mapIsDragging[this.props.entityType])
+    //  this.props.actions.setMapIsDragging(this.props.entityType, false);
   }
 
   /**
@@ -366,7 +382,7 @@ class ClusteredMapViewTop extends PureComponent {
           showsIndoorLevelPicker={true}
           showsCompass={false}
           onPress={this._clearClusterSelection}
-          onPanDrag={this._onPanDrag}
+          //onPanDrag={this._onPanDrag}
           onRegionChangeComplete={this._onRegionChangeComplete}
           >
           {this._renderClustersOrPoi(clusters)}
@@ -378,7 +394,7 @@ class ClusteredMapViewTop extends PureComponent {
         buttonStyle={[styles.buttonGoToMyLocation]}
         onPress={this._onGoToMyLocationPressed}
         icon={
-          <FontAwesome5 name={"street-view"} size={25} color={"black"} />
+          <FontAwesome5 name={"street-view"} size={25} color={Colors.colorPlacesScreen} />
           }
       />
       </>
@@ -427,7 +443,7 @@ const styles = StyleSheet.create({
   },
   buttonGoToMyLocationContainer:{
     position: "absolute",
-    bottom: 85,
+    bottom: 95,
     right: 20,
     backgroundColor: "white",
     borderRadius: 50,

@@ -42,10 +42,10 @@ export default class App extends Component {
     SplashScreen.preventAutoHideAsync();
   }
   
-  _initAppAsync = () => {
-    this._loadResourcesAsync();
-    this._initLinkingAsync();
-    this._initFirebaseAppAndLogin();
+  _initAppAsync = async () => {
+    await this._loadResourcesAsync();
+    await this._initLinkingAsync();
+    await this._initFirebaseAppAndLogin();
   }
 
   _initLinkingAsync = async () => {

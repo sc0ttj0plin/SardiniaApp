@@ -51,7 +51,7 @@ import Colors from '../../constants/Colors';
 import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
 import * as ScreenOrientation from 'expo-screen-orientation'
 import { Video } from 'expo-av';
-import Gallery from 'react-native-image-gallery';
+import Gallery from 'react-native-gallery-swiper';
 import {WebView} from 'react-native-webview';
 const { OrientationLock } = ScreenOrientation;
 
@@ -235,6 +235,7 @@ class MediaScreen extends PureComponent {
             style={styles.gallery}
             images={images}
             initialPage={initialPage}
+            useNativeDriver={true}
             onPageSelected={this._onPageSelected}>
         </Gallery>
         <HeaderFullscreen
@@ -317,12 +318,7 @@ MediaScreen.navigationOptions = {
 const styles = StyleSheet.create({
   fill: {
     flex: 1,
-    backgroundColor: "black",
-    paddingTop: Layout.statusbarHeight
-  },
-  header: {
-    backgroundColor: "black",
-    height: 0
+    backgroundColor: "black"
   },
   container: {
     padding: 10,

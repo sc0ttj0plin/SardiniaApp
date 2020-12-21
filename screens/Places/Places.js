@@ -33,6 +33,7 @@ import { Button } from "react-native-paper";
 import { Ionicons } from '@expo/vector-icons';
 const { Value, event, interpolate } = Animated;
 import {Modalize} from 'react-native-modalize';
+import BottomSheet from 'reanimated-bottom-sheet';
 import EntityWidgetInModal from '../../components/EntityWidgetInModal';
 
 /**
@@ -105,16 +106,6 @@ class PlacesScreen extends PureComponent {
       /* update also the header pois based on current cat */
       // this.setState({ nearPois: [] }, () => this._fetchNearestPois(this.state.coords)); 
       this._loadMorePois();
-    }
-    //TODO: snap-edit
-    const entityType = Constants.ENTITY_TYPES.places;
-    if (prevProps.others.currentMapEntity !== this.props.others.currentMapEntity){
-      this.props.actions.setScrollableSnapIndex(entityType, 2);
-    }
-      
-    if (prevProps.others.mapIsDragging[entityType] !== this.props.others.mapIsDragging[entityType]){
-      this._setNearPoisWidgetVisible(false);
-      this.props.actions.setScrollableSnapIndex(entityType, 2);
     }
   }
 
@@ -303,6 +294,12 @@ class PlacesScreen extends PureComponent {
     })
   }
 
+  _onMapRegionChanged = () => {
+    this._setNearPoisWidgetVisible(false);
+    if(this._refs["selectedEntityModalRef"])
+      this._refs["selectedEntityModalRef"].close();
+  }
+
   _onSelectedEntity = (entity) => {
     this.setState({selectedCluster: entity});
     if(entity) {
@@ -312,10 +309,13 @@ class PlacesScreen extends PureComponent {
         this._refs["selectedEntityModalRef"].open();
       }
     } else {
-      this._setNearPoisWidgetVisible(false);
       if(this._refs["selectedEntityModalRef"])
         this._refs["selectedEntityModalRef"].close();
-    }
+      }
+  }
+
+  _showNearPoisWidget = () => {
+    this._setNearPoisWidgetVisible(true);
   }
 
   _setNearPoisWidgetVisible = (state) => {
@@ -335,7 +335,7 @@ class PlacesScreen extends PureComponent {
     /**
    * Render single poi on bottom of mapview on press (outside scrollableContainer)
    */
-  _renderEntityWidget() {
+  _renderEntityWidget = () => {
     return (
       <EntityWidgetInModal 
         locale={this.props.locale} 
@@ -383,7 +383,8 @@ class PlacesScreen extends PureComponent {
         style={{flex: 1}}
         mapRef={ref => (this._refs["ClusteredMapViewTop"] = ref)}
         onSelectedEntity={this._onSelectedEntity}
-        goToMyLocationPressed={() => this._setNearPoisWidgetVisible(true)}
+        goToMyLocationPressed={this._showNearPoisWidget}
+        onMapRegionChanged={this._onMapRegionChanged}
       />
     )
 
@@ -554,6 +555,7 @@ class PlacesScreen extends PureComponent {
           >
           {this._renderEntityWidget()}
         </Modalize>
+          
         <Modalize 
           ref={(ref) => this._refs["nearPoisModalRef"] = ref}
           adjustToContentHeight={true}
