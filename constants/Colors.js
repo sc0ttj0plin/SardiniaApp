@@ -13,6 +13,7 @@ export default {
   colorInspirersScreen: '#F6A01A',
   colorExtrasScreen: "white",
   colorItinerariesScreen: '#5D7F20',
+  colorItinerariesScreenTransparent: "rgba(93, 127, 32, 0.5)",
   colorEventsScreen: '#D9531E',
   colorAccomodationsScreen: '#1FCBD9', //rgb(31,203,217)
   entityAccomodations: "rgba(31, 203, 217, 0.3)",

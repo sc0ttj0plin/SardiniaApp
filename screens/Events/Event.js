@@ -143,11 +143,12 @@ class EventScreen extends Component {
     const steps = _.get(entity, ["steps", lan], []);
     // const stepsCoordinates =  getCoordinates(entity, 'it');
     const stepsCoordinates = this._getEventStepsMarkers(entity.steps[lan]);
+    console.log("steps", stepsCoordinates)
     // const stepsCoordinates = steps.reduce((acc, el, idx) => {
     //   acc.push([el.georef.lon, el.georef.lat]);
     //   return acc;
     // }, []);
-    const stepsCoordinatesCenter = getCenterFromPoints(stepsCoordinates, p => p.coords);
+    const stepsCoordinatesCenter = getCenterFromPoints(stepsCoordinates, p => p.arrayCoords);
     // console.log("steps", steps, entity.nid)
     this.setState({ entity, abstract,  title,  description,  socialUrl, sampleVideoUrl, steps, stepsCoordinates, stepsCoordinatesCenter }, () => {
       // After parsing the entity fetch near accomodations  and nodes, both depend on state
@@ -158,13 +159,14 @@ class EventScreen extends Component {
   _getEventStepsMarkers = (steps) => {
     let stepsMarkers = [];
     steps.map( (step, index) => {
-        const coordinates = _.get(step, ["georef", "coordinates"], null) 
+        const coordinates = _.get(step, ["georef"], null) 
         if (coordinates) {
           let marker = {
             coords: {
-              latitude: coordinates[1],
-              longitude: coordinates[0],
+              latitude: coordinates.lat,
+              longitude: coordinates.lon,
             },
+            arrayCoords: [coordinates.lon, coordinates.lat],
             index: index + 1,
             title: step.title,
           }
@@ -280,7 +282,7 @@ class EventScreen extends Component {
           <View style={[styles.container]}>
             <EntityDescription title={descriptionTitle} text={description} color={Colors.colorEventsScreen}/>
             <EntityStages stages={steps} locale={locale}/>
-            {/* <EntityMap coordinates={stepsCoordinates} hasMarkers uuid={uuid}/> */}
+            <EntityMap coordinates={stepsCoordinates} hasMarkers uuid={uuid} entityType={Constants.ENTITY_TYPES.events}/> 
             <View style={styles.separator}/>
             {this._renderRelatedList(canBeOfInterest, relatedEntities, Constants.ENTITY_TYPES.events)}
             <EntityAccomodations 
