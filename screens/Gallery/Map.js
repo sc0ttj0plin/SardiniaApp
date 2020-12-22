@@ -378,6 +378,9 @@ class GalleryMapScreen extends PureComponent {
 
   _selectPoi = (index) => {
     var selectedPoi = this.state.pois[index];
+    if(!selectedPoi) {
+      return;
+    }
     var latlng = {
       latitude: selectedPoi.georef.coordinates[1],
       longitude: selectedPoi.georef.coordinates[0]
@@ -393,7 +396,7 @@ class GalleryMapScreen extends PureComponent {
   }
   
   _onPanDrag = () => {
-    this._decreaseImagesOpacity(100);
+    this._decreaseImagesOpacity(200);
   }
 
   _onDoublePress = () => {

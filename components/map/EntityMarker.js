@@ -58,7 +58,7 @@ export default class EntityMarker extends PureComponent {
       <Marker.Animated
           coordinate={{ longitude: cluster.centroid.coordinates[0],  latitude: cluster.centroid.coordinates[1] }}
           onPress={(e) => this._onPress(e)}
-          tracksViewChanges={tracksViewChanges}
+          tracksViewChanges={false}
           style={{width: 42, height: 42, zIndex: 1}}>
             <View style={[styles.markerContainer, {
               backgroundColor: selected ? backgroundTransparent : "transparent"

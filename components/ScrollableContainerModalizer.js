@@ -12,8 +12,7 @@ import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 import actions from '../actions';
-import BottomSheet from 'reanimated-bottom-sheet';
-import {FlatList} from 'react-native-gesture-handler';
+import {Modalize} from 'react-native-modalize';
 
 
 const { Value, event, interpolate } = Animated;
@@ -32,6 +31,7 @@ class ScrollableContainer extends PureComponent {
     // Scrollable refernce
     this.state = {
       data: props.data,
+      currentSnapIndex: props.initialSnapIndex || this.props.snapPoints.length - 1,
       scrollToTop: true
     }
     this._scrollable = {}
@@ -43,7 +43,6 @@ class ScrollableContainer extends PureComponent {
     this._handleBorderRadiusMin = 0;
     //Topmost component translation animations when scrolling
     this._translateAnim = new Value(1);
-    
     this._translateAnimY = interpolate(this._translateAnim, {
       inputRange: [0, 1],
       outputRange: [-Layout.window.height/2, 0],
@@ -53,38 +52,11 @@ class ScrollableContainer extends PureComponent {
       inputRange: [0, 0.7, 1],
       outputRange: [-35, -35, 10],
     });
-
-    this._translateCloseButton = interpolate(this._translateAnim, {
-      inputRange: [0, 0.01, 1],
-      outputRange: [1, 0, 0],
-    });
-
-    this._borderRadius = interpolate(this._translateAnim, {
-      inputRange: [0, 1],
-      outputRange: [1, 32], //TODO: border radius must be greater than 1 (values below 1, eg. 0.1, break view)
-    });
-
-    this._translateHeader = interpolate(this._translateAnim, {
-      inputRange: [0, 0.8, 1],
-      outputRange: [-50, 0, 0], //TODO: border radius must be greater than 1 (values below 1, eg. 0.1, break view)
-    });
-
-    this._snapping = false;
   }
 
   componentDidMount() {
     const { initialSnapIndex } = this.props;
-
-    //set correct scrollable index when mounting view for the first 
-    if(initialSnapIndex) {
-      this._initScrollableIndexTimer = setInterval( () => {
-        if(this._scrollable && this._scrollable.snapTo) {
-          console.log("this._initScrollableIndexTimer");
-          this._scrollable.snapTo(initialSnapIndex);
-          clearInterval(this._initScrollableIndexTimer);
-        }
-      }, 300);
-    }
+    setTimeout(() => {this.setState({initialSnapPoint: this.props.snapPoints[initialSnapIndex]})}, 1000);
   }
 
   componentWillUnmount() {
@@ -92,8 +64,15 @@ class ScrollableContainer extends PureComponent {
   }
 
   componentDidUpdate(prevProps){
+    const prevSnap = prevProps.others.scrollableSnapIndex[this.props.entityType];
+    const currentSnap = this.props.others.scrollableSnapIndex[this.props.entityType];
     //console.log(prevSnap, currentSnap);
-
+    // if (prevSnap !== currentSnap && currentSnap !== this.state.currentSnapIndex && typeof(currentSnap) === 'number') {
+    //   this._snapping = true;
+    //   setTimeout( () => { 
+    //     this._scrollable.snapTo(currentSnap) 
+    //   }, 300);
+    // }
     if(prevProps.data !== this.props.data){
       this.setState({
         data: []
@@ -106,23 +85,21 @@ class ScrollableContainer extends PureComponent {
     }
   }
 
-  snapTo = (index) => {
-    this._scrollable.snapTo(index);
-  }
-
-  _onCloseStart = (v) => {
-    if(this._scrollableInner)
-      this._scrollableInner.scrollToOffset({offset: 0, animated: true});
-  }
-
   _closePressed = () => {
-    const { 
-      closeSnapIndex = this.props.snapPoints.length - 1
-    } = this.props;
-    //this._onSettle(closeSnapIndex);
-    this._scrollable.snapTo(closeSnapIndex);
-    if(this._scrollableInner)
-      this._scrollableInner.scrollToOffset({offset: 0, animated: true});
+    console.log('_closePressed');
+    setTimeout(() => this._scrollable.close('alwaysOpen'), 10);
+  }
+
+  _startHandleAnimation = (value) => {
+    Animated.timing(
+      this._handleBorderRadius,
+      {
+          toValue: value,
+          duration: 100,
+          easing: Easing.linear
+      }
+    ).start()
+    this._handleBorderRadius._value = value;
   }
 
   _renderHandle = () => {
@@ -130,17 +107,42 @@ class ScrollableContainer extends PureComponent {
       HeaderTextComponent
      } = this.props;
     return (
-      <Animated.View onStartShouldSetResponder={this.props.onPressedHeader} style={[styles.header, { borderTopRightRadius: this._borderRadius}]}>
-        <View style={[styles.panelHandle]} />
-        <Animated.View style={[styles.xView, {marginTop: 15}, 
-          { transform: [{ scale: this._translateCloseButton } ]}
-          ]}>
+      <Animated.View /*onStartShouldSetResponder={this._onPressedHeader}*/ style={[styles.header, { borderTopRightRadius: this._handleBorderRadius}]}>
+        {this.state.currentSnapIndex == 0 && 
+        <View style={[styles.xView, {marginTop: 15}]}>
             <ScrollableContainerTouchableOpacity  onPress={this._closePressed}>
               <Feather name={'x'} size={30} color={Colors.grayHandle} />
           </ScrollableContainerTouchableOpacity> 
-        </Animated.View>
+        </View>}
         <HeaderTextComponent></HeaderTextComponent>
       </Animated.View>);
+  }
+
+  _onPressIn = () => {
+    this.props.actions.setScrollablePressIn(this.props.entityType, !this.props.others.scrollablePressIn[this.props.entityType])
+  }
+
+  _onPositionChange = (v) => {
+    console.log("_onPositionChange", v);
+    var index = 0;
+    setTimeout(() => {
+      if(v == 'top') {
+        index = 0;
+        if(this._handleBorderRadius._value != this._handleBorderRadiusMin){
+          this._startHandleAnimation(0)
+        }
+      } else {
+        index = 1;
+        if(this._handleBorderRadius._value != this._handleBorderRadiusMax){
+          this._startHandleAnimation(32)
+        }
+      }
+      this.setState({currentSnapIndex: index}, () => {
+        this.props.actions.setScrollableSnapIndex(this.props.entityType, index);
+      });
+    }, 800);
+    
+    
   }
 
   _renderContent = () => {
@@ -153,19 +155,8 @@ class ScrollableContainer extends PureComponent {
 
       if(this.state.data && this.state.data.length > 0)
         return (
-            <FlatList
-            style={[styles.contentContainerStyle]}
-            data={this.state.data || []}
-            keyExtractor={keyExtractor}
-            renderItem={renderItem}
-            ListHeaderComponent={ListHeaderComponent || null}
-            onEndReached = {({distanceFromEnd})=> onEndReached()}
-            ref={(ref) => this._scrollableInner = ref}
-            onEndReachedThreshold={0.5} 
-            initialNumToRender={8}
-            maxToRenderPerBatch={2}
-            numColumns={numColumns || 1}
-            ItemSeparatorComponent={() => <View style={{height: 10}}></View>}
+        <FlatList
+            
             >
         </FlatList>
         );
@@ -200,24 +191,42 @@ class ScrollableContainer extends PureComponent {
                 {extraComponent()}
               </Animated.View>
             }
-            <BottomSheet
-              componentType="FlatList"
-              key={numColumns} /* NOTE always set a key to refresh only this component and avoid unmounting */
-              snapPoints={snapPoints}
-              renderContent={this._renderContent}
-              initialSnap={snapPoints.length-1}
-              renderHeader={this._renderHandle}
+            <Modalize 
+              withOverlay={false}
+              modalStyle={{borderTopRightRadius: 16, borderTopLeftRadius: 16}}
+              //closeAnimationConfig={{timing: { duration: 100, easing: Easing.ease }}}
+              //panGestureAnimatedValue={this._translateAnim}
+              onOpened={this._onOpenEnd}
+              onClosed={this._onCloseEnd} 
               ref={(ref)=>this._scrollable = ref}
-              onSettle = {(index) => this._onSettle(index) }
-              enabledContentGestureInteraction = {false}
-              callbackNode={this._translateAnim}
-              springConfig={{toss: 0.05}}
-              contentContainerStyle={[styles.contentContainerStyle, {
-                flex:  data && data.length == 0 ? 1 : null
-              }]}
-              onCloseStart={this._onCloseStart}
-              enabledBottomInitialAnimation={true}
-              />
+              key={numColumns}
+              alwaysOpen={this.state.initialSnapPoint}
+              modalHeight={snapPoints[0]}
+              onPositionChange={this._onPositionChange}
+              HeaderComponent={() => this._renderHandle()}
+              panGestureComponentEnabled={true}
+              useNativeDriver={true}
+              rootStyle={{borderRadius: 0}}
+              handlePosition={'inside'}
+              handleStyle={styles.panelHandle}
+              tapGestureEnabled={false}
+              modalStyle={{overflow: "hidden", backgroundColor: "transparent", borderTopLeftRadius: 0, borderTopRightRadius: 0}}
+              flatListProps={{
+                style: [styles.contentContainerStyle],
+                data: this.state.data || [],
+                keyExtractor: keyExtractor,
+                renderItem: renderItem,
+                onEndReached: ({distanceFromEnd})=> onEndReached(),
+                ref:(ref) => this._scrollableInner = ref,
+                onEndReachedThreshold:0.5,
+                initialNumToRender:8,
+                maxToRenderPerBatch:2,
+                numColumns:numColumns || 1,
+                ItemSeparatorComponent:() => (<View style={{height: 10}}></View>),
+                scrollEventThrottle: 16
+              }}
+            >
+            </Modalize>
             
         </View>
       )
@@ -260,6 +269,7 @@ const styles = StyleSheet.create({
     height: 4,
     backgroundColor: Colors.grayHandle,
     borderRadius: 2,
+    marginTop: 8
   },
   xView: {
     position: 'absolute', 

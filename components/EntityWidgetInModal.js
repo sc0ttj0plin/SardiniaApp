@@ -135,6 +135,7 @@ class EntityWidgetInModal extends PureComponent {
         image={`${entity.image}`}
         distance={distanceToString(entity.distance)}
         subtitle={termName}
+        extraStyle={this.props.extraStyle}
       />
     )
   }
