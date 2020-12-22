@@ -7,7 +7,8 @@ import {
   ExtraItem,
   AsyncOperationStatusIndicator,  
   ConnectedHeader, 
-  CustomText
+  CustomText,
+  UpdateHandler
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -122,6 +123,7 @@ class ExtrasScreen extends Component {
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
         <ConnectedHeader />
+        <UpdateHandler />
         {render && this._renderContent()}
       </View>
     )

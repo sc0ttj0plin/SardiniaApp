@@ -14,7 +14,8 @@ import {
   EntityItem,
   AccomodationItem,
   CustomText,
-  SectionTitle
+  SectionTitle,
+  UpdateHandler,
  } from "../../components";
  import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
 import { Ionicons } from '@expo/vector-icons';
@@ -494,10 +495,8 @@ class AccomodationsScreen extends Component {
     const { render } = this.state;
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onPageLayout}>
-        <ConnectedHeader 
-          onBackPress={this._backButtonPress}
-          iconTintColor={Colors.colorAccomodationsScreen}  
-        />
+        <ConnectedHeader onBackPress={this._backButtonPress} iconTintColor={Colors.colorAccomodationsScreen} />
+        <UpdateHandler />
         {render && this._renderContent()}
       </View>
     )

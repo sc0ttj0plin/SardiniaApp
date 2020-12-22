@@ -49,6 +49,6 @@ export CustomText from './CustomText';
 export SectionTitle from './SectionTitle';
 export EntityWidgetInModal from './EntityWidgetInModal';
 export EntityItemInModal from './EntityItemInModal';
-
+export UpdateHandler from './UpdateHandler';
 
 

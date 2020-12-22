@@ -5,38 +5,11 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   CategoryListItem, 
-  // GeoRefHListItem, 
-  // GridGallery, 
-  // GridGalleryImage, 
-  // MapViewTop, 
-  // ScrollableHeader,
-  // TabBarIcon, 
-  // CalendarListItem, 
-  // EntityAbstract,
-  // EntityDescription,
-  // EntityGallery,
-  // EntityHeader,
   EntityItem,
-  // EventListItem,
-  // EntityMap,
-  // EntityRelatedList,
-  // EntityVirtualTour,
-  // EntityWhyVisit,
-  // TopMedia,
-  AsyncOperationStatusIndicator, 
-  // AsyncOperationStatusIndicatorPlaceholder,
-  // Webview, 
-  // ConnectedText, 
+  AsyncOperationStatusIndicator,  
   ConnectedHeader, 
-  // ImageGridItem, 
-  // ConnectedLanguageList, 
-  // BoxWithText,
-  // ConnectedFab, 
-  // PoiItem, 
-  // PoiItemsList, 
-  // ExtrasListItem, 
-  // MapViewItinerary,
-  CustomText
+  CustomText,
+  UpdateHandler
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -260,6 +233,7 @@ class InspirersScreen extends Component {
           iconTintColor={Colors.colorInspirersScreen}  
           backButtonVisible={this.props.others.inspirersTerms.length > 0}
         />
+        <UpdateHandler />
         {render && this._renderContent()}
       </View>
     )

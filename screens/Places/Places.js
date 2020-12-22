@@ -15,7 +15,8 @@ import {
   EntityItem,
   ConnectedAuthHandler,
   CustomText,
-  SectionTitle
+  SectionTitle,
+  UpdateHandler
  } from "../../components";
 import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
 import MapView from "react-native-map-clustering";
@@ -543,6 +544,7 @@ class PlacesScreen extends PureComponent {
           iconTintColor={Colors.colorPlacesScreen}  
           backButtonVisible={this.props.others.placesTerms.length > 0}
         />
+        <UpdateHandler />
         <ConnectedAuthHandler loginOptional={true} />
         {render && this._renderContent()}
         <Modalize 

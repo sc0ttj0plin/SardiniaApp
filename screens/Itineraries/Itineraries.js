@@ -13,7 +13,8 @@ import {
   ScrollableContainer,
   EntityItem,
   CustomText,
-  SectionTitle
+  SectionTitle,
+  UpdateHandler
  } from "../../components";
 import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
 import MapView from "react-native-maps";
@@ -387,9 +388,8 @@ class ItinerariesScreen extends PureComponent {
     const { render } = this.state;
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onPageLayout}>
-        <ConnectedHeader 
-          iconTintColor={Colors.colorItinerariesScreen}
-        />
+        <ConnectedHeader iconTintColor={Colors.colorItinerariesScreen} />
+        <UpdateHandler />
         {render && this._renderContent()}
       </View>
     )
