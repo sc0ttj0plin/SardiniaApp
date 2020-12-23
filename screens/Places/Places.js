@@ -278,7 +278,7 @@ class PlacesScreen extends PureComponent {
     if(entity) {
       this._setModalState(MODAL_STATES.SELECTEDENTITY);
     } else {
-      if(this._modalState == MODAL_STATES.EXPLORE)
+      if(this._modalState == MODAL_STATES.SELECTEDENTITY)
         this._setModalState(MODAL_STATES.EXPLORE);
     }
   }
