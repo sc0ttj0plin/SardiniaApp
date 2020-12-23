@@ -10,7 +10,7 @@ import { apolloQuery } from '../../apollo/queries';
 import * as Constants from "../../constants"
 import _ from 'lodash';
 import AccomodationItem from "../AccomodationItem"
-import EntityItemInModal from "../EntityItemInModal";
+import EntityItem from "../EntityItem";
 import Colors from "../../constants/Colors"
 import CustomText from "../CustomText";
 
@@ -128,7 +128,7 @@ class EntityWidgetInMapView extends PureComponent {
     const termName = _.get(entity, "term.name", "")
 
     return(
-      <EntityItemInModal
+      <EntityItem
         keyItem={entity.nid}
         listType={Constants.ENTITY_TYPES.places}
         onPress={() => this._openEntity(entity)}

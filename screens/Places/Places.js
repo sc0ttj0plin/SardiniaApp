@@ -34,7 +34,8 @@ import { Ionicons } from '@expo/vector-icons';
 const { Value, event, interpolate } = Animated;
 import {Modalize} from 'react-native-modalize';
 import BottomSheet from 'reanimated-bottom-sheet';
-import EntityWidgetInModal from '../../components/EntityWidgetInModal';
+//import EntityWidgetInModal from '../../components/EntityWidgetInModal';
+import EntityWidgetInMapView from "../../components/map/EntityWidgetInMapView";
 
 /**
  * Map:             Clusters + pois that update with user map's interaction
@@ -47,6 +48,8 @@ import EntityWidgetInModal from '../../components/EntityWidgetInModal';
  */
 
 const USE_DR = false;
+const MODAL_STATES = {EXPLORE: 'EXPLORE', NEARPOIS: 'NEARPOIS', SELECTEDENTITY: 'SELECTEDENTITY'}
+
 class PlacesScreen extends PureComponent {
 
   constructor(props) {
@@ -55,6 +58,7 @@ class PlacesScreen extends PureComponent {
     this._watchID = null; /* navigation watch hook */
     this._onFocus = null;
     this._refs = {};
+    this._modalState;
 
     this.state = {
       render: USE_DR ? false : true,
@@ -274,7 +278,7 @@ class PlacesScreen extends PureComponent {
     const { width, height } = event.nativeEvent.layout;
     this._pageLayoutHeight = height;
     //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 24 (handle) - 36 (header text) - 160 (entityItem) - 10 (margin of entityItem) - 36 (whereToGo text)
-    this.setState({ snapPoints: [height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight, 72] });
+    this.setState({ snapPoints: [height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight, 72, 0] });
   }; 
 
   /**
@@ -295,38 +299,68 @@ class PlacesScreen extends PureComponent {
   }
 
   _onMapRegionChanged = () => {
-    this._setNearPoisWidgetVisible(false);
-    if(this._refs["selectedEntityModalRef"])
-      this._refs["selectedEntityModalRef"].close();
+
   }
 
   _onSelectedEntity = (entity) => {
     this.setState({selectedCluster: entity});
     if(entity) {
-      this._setNearPoisWidgetVisible(false);
-      if(this._refs["selectedEntityModalRef"]) {
-        this._refs["selectedEntityModalRef"].open();
-        this._refs["selectedEntityModalRef"].open();
-      }
+      this._setModalState(MODAL_STATES.SELECTEDENTITY);
     } else {
-      if(this._refs["selectedEntityModalRef"])
-        this._refs["selectedEntityModalRef"].close();
-      }
+      if(this._modalState == MODAL_STATES.EXPLORE)
+        this._setModalState(MODAL_STATES.EXPLORE);
+    }
+  }
+
+  _setModalState = (state) => {
+    this._modalState = state;
+
+    if(state == MODAL_STATES.EXPLORE) {
+      this.setState({scrollableSnap: 1});
+      this._refs["nearPoisModalRef"].close();
+      this._refs["selectedEntityModalRef"].close();
+    }
+    else if(state == MODAL_STATES.NEARPOIS) {
+      this.setState({scrollableSnap: 2}, () => {
+        this._openModal(this._refs["selectedEntityModalRef"], false);
+        this._openModal(this._refs["nearPoisModalRef"], true);
+      });
+    }
+    else if(state == MODAL_STATES.SELECTEDENTITY) {
+      this.setState({scrollableSnap: 2}, () => {
+        this._openModal(this._refs["selectedEntityModalRef"], true);
+        this._openModal(this._refs["nearPoisModalRef"], false);
+      });
+    }
   }
 
   _showNearPoisWidget = () => {
-    this._setNearPoisWidgetVisible(true);
+    this._setModalState(MODAL_STATES.NEARPOIS);
   }
 
-  _setNearPoisWidgetVisible = (state) => {
+  _openModal = (ref, state) => {
     if(state) {
-      if (this._refs["nearPoisModalRef"]){
-        this._refs["nearPoisModalRef"].open();
-        this._refs["nearPoisModalRef"].open();
+      if (ref){
+        ref.open();
+        ref.open();
       }
     } else {
-      if(this._refs["nearPoisModalRef"])
-        this._refs["nearPoisModalRef"].close();
+      if(ref)
+          ref.close();
+    }
+  }
+
+
+
+  _onNearPoisModalClosed = () => {
+    if(this._modalState == MODAL_STATES.NEARPOIS) {
+      this._setModalState(MODAL_STATES.EXPLORE);
+    }
+  }
+
+  _onSelectedEntityModalClosed = () => {
+    if(this._modalState == MODAL_STATES.SELECTEDENTITY) {
+      this._setModalState(MODAL_STATES.EXPLORE);
     }
   }
 
@@ -337,12 +371,14 @@ class PlacesScreen extends PureComponent {
    */
   _renderEntityWidget = () => {
     return (
-      <EntityWidgetInModal 
-        locale={this.props.locale} 
-        isAccomodationItem={false} 
-        cluster={this.state.selectedCluster} 
-        coords={this.state.coords}
-      />
+      <View style={{width: "100%", height: 200, backgroundColor: "transparent"}}>
+        <EntityWidgetInMapView
+          locale={this.props.locale} 
+          isAccomodationItem={false} 
+          cluster={this.state.selectedCluster} 
+          coords={this.state.coords}
+        />
+      </View>
     )
   }
 
@@ -523,13 +559,15 @@ class PlacesScreen extends PureComponent {
         data={data}
         snapPoints={this.state.snapPoints}
         initialSnapIndex={1}
+        closeSnapIndex={1}
         onEndReached={this._loadMorePois}
         numColumns={numColumns} 
         renderItem={renderItem}
         keyExtractor={item => item.uuid}
         onSettleIndex={this._onSettleIndex}
         HeaderTextComponent={this._renderHeaderText}
-        ref={ref => (this._refs["ScrollableContainer"] = ref)}
+        ref={(ref) => this._refs["ScrollableContainer"] = ref}
+        snapTo={this.state.scrollableSnap}
       />
     )
   }
@@ -550,8 +588,9 @@ class PlacesScreen extends PureComponent {
           ref={(ref) => this._refs["selectedEntityModalRef"] = ref}
           adjustToContentHeight={true}
           withOverlay={false}
-          modalStyle={{borderTopRightRadius: 16, borderTopLeftRadius: 16}}
+          modalStyle={{borderTopRightRadius: 16, borderTopLeftRadius: 16, backgroundColor: "transparent"}}
           closeAnimationConfig={{timing: { duration: 800, easing: Easing.ease }} }
+          onClosed={this._onSelectedEntityModalClosed}
           >
           {this._renderEntityWidget()}
         </Modalize>
@@ -562,6 +601,7 @@ class PlacesScreen extends PureComponent {
           withOverlay={false}
           modalStyle={{borderTopRightRadius: 16, borderTopLeftRadius: 16}}
           closeAnimationConfig={{timing: { duration: 800, easing: Easing.ease }} }
+          onClosed={this._onNearPoisModalClosed}
           >
           {this._renderNearToYou()}
         </Modalize>

@@ -45,13 +45,13 @@ class ScrollableContainer extends PureComponent {
     this._translateAnim = new Value(1);
     
     this._translateAnimY = interpolate(this._translateAnim, {
-      inputRange: [0, 1],
-      outputRange: [-Layout.window.height/2, 0],
+      inputRange: [0, 0.5, 1],
+      outputRange: [-Layout.window.height/2.5, 0, 0],
     });
 
     this._translateAnimY2 = interpolate(this._translateAnim, {
-      inputRange: [0, 0.7, 1],
-      outputRange: [-35, -35, 10],
+      inputRange: [0, 0.9, 1],
+      outputRange: [-35, 10, 10],
     });
 
     this._translateCloseButton = interpolate(this._translateAnim, {
@@ -92,6 +92,12 @@ class ScrollableContainer extends PureComponent {
   }
 
   componentDidUpdate(prevProps){
+    console.log("this.props.snapTo", "this " + this.props.snapTo, "prev " + prevProps.snapTo);
+    if(this.props.snapTo && prevProps.snapTo != this.props.snapTo){
+      this._scrollable.snapTo(this.props.snapTo);
+    }
+        
+
     //console.log(prevSnap, currentSnap);
 
     if(prevProps.data !== this.props.data){
