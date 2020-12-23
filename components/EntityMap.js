@@ -20,14 +20,14 @@ class EntityMap extends PureComponent {
   
   constructor(props) {
     super(props);
-    const { hasMarkers, coordinates } = props;
+    const { hasMarkers, coordinates, title } = props;
     this.state = {
       region: Constants.REGION_SARDINIA,
       coordinates
     };
 
     this._map = null
-    console.log("coordinates", coordinates, hasMarkers)
+    console.log("coordinates", coordinates, hasMarkers, title)
   }
 
   componentDidMount(){
@@ -53,7 +53,7 @@ class EntityMap extends PureComponent {
   _setRegion = () => {
     const { coordinates } = this.props;
     let region = boundingRect(coordinates, null, (p) => [p.coords.longitude, p.coords.latitude], 5);
-    this._onRegionChangeComplete(region)
+    this._onRegionChangeComplete(region, true)
   }
   
   _openNavigator = (title, coords) => {
@@ -68,11 +68,23 @@ class EntityMap extends PureComponent {
   }
 
   _openMap = () => {
-    const { coordinates } = this.props;
-    this.props.navigation.push(Constants.NAVIGATION.NavItineraryStagesMapScreen, { markers: coordinates });
+    const { coordinates, entityType, title } = this.props;
+    switch(entityType){
+      case Constants.ENTITY_TYPES.events: 
+        this.props.navigation.push(Constants.NAVIGATION.NavEventsMapScreen, { events: coordinates, hideScrollable: true, title: this.props.title });
+        break;
+      case Constants.ENTITY_TYPES.itineraries:
+        this.props.navigation.push(Constants.NAVIGATION.NavItineraryStagesMapScreen, { markers: coordinates });
+        break;
+      default:
+        this.props.navigation.push(Constants.NAVIGATION.NavItineraryStagesMapScreen, { markers: coordinates });
+    }
   }
 
-  _onRegionChangeComplete = (region) => this.setState({region})
+  _onRegionChangeComplete = (region, update) => {
+    if(update)
+      this.setState({region})
+  }
   
   _renderPoint = (coordinates) => <Marker coordinate={coordinates} tracksViewChanges={false} />
 

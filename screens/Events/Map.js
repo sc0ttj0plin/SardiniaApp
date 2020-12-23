@@ -30,6 +30,7 @@ import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
 import { Button } from "react-native-paper";
 import { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
+import { linkingOpenNavigator } from "../../helpers/utils"
 
 /**
  * Map:             Clusters + pois that update with user map's interaction
@@ -52,7 +53,10 @@ class EventsMapScreen extends PureComponent {
     this._refs = {};
 
     const events = _.get(props.route, "params.events", []);
+    const hideScrollable = _.get(props.route, "params.hideScrollable", false);
+    const title = _.get(props.route, "params.title", "");
 
+    console.log("title map", title)
     // console.log("events", props.route.params.events.length, events.length)
     this.state = {
       render: USE_DR ? false : true,
@@ -64,6 +68,8 @@ class EventsMapScreen extends PureComponent {
       selectedEvent: null,
       snapPoints: [],
       tracksViewChanges: false,
+      hideScrollable,
+      title
     };
       
     this._pageLayoutHeight = Layout.window.height;
@@ -274,23 +280,36 @@ class EventsMapScreen extends PureComponent {
 
   _renderMarkers = () => {
     return this.state.events.map( event => {
-      return this._renderMarker(event, false)
+      return this._renderMarker(event)
     })
   }
 
-  _renderMarker = (event, selected) => {
-    const coordinates = _.get(event, ["itinerary", 0], null)
-    if(coordinates){
-      const lat = _.get(coordinates, "lat", null)
-      const long = _.get(coordinates, "lon", null)
-      const selected = this.state.selectedEvent == event;
-      const width = 32;
+  _renderMarker = (event) => {
+    const coordinates1 = _.get(event, ["itinerary", 0], null)
+    const coordinates2 = _.get(event, "coords", null);
+    let coords = null;
+    let onClick = null;
+    let selected = false;
+    if(coordinates1){
+      const lat = _.get(coordinates1, "lat", null)
+      const long = _.get(coordinates1, "lon", null)
+      if(lat && long){
+        coords = { longitude: parseFloat(long),  latitude: parseFloat(lat) };
+        onClick = () => this._selectMarker(event);
+        selected = this.state.selectedEvent == event;
+      }
+    }
+    else if(coordinates2){
+      coords = { longitude: parseFloat(coordinates2.longitude),  latitude: parseFloat(coordinates2.latitude) };
+      onClick = () => linkingOpenNavigator("", coords);
+    }
 
+    if(coords){
+      const width = 32;
       return(
-        lat && long && (
         <Marker.Animated
-          coordinate={{ longitude: parseFloat(long),  latitude: parseFloat(lat) }}
-          onPress={() => this._selectMarker(event)}
+          coordinate={coords}
+          onPress={onClick}
           tracksViewChanges={this.state.tracksViewChanges}
           style={styles.markerAnimated}>
             <View style={[styles.markerContainer, { backgroundColor: selected ? Colors.colorEventsScreenTransparent : "transparent"}]}>
@@ -305,11 +324,10 @@ class EventsMapScreen extends PureComponent {
               </View>
             </View>
         </Marker.Animated>
-        )
       )
     }
     else
-      return null
+      return null;
   }
 
   /* Renders the Header of the scrollable container */
@@ -319,6 +337,19 @@ class EventsMapScreen extends PureComponent {
         //onStartShouldSetResponder={this._onListHeaderPressIn}
         <SectionTitle text={exploreEvents} textStyle={{ fontSize: 20 }} style={{marginBottom: 15}} />
       )
+  }
+
+  _renderMapTitle = () => {
+    const { title } = this.state;
+    console.log("aaaaaa", title)
+      if(title != ""){
+        return (
+          //onStartShouldSetResponder={this._onListHeaderPressIn}
+          <SectionTitle numberOfLines={1} text={title} textStyle={{ fontSize: 15 }} style={styles.mapTitle} />
+        )
+      }
+      else
+        return null;
   }
 
   /* Horizontal spacing for Header items */
@@ -345,6 +376,17 @@ class EventsMapScreen extends PureComponent {
       />
   )}
 
+  _renderMap = () => {
+    return(
+      <View style={styles.fill}>
+        {this._renderTopComponent()}
+        <View style={styles.topHeader}>
+          {this._renderMapTitle()}
+        </View>
+      </View>
+    )
+  }
+
   /* Render content */
   _renderContent = () => {
     const { selectedEvent, events } = this.state;
@@ -357,6 +399,7 @@ class EventsMapScreen extends PureComponent {
         topComponent={this._renderTopComponent}
         ListHeaderComponent={this._renderListHeader}
         onListHeaderPressed={this._onListHeaderPressIn}
+        extraComponent={this._renderMapTitle}
         data={data}
         initialSnapIndex={1}
         pageLayoutHeight={this._pageLayoutHeight}
@@ -373,14 +416,15 @@ class EventsMapScreen extends PureComponent {
 
 
   render() {
-    const { render } = this.state;
+    const { render, hideScrollable } = this.state;
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onPageLayout}>
         <ConnectedHeader 
           iconTintColor={Colors.colorEventsScreen}  
           backButtonVisible={true}
         />
-        {render && this._renderContent()}
+        {render && !hideScrollable && this._renderContent()}
+        {render && hideScrollable && this._renderMap()}
       </View>
     )
   }
@@ -491,6 +535,26 @@ const styles = StyleSheet.create({
   },
   clusterText: {
     color: "white"
+  },
+  mapTitle: {
+    width: "100%",
+    textAlign: "center",
+    paddingTop: 10,
+    paddingBottom: 10,
+    color: "#000000E6",
+    backgroundColor: "#F2F2F2",
+    marginBottom: 16,
+    height: 40,
+    fontSize: 15,
+    fontFamily: "montserrat-bold",
+    marginTop: -10,
+    paddingHorizontal: 5
+  },
+  topHeader: {
+    position: "absolute",
+    top: Constants.COMPONENTS.header.bottomLineHeight + 5,
+    left: 0,
+    width: "100%"
   }
 });
 

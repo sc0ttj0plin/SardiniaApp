@@ -160,7 +160,7 @@ class EventsScreen extends Component {
   _openMap = () => {
     const { currentMonth } = this.state;
     let events = this.props.events.eventsByYearMonth[currentMonth];
-    this.props.navigation.navigate(Constants.NAVIGATION.NavEventsMapScreen, {events});
+    this.props.navigation.navigate(Constants.NAVIGATION.NavEventsMapScreen, {events, title: currentMonth});
   }
   
   /**
