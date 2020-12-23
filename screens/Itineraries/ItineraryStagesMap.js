@@ -39,25 +39,6 @@ class ItineraryStagesMapScreen extends Component {
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
 
-  componentDidUpdate(prevProps) {
-    /**
-     * Is the former props different from the newly propagated prop (redux)? perform some action
-     * if(prevProps.xxx !== this.props.xxx)
-     *  doStuff();
-     */
-  }
-
-  componentWillUnmount() {
-    navigator.geolocation.clearWatch(this._watchID);
-    this._onFocus(); /* unsubscribe */
-  }
-
-  componentWillMount() {
-    this.index = 0;
-    this.animation = new Animated.Value(0);
-    
-  }
-
   componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
@@ -85,30 +66,23 @@ class ItineraryStagesMapScreen extends Component {
         }
       }, 10);
     });
+  }
 
-    this._initGeolocation();
-    this._onFocus = this.props.navigation.addListener('focus', () => {
-      if(this.state.coords) {
-        this._onUpdateCoords(this.state.coords);
-      }
-    });
+  componentWillMount() {
+    this.index = 0;
+    this.animation = new Animated.Value(0); 
+  }
+
+  componentDidUpdate(prevProps) {
+    // NEW-GEO
+    if (prevProps.others.geolocation !== this.props.others.geolocation && this.props.others.geolocation.coords) {
+      // { coords: { latitude, longitude }, altitude, accuracy, altitudeAccuracy, heading, speed, timestamp (ms since epoch) }
+      this._onUpdateCoords(this.props.others.geolocation.coords);
+    }
   }
 
   
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
-  
-  _initGeolocation = () => {
-    navigator.geolocation.getCurrentPosition(
-      position => { this._onUpdateCoords(position.coords); }, 
-      ex => { console.log(ex) },
-      Constants.NAVIGATOR.watchPositionOpts
-    );
-    this._watchID = navigator.geolocation.watchPosition(
-      position => { this._onUpdateCoords(position.coords); }, 
-      ex => { console.log(ex) },
-      Constants.NAVIGATOR.watchPositionOpts
-    );
-  }
 
   _onUpdateCoords(newCoords) {
     // const { coords, term } = this.state;

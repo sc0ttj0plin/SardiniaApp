@@ -15,7 +15,8 @@ import {
   EntityItem,
   ConnectedAuthHandler,
   CustomText,
-  SectionTitle
+  SectionTitle,
+  UpdateHandler
  } from "../../components";
 import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
 import MapView from "react-native-map-clustering";
@@ -34,8 +35,8 @@ import { Ionicons } from '@expo/vector-icons';
 const { Value, event, interpolate } = Animated;
 import {Modalize} from 'react-native-modalize';
 import BottomSheet from 'reanimated-bottom-sheet';
-//import EntityWidgetInModal from '../../components/EntityWidgetInModal';
 import EntityWidgetInMapView from "../../components/map/EntityWidgetInMapView";
+import * as Location from 'expo-location';
 
 /**
  * Map:             Clusters + pois that update with user map's interaction
@@ -70,9 +71,6 @@ class PlacesScreen extends PureComponent {
       currentTerm: null,
       //
       snapPoints: [],
-      // snapIndex: 1, //TODO: snap-edit
-      //
-      didRender: false
     };
       
     this._pageLayoutHeight = Layout.window.height;
@@ -84,20 +82,10 @@ class PlacesScreen extends PureComponent {
   /**
    * On mount load categories and start listening for user's location
    */
-  componentDidMount() {
+  async componentDidMount() {
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
     //If it's the first mount gets pois categories ("art and archeology...")
     this.props.actions.getCategories({ vid: Constants.VIDS.poisCategories });
-
-    this._initGeolocation();
-    
-    this._onFocus = this.props.navigation.addListener('focus', () => {
-      if(this.state.coords) {
-        this._onUpdateCoords(this.state.coords);
-      }
-    });
-
-    this.setState({ didRender: true });
   }
 
   /**
@@ -111,30 +99,15 @@ class PlacesScreen extends PureComponent {
       // this.setState({ nearPois: [] }, () => this._fetchNearestPois(this.state.coords)); 
       this._loadMorePois();
     }
+
+    if (prevProps.others.geolocation !== this.props.others.geolocation && this.props.others.geolocation.coords) {
+      // { coords: { latitude, longitude }, altitude, accuracy, altitudeAccuracy, heading, speed, timestamp (ms since epoch) }
+      this._onUpdateCoords(this.props.others.geolocation.coords);
+    }
   }
 
-  componentWillUnmount() {
-    navigator.geolocation.clearWatch(this._watchID);
-    this._onFocus(); /* unsubscribe */
-  }
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
-
-  /**
-   * Setup navigation: on mount get current position and watch changes using _onUpdateCoords
-   */
-  _initGeolocation = () => {
-    navigator.geolocation.getCurrentPosition(
-      position => { this._onUpdateCoords(position.coords); }, 
-      ex => { console.log(ex) },
-      Constants.NAVIGATOR.watchPositionOpts
-    );
-    this._watchID = navigator.geolocation.watchPosition(
-      position => { this._onUpdateCoords(position.coords); }, 
-      ex => { console.log(ex) },
-      Constants.NAVIGATOR.watchPositionOpts
-    );
-  }
 
   /**
    * Get current term (category) and its child uuids, 
@@ -152,9 +125,6 @@ class PlacesScreen extends PureComponent {
    * Invoked whenever the coordinates get updated (either on initial load or when the user moves)
    *  Pois: fetches new nearest pois and clusters.
    *  PoisCategories: if there are no more nested categories then, instead of loading subcategories load just pois (leaf)
-   *  TODO PERFORMANCE ISSUE: 
-   *    - if we don't set a threshold on min number of meters there's the risk that this method will be invoked many times!
-   *    - it is invoked too many times also when pushing a new screen
    * @param {*} newCoords: the new user's coordinates
    */
   _onUpdateCoords(newCoords) {
@@ -574,7 +544,9 @@ class PlacesScreen extends PureComponent {
 
 
   render() {
-    const { render, didRender } = this.state;
+    const { render } = this.state;
+    const { updateInProgressText, updateFinishedText } = this.props.locale.messages;
+    
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onPageLayout}>
         <ConnectedHeader 
@@ -582,6 +554,7 @@ class PlacesScreen extends PureComponent {
           iconTintColor={Colors.colorPlacesScreen}  
           backButtonVisible={this.props.others.placesTerms.length > 0}
         />
+        <UpdateHandler updateInProgressText={updateInProgressText} updateFinishedText={updateFinishedText} />
         <ConnectedAuthHandler loginOptional={true} />
         {render && this._renderContent()}
         <Modalize 

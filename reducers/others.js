@@ -10,6 +10,8 @@ const INITIAL_STATE = {
   mapIsDragging: {},
   scrollableSnapIndex: {},
   scrollablePressIn: {},
+  geolocation: {},
+  geolocationSource: null
 }
 
 
@@ -123,6 +125,14 @@ export default function reducer(state = INITIAL_STATE, action) {
         ...state, 
         scrollablePressIn: { ...state.scrollablePressIn, [action.payload.id]: action.payload.val }, 
       };
+    // GEOLOCATION 
+    case Constants.SET_GEOLOCATION:
+      console.log('Geolocation', action.payload.source);
+      return {
+        ...state,
+        geolocation: action.payload.geolocation,
+        geolocationSource: action.payload.source,
+      }
     default:
       return state;
   }

@@ -6,29 +6,11 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 const { StatusBarManager } = NativeModules;
 
 import { 
-  // CategoryListItem, 
-  // GeoRefHListItem, 
-  // GridGallery, 
-  // GridGalleryImage, 
-  // MapViewTop, 
-  // ScrollableHeader,
-  // TabBarIcon, 
-  // CalendarListItem, 
   AsyncOperationStatusIndicator, 
-  // AsyncOperationStatusIndicatorPlaceholder,
-  // Webview, 
-  // ConnectedText, 
   ConnectedHeader,
   EventListItem, 
-  // ImageGridItem, 
-  // ConnectedLanguageList, 
-  // BoxWithText,
-  // ConnectedFab, 
-  // PoiItem, 
-  // PoiItemsList, 
-  // ExtrasListItem, 
-  // MapViewItinerary,
-  CustomText
+  CustomText,
+  UpdateHandler
  } from "../../components";
 import moment from "moment";
 import { connect, useStore } from 'react-redux';
@@ -282,9 +264,12 @@ class EventsScreen extends Component {
 
   render() {
     const { render } = this.state;
+    const { updateInProgressText, updateFinishedText } = this.props.locale.messages;
+    
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
         <ConnectedHeader iconTintColor={Colors.colorEventsScreen} filterType={Constants.ENTITY_TYPES.events}/>
+        <UpdateHandler updateInProgressText={updateInProgressText} updateFinishedText={updateFinishedText} />
         {render && this._renderContent()}
       </View>
     )

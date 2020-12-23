@@ -25,21 +25,35 @@
     "scheme": "sinnos",
     "ios": {
       "bundleIdentifier": "crs4.sinnos.sardinia",
-      "supportsTablet": true,
+      "supportsTablet": false,
       "config": {
         "googleMapsApiKey": "AIzaSyA5YkfcNGR6dX062bFqhaZ1Asdr2uaNFJo"
-      }
+      },
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "L'applicazione necessita della geolocalizzazione per accedere alla tua posizione per suggerirti entità nelle vicinanze",
+        "NSLocationAlwaysUsageDescription": "L'applicazione necessita della geolocalizzazione per accedere alla tua posizione per suggerirti entità nelle vicinanze",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "L'applicazione necessita della geolocalizzazione per accedere alla tua posizione per suggerirti entità nelle vicinanze",
+        "UIBackgroundModes": [
+          "location",
+          "fetch"
+        ]
+      },
+      "buildNumber": "1.0.0"
     },
     "android": {
       "permissions": [
-        "INTERNET"
+        "INTERNET",
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
       ],
       "package": "crs4.sinnos.sardinia",
+      "useNextNotificationsApi": true,
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyC3hjqoVRcqCUSh66BNXgeI_LBpgJTi4j0"
         }
-      }
+      },
+      "versionCode": 1
     },
     "description": ""
   }

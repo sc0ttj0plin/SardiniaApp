@@ -119,7 +119,10 @@ const dict = {
     //Parks
     nearParks: "Parcheggi nelle vicinanze!", 
     discoverParks: "Scopri i parcheggi liberi più vicini a te attraverso uno dei servizi convenzionati.",
-    findParkBtn: "TROVA UN PARCHEGGIO"
+    findParkBtn: "TROVA UN PARCHEGGIO",
+    //Update
+    updateInProgressText: "AGGIORNAMENTO IN CORSO", 
+    updateFinishedText: "AGGIORNAMENTO TERMINATO, RIAVVIO IN CORSO..."
   },
   "en-gb": {
     //GENERIC
@@ -240,7 +243,10 @@ const dict = {
     //Parks
     nearParks: "Nearest parkings!", 
     discoverParks: "Discover the nearest free parkings provided by one of the affiliated services.",
-    findParkBtn: "FIND A PARK"
+    findParkBtn: "FIND A PARK",
+    //Update
+    updateInProgressText: "UPDATE IN PROGRESS", 
+    updateFinishedText: "UPDATE FINISHED, RESTARTING..."
   }
 }
 
