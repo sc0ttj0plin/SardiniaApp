@@ -152,7 +152,6 @@ class ClusteredMapViewTop extends PureComponent {
     })).then((clusters) => {
       this._query = null;
       if(!this._panTimeout){
-        console.log(clusters.length);
         this.setState({ clusters });
       }
       
@@ -168,7 +167,6 @@ class ClusteredMapViewTop extends PureComponent {
    */
   _onPoiPress(item, e) {
     e.stopPropagation();
-    console.log("_onPoiPress");
     if(item.count == 1) { 
       this._disableRegionChangeCallback = true;
       if(Platform.OS == "ios")

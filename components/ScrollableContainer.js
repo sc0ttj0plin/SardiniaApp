@@ -92,7 +92,6 @@ class ScrollableContainer extends PureComponent {
   }
 
   componentDidUpdate(prevProps){
-    console.log("this.props.snapTo", "this " + this.props.snapTo, "prev " + prevProps.snapTo);
     if(this.props.snapTo && prevProps.snapTo != this.props.snapTo){
       this._scrollable.snapTo(this.props.snapTo);
     }
