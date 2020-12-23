@@ -116,7 +116,14 @@ class ScrollableContainer extends PureComponent {
     this._scrollable.snapTo(index);
   }
 
-  _onCloseStart = (v) => {
+  _onCloseEnd = () => {
+    if(!this.props.isClosable) {
+      console.log("_onCloseEnd");
+      this._scrollable.snapTo(1);
+    }
+  }
+
+  _onCloseStart = () => {
     if(this._scrollableInner)
       this._scrollableInner.scrollToOffset({offset: 0, animated: true});
   }
@@ -222,6 +229,7 @@ class ScrollableContainer extends PureComponent {
                 flex:  data && data.length == 0 ? 1 : null
               }]}
               onCloseStart={this._onCloseStart}
+              onCloseEnd={this._onCloseEnd}
               enabledBottomInitialAnimation={true}
               />
             

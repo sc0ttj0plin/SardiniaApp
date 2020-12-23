@@ -69,6 +69,7 @@ class PlacesScreen extends PureComponent {
       coords: {},
       region: Constants.MAP.defaultRegion,
       currentTerm: null,
+      scrollableSnap: 1,
       //
       snapPoints: [],
     };
@@ -308,6 +309,12 @@ class PlacesScreen extends PureComponent {
     this._setModalState(MODAL_STATES.NEARPOIS);
   }
 
+  _onScrollableClosed = () => {
+    if(this._modalState == MODAL_STATES.EXPLORE) {
+      this.setState({scrollableSnap: 1});
+    }
+  }
+
   _openModal = (ref, state) => {
     if(state) {
       if (ref){
@@ -336,7 +343,7 @@ class PlacesScreen extends PureComponent {
 
   /********************* Render methods go down here *********************/
 
-    /**
+  /**
    * Render single poi on bottom of mapview on press (outside scrollableContainer)
    */
   _renderEntityWidget = () => {
@@ -531,13 +538,15 @@ class PlacesScreen extends PureComponent {
         initialSnapIndex={1}
         closeSnapIndex={1}
         onEndReached={this._loadMorePois}
-        numColumns={numColumns} 
+        numColumns={numColumns}
         renderItem={renderItem}
         keyExtractor={item => item.uuid}
         onSettleIndex={this._onSettleIndex}
         HeaderTextComponent={this._renderHeaderText}
         ref={(ref) => this._refs["ScrollableContainer"] = ref}
         snapTo={this.state.scrollableSnap}
+        onCloseEnd={this._onScrollableClosed}
+        isClosable={this.state.scrollableSnap!=1}
       />
     )
   }
