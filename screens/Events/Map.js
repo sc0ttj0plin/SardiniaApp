@@ -77,58 +77,19 @@ class EventsMapScreen extends PureComponent {
    */
   componentDidMount() {
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
-    //If it's the first mount gets pois categories ("art and archeology...")
-    if(this.state.tid < 0){
-      // this.props.actions.getCategories({ vid: Constants.VIDS.poisCategories });
-    }
-    this._initGeolocation();
-    
-    this._onFocus = this.props.navigation.addListener('focus', () => {
-      if(this.state.coords) {
-        this._onUpdateCoords(this.state.coords);
-      }
-    });
-    // console.log("events", this.props.route.params)
   }
 
   componentDidUpdate(prevProps) {
-    // if(prevProps.others.placesTerms !== this.props.others.placesTerms) {
-    //   this._loadMorePois();
-    // }
+    if (prevProps.others.geolocation !== this.props.others.geolocation && this.props.others.geolocation.coords) {
+      // { coords: { latitude, longitude }, altitude, accuracy, altitudeAccuracy, heading, speed, timestamp (ms since epoch) }
+      this._onUpdateCoords(this.props.others.geolocation.coords);
+    }
   }
 
-  componentWillUnmount() {
-    navigator.geolocation.clearWatch(this._watchID);
-    this._onFocus(); /* unsubscribe */
-  }
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
 
-  /**
-   * Setup navigation: on mount get current position and watch changes using _onUpdateCoords
-   */
-  _initGeolocation = () => {
-    navigator.geolocation.getCurrentPosition(
-      position => { this._onUpdateCoords(position.coords); }, 
-      ex => { console.log(ex) },
-      Constants.NAVIGATOR.watchPositionOpts
-    );
-    this._watchID = navigator.geolocation.watchPosition(
-      position => { this._onUpdateCoords(position.coords); }, 
-      ex => { console.log(ex) },
-      Constants.NAVIGATOR.watchPositionOpts
-    );
-  }
 
-  /**
-   * Invoked whenever the coordinates get updated (either on initial load or when the user moves)
-   *  Pois: fetches new nearest pois and clusters.
-   *  PoisCategories: if there are no more nested categories then, instead of loading subcategories load just pois (leaf)
-   *  TODO PERFORMANCE ISSUE: 
-   *    - if we don't set a threshold on min number of meters there's the risk that this method will be invoked many times!
-   *    - it is invoked too many times also when pushing a new screen
-   * @param {*} newCoords: the new user's coordinates
-   */
   _onUpdateCoords(newCoords) {
     // const { coords, term } = this.state;
     const { coords } = this.state;
@@ -137,15 +98,8 @@ class EventsMapScreen extends PureComponent {
       // Are coordinates within sardinia's area? fetch the updated pois list
       if (isCordsInBound) {
         this.setState({ isCordsInBound, coords: newCoords, nearPoisRefreshing: true });
-        // this._fetchNearestPois(newCoords).then(() => {
-        //   this.setState({ nearPoisRefreshing: false });
-        // });
       }
     }
-    // Update list of pois if we are at the bottom of the category tree
-    // if(this._isPoiList()){
-    //   this._loadMorePois();
-    // } 
   }
 
   /**

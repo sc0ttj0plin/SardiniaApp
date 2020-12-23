@@ -72,42 +72,20 @@ class ItinerariesScreen extends PureComponent {
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
 
     this.props.actions.getItineraries();
-    this._initGeolocation();
-    this._onFocus = this.props.navigation.addListener('focus', () => {
-      if(this.state.coords) {
-        this._onUpdateCoords(this.state.coords);
-      }
-    });
   }
 
   componentDidUpdate(prevProps) {
     if(prevProps.itineraries !== this.props.itineraries) {
       this.setState({ itineraries: this.props.itineraries.data });
     }
-  }
 
-  componentWillUnmount() {
-    navigator.geolocation.clearWatch(this._watchID);
-    this._onFocus(); /* unsubscribe */
+    if (prevProps.others.geolocation !== this.props.others.geolocation && this.props.others.geolocation.coords) {
+      // { coords: { latitude, longitude }, altitude, accuracy, altitudeAccuracy, heading, speed, timestamp (ms since epoch) }
+      this._onUpdateCoords(this.props.others.geolocation.coords);
+    }
   }
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
-
-  /**
-   * Setup navigation: on mount get current position and watch changes using _onUpdateCoords
-   */
-  _initGeolocation = () => {
-    navigator.geolocation.getCurrentPosition(
-      position => { this._onUpdateCoords(position.coords); }, 
-      ex => { console.log(ex) },
-      Constants.NAVIGATOR.watchPositionOpts
-    );
-    this._watchID = navigator.geolocation.watchPosition(
-      position => { this._onUpdateCoords(position.coords); }, 
-      ex => { console.log(ex) },
-      Constants.NAVIGATOR.watchPositionOpts
-    );
-  }
 
   _onUpdateCoords(newCoords) {
     // const { coords, term } = this.state;
@@ -386,10 +364,12 @@ class ItinerariesScreen extends PureComponent {
 
   render() {
     const { render } = this.state;
+    const { updateInProgressText, updateFinishedText } = this.props.locale.messages;
+    
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onPageLayout}>
         <ConnectedHeader iconTintColor={Colors.colorItinerariesScreen} />
-        <UpdateHandler />
+        <UpdateHandler updateInProgressText={updateInProgressText} updateFinishedText={updateFinishedText} />
         {render && this._renderContent()}
       </View>
     )

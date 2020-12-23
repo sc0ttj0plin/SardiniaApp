@@ -226,6 +226,8 @@ class InspirersScreen extends Component {
 
   render() {
     const { render } = this.state;
+    const { updateInProgressText, updateFinishedText } = this.props.locale.messages;
+    
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
         <ConnectedHeader 
@@ -233,7 +235,7 @@ class InspirersScreen extends Component {
           iconTintColor={Colors.colorInspirersScreen}  
           backButtonVisible={this.props.others.inspirersTerms.length > 0}
         />
-        <UpdateHandler />
+        <UpdateHandler updateInProgressText={updateInProgressText} updateFinishedText={updateFinishedText} />
         {render && this._renderContent()}
       </View>
     )

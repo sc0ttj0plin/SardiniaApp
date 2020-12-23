@@ -43,11 +43,10 @@ class ClusteredMapViewTop extends PureComponent {
 
     this._region = region;
     this._coords = coords;
-    this._geoLocationInitialized = false;
   }
 
   componentDidMount() {
-    this._initGeolocation();
+
   }
   
   componentWillUnmount() {
@@ -55,10 +54,9 @@ class ClusteredMapViewTop extends PureComponent {
 
   componentDidUpdate(prevProps) {
 
-    if (prevProps.nearPois !== this.props.nearPois && this.props.nearPois.length > 0 && !this._geoLocationInitialized) {
-      // console.log("this.props.nearPois.length", this.props.nearPois)
-      this._initGeolocation();
-      this._geoLocationInitialized = true;
+    if ( prevProps.others.geolocation !== this.props.others.geolocation && 
+        this.props.others.geolocation.coords) {
+      this._onUpdateCoords(this.props.others.geolocation, this.props.others.geolocationSource);
     }
 
     // On scrollable container press hide selected element
@@ -66,7 +64,6 @@ class ClusteredMapViewTop extends PureComponent {
     const currScrollablePressIn = this.props.others.scrollablePressIn[this.props.entityType];
     if (prevScrollablePressIn !== currScrollablePressIn && typeof(currScrollablePressIn) === 'boolean')
       this._clearClusterSelection();
-
 
 
     // If the term changes reload pois
@@ -77,26 +74,15 @@ class ClusteredMapViewTop extends PureComponent {
     }
   }
 
-  /**
-   * Setup navigation: on mount get current position and watch changes
-   */
-  _initGeolocation = () => {
-    navigator.geolocation.getCurrentPosition(
-      position => this._computeNearestPoisEnclosingPolygon(position), 
-      ex => { console.log(ex) },
-      Constants.NAVIGATOR.getCurrentPositionOpts
-    );
-    //Whenever the user changes position re-fetch clusters and pois
-    this._watchID = navigator.geolocation.watchPosition(
-      position => { 
-        if(this._region)
-          this._fetchClusters(position.coords); 
-        //this._animateMapToRegion(position);
-      }, 
-      ex => { console.log(ex) },
-      Constants.NAVIGATOR.watchPositionOpts
-    );
+  _onUpdateCoords = (position, source) => {
+    //check geolocation source
+    // if (source === Constants.GEOLOCATION.sources.foregroundGetOnce)
+      this._computeNearestPoisEnclosingPolygon(position);
+    // else 
+      if (this._region)
+        this._fetchClusters(position.coords); 
   }
+
 
   _computeNearestPoisEnclosingPolygon = (position) => {
     const { nearPois } = this.props;
@@ -144,8 +130,6 @@ class ClusteredMapViewTop extends PureComponent {
     const { term, childUuids } = this._getTerm();
     const { types } = this.state;
     let region = this._region;
-
-    console.log("_fetchClusters ..")
     
     let km = regionDiagonalKm(region);
     let dEps = (km / 1000) / (Layout.window.diagonal / Layout.map.markerPixels);

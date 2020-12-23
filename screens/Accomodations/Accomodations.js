@@ -70,14 +70,6 @@ class AccomodationsScreen extends Component {
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
     //If it's the first mount gets pois categories ("art and archeology...")
     this.props.actions.getCategories({ vid: Constants.VIDS.accomodations });
-
-    this._initGeolocation();
-    
-    this._onFocus = this.props.navigation.addListener('focus', () => {
-      if(this.state.coords) {
-        this._onUpdateCoords(this.state.coords);
-      }
-    });
   }
 
   /**
@@ -97,30 +89,16 @@ class AccomodationsScreen extends Component {
       this.props.actions.setScrollableSnapIndex(entityType, this.state.snapPoints.length-1);
     if (prevProps.others.mapIsDragging[entityType] !== this.props.others.mapIsDragging[entityType]) 
       this.props.actions.setScrollableSnapIndex(entityType, this.state.snapPoints.length-1);
+
+    // NEW-GEO
+    if (prevProps.others.geolocation !== this.props.others.geolocation && this.props.others.geolocation.coords) {
+      // { coords: { latitude, longitude }, altitude, accuracy, altitudeAccuracy, heading, speed, timestamp (ms since epoch) }
+      this._onUpdateCoords(this.props.others.geolocation.coords);
+    }
   }
 
-  componentWillUnmount() {
-    navigator.geolocation.clearWatch(this._watchID);
-    this._onFocus(); /* unsubscribe */
-  }
-
+  
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
-
-  /**
-   * Setup navigation: on mount get current position and watch changes using _onUpdateCoords
-   */
-  _initGeolocation = () => {
-    navigator.geolocation.getCurrentPosition(
-      position => { this._onUpdateCoords(position.coords); }, 
-      ex => { console.log(ex) },
-      Constants.NAVIGATOR.watchPositionOpts
-    );
-    this._watchID = navigator.geolocation.watchPosition(
-      position => { this._onUpdateCoords(position.coords); }, 
-      ex => { console.log(ex) },
-      Constants.NAVIGATOR.watchPositionOpts
-    );
-  }
 
   /**
    * Get current term (category) and its child uuids, 
@@ -493,10 +471,12 @@ class AccomodationsScreen extends Component {
 
   render() {
     const { render } = this.state;
+    const { updateInProgressText, updateFinishedText } = this.props.locale.messages;
+
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onPageLayout}>
         <ConnectedHeader onBackPress={this._backButtonPress} iconTintColor={Colors.colorAccomodationsScreen} />
-        <UpdateHandler />
+        <UpdateHandler updateInProgressText={updateInProgressText} updateFinishedText={updateFinishedText} />
         {render && this._renderContent()}
       </View>
     )

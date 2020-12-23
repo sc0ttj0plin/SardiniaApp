@@ -108,3 +108,5 @@ export const setMapIsDragging = (id, val) =>
     dispatch({ type: Constants.MAP_SET_DRAGGING, payload: { id, val } });
   }
  
+export const setGeolocation = (geolocation, source) => 
+  ({ type: Constants.SET_GEOLOCATION , payload: { geolocation, source } });

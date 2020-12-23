@@ -32,7 +32,11 @@
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "L'applicazione necessita della geolocalizzazione per accedere alla tua posizione per suggerirti entità nelle vicinanze",
         "NSLocationAlwaysUsageDescription": "L'applicazione necessita della geolocalizzazione per accedere alla tua posizione per suggerirti entità nelle vicinanze",
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "L'applicazione necessita della geolocalizzazione per accedere alla tua posizione per suggerirti entità nelle vicinanze"
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "L'applicazione necessita della geolocalizzazione per accedere alla tua posizione per suggerirti entità nelle vicinanze",
+        "UIBackgroundModes": [
+          "location",
+          "fetch"
+        ]
       },
       "buildNumber": "1.0.0"
     },

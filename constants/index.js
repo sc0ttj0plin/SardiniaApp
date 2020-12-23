@@ -1,5 +1,7 @@
 import Colors from './Colors';
 import { Platform } from "react-native"
+import * as Location from 'expo-location';
+
 // Actions
 export const SET_URL = 'sardinia/others/SET_URL';
 export const AUTH = 'sardinia/auth/AUTH';
@@ -124,6 +126,7 @@ export const USER_EDIT_FAIL = 'sardinia/user/LOAD_FAIL';
 export const MAP_SET_DRAGGING = 'sardinia/others/MAP_SET_DRAGGING';
 export const SCROLLABLE_SET_PRESSIN = 'sardinia/others/SCROLLABLE_SET_PRESSIN';
 export const SCROLLABLE_SET_SCROLLINDEX = 'sardinia/others/SCROLLABLE_SET_SCROLLINDEX';
+export const SET_GEOLOCATION = 'sardinia/others/SET_GEOLOCATION';
 
 
 // API
@@ -345,6 +348,37 @@ export const EMOTICONS = {
   },
   "grin-hearts": {
     color: Colors.colorItinerariesScreen  
+  }
+}
+
+export const GEOLOCATION = {
+  //background geolocation
+  geolocationBackgroundTaskName: 'background-geolocation',
+  startLocationUpdatesAsyncOpts: {
+    accuracy: Location.Accuracy.Balanced,
+    timeInterval: 20000,
+    distanceInterval: 50,
+    // showsBackgroundLocationIndicator: true,
+    foregroundService: {
+      notificationTitle: "Sardinia App Location",
+      notificationBody: "Sardinia App is tracking your location",
+      notificationColor: "#ffffff"
+    }
+  },
+  //foreground geolocation
+  watchPositionAsyncOpts: {
+    accuracy: Location.Accuracy.Highest,
+    timeInterval: 20000,
+    distanceInterval: 50,
+  },
+  //one shot geolocation
+  getCurrentPositionAsyncOpts: {
+    accuracy: Location.Accuracy.Highest,
+  },
+  sources: {
+    background: "startLocationUpdatesAsync",
+    foregroundWatch: "watchPositionAsyncOpts",
+    foregroundGetOnce: "getCurrentPositionAsyncOpts"
   }
 }
 

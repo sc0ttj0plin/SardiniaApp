@@ -22,7 +22,11 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import config from './config/config';
 import * as firebase from 'firebase';
 import * as Constants from './constants';
+import * as Location from 'expo-location';
+import backgroundTasks from './helpers/backgroundTasks'; /* Loads background tasks even if not invoked */
+
 enableScreens();
+
 
 export default class App extends Component {
 
@@ -34,12 +38,16 @@ export default class App extends Component {
       isLoadingComplete: false,
       isVideoEnded: false,
       isVideoLoaded: false,
-      isVideoPlaying: false
+      isVideoPlaying: false,
     };
     this._skipVideo = true;
     //Ignores warning boxes
     LogBox.ignoreLogs(['Warning:']); //or: LogBox.ignoreAllLogs();
     SplashScreen.preventAutoHideAsync();
+  }
+
+  async componentDidMount() {
+    await this._initGeolocation();
   }
   
   _initAppAsync = async () => {
@@ -67,15 +75,8 @@ export default class App extends Component {
     //Login url type
     if (url.indexOf("apiKey") >=0) {
       store.dispatch(actions.passwordLessLinkHandler(url));
-      // this._navigator && this._navigator.dispatch(
-      //   CommonActions.navigate({
-      //     name: Constants.NAVIGATION.NavLoginScreen,
-      //     params: {},
-      //   })        
-      // );
     }
   }
-
 
   _initFirebaseAppAndLogin = () => {
     //Initialize app is synchronous
@@ -89,6 +90,22 @@ export default class App extends Component {
     const email = await AsyncStorage.getItem('email');
     if (email)
       store.dispatch(actions.passwordLessLogin());
+  }
+
+  _initGeolocation = async () => {
+    const { status } = await Location.requestPermissionsAsync();
+    if (status === 'granted') {
+      //Background location
+      await Location.startLocationUpdatesAsync(Constants.GEOLOCATION.geolocationBackgroundTaskName, Constants.GEOLOCATION.startLocationUpdatesAsyncOpts);
+      //Foreground location
+      //  Initial position
+      let location = await Location.getCurrentPositionAsync(Constants.GEOLOCATION.getCurrentPositionAsyncOpts);
+      store.dispatch(actions.setGeolocation(location, Constants.GEOLOCATION.sources.foregroundGetOnce));
+      //  Watch
+      Location.watchPositionAsync(Constants.GEOLOCATION.watchPositionAsyncOpts, location => {
+       store.dispatch(actions.setGeolocation(location, Constants.GEOLOCATION.sources.foregroundWatch));
+      });
+    }
   }
 
   _loadResourcesAsync = async () => {
