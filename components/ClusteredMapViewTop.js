@@ -171,8 +171,8 @@ class ClusteredMapViewTop extends PureComponent {
       this._disableRegionChangeCallback = true;
       if(Platform.OS == "ios")
         this._animateMapToRegion({latitude: item.centroid.coordinates[1], longitude: item.centroid.coordinates[0]});
-      this.setState({ selectedCluster: item });
       setTimeout(() => this._disableRegionChangeCallback = false, 3000);
+      this.setState({ selectedCluster: item });
       if(this.props.onSelectedEntity)
         this.props.onSelectedEntity(item);
       //this.props.actions.setCurrentMapEntity(item);
@@ -262,9 +262,6 @@ class ClusteredMapViewTop extends PureComponent {
       <View style={{width: 5, flex: 1}}></View>
     )
   }
-
-
-
 
   /**
    * Renders single poi marker

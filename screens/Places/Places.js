@@ -35,7 +35,7 @@ import { Ionicons } from '@expo/vector-icons';
 const { Value, event, interpolate } = Animated;
 import {Modalize} from 'react-native-modalize';
 import BottomSheet from 'reanimated-bottom-sheet';
-import EntityWidgetInMapView from "../../components/map/EntityWidgetInMapView";
+import EntityWidgetInModal from "../../components/EntityWidgetInModal";
 import * as Location from 'expo-location';
 
 /**
@@ -348,14 +348,12 @@ class PlacesScreen extends PureComponent {
    */
   _renderEntityWidget = () => {
     return (
-      <View style={{width: "100%", height: 200, backgroundColor: "transparent"}}>
-        <EntityWidgetInMapView
+      <EntityWidgetInModal
           locale={this.props.locale} 
           isAccomodationItem={false} 
           cluster={this.state.selectedCluster} 
           coords={this.state.coords}
         />
-      </View>
     )
   }
 
@@ -570,7 +568,7 @@ class PlacesScreen extends PureComponent {
           ref={(ref) => this._refs["selectedEntityModalRef"] = ref}
           adjustToContentHeight={true}
           withOverlay={false}
-          modalStyle={{borderTopRightRadius: 16, borderTopLeftRadius: 16, backgroundColor: "transparent"}}
+          modalStyle={styles.modal}
           closeAnimationConfig={{timing: { duration: 800, easing: Easing.ease }} }
           onClosed={this._onSelectedEntityModalClosed}
           >
@@ -581,7 +579,7 @@ class PlacesScreen extends PureComponent {
           ref={(ref) => this._refs["nearPoisModalRef"] = ref}
           adjustToContentHeight={true}
           withOverlay={false}
-          modalStyle={{borderTopRightRadius: 16, borderTopLeftRadius: 16}}
+          modalStyle={styles.modal}
           closeAnimationConfig={{timing: { duration: 800, easing: Easing.ease }} }
           onClosed={this._onNearPoisModalClosed}
           >
@@ -658,7 +656,10 @@ const styles = StyleSheet.create({
   },
   listNearPoisView: {
     marginBottom: 10
-  }
+  },
+  modal: {
+    borderTopRightRadius: 16, borderTopLeftRadius: 16
+  },
 });
 
 
