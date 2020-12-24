@@ -54,8 +54,7 @@ class ClusteredMapViewTop extends PureComponent {
 
   componentDidUpdate(prevProps) {
 
-    if ( prevProps.others.geolocation !== this.props.others.geolocation && 
-        this.props.others.geolocation.coords) {
+    if ( prevProps.others.geolocation !== this.props.others.geolocation && this.props.others.geolocation.coords) {
       this._onUpdateCoords(this.props.others.geolocation, this.props.others.geolocationSource);
     }
 
@@ -367,16 +366,18 @@ class ClusteredMapViewTop extends PureComponent {
           {this._renderClustersOrPoi(clusters)}
           {this._renderSelectedPoi(selectedCluster)}
         </MapView>
-        <Button
-        type="clear"
-        containerStyle={[styles.buttonGoToMyLocationContainer]}
-        buttonStyle={[styles.buttonGoToMyLocation]}
-        onPress={this._onGoToMyLocationPressed}
-        icon={
-          <FontAwesome5 name={"street-view"} size={25} color={Colors.colorPlacesScreen} />
+        {this.props.others.geolocation.coords && 
+          <Button
+          type="clear"
+          containerStyle={[styles.buttonGoToMyLocationContainer]}
+          buttonStyle={[styles.buttonGoToMyLocation]}
+          onPress={this._onGoToMyLocationPressed}
+          icon={
+            <FontAwesome5 name={"street-view"} size={25} color={Colors.colorPlacesScreen} />
+            }
+        />
           }
-      />
-      </>
+        </>
 
     );
   }

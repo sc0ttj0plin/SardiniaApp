@@ -65,6 +65,7 @@ class EntityWidgetInModal extends PureComponent {
     })).then((data) => {
       let entity = data[0];
       entity.distance = this._computeDistance(this.props.cluster, this.props.coords); 
+      entity.distanceString = entity.distance ? distanceToString(entity.distance) : null
       this.setState({ entity });
     }).catch(e => {
       console.error(e.message);
@@ -137,6 +138,7 @@ class EntityWidgetInModal extends PureComponent {
         distance={entity.distanceString}
         subtitle={termName}
         extraStyle={this.props.extraStyle}
+        coords={this.props.coords}
       />
     )
   }

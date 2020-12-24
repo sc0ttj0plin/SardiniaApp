@@ -9,23 +9,21 @@ export default class LLEntityTextWidget extends PureComponent {
     constructor(props){
         super(props);
         this._fontScale = PixelRatio.getFontScale();
-        console.log("fontScale", this._fontScale);
     }
 
     render(){
-
         return (
             <View style={styles.textContainer}>
                 <ShimmerWrapper
-                shimmerStyle={[styles.title, {height: this._fontScale * 15, marginBottom: Platform.OS == "ios" ? this._fontScale * 5 : this._fontScale * 8 }]}>
+                shimmerStyle={[styles.title, {height: this._fontScale * 15, marginBottom: Platform.OS == "ios" ? this._fontScale * 5 : this._fontScale * 7 }]}>
                 </ShimmerWrapper>
                 <View>
                     <ShimmerWrapper 
-                    shimmerStyle={[styles.place, {height: this._fontScale * 13, marginBottom: Platform.OS == "ios" ? this._fontScale * 5 : this._fontScale * 7}]}>
+                    shimmerStyle={[styles.place, {height: this._fontScale * 13, marginBottom: Platform.OS == "ios" ? this._fontScale * 5 : this._fontScale * 6}]}>
                     </ShimmerWrapper>
-                    <ShimmerWrapper 
+                    {this.props.coords && this.props.coords.latitude && <ShimmerWrapper 
                     shimmerStyle={[styles.distance, {height: this._fontScale * 13}]}>
-                    </ShimmerWrapper>
+                    </ShimmerWrapper>}
                 </View>
             </View>
         )

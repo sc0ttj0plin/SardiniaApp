@@ -17,7 +17,7 @@ export default class EntityItemInModal extends PureComponent {
   }
 
   render() {
-    const { onPress, keyItem, title, subtitle, image, distance, horizontal, extraStyle } = this.props;
+    const { onPress, keyItem, title, subtitle, image, distance, coords, horizontal, extraStyle } = this.props;
 
     return (
         <ScrollableContainerTouchableOpacity 
@@ -27,14 +27,14 @@ export default class EntityItemInModal extends PureComponent {
             style={[styles.fill, extraStyle]}
         >
             <>
-                <View style={[styles.imageContainer, {height: Layout.window.height / 3.5}]}>
+                <View style={[styles.imageContainer, {height: Layout.window.height / 4}]}>
                     <ShimmerWrapper shimmerStyle={styles.shimmer} />
                     <Image source={{ uri: image}} style={styles.image} />
                 </View>
                 <AsyncOperationStatusIndicator
                     loading={true}
                     success={title && title != "null"}
-                    loadingLayout={<LLEntityTextWidget />}
+                    loadingLayout={<LLEntityTextWidget coords={coords} />}
                     >
                     <View style={styles.textContainer}>
                         <CustomText
@@ -48,11 +48,11 @@ export default class EntityItemInModal extends PureComponent {
                             ellipsizeMode='tail'
                             style={styles.place}>{subtitle}
                             </CustomText>
-                            <CustomText 
+                            {distance && <CustomText 
                             numberOfLines={1}
                             ellipsizeMode='tail'
                             style={styles.distance}>{distance}
-                            </CustomText>
+                            </CustomText>}
                         </View>
                     </View>
                 </AsyncOperationStatusIndicator>
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   },
   imageContainer:{
     width: "100%",
-    height: 220
+    height: 160
   },
   image: {
     resizeMode: "cover",
