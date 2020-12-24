@@ -163,12 +163,12 @@ class EventScreen extends Component {
         if (coordinates) {
           let marker = {
             coords: {
-              latitude: coordinates.lat,
-              longitude: coordinates.lon,
+              latitude: parseFloat(coordinates.lat),
+              longitude: parseFloat(coordinates.lon),
             },
-            arrayCoords: [coordinates.lon, coordinates.lat],
+            arrayCoords: [parseFloat(coordinates.lon), parseFloat(coordinates.lat)],
             index: index + 1,
-            title: step.title,
+            title: step.nome,
           }
           stepsMarkers.push(marker)
         }
@@ -282,7 +282,7 @@ class EventScreen extends Component {
           <View style={[styles.container]}>
             <EntityDescription title={descriptionTitle} text={description} color={Colors.colorEventsScreen}/>
             <EntityStages stages={steps} locale={locale}/>
-            <EntityMap coordinates={stepsCoordinates} hasMarkers uuid={uuid} entityType={Constants.ENTITY_TYPES.events}/> 
+            <EntityMap title={title} coordinates={stepsCoordinates} hasMarkers uuid={uuid} entityType={Constants.ENTITY_TYPES.events}/> 
             <View style={styles.separator}/>
             {this._renderRelatedList(canBeOfInterest, relatedEntities, Constants.ENTITY_TYPES.events)}
             <EntityAccomodations 

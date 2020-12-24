@@ -94,8 +94,8 @@ class EventsSubsetScreen extends Component {
 
 
   _openMap = () => {
-    const { eventsSubset } = this.state;
-    this.props.navigation.navigate(Constants.NAVIGATION.NavEventsMapScreen, {events: eventsSubset});
+    const { eventsSubset, headerDate } = this.state;
+    this.props.navigation.navigate(Constants.NAVIGATION.NavEventsMapScreen, {events: eventsSubset, title: headerDate});
   }
   
   /********************* Render methods go down here *********************/
