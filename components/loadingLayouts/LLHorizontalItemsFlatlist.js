@@ -61,8 +61,7 @@ const styles = StyleSheet.create({
         // margin: 10
     },
     sectionTitleView: {
-        maxHeight: 36, 
-        minHeight: 36,
+        paddingBottom: 10,
         justifyContent: "center",
         alignItems: "center",
       },

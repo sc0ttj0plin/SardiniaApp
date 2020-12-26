@@ -2,6 +2,7 @@
 import React, { PureComponent } from 'react';
 import { FlatList, StyleSheet, View, Text, PixelRatio, Platform } from 'react-native';
 import ShimmerWrapper from "../ShimmerWrapper";
+import  * as Constants from "../../constants";
 
 
 export default class LLEntityTextWidget extends PureComponent {
@@ -15,14 +16,14 @@ export default class LLEntityTextWidget extends PureComponent {
         return (
             <View style={styles.textContainer}>
                 <ShimmerWrapper
-                shimmerStyle={[styles.title, {height: this._fontScale * 15, marginBottom: Platform.OS == "ios" ? this._fontScale * 5 : this._fontScale * 7 }]}>
+                shimmerStyle={[styles.title, {height: this._fontScale * Constants.styles.entityItemInModal.titleFontSize}]}>
                 </ShimmerWrapper>
                 <View>
                     <ShimmerWrapper 
-                    shimmerStyle={[styles.place, {height: this._fontScale * 13, marginBottom: Platform.OS == "ios" ? this._fontScale * 5 : this._fontScale * 6}]}>
+                    shimmerStyle={[styles.place, {height: this._fontScale * Constants.styles.entityItemInModal.titleFontSize, marginTop: Platform.OS == "ios" ? this._fontScale * 3 : this._fontScale * 6 }]}>
                     </ShimmerWrapper>
                     {this.props.coords && this.props.coords.latitude && <ShimmerWrapper 
-                    shimmerStyle={[styles.distance, {height: this._fontScale * 13}]}>
+                    shimmerStyle={[styles.distance, {height: this._fontScale * Constants.styles.entityItemInModal.distanceFontSize, marginTop: Platform.OS == "ios" ? this._fontScale * 3 : this._fontScale * 4}]}>
                     </ShimmerWrapper>}
                 </View>
             </View>
@@ -32,17 +33,15 @@ export default class LLEntityTextWidget extends PureComponent {
 
 const styles = StyleSheet.create({
       textContainer: {
-        padding: 8,
+        padding: Constants.styles.entityItemInModal.textPadding,
         width: "100%",
       },
       title: {
         width: 200,
-        marginBottom: 8,
-        borderRadius: 8
+        borderRadius: 8,
       },
       place: {
         width: 120,
-        marginBottom: 8,
         borderRadius: 8
       },
       distance: {

@@ -4,7 +4,8 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Dimensions
+  Dimensions,
+  PixelRatio
 } from 'react-native'
 import ConnectedText from './ConnectedText';
 import TabBarIcon from './TabBarIcon';
@@ -33,6 +34,7 @@ const CenterScaler = posed.View({
  */
 const TabBar = props => {
   var insets = useSafeArea();
+  const fontScale = PixelRatio.getFontScale();
   const {
       navigation
   } = props
@@ -126,7 +128,8 @@ const TabBar = props => {
                     <ConnectedText textStyle={[Styles.iconText, {
                         color: route.backgroundActiveColor,
                         fontFamily: "montserrat-bold",
-                        textAlign: "center"
+                        textAlign: "center",
+                        fontSize: 11 / fontScale
                     }]} languageKey={route.languageKey}/>
                   </Animated.View>
               </Scaler>

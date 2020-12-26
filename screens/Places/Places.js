@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { 
   View, Text, ActivityIndicator, Pressable,
-  StyleSheet, BackHandler, Platform, ScrollView, NativeModules, Easing } from "react-native";
+  StyleSheet, BackHandler, Platform, ScrollView, NativeModules, Easing, PixelRatio } from "react-native";
 
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler"
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -60,6 +60,7 @@ class PlacesScreen extends PureComponent {
     this._onFocus = null;
     this._refs = {};
     this._modalState;
+    this._fontScale = PixelRatio.getFontScale();
 
     this.state = {
       render: USE_DR ? false : true,
@@ -249,7 +250,7 @@ class PlacesScreen extends PureComponent {
     const { width, height } = event.nativeEvent.layout;
     this._pageLayoutHeight = height;
     //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 24 (handle) - 36 (header text) - 160 (entityItem) - 10 (margin of entityItem) - 36 (whereToGo text)
-    this.setState({ snapPoints: [height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight, 72, 0] });
+    this.setState({ snapPoints: [height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight, 72 * this._fontScale, 0] });
   }; 
 
   /**
@@ -288,8 +289,8 @@ class PlacesScreen extends PureComponent {
 
     if(state == MODAL_STATES.EXPLORE) {
       this.setState({scrollableSnap: 1});
-      this._refs["nearPoisModalRef"].close();
-      this._refs["selectedEntityModalRef"].close();
+      this._refs["nearPoisModalRef"].close(); this._refs["nearPoisModalRef"].close();
+      this._refs["selectedEntityModalRef"].close(); this._refs["selectedEntityModalRef"].close();
     }
     else if(state == MODAL_STATES.NEARPOIS) {
       this.setState({scrollableSnap: 2}, () => {
@@ -396,6 +397,7 @@ class PlacesScreen extends PureComponent {
         onSelectedEntity={this._onSelectedEntity}
         goToMyLocationPressed={this._showNearPoisWidget}
         onMapRegionChanged={this._onMapRegionChanged}
+        paddingBottom={this.state.snapPoints[1]}
       />
     )
 
@@ -571,6 +573,7 @@ class PlacesScreen extends PureComponent {
           modalStyle={styles.modal}
           closeAnimationConfig={{timing: { duration: 800, easing: Easing.ease }} }
           onClosed={this._onSelectedEntityModalClosed}
+          velocity={1000}
           >
           {this._renderEntityWidget()}
         </Modalize>
@@ -582,6 +585,7 @@ class PlacesScreen extends PureComponent {
           modalStyle={styles.modal}
           closeAnimationConfig={{timing: { duration: 800, easing: Easing.ease }} }
           onClosed={this._onNearPoisModalClosed}
+          velocity={1000}
           >
           {this._renderNearToYou()}
         </Modalize>

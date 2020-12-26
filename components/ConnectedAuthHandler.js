@@ -203,13 +203,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  modalWindow: { 
-    paddingHorizontal: 28.5,
-    paddingTop: 20,
+  modalWindow: {
+    margin: 30,
+    padding: 28.5,
     backgroundColor: "white", 
-    zIndex: 2, 
-    width: 280, 
-    height: 200,
+    zIndex: 2,
     flexDirection: "column",
     borderRadius: 4
   },
@@ -226,7 +224,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: "100%",
     height: 36,
-    marginTop: 21
+    marginTop: 21,
+    justifyContent: "center",
   },
   modalBtn: {
     minWidth: 106,
@@ -236,6 +235,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "black",
     display: "flex",
+    paddingHorizontal: 10
   },
   loginButton: {
     alignSelf: "flex-start"

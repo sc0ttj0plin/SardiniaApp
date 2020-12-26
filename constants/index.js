@@ -516,6 +516,12 @@ export const styles = {
     paddingLeft: 10,
     paddingRight: 10
   },
+  entityItemInModal: {
+    titleFontSize: 13,
+    termFontSize: 11,
+    distanceFontSize: 11,
+    textPadding: 8
+  },
   shadow: {
     shadowColor: "#000",
     shadowOffset: {

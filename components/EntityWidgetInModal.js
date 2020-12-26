@@ -22,6 +22,7 @@ class EntityWidgetInModal extends PureComponent {
     super(props);
 
     var {coords, cluster} = props;
+    this._loaded = false;
     var entity = cluster.terms_objs[0];
     if(cluster.centroid)
       entity.distance = this._computeDistance(cluster, coords);
@@ -32,14 +33,11 @@ class EntityWidgetInModal extends PureComponent {
   }
 
   componentDidMount() {
-    // this._fetchPoi(this.state.entity.nid);
-    this._fetchEntity();
+    this._fetchEntity(), 2000;
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.cluster !== this.props.cluster) {
-      // const entity = this.props.cluster.terms_objs[0];
-      // this._fetchPoi(entity.nid);
       this._fetchEntity();
     }
   }
@@ -52,38 +50,29 @@ class EntityWidgetInModal extends PureComponent {
     const { isAccomodationItem } = this.props;
     if(this.props.cluster){
       const entity = this.props.cluster.terms_objs[0];
-      if(isAccomodationItem)
-        this._fetchAccomodation(entity.uuid)
-      else
-        setTimeout(()=>this._fetchPoi(entity.nid), 1000);
+      var query, params;
+
+      if(isAccomodationItem) {
+        query = actions.getAccomodationsById;
+        params = { uuids: [entity.uuid] };
+      }
+      else {
+        query = actions.getPoi;
+        params = { nid: entity.nid };
+      }
+
+      apolloQuery(query(params)).then((data) => {
+        this._loaded = true;
+        let entity = data[0];
+        entity.distance = this._computeDistance(this.props.cluster, this.props.coords); 
+        entity.distanceString = entity.distance ? distanceToString(entity.distance) : null
+        this.setState({ entity });
+      }).catch(e => {
+        console.error(e.message);
+      });
     }
   }
 
-  _fetchPoi(nid) {
-    apolloQuery(actions.getPoi({ 
-      nid 
-    })).then((data) => {
-      let entity = data[0];
-      entity.distance = this._computeDistance(this.props.cluster, this.props.coords); 
-      entity.distanceString = entity.distance ? distanceToString(entity.distance) : null
-      this.setState({ entity });
-    }).catch(e => {
-      console.error(e.message);
-    });
-  }
-
-  _fetchAccomodation(uuid) {
-    apolloQuery(actions.getAccomodationsById({ 
-      uuids: [uuid] 
-    })).then((data) => {
-      let entity = data[0];
-      entity.distance = this._computeDistance(this.props.cluster, this.props.coords); 
-      entity.distanceString = entity.distance ? distanceToString(entity.distance) : null
-      this.setState({ entity });
-    }).catch(e => {
-      console.error(e.message);
-    });
-  }
 
   /**
    * Navigate to entity screen
@@ -94,7 +83,7 @@ class EntityWidgetInModal extends PureComponent {
     const { isAccomodationItem } = this.props;
     let screen = isAccomodationItem ? Constants.NAVIGATION.NavAccomodationScreen : Constants.NAVIGATION.NavPlaceScreen;
     this.props.navigation.navigate(screen, {
-      item, mustFetch: true
+      item, mustFetch: !this._loaded
     }) 
   }
 

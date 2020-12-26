@@ -1,7 +1,8 @@
 import React, {PureComponent} from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, PixelRatio } from 'react-native';
 import Colors from '../constants/Colors';
 import CustomText from "./CustomText";
+import { AsyncOperationStatusIndicator, ShimmerWrapper } from '../components';
 
 export default class EntityHeader extends PureComponent {  
   
@@ -9,23 +10,45 @@ export default class EntityHeader extends PureComponent {
     super(props);
     this.state = {
     };
+    this._fontScale = PixelRatio.getFontScale();
+  }
+
+  renderLL() {
+    const { borderColor } = this.props;
+    return (
+      <View style={styles.shimmerContainer}>
+        <View style={[styles.categoryContainer]}>
+            <ShimmerWrapper shimmerStyle={[styles.shimmer, {marginVertical: 2 * this._fontScale, width: 80 * this._fontScale, height: 15 * this._fontScale}]}></ShimmerWrapper>
+            <View style={[styles.borderLine, {backgroundColor: borderColor || Colors.blue}]}></View>
+        </View>
+        <ShimmerWrapper shimmerStyle={[styles.shimmer, {marginVertical: 3 * this._fontScale, width: 100 * this._fontScale, height: 20 * this._fontScale}]}></ShimmerWrapper>
+      </View>
+    );
   }
   
   render() {
     const { term, title, borderColor } = this.props;
     return (
       <>
-        <View style={styles.topLineContainer}>
-          <View style={styles.topLine}/>  
-        </View>
-        { term != "" && term &&(
-          <View style={[styles.categoryContainer]}>
-            <CustomText style={[styles.category]}>{term}</CustomText>
-            <View style={[styles.borderLine, {backgroundColor: borderColor || Colors.blue}]}></View>
+          <View style={styles.topLineContainer}>
+            <View style={styles.topLine}/>  
           </View>
-        )}
-        <CustomText style={[styles.title]}>{title}</CustomText>
-      </>
+          <AsyncOperationStatusIndicator
+                    loading={true}
+                    success={title}
+                    error={false}
+                    loadingLayout={this.renderLL()}>
+        
+            { term != "" && term &&(
+              <View style={[styles.categoryContainer]}>
+                <CustomText style={[styles.category]}>{term}</CustomText>
+                <View style={[styles.borderLine, {backgroundColor: borderColor || Colors.blue}]}></View>
+              </View>
+            )}
+            <CustomText style={[styles.title]}>{title}</CustomText>
+
+          </AsyncOperationStatusIndicator>
+        </>
     );
   }
 }
@@ -60,6 +83,15 @@ const styles = StyleSheet.create({
     color: "#000000E6",
     fontFamily: "montserrat-bold",
     paddingHorizontal: 30
+  },
+  shimmerContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "center"
+  },
+  shimmer: {
+    borderRadius: 8
   },
   topLineContainer: {
     width: "100%",

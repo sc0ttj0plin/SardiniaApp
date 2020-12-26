@@ -369,7 +369,7 @@ class ClusteredMapViewTop extends PureComponent {
         {this.props.others.geolocation.coords && 
           <Button
           type="clear"
-          containerStyle={[styles.buttonGoToMyLocationContainer]}
+          containerStyle={[styles.buttonGoToMyLocationContainer, {bottom: 15 + this.props.paddingBottom}]}
           buttonStyle={[styles.buttonGoToMyLocation]}
           onPress={this._onGoToMyLocationPressed}
           icon={

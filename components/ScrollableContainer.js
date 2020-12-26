@@ -50,8 +50,8 @@ class ScrollableContainer extends PureComponent {
     });
 
     this._translateAnimY2 = interpolate(this._translateAnim, {
-      inputRange: [0, 0.9, 1],
-      outputRange: [-35, 10, 10],
+      inputRange: [0, 0.6, 1],
+      outputRange: [-45, 10, 10],
     });
 
     this._translateCloseButton = interpolate(this._translateAnim, {
@@ -166,7 +166,7 @@ class ScrollableContainer extends PureComponent {
       if(this.state.data && this.state.data.length > 0)
         return (
             <FlatList
-            style={[styles.contentContainerStyle]}
+            style={{backgroundColor: "white"}}
             data={this.state.data || []}
             keyExtractor={keyExtractor}
             renderItem={renderItem}
@@ -177,6 +177,7 @@ class ScrollableContainer extends PureComponent {
             initialNumToRender={8}
             maxToRenderPerBatch={2}
             numColumns={numColumns || 1}
+            contentContainerStyle={styles.contentContainerStyle}
             ItemSeparatorComponent={() => <View style={{height: 10}}></View>}
             >
         </FlatList>
@@ -258,7 +259,8 @@ const styles = StyleSheet.create({
   },
   contentContainerStyle: {
     backgroundColor: 'white',
-    paddingHorizontal: 5
+    paddingHorizontal: 10,
+    paddingBottom: 10
   },
   header: {
     alignItems: 'center',

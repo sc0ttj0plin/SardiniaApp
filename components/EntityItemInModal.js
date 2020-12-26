@@ -46,7 +46,7 @@ export default class EntityItemInModal extends PureComponent {
                             <CustomText 
                             numberOfLines={1}
                             ellipsizeMode='tail'
-                            style={styles.place}>{subtitle}
+                            style={styles.term}>{subtitle}
                             </CustomText>
                             {distance && <CustomText 
                             numberOfLines={1}
@@ -83,18 +83,18 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   textContainer: {
-    padding: 8,
+    padding: Constants.styles.entityItemInModal.textPadding,
     width: "100%",
   },
   title: {
-    fontSize: 15,
+    fontSize: Constants.styles.entityItemInModal.titleFontSize,
     fontFamily: "montserrat-bold",
   },
-  place: {
-    fontSize: 13
+  term: {
+    fontSize: Constants.styles.entityItemInModal.termFontSize,
   },
   distance: {
-    fontSize: 13,
+    fontSize: Constants.styles.entityItemInModal.distanceFontSize,
     fontFamily: "montserrat-bold",
   },
 })

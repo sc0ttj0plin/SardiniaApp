@@ -60,7 +60,7 @@ export default class AccomodationItem extends PureComponent {
             </View>
             <View style={styles.innerContent}>
               <CustomText style={styles.termText}>{term}</CustomText>
-              <CustomText style={styles.titleText}>{title}</CustomText>
+              <CustomText style={styles.titleText} numberOfLines={1} ellipsizeMode='tail'>{title}</CustomText>
               <View style={styles.starsView}>
                 {this._renderStars(stars)}
               </View>
@@ -68,7 +68,7 @@ export default class AccomodationItem extends PureComponent {
             </View>
           </View>
           <View style={styles.distanceView}>
-            <CustomText style={styles.distanceText}>Distanza {distance}</CustomText>
+            <CustomText style={styles.distanceText}>{distance}</CustomText>
           </View>
         </ScrollableContainerTouchableOpacity>
     );
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontFamily: "montserrat-bold",
     minHeight: 30,
-    paddingRight: 5
+    paddingRight: 5,
   },
   termText: {
     fontSize: 10,

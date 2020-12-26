@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     textContainer: {
       position: "absolute",
       bottom: 0,
-      backgroundColor: "rgba(255,255,255, 0.7)",
+      backgroundColor: "rgba(255,255,255, 0.80)",
       padding: 5,
       width: "100%",
       borderBottomLeftRadius: 8,

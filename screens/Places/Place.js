@@ -49,7 +49,7 @@ import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
 import { boundingRect } from '../../helpers/maps';
-import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
+import { LLEntitiesFlatlist, LLEntityDetail} from "../../components/loadingLayouts";
 
 
 const USE_DR = false;
@@ -58,6 +58,7 @@ class PlaceScreen extends Component {
   constructor(props) {
     super(props);
 
+    this._entity = props.route.params.item;
     const { uuid } = props.route.params.item;
     const { mustFetch } = props.route.params; /* no effect since place fetches anyway */
 
@@ -66,7 +67,7 @@ class PlaceScreen extends Component {
       render: USE_DR ? false : true,
       //entity initial state
       uuid,
-      mustFetch,
+      mustFetch: mustFetch,
       entity: { term: {} },
       abstract: null, 
       title: null, 
@@ -79,6 +80,7 @@ class PlaceScreen extends Component {
       relatedEntities: [],
       nearAccomodations: [],
       nearAccomodationsRegion: null,
+      loaded: false
     };
       
   }
@@ -88,7 +90,12 @@ class PlaceScreen extends Component {
   async componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
-    this.props.actions.getPoi({ uuid: this.state.uuid });
+    console.log(this._entity);
+    if(this.state.mustFetch || typeof this.state.mustFetch === "undefined") {
+      this.props.actions.getPoi({ uuid: this.state.uuid });
+    } else {
+      this._parseEntity(this._entity);
+    }
   }
 
   /* NOTE: since this screen is not */
@@ -142,16 +149,15 @@ class PlaceScreen extends Component {
       }
   }
   
-  _parseEntity = (entity) => {
+  _parseEntity = (entity, callback) => {
     const { locale } = this.props;
     const { lan } = locale;
     const { abstract, title, description, whyVisit } = getEntityInfo(entity, ["abstract", "title", "description", "whyVisit"], [lan, 0, "value"], null, {"description": {s: /\. /g, d: ".<br/>"}, "whyVisit": {s: /<\/?[^>]+(>|$)/g, d: ""}});
     const coordinates = getCoordinates(entity);
     const socialUrl = `${Constants.WEBSITE_URL}${greedyArrayFinder(entity.url_alias, "language", lan, "alias", "")}`;
-    const sampleVideoUrl = getSampleVideoIndex(entity.nid);
+    const sampleVideoUrl = entity.nid ? getSampleVideoIndex(entity.nid) : null;
     const gallery = getGalleryImages(entity);
-    this.setState({ entity, abstract,  title,  description,  whyVisit,  coordinates,  socialUrl, sampleVideoUrl, gallery }, () => {
-      // After parsing the entity fetch near accomodations  and nodes, both depend on state
+    this.setState({ entity, abstract,  title,  description,  whyVisit,  coordinates,  socialUrl, sampleVideoUrl, gallery, loaded: true }, () => {
       this._fetchNearNodes();
       this._fetchNearAccomodations();
     });
@@ -232,6 +238,7 @@ class PlaceScreen extends Component {
 
   _renderContent = () => {
     const { 
+      loaded,
       uuid, 
       entity, 
       abstract, 
@@ -268,11 +275,19 @@ class PlaceScreen extends Component {
             <EntityHeader title={title} term={entity.term ? entity.term.name : ""} borderColor={Colors.blue}/>
           </View>
           <View style={[styles.container]}>
-            <EntityAbstract abstract={abstract}/>
-            <EntityWhyVisit title={whyVisitTitle} text={whyVisit}/>
-            <EntityMap coordinates={coordinates}/>
-            <EntityGallery images={gallery} title={galleryTitle}/>
-            <EntityDescription title={descriptionTitle} text={description} color={Colors.colorPlacesScreen}/>
+          <AsyncOperationStatusIndicator
+                    loading={true}
+                    success={loaded}
+                    error={false}
+                    loadingLayout={<LLEntityDetail />}>
+
+              <EntityAbstract abstract={abstract}/>
+              <EntityWhyVisit title={whyVisitTitle} text={whyVisit}/>
+              <EntityMap coordinates={coordinates}/>
+              <EntityGallery images={gallery} title={galleryTitle}/>
+              <EntityDescription title={descriptionTitle} text={description} color={Colors.colorPlacesScreen}/>
+
+            </AsyncOperationStatusIndicator>
             <View style={styles.separator}/>
             {this._renderRelatedList(canBeOfInterest, relatedEntities, Constants.ENTITY_TYPES.places)}
             <EntityAccomodations 
@@ -351,8 +366,7 @@ const styles = StyleSheet.create({
   separator: {
     width: "100%",
     height: 8,
-    backgroundColor: "#F2F2F2",
-    marginVertical: 32
+    marginVertical: 20
   }
 });
 

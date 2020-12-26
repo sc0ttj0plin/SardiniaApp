@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { StyleSheet, View, Text, ActivityIndicator } from "react-native";
+import { StyleSheet, View, Text, ActivityIndicator, PixelRatio } from "react-native";
 import ScrollableContainerTouchableOpacity from "../components/ScrollableContainerTouchableOpacity";
 import { Image } from 'react-native-elements';
 import CustomText from "./CustomText";
@@ -13,10 +13,11 @@ class CategoryListItem extends PureComponent {
     this.state = {
       width: 0
     };
+    this._fontScale = PixelRatio.getFontScale();
   }
 
   _renderBottomBox = (title, showBoxes, opacityBackground, bgColor) => {
-    let backgroundColor = (`rgba(255, 255, 255, 0.7)`);
+    let backgroundColor = (`rgba(255, 255, 255, 0.80)`);
 
     return (
       <View style={[styles.titleContainer]}>
@@ -47,7 +48,7 @@ class CategoryListItem extends PureComponent {
        <View style={{flex: 1}}>
         <Image 
             source={{ uri: image }} 
-            style={[styles.image, { width: this.state.width, height: this.state.height }, this.props.imageStyle]} 
+            style={[styles.image, { width: this.state.width, height: this.state.height }]} 
             PlaceholderContent={<ActivityIndicator style={styles.spinner} color={"white"} />}
             >
             {this._renderBottomBox(this.props.title, true, 0.8)}

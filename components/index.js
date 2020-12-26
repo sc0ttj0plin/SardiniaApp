@@ -6,6 +6,8 @@
 // export ScrollableHeader from './ScrollableHeader';
 // export TabBarIcon from './TabBarIcon';
 
+import ShimmerWrapper from "./ShimmerWrapper";
+
 // export CalendarListItem from './CalendarListItem';
 export AsyncOperationStatusIndicator from './AsyncOperationStatusIndicator';
 // export MapViewItinerary from './MapViewItinerary';
@@ -50,5 +52,6 @@ export SectionTitle from './SectionTitle';
 export EntityWidgetInModal from './EntityWidgetInModal';
 export EntityItemInModal from './EntityItemInModal';
 export UpdateHandler from './UpdateHandler';
+export ShimmerWrapper from './ShimmerWrapper';
 
 
