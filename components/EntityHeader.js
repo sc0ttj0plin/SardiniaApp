@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import { View, StyleSheet, Text, PixelRatio } from 'react-native';
+import { View, StyleSheet, Text, PixelRatio, Platform } from 'react-native';
 import Colors from '../constants/Colors';
 import CustomText from "./CustomText";
 import { AsyncOperationStatusIndicator, ShimmerWrapper } from '../components';
@@ -18,10 +18,10 @@ export default class EntityHeader extends PureComponent {
     return (
       <View style={styles.shimmerContainer}>
         <View style={[styles.categoryContainer]}>
-            <ShimmerWrapper shimmerStyle={[styles.shimmer, {marginVertical: 2 * this._fontScale, width: 80 * this._fontScale, height: 15 * this._fontScale}]}></ShimmerWrapper>
+            <ShimmerWrapper shimmerStyle={[styles.shimmer, {marginVertical: (Platform.OS == "ios" ? 2 : 3) * this._fontScale, width: 80 * this._fontScale, height: 15 * this._fontScale}]}></ShimmerWrapper>
             <View style={[styles.borderLine, {backgroundColor: borderColor || Colors.blue}]}></View>
         </View>
-        <ShimmerWrapper shimmerStyle={[styles.shimmer, {marginVertical: 3 * this._fontScale, width: 100 * this._fontScale, height: 20 * this._fontScale}]}></ShimmerWrapper>
+        <ShimmerWrapper shimmerStyle={[styles.shimmer, {marginVertical: (Platform.OS == "ios" ? 2 : 3) * this._fontScale, width: 100 * this._fontScale, height: 20 * this._fontScale}]}></ShimmerWrapper>
       </View>
     );
   }

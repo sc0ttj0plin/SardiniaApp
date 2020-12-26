@@ -90,7 +90,6 @@ class PlaceScreen extends Component {
   async componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
-    console.log(this._entity);
     if(this.state.mustFetch || typeof this.state.mustFetch === "undefined") {
       this.props.actions.getPoi({ uuid: this.state.uuid });
     } else {

@@ -4,6 +4,7 @@ import { ActivityIndicator } from 'react-native';
 import { Image } from 'react-native-elements';
 import {distanceToString} from '../helpers/maps'
 import CustomText from "./CustomText";
+import { ShimmerWrapper } from "../components"
 
 /**
  * Similar to PoiItemsList but with geographical information 
@@ -19,22 +20,23 @@ class GeoRefHListItem extends PureComponent{
   render() {
     const { distance = "", title = "", subtitle = "" } = this.props;
     return (
-      <View style={[styles.container, this.props.style]} onLayout={(event) => { this.setState({ width: event.nativeEvent.layout.width, height: event.nativeEvent.layout.height }) }}>
-          <Image source={{ uri: this.props.image }} style={styles.image, {width: this.state.width, height: this.state.height}} PlaceholderContent={<ActivityIndicator style={styles.spinner} />}>
-            <View style={styles.textContainer}>
-              <CustomText
+      <View style={[styles.container, this.props.style]}>
+        <ShimmerWrapper shimmerStyle={styles.shimmer} />
+        <Image source={{ uri: this.props.image }} style={styles.image}>
+          <View style={styles.textContainer}>
+            <CustomText
+            numberOfLines={1}
+            ellipsizeMode='tail'
+            style={styles.title}>{title}
+            </CustomText>
+              <CustomText 
               numberOfLines={1}
               ellipsizeMode='tail'
-              style={styles.title}>{title}
+              style={styles.place}>{subtitle}
               </CustomText>
-                <CustomText 
-                numberOfLines={1}
-                ellipsizeMode='tail'
-                style={styles.place}>{subtitle}
-                </CustomText>
-                <CustomText numberOfLines={1}ellipsizeMode='tail'style={styles.distance}>{distance}</CustomText>
-            </View>
-          </Image>
+              <CustomText numberOfLines={1}ellipsizeMode='tail'style={styles.distance}>{distance}</CustomText>
+          </View>
+        </Image>
       </View>
       );
     }
@@ -64,7 +66,14 @@ const styles = StyleSheet.create({
     image: {
       flex: 1,
       resizeMode: "cover",
-      backgroundColor: "white"
+      backgroundColor: "transparent",
+      width: "100%",
+      height: "100%",
+    },
+    shimmer: {
+      position: "absolute",
+      width: "100%",
+      height: "100%",
     },
     textContainer: {
       position: "absolute",
