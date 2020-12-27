@@ -558,6 +558,11 @@ query ($limit: Int, $offset: Int, $type: String) {
         uuid
       }
     }
+    term {
+      tid
+      name
+      uuid
+    }
     image: legacy(path: "field_immagine_top.und[0].uri")
   }
 }

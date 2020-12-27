@@ -41,7 +41,6 @@ class EntityStages extends PureComponent {
     const endDate = _.get(item.date, "end", null);
     const formattedStartDate = moment(startDate).format("DD MMMM YYYY");
     const formattedEndDate = moment(endDate).format("DD MMMM YYYY");
-    console.log("coordinates", this.props.coordinates);
     return(
       <View style={styles.eventStageView}>
         { index != 0 &&

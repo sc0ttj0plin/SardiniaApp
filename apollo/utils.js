@@ -96,7 +96,7 @@ export const processEntity = function(entity, coords=null) {
           item.uri = item.uri.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST_621x);
       });
 
-  if (entity && entity.nodes_terms && entity.nodes_terms[0]) 
+  if (entity && !entity.term && entity.nodes_terms && entity.nodes_terms[0]) 
     entity.term = entity.nodes_terms[0].term;
   
   if (entity.distance)
