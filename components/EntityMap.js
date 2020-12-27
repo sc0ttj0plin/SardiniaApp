@@ -179,7 +179,7 @@ class EntityMap extends PureComponent {
               <View style={styles.openNavigatorContainer}>
               {!hasMarkers && !hideOpenNavigatorButton && this._renderOpenNavigatorButton(coordinates)}
               {hasMarkers && coordinates.length > 1 && this._renderOpenMapButton()}
-              {hasMarkers  && coordinates.length == 1 && this._renderOpenNavigatorButton(coordinates[0])}
+              {hasMarkers  && coordinates.length == 1 && this._renderOpenNavigatorButton(coordinates[0].coords)}
               </View>
             </View>
             
