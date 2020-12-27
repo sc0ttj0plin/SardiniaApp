@@ -152,7 +152,6 @@ class InspirersScreen extends Component {
     const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
     return (
       <EntityItem 
-        index={index}
         keyItem={item.nid}
         listType={Constants.ENTITY_TYPES.inspirers}
         iconColor={Colors.colorInspirersScreen}
@@ -162,6 +161,7 @@ class InspirersScreen extends Component {
         image={item.image}
         horizontal={false}
         sideMargins={10}
+        extraStyle={styles.inspirersListItem}
       />
   )}
 
@@ -182,7 +182,7 @@ class InspirersScreen extends Component {
     if (isPoiList) {
       flatListData = inspirers || [];
       renderItem = ({ item, index }) => this._renderPoiListItem(item, index);
-      numColumns = 2;
+      numColumns = 1;
     } else {
       //initially term is null so we get terms from redux, then term is populated with nested terms (categories) 
       flatListData = term || [];
@@ -304,7 +304,10 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     height: 160, 
     width: "100%", 
-  }
+  },
+  inspirersListItem: {
+    width: "100%",
+  },
 });
 
 
