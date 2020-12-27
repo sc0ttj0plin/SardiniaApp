@@ -51,6 +51,7 @@ class CategoryListItem extends PureComponent {
         <Image 
             source={{ uri: image }} 
             style={[styles.image]}
+            placeholderStyle={{backgroundColor: "transparent"}}
             >
             {this._renderBottomBox(this.props.title, true, 0.8)}
           </Image>

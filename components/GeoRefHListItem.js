@@ -17,6 +17,12 @@ class GeoRefHListItem extends PureComponent{
       height: 160
     }
   }
+  renderDistanceRow(distance) {
+    if(distance)
+      return <CustomText numberOfLines={1} ellipsizeMode='tail' style={styles.distance}>{distance}</CustomText>
+  }
+
+
   render() {
     const { distance = "", title = "", subtitle = "" } = this.props;
     return (
@@ -34,7 +40,7 @@ class GeoRefHListItem extends PureComponent{
               ellipsizeMode='tail'
               style={styles.place}>{subtitle}
               </CustomText>
-              <CustomText numberOfLines={1}ellipsizeMode='tail'style={styles.distance}>{distance}</CustomText>
+             {this.renderDistanceRow(distance)}
           </View>
         </Image>
       </View>
@@ -78,12 +84,12 @@ const styles = StyleSheet.create({
     textContainer: {
       position: "absolute",
       bottom: 0,
-      backgroundColor: "rgba(255,255,255, 0.80)",
+      backgroundColor: "rgba(255,255,255, 0.85)",
       padding: 5,
       width: "100%",
       borderBottomLeftRadius: 8,
       borderBottomRightRadius: 8,
-      minHeight: 50
+      flex: 1
     }
 });
 

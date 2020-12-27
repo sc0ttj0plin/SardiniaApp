@@ -2,9 +2,11 @@ import React, { PureComponent } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { ActivityIndicator } from 'react-native';
 import { Image } from 'react-native-elements';
-import { TouchableOpacity } from "react-native-gesture-handler";
+import ScrollableContainerTouchableOpacity from "./ScrollableContainerTouchableOpacity";
 import _ from 'lodash';
 import CustomText from "./CustomText";
+import Layout from "../constants/Layout";
+import ShimmerWrapper from "./ShimmerWrapper";
 
 /**
  * ExtraItem is a list item component used in the Extra screen 
@@ -13,42 +15,56 @@ class ExtraItem extends PureComponent{
   constructor(props) {
     super(props);
     this.state = {
-      width: 0,
+      width: Layout.window.width,
     };
   }
   
   render() {
     const { title, image, imageStyle, onPress, btnTitle } = this.props;
     return (
-      <View style={styles.container} onLayout={(event) => { this.setState({ width: event.nativeEvent.layout.width }); }}>
+      <View style={styles.container}>
+        <ShimmerWrapper
+                shimmerStyle={[styles.shimmer]}>
+        </ShimmerWrapper>
         <Image 
           source={{ uri: image}} 
-          style={[styles.image, { width: this.state.width, height: this.state.height }, imageStyle]} 
-          PlaceholderContent={<ActivityIndicator style={styles.spinner} color={"white"} />}
+          style={[styles.image, imageStyle, {width: this.state.width}]}
+          placeholderStyle={{backgroundColor: "transparent"}}
           >
         <View style={styles.imageOverlay}>
           <CustomText style={styles.itemTitle}>
             {title || "text"}
           </CustomText>
-            <TouchableOpacity
+            <ScrollableContainerTouchableOpacity
                 activeOpacity={0.7}
                 onPress={onPress ? onPress : () => {}}
                 style={styles.itemButton}>
                     <CustomText style={styles.itemButtonText}>{btnTitle}</CustomText>
-            </TouchableOpacity>
+            </ScrollableContainerTouchableOpacity>
         </View>
-          </Image>
+       </Image>
       </View>
       );
     }
 }
 
 const styles = StyleSheet.create({ 
+    container: {
+      width: "100%",
+      height: 450,
+      alignItems: 'center',
+    },
+    shimmer: {
+      position: "absolute",
+      width: "100%",
+      height: "100%"
+    },
     imageOverlay: {
       width: "100%",
-      backgroundColor: "transparent",
+      backgroundColor: "rgba(0,0,0,0.2)",
       justifyContent: "center",
-      alignItems: "center"
+      alignItems: "center",
+      height: "100%"
     },
     itemTitle: {
       color: "white",
@@ -81,16 +97,6 @@ const styles = StyleSheet.create({
     spinner: {
       marginTop: 40
     },
-    container: {
-      overflow: "hidden",
-      height: 450,
-      marginBottom: 2,
-      flexDirection: "column",
-      justifyContent: 'center',
-      alignItems: 'center',
-      position: "relative",
-      textAlignVertical: "center",
-    },
     titlePrefix: {
       fontSize: 15,
       color: "#ffffff",
@@ -111,21 +117,9 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
+      width: "100%",
+      backgroundColor: "transparent",
     },
-    titleContainer: {
-      width: "60%",
-      height: "60%",
-      alignSelf: "center",
-      justifyContent: "center",
-      alignItems: "center"
-    },
-    titleContainerBackground:  {
-      width: 200,
-      backgroundColor: "rgba(60,66,72, 0.8)",
-      paddingVertical: 25,
-      paddingHorizontal: 15
-    }
-
 });
 
 export default ExtraItem;

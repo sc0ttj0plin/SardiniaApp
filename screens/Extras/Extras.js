@@ -112,6 +112,7 @@ class ExtrasScreen extends Component {
             data={this.state.extras}
             renderItem={({item, index}) => this._renderItem(item, index)}
             style={styles.fill}
+            ItemSeparatorComponent={() => <View style={{height:2}}></View>}
           />
       </AsyncOperationStatusIndicator>
      )
@@ -142,7 +143,8 @@ ExtrasScreen.navigationOptions = {
 const styles = StyleSheet.create({
   fill: {
     flex: 1,
-    backgroundColor: "white"
+    backgroundColor: "white",
+    width: "100%"
   },
   header: {
     backgroundColor: "white"
