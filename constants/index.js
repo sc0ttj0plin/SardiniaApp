@@ -139,7 +139,7 @@ export const DATE_FORMAT = `YYYY${DATE_SEP}MM${DATE_SEP}DD`;
 export const DATE_FORMAT_RENDER = `DD / MM / YYYY`;
 export const YEAR_MONTH_FORMAT = `YYYY${DATE_SEP}MM`;
 
-export const REGION_SARDINIA = { longitude: 9.0, latitude: 40.0, longitudeDelta: 2, latitudeDelta: 2.5 };
+export const REGION_SARDINIA = { longitude: 9.0, latitude: 40.0, longitudeDelta: 2, latitudeDelta: 3.2 };
 
 export const WEBSITE_URL = "https://www.sardegnaturismo.it/";
 

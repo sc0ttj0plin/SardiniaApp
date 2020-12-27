@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, ActivityIndicator, PixelRatio } from "react-nat
 import ScrollableContainerTouchableOpacity from "../components/ScrollableContainerTouchableOpacity";
 import { Image } from 'react-native-elements';
 import CustomText from "./CustomText";
+import ShimmerWrapper from "./ShimmerWrapper"
 
 /**
  * List item element that represents a category
@@ -42,14 +43,14 @@ class CategoryListItem extends PureComponent {
   }
 
   render() { 
-    var image = this.props.image ? this.props.image : "https://via.placeholder.com/300x150";
+    var image = this.props.image;
     return (
-      <ScrollableContainerTouchableOpacity onPress={this.props.onPress} activeOpacity={0.7} style={[styles.container, this.props.style]} onLayout={(event) => { this.setState({ width: event.nativeEvent.layout.width }); }} > 
-       <View style={{flex: 1}}>
+      <ScrollableContainerTouchableOpacity onPress={this.props.onPress} activeOpacity={0.7} style={[styles.container, this.props.style]} > 
+       <ShimmerWrapper shimmerStyle={styles.shimmer} />
+       <View style={styles.fill}>
         <Image 
             source={{ uri: image }} 
-            style={[styles.image, { width: this.state.width, height: this.state.height }]} 
-            PlaceholderContent={<ActivityIndicator style={styles.spinner} color={"white"} />}
+            style={[styles.image]}
             >
             {this._renderBottomBox(this.props.title, true, 0.8)}
           </Image>
@@ -60,8 +61,9 @@ class CategoryListItem extends PureComponent {
 }
 
 const styles = StyleSheet.create({ 
-    spinner: {
-      marginBottom: 30
+    fill: {
+      width: "100%",
+      height: "100%",
     },
     container: {
       flex: 1,
@@ -75,11 +77,18 @@ const styles = StyleSheet.create({
       position: "relative",
       textAlignVertical: "center",
     },
+    shimmer: {
+      width: "100%",
+      height: "100%",
+      position: "absolute"
+    },
     image: {
       resizeMode: "cover",
-      flex: 1,
       justifyContent: 'flex-end',
       alignItems: 'flex-end',
+      backgroundColor: "transparent",
+      width: "100%",
+      height: 160,
     },
     title: {
       fontSize: 18,
@@ -93,7 +102,7 @@ const styles = StyleSheet.create({
       height: "60%",
       alignSelf: "flex-end",
       justifyContent: "flex-end",
-      alignItems: "flex-end"
+      alignItems: "flex-end",
     },
     titleContainerBackground:  {
       width: "100%",

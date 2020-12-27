@@ -4,7 +4,7 @@ import { ActivityIndicator } from 'react-native';
 import { Image } from 'react-native-elements';
 import {distanceToString} from '../helpers/maps'
 import CustomText from "./CustomText";
-import { ShimmerWrapper } from "../components"
+import ShimmerWrapper from "../components/ShimmerWrapper"
 
 /**
  * Similar to PoiItemsList but with geographical information 

@@ -11,6 +11,7 @@ import it from 'moment/locale/it'
 import en from 'moment/locale/en-gb'
 import _ from "lodash";
 import CustomText from "./CustomText";
+import EntityMap from "./EntityMap"
 
 class EntityStages extends PureComponent {  
   
@@ -40,6 +41,7 @@ class EntityStages extends PureComponent {
     const endDate = _.get(item.date, "end", null);
     const formattedStartDate = moment(startDate).format("DD MMMM YYYY");
     const formattedEndDate = moment(endDate).format("DD MMMM YYYY");
+    console.log("coordinates", this.props.coordinates);
     return(
       <View style={styles.eventStageView}>
         { index != 0 &&
@@ -65,7 +67,7 @@ class EntityStages extends PureComponent {
           data={this.state.stages}
           renderItem={({item, index}) => this._renderEventStage(item, index)}
           style={styles.eventContainer}
-          contentContainerStyle={styles.eventContentContainer}
+          contentContainerStyle={[styles.contentContainer, this.props.containerStyle]}
           showsHorizontalScrollIndicator={false}
           initialNumToRender={2} // Reduce initial render amount
           updateCellsBatchingPeriod={400} // Increase time between renders
@@ -76,7 +78,8 @@ class EntityStages extends PureComponent {
   }
 
   _renderItineraryStage = (stage, index) => {
-    const { title, body } = stage
+    const { title } = stage;
+    const body = stage.body.replace(/\. /g, '.\n');
     const { uuid } = stage.poi || null;
     const { explore } = this.props.locale.messages;
     return(
@@ -111,7 +114,7 @@ class EntityStages extends PureComponent {
         data={this.state.stages}
         renderItem={({item, index}) => this._renderItineraryStage(item, index)}
         style={styles.container}
-        contentContainerStyle={styles.contentContainer}
+        contentContainerStyle={[styles.contentContainer, this.props.containerStyle]}
         showsHorizontalScrollIndicator={false}
         initialNumToRender={2} // Reduce initial render amount
         updateCellsBatchingPeriod={400} // Increase time between renders
@@ -227,7 +230,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    marginBottom: 40,
     marginTop: 20
   },
   eventStagesTitle: {

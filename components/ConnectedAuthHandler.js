@@ -83,27 +83,24 @@ class ConnectedAuthHandler extends PureComponent {
         <Modal
           animationType="fade"
           transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => { }}>
+          visible={modalVisible}>
             <View style={[styles.fill]}>
             <View 
               style={styles.modalView} 
             >
-              <TouchableWithoutFeedback>
                 <View style={styles.modalWindow}>
                   <CustomText style={styles.modalTitle}>{login}</CustomText>
                   <CustomText style={styles.modalDescription}>{loginText}</CustomText>
                   <View style={styles.modalButtons}>
-                    <TouchableOpacity activeOpacity={0.8} style={[styles.modalBtn, styles.loginButton, Constants.styles.shadow]} onPress={this._onRegister}>
+                    <TouchableOpacity activeOpacity={0.7} style={[styles.modalBtn, styles.loginButton, Constants.styles.shadow]} onPress={this._onRegister}>
                       <CustomText style={[styles.modalBtnText, styles.loginButtonText]}>{access}</CustomText>
                     </TouchableOpacity>
                     <View style={styles.buttonsSeparator} />
-                    <TouchableOpacity activeOpacity={0.8} style={[styles.modalBtn, styles.skipButton, Constants.styles.shadow]} onPress={this._onSkip}>
+                    <TouchableOpacity activeOpacity={0.7} style={[styles.modalBtn, styles.skipButton, Constants.styles.shadow]} onPress={this._onSkip}>
                       <CustomText style={[styles.modalBtnText, styles.skipButtonText]}>{skip}</CustomText>
                     </TouchableOpacity>
                   </View>
                 </View>
-              </TouchableWithoutFeedback>
             </View>
             </View>
         </Modal>
@@ -134,49 +131,10 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0, 0.5)",
     zIndex: 11,
   },
-  fab: {
-    position: "absolute",
-    zIndex: 1,
-    top: 25,
-    right: 20,
-    height: 50,
-    width: 50
-  },
-  header: {
-    backgroundColor: "white"
-  },
   container: {
     marginTop: 20,
     marginBottom: 30,
     marginHorizontal: 20,
-  },
-  headerContainer: {
-    padding: 10,
-    backgroundColor: "white",
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 30, 
-    marginTop: -30,
-    borderTopColor: "#f2f2f2",
-    borderTopWidth: 2,
-    borderRightColor: "#f2f2f2",
-    borderRightWidth: 2
-  },
-  sectionTitle: {
-    flex: 1,
-    textAlign: "center",
-    paddingTop: 10,
-    paddingBottom: 10,
-    color: "#000000E6",
-    fontFamily: "montserrat-bold",
-  },
-  listContainerHeader: {
-    paddingLeft: 10,
-  },
-  separator: {
-    width: "100%",
-    height: 8,
-    backgroundColor: "#F2F2F2",
-    marginVertical: 32
   },
   itemStyle: {
     backgroundColor: "white",
@@ -184,22 +142,14 @@ const styles = StyleSheet.create({
     borderColor: "#f2f2f2",
     borderRadius: 10
   },
-  starsView: {
-    marginTop: -5,
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center"
-  },
   modalView: {
     flex: 1, 
     width: '100%', 
     height: '100%', 
     zIndex: 1, 
-    position: 'absolute', 
-    top: Layout.statusbarHeight, 
+    backgroundColor: "rgba(0,0,0, 0.5)",
+    position: 'absolute',
     left: 0, 
-    backgroundColor: "rgba(0,0,0,0.5)",
     alignItems: "center",
     justifyContent: "center",
   },

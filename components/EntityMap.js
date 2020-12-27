@@ -12,6 +12,7 @@ import {boundingRect} from '../helpers/maps';
 import CustomText from "./CustomText";
 import { connect, useStore } from 'react-redux';
 import actions from '../actions';
+//import TouchableOpacity from './ScrollableContainerTouchableOpacity';
 
 import { bindActionCreators } from 'redux';
 // import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -23,16 +24,14 @@ class EntityMap extends PureComponent {
     const { hasMarkers, coordinates, title } = props;
     this.state = {
       region: Constants.REGION_SARDINIA,
-      coordinates
+      coordinates: coordinates
     };
 
     this._map = null
-    console.log("coordinates", coordinates, hasMarkers, title)
   }
 
   componentDidMount(){
     const { hasMarkers, coordinates } = this.props;
-    // console.log("coordinates", coordinates, hasMarkers)
     if(hasMarkers && coordinates && coordinates.length > 0){
       this._setRegion()
     }
@@ -41,7 +40,6 @@ class EntityMap extends PureComponent {
   componentDidUpdate(prevProps){
     if(prevProps.coordinates !== this.props.coordinates){
       const { hasMarkers, coordinates } = this.props;
-      console.log("coordinates", coordinates, hasMarkers)
       if(hasMarkers && coordinates && coordinates.length > 0){
         this._setRegion()
       }
@@ -52,7 +50,7 @@ class EntityMap extends PureComponent {
 
   _setRegion = () => {
     const { coordinates } = this.props;
-    let region = boundingRect(coordinates, null, (p) => [p.coords.longitude, p.coords.latitude], 5);
+    let region = boundingRect(coordinates, null, (p) => [p.coords.longitude, p.coords.latitude], coordinates.length == 1 ? 1000 : 5);
     this._onRegionChangeComplete(region, true)
   }
   
@@ -74,10 +72,10 @@ class EntityMap extends PureComponent {
         this.props.navigation.push(Constants.NAVIGATION.NavEventsMapScreen, { events: coordinates, hideScrollable: true, title: this.props.title });
         break;
       case Constants.ENTITY_TYPES.itineraries:
-        this.props.navigation.push(Constants.NAVIGATION.NavItineraryStagesMapScreen, { markers: coordinates });
+        this.props.navigation.push(Constants.NAVIGATION.NavItineraryStagesMapScreen, { markers: coordinates, term: this.props.term });
         break;
       default:
-        this.props.navigation.push(Constants.NAVIGATION.NavItineraryStagesMapScreen, { markers: coordinates });
+        this.props.navigation.push(Constants.NAVIGATION.NavItineraryStagesMapScreen, { markers: coordinates, term: this.props.term });
     }
   }
 
@@ -122,14 +120,16 @@ class EntityMap extends PureComponent {
       return null
   }
 
-  _renderOpenNavigatorButton = () => {
-    const { coordinates } = this.props;
-    const { locale } = this.props;
+  _renderOpenNavigatorButton = (coordinates) => {
+    const { locale, entityType } = this.props;
     const { openNavigator } = locale.messages;
+    let bgColor = Colors.colorPlacesScreen;
+    if(entityType)
+      bgColor = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entityType].backgroundColor || Colors.colorItinerariesScreen;
     return(
       <TouchableOpacity
         activeOpacity={0.7}
-        style={styles.button}
+        style={[styles.button, { backgroundColor: bgColor}]}
         onPress={() => this._openNavigator("", coordinates)}>
         <CustomText style={styles.buttonText}>{openNavigator}</CustomText>
       </TouchableOpacity>
@@ -159,12 +159,12 @@ class EntityMap extends PureComponent {
     return (
       <>
         { coordinates && (
-          <View styles={styles.fill}>
+          <View style={[styles.fill, styles.container, containerStyle]}>
             <View
-              pointerEvents={"none"} 
-              style={[styles.mapContainer, containerStyle]}
+              style={[styles.mapContainer]}
               >
               <MapView
+                pointerEvents={"none"} 
                 ref={ map => this._map = map }
                 initialRegion={Constants.REGION_SARDINIA}
                 region={this.state.region}
@@ -176,11 +176,13 @@ class EntityMap extends PureComponent {
                 {!hasMarkers && this._renderPoint(coordinates)}
                 {hasMarkers && this._renderMarkers(coordinates)}
               </MapView>
+              <View style={styles.openNavigatorContainer}>
+              {!hasMarkers && !hideOpenNavigatorButton && this._renderOpenNavigatorButton(coordinates)}
+              {hasMarkers && coordinates.length > 1 && this._renderOpenMapButton()}
+              {hasMarkers  && coordinates.length == 1 && this._renderOpenNavigatorButton(coordinates[0])}
+              </View>
             </View>
-            <View style={styles.openNavigatorContainer}>
-            {!hasMarkers && !hideOpenNavigatorButton && this._renderOpenNavigatorButton()}
-            {hasMarkers && this._renderOpenMapButton()}
-            </View>
+            
           </View>
         )}
       </>
@@ -193,11 +195,13 @@ const styles = StyleSheet.create({
     flex: 1,
     position: "relative",
   },
+  container: {
+    marginTop: 40,
+    marginBottom: 60,
+  },
   mapContainer: {
     flex: 1,
-    height: Layout.window.height / 3,
-    marginBottom: 40,
-    marginTop: 20
+    height: Layout.window.height / 2.8,
   },
   openNavigatorContainer: {
     justifyContent: "center",
@@ -206,7 +210,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     position: "absolute",
-    bottom: 18,
+    bottom: -18,
     left: 0,
     zIndex: 1
   },

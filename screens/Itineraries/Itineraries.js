@@ -53,7 +53,7 @@ class ItinerariesScreen extends PureComponent {
       itineraries: [],
       coords: {},
       region: Constants.MAP.defaultRegion,
-      selectedItinerary: null,
+      selectedEntity: null,
       snapPoints: [],
       tracksViewChanges: true,
     };
@@ -70,7 +70,9 @@ class ItinerariesScreen extends PureComponent {
    */
   componentDidMount() {
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
-
+    if(this.props.others.geolocation && this.props.others.geolocation.coords) {
+      this._onUpdateCoords(this.props.others.geolocation.coords);
+    }
     this.props.actions.getItineraries();
   }
 
@@ -89,6 +91,7 @@ class ItinerariesScreen extends PureComponent {
 
   _onUpdateCoords(newCoords) {
     // const { coords, term } = this.state;
+    console.log(newCoords);
     const { coords } = this.state;
     if(!coords || coords.latitude !== newCoords.latitude || coords.longitude !== newCoords.longitude) {
       let isCordsInBound = coordsInBound(newCoords); 
@@ -111,9 +114,9 @@ class ItinerariesScreen extends PureComponent {
   _selectMarker = (itinerary) => {
     if(itinerary) {
       this.props.actions.setScrollableSnapIndex(Constants.ENTITY_TYPES.itineraries, 1);
-      this.setState({ selectedItinerary: null }, () => {
+      this.setState({ selectedEntity: null }, () => {
         this.setState({ 
-          selectedItinerary: itinerary,
+          selectedEntity: itinerary,
           tracksViewChanges: true
         }, () => {
           this.setState({
@@ -123,7 +126,7 @@ class ItinerariesScreen extends PureComponent {
       })
     } else {
       this.setState({ 
-        selectedItinerary: null,
+        selectedEntity: null,
         tracksViewChanges: true
       }, () => {
         this.setState({
@@ -150,7 +153,7 @@ class ItinerariesScreen extends PureComponent {
 
   _onSettle = () => {
     this.setState({
-      selectedItinerary: null
+      selectedEntity: null
     })
   }
 
@@ -193,7 +196,7 @@ class ItinerariesScreen extends PureComponent {
   }
   /* Renders the topmost component: a map in our use case */
   _renderTopComponent = () => {
-    const { coords, region, selectedItinerary } = this.state;
+    const { coords, region, selectedEntity } = this.state;
     return (
       <>
       <MapView
@@ -209,35 +212,37 @@ class ItinerariesScreen extends PureComponent {
         clusterColor={Colors.colorItinerariesScreen}
         style={{flex: 1}}
         onPress={() => this._selectMarker(null)}
-        onPanDrag={() => selectedItinerary && this._selectMarker(null)}
+        onPanDrag={() => selectedEntity && this._selectMarker(null)}
       >
         {this._renderMarkers()}
       </MapView>
-      {selectedItinerary && this._renderWidget()}
+      {selectedEntity && this._renderWidget()}
       </>
     )
   }
 
   _renderWidget = () => {
-    const { selectedItinerary, coords } = this.state;
+    
+    const { selectedEntity, coords } = this.state;
     const { lan } = this.props.locale;
-    const title = _.get(selectedItinerary.title, [lan, 0, "value"], null);
-    const term = selectedItinerary.term.name;
-    const image = selectedItinerary.image;
+    const title = _.get(selectedEntity.title, [lan, 0, "value"], null);
+    const term = selectedEntity.term.name;
+    const image = selectedEntity.image;
     let distanceStr = null;
 
     // Add distance from the first itinerary stage
-    if (selectedItinerary.stages && selectedItinerary.stages.length > 0) {
-      const firstStage = selectedItinerary.stages[0].poi;
-      distanceStr = distanceToString(distance(coords.latitude, coords.longitude, firstStage.georef.coordinates[1], firstStage.georef.coordinates[0]));
+    if (selectedEntity.stages && selectedEntity.stages[lan].length > 0) {
+      const stage = selectedEntity.stages[lan][0];
+      const coordinates = _.get(stage, ["poi", "georef", "coordinates"], null) 
+      distanceStr = distanceToString(distance(coords.latitude, coords.longitude, coordinates[1], coordinates[0]));
     }
 
     return(
       <View style={styles.widget}>
         <EntityItem 
-          keyItem={selectedItinerary.nid}
+          keyItem={selectedEntity.nid}
           listType={Constants.ENTITY_TYPES.itineraries}
-          onPress={() => this._openItem(selectedItinerary)}
+          onPress={() => this._openItem(selectedEntity)}
           title={title}
           image={image}
           subtitle={term}
@@ -267,7 +272,7 @@ class ItinerariesScreen extends PureComponent {
     if(coordinates){
       const lat = _.get(coordinates, [1], null)
       const long = _.get(coordinates, [0], null)
-      const selected = this.state.selectedItinerary == itinerary;
+      const selected = this.state.selectedEntity == itinerary;
       const width = 32;
 
       return(
@@ -314,10 +319,18 @@ class ItinerariesScreen extends PureComponent {
 
   /* Renders a poi in Header */
   _renderListItem = ({item, index}) => {
+    const { coords } = this.state;
     const { lan } = this.props.locale;
     const title = _.get(item.title, [lan, 0, "value"], null);
+    const term = item.term.name;
     const image = item.image;
-    // console.log("title", item)
+    var distanceStr = null;
+    // Add distance from the first itinerary stage
+    if (item.stages && item.stages[lan].length > 0) {
+      const stage = item.stages[lan][0];
+      const coordinates = _.get(stage, ["poi", "georef", "coordinates"], null) 
+      distanceStr = distanceToString(distance(coords.latitude, coords.longitude, coordinates[1], coordinates[0]));
+    }
     return (
       <EntityItem
         keyItem={item.nid}
@@ -325,7 +338,8 @@ class ItinerariesScreen extends PureComponent {
         onPress={() => this._openItem(item)}
         title={`${title}`}
         image={`${image}`}
-        subtitle={" "}
+        subtitle={`${term}`}
+        distance={this.state.isCordsInBound ? distanceStr : null}
         style={styles.itinerariesListItem}
         horizontal={false}
         extraStyle={{
@@ -336,11 +350,11 @@ class ItinerariesScreen extends PureComponent {
 
   /* Render content */
   _renderContent = () => {
-    const { selectedItinerary, itineraries } = this.state;
+    const { selectedEntity, itineraries } = this.state;
     let data = itineraries;
     if(!data.length)
       data = []
-    let snapIndex = selectedItinerary ? 3 : 2;
+    let snapIndex = selectedEntity ? 3 : 2;
     let numColumns = 1;
     return (
       <ScrollableContainer 

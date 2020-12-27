@@ -110,17 +110,17 @@ class ItineraryScreen extends Component {
   }
 
   _parseEntity = (entity) => {
-    // console.log(entity)
     if(entity) {
       const { locale } = this.props;
       const { lan } = locale;
       // console.log("language", lan)
-      const { abstract, title, description } = getEntityInfo(entity, ["abstract", "title", "description"], [lan, 0, "value"], null, {"description": {s: /\. /g, d: ".<br/>"}});
+      const { abstract, title, description } = getEntityInfo(entity, ["abstract", "title", "description"], [lan, 0, "value"], null, {"description": {s: /\.\s?/g, d: ".<br/><br/>"}});
       const socialUrl = `${Constants.WEBSITE_URL}${greedyArrayFinder(entity.url_alias, "language", lan, "alias", "")}`;
       const stagesMarkers = this._getItineraryStagesMarkers(entity.stages[lan]);
       //Get the first stage coordinates to show on map
       const coordinates = _.get(entity, ["stages", lan, 0, "poi", "georef", "coordinates"], null);
-      this.setState({ entity, abstract,  title,  description, coordinates, socialUrl, stages: entity.stages[lan], stagesMarkers });
+      const term = entity.term.name;
+      this.setState({ entity, abstract, term, title,  description, coordinates, socialUrl, stages: entity.stages[lan], stagesMarkers });
     }
   }
 
@@ -225,11 +225,11 @@ class ItineraryScreen extends Component {
           <TopMedia urlImage={entity.image} />
           {this._renderFab(entity.uuid, title, coordinates, socialUrl)}   
           <View style={[styles.headerContainer]}> 
-            <EntityHeader title={title} borderColor={Colors.colorItinerariesScreen}/>
+            <EntityHeader title={title} term={entity.term ? entity.term.name : ""} borderColor={Colors.colorItinerariesScreen}/>
           </View>
           <View style={[styles.container]}>
             <EntityAbstract abstract={abstract} />
-            <EntityMap coordinates={stagesMarkers} hasMarkers uuid={uuid}/>
+            <EntityMap coordinates={stagesMarkers} term={entity.term} hasMarkers uuid={uuid}/>
             <EntityDescription title={descriptionTitle} text={description} color={Colors.colorItinerariesScreen}/>
             <EntityStages type="itinerary" stages={stages} locale={locale} />
             <View style={styles.separator}/>
@@ -305,8 +305,7 @@ const styles = StyleSheet.create({
   separator: {
     width: "100%",
     height: 8,
-    backgroundColor: "#F2F2F2",
-    marginVertical: 32
+    marginVertical: 20
   }
 });
 

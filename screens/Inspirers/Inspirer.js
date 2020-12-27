@@ -284,8 +284,7 @@ const styles = StyleSheet.create({
   separator: {
     width: "100%",
     height: 8,
-    backgroundColor: "#F2F2F2",
-    marginVertical: 32
+    marginVertical: 20
   }
 });
 

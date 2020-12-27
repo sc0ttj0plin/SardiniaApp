@@ -15,7 +15,7 @@ import {
   CustomText,
   SectionTitle
  } from "../../components";
-import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
+import { coordsInBound, distance, distanceToString, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
 // import MapView from "react-native-map-clustering";
 import MapView from "react-native-maps";
 import { connect, useStore } from 'react-redux';
@@ -56,7 +56,6 @@ class EventsMapScreen extends PureComponent {
     const hideScrollable = _.get(props.route, "params.hideScrollable", false);
     const title = _.get(props.route, "params.title", "");
 
-    console.log("title map", title)
     // console.log("events", props.route.params.events.length, events.length)
     this.state = {
       render: USE_DR ? false : true,
@@ -65,7 +64,7 @@ class EventsMapScreen extends PureComponent {
       coords: {},
       poisLimit: Constants.PAGINATION.poisLimit,
       region: Constants.MAP.defaultRegion,
-      selectedEvent: null,
+      selectedEntity: null,
       snapPoints: [],
       tracksViewChanges: false,
       hideScrollable,
@@ -83,6 +82,9 @@ class EventsMapScreen extends PureComponent {
    */
   componentDidMount() {
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
+    if(this.props.others.geolocation && this.props.others.geolocation.coords) {
+      this._onUpdateCoords(this.props.others.geolocation.coords);
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -149,10 +151,10 @@ class EventsMapScreen extends PureComponent {
   _selectMarker = (event) => {
     if(event) {
       this.props.actions.setScrollableSnapIndex(Constants.ENTITY_TYPES.events, 2);
-      this.setState({ selectedEvent: null }, () => {
+      this.setState({ selectedEntity: null }, () => {
         this._tracksViewChanges = true;
         this.setState({ 
-          selectedEvent: event,
+          selectedEntity: event,
           tracksViewChanges: true
         }, () => {
           this._tracksViewChanges = false;
@@ -163,7 +165,7 @@ class EventsMapScreen extends PureComponent {
       })
     } else {
       this.setState({ 
-        selectedEvent: null,
+        selectedEntity: null,
         tracksViewChanges: true
       }, () => {
         this._tracksViewChanges = false;
@@ -221,7 +223,7 @@ class EventsMapScreen extends PureComponent {
   
   /* Renders the topmost component: a map in our use case */
   _renderTopComponent = () => {
-    const { coords, region, selectedEvent } = this.state;
+    const { coords, region, selectedEntity } = this.state;
     return (
       <>
       <MapView
@@ -238,12 +240,12 @@ class EventsMapScreen extends PureComponent {
         clusterColor={Colors.colorEventsScreen}
         style={{flex: 1}}
         onPress={() => this._selectMarker(null)}
-        onPanDrag={() => selectedEvent && this._selectMarker(null)}
+        onPanDrag={() => selectedEntity && this._selectMarker(null)}
       >
         {this._renderMarkers()}
-        {/* {this.state.selectedEvent && this._renderMarker(this.state.selectedEvent, true)} */}
+        {/* {this.state.selectedEntity && this._renderMarker(this.state.selectedEntity, true)} */}
       </MapView>
-      {selectedEvent && this._renderWidget()}
+      {selectedEntity && this._renderWidget()}
 
       </>
     )
@@ -251,20 +253,29 @@ class EventsMapScreen extends PureComponent {
   }
 
   _renderWidget = () => {
-    const { selectedEvent } = this.state;
+    const { selectedEntity, coords } = this.state;
     const { lan } = this.props.locale;
-    const title = _.get(selectedEvent.title, [lan, 0, "value"], null);
-    const image = selectedEvent.image;
+    const title = _.get(selectedEntity.title, [lan, 0, "value"], null);
+    const term = selectedEntity.term.name;
+    const image = selectedEntity.image;
+    const coordinates = _.get(selectedEntity, ["itinerary", 0], null);
+    var distanceStr = null;
+
+    if (coordinates) {
+      console.log(_.get(selectedEntity, ["itinerary", 0], null));
+      distanceStr = distanceToString(distance(coords.latitude, coords.longitude, coordinates.lat, coordinates.lon));
+    }
 
     return(
       <View style={styles.widget}>
         <EntityItem 
-          keyItem={selectedEvent.nid}
+          keyItem={selectedEntity.nid}
           listType={Constants.ENTITY_TYPES.events}
-          onPress={() => this._openItem(selectedEvent)}
+          onPress={() => this._openItem(selectedEntity)}
           title={`${title}`}
           image={`${image}`}
-          subtitle={" "}
+          subtitle={`${term}`}
+          distance={this.state.isCordsInBound ? distanceStr : null}
           style={styles.itinerariesListItem}
           horizontal={false}
           topSpace={10}
@@ -296,7 +307,7 @@ class EventsMapScreen extends PureComponent {
       if(lat && long){
         coords = { longitude: parseFloat(long),  latitude: parseFloat(lat) };
         onClick = () => this._selectMarker(event);
-        selected = this.state.selectedEvent == event;
+        selected = this.state.selectedEntity == event;
       }
     }
     else if(coordinates2){
@@ -341,11 +352,10 @@ class EventsMapScreen extends PureComponent {
 
   _renderMapTitle = () => {
     const { title } = this.state;
-    console.log("aaaaaa", title)
       if(title != ""){
         return (
           //onStartShouldSetResponder={this._onListHeaderPressIn}
-          <SectionTitle numberOfLines={1} text={title} textStyle={{ fontSize: 15 }} style={styles.mapTitle} />
+          <SectionTitle numberOfLines={3} text={title} textStyle={{ fontSize: 15 }} style={styles.mapTitle} />
         )
       }
       else
@@ -357,11 +367,18 @@ class EventsMapScreen extends PureComponent {
 
   /* Renders a poi in Header */
   _renderListItem = ({item, index}) => {
+    const { coords } = this.state;
     const { lan } = this.props.locale;
     const title = _.get(item.title, [lan, 0, "value"], null);
     const term = _.get(item, "term.name", null);
     const image = item.image;
-    // console.log("title", item)
+    const coordinates = _.get(item, ["itinerary", 0], null);
+    var distanceStr = null;
+
+    if (coordinates) {
+      distanceStr = distanceToString(distance(coords.latitude, coords.longitude, coordinates.lat, coordinates.lon));
+    }
+
     return (
       <EntityItem 
         keyItem={item.nid}
@@ -370,6 +387,7 @@ class EventsMapScreen extends PureComponent {
         title={title}
         image={image}
         subtitle={term}
+        distance={this.state.isCordsInBound ? distanceStr : null}
         style={styles.eventsListItem}
         horizontal={false}
         extraStyle={styles.eventsListItem}
@@ -389,9 +407,9 @@ class EventsMapScreen extends PureComponent {
 
   /* Render content */
   _renderContent = () => {
-    const { selectedEvent, events } = this.state;
+    const { selectedEntity, events } = this.state;
     let data = events;
-    let snapIndex = selectedEvent ? 3 : 2
+    let snapIndex = selectedEntity ? 3 : 2
 
     return (
       <ScrollableContainer 
@@ -544,7 +562,6 @@ const styles = StyleSheet.create({
     color: "#000000E6",
     backgroundColor: "#F2F2F2",
     marginBottom: 16,
-    height: 40,
     fontSize: 15,
     fontFamily: "montserrat-bold",
     marginTop: -10,

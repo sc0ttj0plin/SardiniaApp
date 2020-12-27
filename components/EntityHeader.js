@@ -2,7 +2,8 @@ import React, {PureComponent} from 'react';
 import { View, StyleSheet, Text, PixelRatio, Platform } from 'react-native';
 import Colors from '../constants/Colors';
 import CustomText from "./CustomText";
-import { AsyncOperationStatusIndicator, ShimmerWrapper } from '../components';
+import AsyncOperationStatusIndicator from './AsyncOperationStatusIndicator'; 
+import ShimmerWrapper from './ShimmerWrapper'; 
 
 export default class EntityHeader extends PureComponent {  
   

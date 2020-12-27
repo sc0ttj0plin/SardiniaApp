@@ -26,11 +26,15 @@ class ItineraryStagesMapScreen extends Component {
     super(props);
 
     const markers = _.get(props.route, "params.markers", []);
+    const term = _.get(props.route, "params.term", "");
+
+    console.log("term", props.route.params.term);
 
     this.state = {
       render: USE_DR ? false : true,
       //
       markers,
+      term,
       region: Constants.REGION_SARDINIA,
       coords: {},
     };
@@ -66,6 +70,10 @@ class ItineraryStagesMapScreen extends Component {
         }
       }, 10);
     });
+
+    if(this.props.others.geolocation && this.props.others.geolocation.coords) {
+      this._onUpdateCoords(this.props.others.geolocation.coords);
+    }
   }
 
   componentWillMount() {
@@ -75,7 +83,7 @@ class ItineraryStagesMapScreen extends Component {
 
   componentDidUpdate(prevProps) {
     // NEW-GEO
-    if (prevProps.others.geolocation !== this.props.others.geolocation && this.props.others.geolocation.coords) {
+    if (prevProps.others && prevProps.others.geolocation !== this.props.others.geolocation && this.props.others.geolocation.coords) {
       // { coords: { latitude, longitude }, altitude, accuracy, altitudeAccuracy, heading, speed, timestamp (ms since epoch) }
       this._onUpdateCoords(this.props.others.geolocation.coords);
     }
@@ -131,6 +139,7 @@ class ItineraryStagesMapScreen extends Component {
     const { lan } = this.props.locale;
     const title = stage.title;
     const image = stage.image;
+    const term = this.state.term.name;
     let distanceStr = null;
 
     // Add distance from the first itinerary stage
@@ -144,7 +153,7 @@ class ItineraryStagesMapScreen extends Component {
           onPress={() => this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item: { uuid: stage.uuid } })}
           title={`${title}`}
           image={`${image}`}
-          subtitle={" "}
+          subtitle={`${term}`}
           style={styles.itinerariesListItem}
           horizontal={false}
           topSpace={10}
@@ -368,6 +377,8 @@ function ItineraryScreenContainer(props) {
 
 const mapStateToProps = state => {
   return {
+    //others
+    others: state.othersState,
     //language
     locale: state.localeState,
     //favourites

@@ -134,7 +134,6 @@ class EventScreen extends Component {
   }
 
   _parseEntity = (entity) => {
-    console.log(entity.abstract, entity.title, entity.steps)
     const { locale } = this.props;
     const { lan } = locale;
     const { abstract, title, description } = getEntityInfo(entity, ["abstract", "title", "description"], [lan, 0, "value"], null, {"description": {s: /\. /g, d: ".<br/>"}});
@@ -143,7 +142,6 @@ class EventScreen extends Component {
     const steps = _.get(entity, ["steps", lan], []);
     // const stepsCoordinates =  getCoordinates(entity, 'it');
     const stepsCoordinates = this._getEventStepsMarkers(entity.steps[lan]);
-    console.log("steps", stepsCoordinates)
     // const stepsCoordinates = steps.reduce((acc, el, idx) => {
     //   acc.push([el.georef.lon, el.georef.lat]);
     //   return acc;
@@ -282,7 +280,7 @@ class EventScreen extends Component {
           <View style={[styles.container]}>
             <EntityDescription title={descriptionTitle} text={description} color={Colors.colorEventsScreen}/>
             <EntityStages stages={steps} locale={locale}/>
-            <EntityMap title={title} coordinates={stepsCoordinates} hasMarkers uuid={uuid} entityType={Constants.ENTITY_TYPES.events}/> 
+            <EntityMap containerStyle={{marginTop: 0, marginBottom: 30}} title={title} coordinates={stepsCoordinates} hasMarkers uuid={uuid} entityType={Constants.ENTITY_TYPES.events}/> 
             <View style={styles.separator}/>
             {this._renderRelatedList(canBeOfInterest, relatedEntities, Constants.ENTITY_TYPES.events)}
             <EntityAccomodations 
@@ -366,8 +364,7 @@ const styles = StyleSheet.create({
   separator: {
     width: "100%",
     height: 8,
-    backgroundColor: "#F2F2F2",
-    marginVertical: 32
+    marginVertical: 20
   },
   itemStyle: {
     backgroundColor: "white",

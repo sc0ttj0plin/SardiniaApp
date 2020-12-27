@@ -104,8 +104,8 @@ export function boundingRect(points, center, getCoordsFun, zoomOutMultiplicator=
 		_center = [_center.longitude, _center.latitude];
 	}
 
-	let maxLonDelta = Math.max(Math.abs(_center[0]-tr[0]), Math.abs(_center[0]-bl[0]));
-	let maxLatDelta = Math.max(Math.abs(_center[1]-tr[1]), Math.abs(_center[1]-bl[1]));
+	let maxLonDelta = Math.max(Math.max(Math.abs(_center[0]-tr[0]), Math.abs(_center[0]-bl[0])), 0.0001);
+	let maxLatDelta = Math.max(Math.max(Math.abs(_center[1]-tr[1]), Math.abs(_center[1]-bl[1])), 0.0001);
 	
 	// console.log("max lon delta", _center[0]-tr[0], _center[0]-bl[0])
 	return {
