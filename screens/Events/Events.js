@@ -247,7 +247,7 @@ class EventsScreen extends Component {
       <FlatList
         data={this.props.events.eventsByYearMonth[currentMonth]}
         keyExtractor={(item) => item.title}
-        contentContainerStyle={[styles.content, {paddingBottom: 60 * PixelRatio.getFontScale()}]}
+        contentContainerStyle={[styles.content, {paddingBottom: 95 * PixelRatio.getFontScale()}]}
         ItemSeparatorComponent={() => <View style={{height: 10, backgroundColor: "transparent"}}></View>}
         renderItem={({ item }) => this._renderEventsListItem(item)}
         style={styles.listContent}
