@@ -210,7 +210,7 @@ class InspirersScreen extends Component {
               key={"flatlist-layout" + numColumns} 
               onEndReached={this._loadMorePois}
               keyExtractor={item => item.uuid}
-              initialNumToRender={3} // Reduce initial render amount
+              initialNumToRender={6} // Reduce initial render amount
               maxToRenderPerBatch={2}
               showsVerticalScrollIndicator={false}
               contentContainerStyle={styles.listContainerStyle}

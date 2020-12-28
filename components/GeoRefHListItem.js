@@ -2,6 +2,7 @@ import React, { PureComponent } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { ActivityIndicator } from 'react-native';
 import { Image } from 'react-native-elements';
+import { LinearGradient } from 'expo-linear-gradient';
 import {distanceToString} from '../helpers/maps'
 import CustomText from "./CustomText";
 import ShimmerWrapper from "../components/ShimmerWrapper"
@@ -29,7 +30,10 @@ class GeoRefHListItem extends PureComponent{
       <View style={[styles.container, this.props.style]}>
         <ShimmerWrapper shimmerStyle={styles.shimmer} />
         <Image source={{ uri: this.props.image }} style={styles.image}>
-          <View style={styles.textContainer}>
+          <LinearGradient
+          style={styles.textContainer}
+          colors={['rgba(255,255,255,0.8)', 'rgba(240,240,240,1)']}
+          >
             <CustomText
             numberOfLines={1}
             ellipsizeMode='tail'
@@ -41,7 +45,7 @@ class GeoRefHListItem extends PureComponent{
               style={styles.place}>{subtitle}
               </CustomText>
              {this.renderDistanceRow(distance)}
-          </View>
+          </LinearGradient>
         </Image>
       </View>
       );
@@ -55,8 +59,8 @@ const styles = StyleSheet.create({
     container: {
       backgroundColor: "white",
       alignItems: "flex-start",
-      borderRadius: 8,
       overflow: "hidden",
+      borderRadius: 8
     },
     title: {
       fontSize: 12,
@@ -84,11 +88,8 @@ const styles = StyleSheet.create({
     textContainer: {
       position: "absolute",
       bottom: 0,
-      backgroundColor: "rgba(255,255,255, 0.85)",
       padding: 5,
       width: "100%",
-      borderBottomLeftRadius: 8,
-      borderBottomRightRadius: 8,
       flex: 1
     }
 });

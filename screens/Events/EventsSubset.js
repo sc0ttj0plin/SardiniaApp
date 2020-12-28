@@ -189,6 +189,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   content: {
+    paddingTop: 10,
     paddingBottom:20
   },
   listContent: {
@@ -199,9 +200,8 @@ const styles = StyleSheet.create({
     flex: 1
   },
   calendarListTitleView: {
-    backgroundColor: "#F2F2F2",
+    backgroundColor: "rgb(248,248,248)",
     height: 60,
-    marginBottom: 16,
     justifyContent: 'center',
     alignItems: "center"
   },

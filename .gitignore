@@ -55,3 +55,4 @@ Thumbs.db
 .expo/packager-info.json
 .expo/settings.json
 .expo-shared
+package.json

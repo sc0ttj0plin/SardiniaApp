@@ -1,6 +1,7 @@
 import React, { PureComponent } from "react";
 import { StyleSheet, View, Text, ActivityIndicator, PixelRatio } from "react-native";
 import ScrollableContainerTouchableOpacity from "../components/ScrollableContainerTouchableOpacity";
+import { LinearGradient } from 'expo-linear-gradient';
 import { Image } from 'react-native-elements';
 import CustomText from "./CustomText";
 import ShimmerWrapper from "./ShimmerWrapper"
@@ -21,24 +22,12 @@ class CategoryListItem extends PureComponent {
     let backgroundColor = (`rgba(255, 255, 255, 0.80)`);
 
     return (
-      <View style={[styles.titleContainer]}>
-          <View style={[styles.titleContainerBackground, {
-            backgroundColor: backgroundColor
-            }]}>
+      <LinearGradient style={[styles.titleContainer]}
+            colors={[backgroundColor, 'rgba(240,240,240,1)']}>
               <CustomText style={[styles.title]}>
                   {title}
               </CustomText>
-              {/* {
-                showBoxes &&
-                <View style={styles.boxes}>
-                    <View style={styles.box1}></View>
-                    <View style={styles.box2}></View>
-                    <View style={styles.box3}></View>
-                    <View style={styles.box4}></View>
-                </View>
-              } */}
-          </View>
-      </View>
+      </LinearGradient>
     );
   }
 
@@ -98,18 +87,11 @@ const styles = StyleSheet.create({
       padding: 10,
       textAlign: "center",
     },
-    titleContainer: {
+    titleContainer:  {
       width: "100%",
-      height: "60%",
-      alignSelf: "flex-end",
-      justifyContent: "flex-end",
-      alignItems: "flex-end",
-    },
-    titleContainerBackground:  {
-      width: "100%",
-      minHeight: 60,
       justifyContent: "center",
-      alignItems: "center"
+      alignItems: "center",
+      minHeight: 40
     },
     boxes: {
         position: "absolute",
