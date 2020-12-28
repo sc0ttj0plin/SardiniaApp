@@ -191,14 +191,7 @@ class EventsMapScreen extends PureComponent {
     this.setState({ snapPoints: [height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight, 80] });
   }; 
 
-  /**
-   * On scrollBottomSheet touch clear selection
-   * @param {*} e 
-   */
-  _onListHeaderPressIn = (e) => {
-    this._selectMarker(null)
-    return true;
-  }
+
   /********************* Render methods go down here *********************/
 
   _renderCluster = (cluster) => {
@@ -415,8 +408,6 @@ class EventsMapScreen extends PureComponent {
       <ScrollableContainer 
         entityType={Constants.ENTITY_TYPES.events}
         topComponent={this._renderTopComponent}
-        ListHeaderComponent={this._renderListHeader}
-        onListHeaderPressed={this._onListHeaderPressIn}
         extraComponent={this._renderMapTitle}
         data={data}
         initialSnapIndex={1}

@@ -157,14 +157,6 @@ class ItinerariesScreen extends PureComponent {
     })
   }
 
-  /**
-   * On scrollBottomSheet touch clear selection
-   * @param {*} e 
-   */
-  _onListHeaderPressIn = (e) => {
-    this._selectMarker(null)
-    return true;
-  }
 
   _imageLoaded = () => {
     this._iconLoaded++;
@@ -360,7 +352,6 @@ class ItinerariesScreen extends PureComponent {
       <ScrollableContainer 
         entityType={Constants.ENTITY_TYPES.itineraries}
         topComponent={this._renderTopComponent}
-        onListHeaderPressed={this._onListHeaderPressIn}
         data={data}
         initialSnapIndex={1}
         pageLayoutHeight={this._pageLayoutHeight}

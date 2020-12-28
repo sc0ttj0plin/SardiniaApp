@@ -253,15 +253,6 @@ class PlacesScreen extends PureComponent {
     this.setState({ snapPoints: [height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight, 72 * this._fontScale, 0] });
   }; 
 
-  /**
-   * On scrollBottomSheet touch clear selection
-   * @param {*} e 
-   */
-  _onListHeaderPressIn = (e) => {
-    const entityType = Constants.ENTITY_TYPES.places;
-    this.props.actions.setScrollablePressIn(entityType, !this.props.others.scrollablePressIn[entityType]); 
-    return true;
-  }
 
   _onSettleIndex = (index) => {
     //Set global snap index for the current entityType
@@ -531,8 +522,6 @@ class PlacesScreen extends PureComponent {
         topComponent={this._renderTopComponent}
         extraComponent={this._renderFiltersList}
         pageLayoutHeight={this._pageLayoutHeight}
-        ListHeaderComponent={this._renderListHeader}
-        onListHeaderPressed={this._onListHeaderPressIn}
         data={data}
         snapPoints={this.state.snapPoints}
         initialSnapIndex={1}
