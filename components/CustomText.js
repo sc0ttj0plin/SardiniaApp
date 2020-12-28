@@ -4,7 +4,9 @@ import { Text, StyleSheet } from "react-native";
 export default function CustomText(props) {
   return (
     <Text {...props} 
-      numberOfLines={props.numberOfLines || undefined} 
+      numberOfLines={props.numberOfLines || undefined}
+      textBreakStrategy={"simple"}
+      lineBreakMode={"tail"} 
       style={[styles.default, props.style]}>
         {props.children == null || props.children == "null" ? "" : props.children}
     </Text>

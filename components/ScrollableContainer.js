@@ -14,6 +14,8 @@ import _ from 'lodash';
 import actions from '../actions';
 import BottomSheet from 'reanimated-bottom-sheet';
 import {FlatList} from 'react-native-gesture-handler';
+import AsyncOperationStatusIndicator from './AsyncOperationStatusIndicator';
+import LLVerticalItemsFlatlist from './loadingLayouts/LLVerticalItemsFlatlist';
 
 
 const { Value, event, interpolate } = Animated;
@@ -163,10 +165,19 @@ class ScrollableContainer extends PureComponent {
       ListHeaderComponent,
       onEndReached = ()=>{} } = this.props;
 
-      if(this.state.data && this.state.data.length > 0)
-        return (
+      return (<AsyncOperationStatusIndicator
+        loading={true}
+        success={this.state.data && this.state.data.length>0}
+        error={false}
+        loadingLayout={
+          <LLVerticalItemsFlatlist 
+            numColumns={numColumns}
+            key={"shimmer-layout" + numColumns} 
+            itemStyle={styles.itemFlatlist} 
+            style={styles.listStyleLL} 
+            bodyContainerStyle={styles.listContainer}/>}>
             <FlatList
-            style={{backgroundColor: "white"}}
+            style={{backgroundColor: "white", height: "100%"}}
             data={this.state.data || []}
             keyExtractor={keyExtractor}
             renderItem={renderItem}
@@ -178,15 +189,8 @@ class ScrollableContainer extends PureComponent {
             maxToRenderPerBatch={2}
             numColumns={numColumns || 1}
             contentContainerStyle={styles.contentContainerStyle}
-            ItemSeparatorComponent={() => <View style={{height: 10}}></View>}
-            >
-        </FlatList>
-        );
-      else return (
-        <View style={styles.loadingView}>
-          
-        </View>
-      )
+            ItemSeparatorComponent={() => <View style={{height: 10}}></View>} />
+      </AsyncOperationStatusIndicator>);
   }
 
   render() {
@@ -297,7 +301,22 @@ const styles = StyleSheet.create({
     top: 0, 
     left: 0, 
     // backgroundColor: "red"
-  }
+  },
+  //loading layout
+  listStyleLL: {
+    backgroundColor: "white",
+    paddingHorizontal: 10,
+    height: "100%",
+  },
+  itemFlatlist: {
+    marginBottom: 10,
+    height: 160, 
+    width: "100%", 
+  },
+  listContainer: {
+    backgroundColor: "transparent",
+    paddingBottom: 10
+  },
 })
 
 

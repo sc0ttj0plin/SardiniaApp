@@ -99,6 +99,7 @@ class PlacesScreen extends PureComponent {
     if(prevProps.others.placesTerms !== this.props.others.placesTerms) {
       /* update also the header pois based on current cat */
       // this.setState({ nearPois: [] }, () => this._fetchNearestPois(this.state.coords)); 
+      this.setState({poisRefreshing: false});
       this._loadMorePois();
     }
 

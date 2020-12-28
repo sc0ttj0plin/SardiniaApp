@@ -305,14 +305,15 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   content: {
-    paddingBottom:50
+    paddingBottom:50,
+    paddingTop: 10
   },
   listContent: {
     paddingHorizontal: 5,
     flex: 1
   },
   calendarList: {
-    marginTop: 10,
+    marginTop: 0,
     flex: 1
   },
   calendarView: {
