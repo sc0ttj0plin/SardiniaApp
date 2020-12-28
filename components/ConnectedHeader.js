@@ -25,7 +25,7 @@ const HEADER_BUTTONS_PER_SCREEN = {
   [Constants.NAVIGATION.NavItinerariesScreen]: {backButtonVisible: false, searchButtonVisible: true, filterButtonVisible: false}, 
   [Constants.NAVIGATION.NavItineraryScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false}, 
   [Constants.NAVIGATION.NavItineraryStagesMapScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false}, 
-  [Constants.NAVIGATION.NavEventsScreen]: {backButtonVisible: false, searchButtonVisible: true, filterButtonVisible: true}, 
+  [Constants.NAVIGATION.NavEventsScreen]: {backButtonVisible: false, searchButtonVisible: true, filterButtonVisible: false}, 
   [Constants.NAVIGATION.NavEventScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false}, 
   [Constants.NAVIGATION.NavEventsSubset]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
   [Constants.NAVIGATION.NavEventsMapScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false}, 

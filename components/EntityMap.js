@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import { View, StyleSheet, Text, Platform, Linking, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, Platform, Linking } from 'react-native';
 import * as Constants from '../constants';
 import MapView from "react-native-map-clustering";
 import { PROVIDER_GOOGLE, Marker } from "react-native-maps";
@@ -12,10 +12,9 @@ import {boundingRect} from '../helpers/maps';
 import CustomText from "./CustomText";
 import { connect, useStore } from 'react-redux';
 import actions from '../actions';
-//import TouchableOpacity from './ScrollableContainerTouchableOpacity';
+import TouchableOpacity from './ScrollableContainerTouchableOpacity';
 
 import { bindActionCreators } from 'redux';
-// import { TouchableOpacity } from 'react-native-gesture-handler';
 
 class EntityMap extends PureComponent {  
   
@@ -163,19 +162,24 @@ class EntityMap extends PureComponent {
             <View
               style={[styles.mapContainer]}
               >
-              <MapView
-                pointerEvents={"none"} 
-                ref={ map => this._map = map }
-                initialRegion={Constants.REGION_SARDINIA}
-                region={this.state.region}
-                provider={PROVIDER_GOOGLE}
-                minZoom={14}
-                clusteringEnabled={false}
-                onRegionChangeComplete={this._onRegionChangeComplete}
-                style={{flex: 1}}>
-                {!hasMarkers && this._renderPoint(coordinates)}
-                {hasMarkers && this._renderMarkers(coordinates)}
-              </MapView>
+              <View
+              pointerEvents={"none"}
+              style={{flex: 1}}
+              >
+                <MapView
+                  
+                  ref={ map => this._map = map }
+                  initialRegion={Constants.REGION_SARDINIA}
+                  region={this.state.region}
+                  provider={PROVIDER_GOOGLE}
+                  minZoom={14}
+                  clusteringEnabled={false}
+                  onRegionChangeComplete={this._onRegionChangeComplete}
+                  style={{flex: 1}}>
+                  {!hasMarkers && this._renderPoint(coordinates)}
+                  {hasMarkers && this._renderMarkers(coordinates)}
+                </MapView>
+              </View>
               <View style={styles.openNavigatorContainer}>
               {!hasMarkers && !hideOpenNavigatorButton && this._renderOpenNavigatorButton(coordinates)}
               {hasMarkers && coordinates.length > 1 && this._renderOpenMapButton()}

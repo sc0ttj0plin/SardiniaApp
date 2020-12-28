@@ -78,13 +78,13 @@ const styles = StyleSheet.create({
       marginBottom: 30,
       textShadowColor: 'rgba(0, 0, 0, 0.75)',
       textShadowOffset: {width: 1, height: 1},
-      textShadowRadius: 1
+      textShadowRadius: 1,
+      marginBottom: 100
     },
     itemButton: {
       justifyContent: "center",
       alignSelf: "center",
       backgroundColor: "#00000055",
-      marginTop: 100
     },
     itemButtonText: {
       color: "white",
