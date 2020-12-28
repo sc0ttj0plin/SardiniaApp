@@ -23,6 +23,9 @@ export default class EntityRelatedList extends PureComponent {
     }
 
     _renderPoiListItem = (item, index) => {
+        if(this.props.renderListItem) {
+            return this.props.renderListItem(item, index);
+        }
         const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
         const {listType, listTitle, sideMargins, horizontal, itemStyle, disableSeparator} = this.props
         let place = item && item.term ? item.term.name : "";
@@ -74,17 +77,13 @@ export default class EntityRelatedList extends PureComponent {
                         sideMargins={sideMargins} 
                         horizontal={horizontal} 
                         style={[styles.fill, this.props.style]} 
-                        contentContainerStyle={contentContainerStyle} 
-                        title={listTitle} 
-                        titleStyle={listTitleStyle} 
+                        contentContainerStyle={contentContainerStyle}
                         error={false}/>
                 }
                 {horizontal &&
                     <LLHorizontalItemsFlatlist 
                         horizontal={true} 
-                        style={[styles.fill, this.props.style]}  
-                        title={listTitle} 
-                        titleStyle={listTitleStyle}
+                        style={[styles.fill, this.props.style]}
                         contentContainerStyle={contentContainerStyle} 
                     />
                 }
@@ -106,20 +105,20 @@ export default class EntityRelatedList extends PureComponent {
         } = this.props; 
         const {data} = this.state
         return (
-            <AsyncOperationStatusIndicator
-                loading={true}
-                success={data && data.length > 0}
-                error={false}
-                loadingLayout={this._renderLoadingLayout()}>
-                <View style={{flex: 1}}>   
-                    <CustomText style={[listTitleStyle, {paddingBottom: 10}]}>{listTitle}</CustomText>
-                    <View style={{alignItems: "center"}}>
+           
+            <View style={{flex: 1}}>   
+                <CustomText style={[listTitleStyle, {paddingBottom: 10}]}>{listTitle}</CustomText>
+                    <AsyncOperationStatusIndicator
+                        loading={true}
+                        success={data && data.length > 0}
+                        error={false}
+                        loadingLayout={this._renderLoadingLayout()}>
                     <FlatList 
                         {...this.props} 
                         horizontal={horizontal || false}
                         key={listTitle + "-1"}
                         extraData={extraData}
-                        keyExtractor={item => item.uuid}
+                        keyExtractor={item => item.uuid.toString()}
                         data={data}
                         renderItem={({item, index}) => this._renderPoiListItem(item, index)}
                         style={[styles.fill, this.props.style]}
@@ -130,9 +129,9 @@ export default class EntityRelatedList extends PureComponent {
                         windowSize={10} // Reduce the window size
                         ItemSeparatorComponent={() => <View style={{height: 10}}></View>}
                     />
-                    </View>
+                    </AsyncOperationStatusIndicator>
                 </View>
-            </AsyncOperationStatusIndicator>
+            
         )
     }
 }

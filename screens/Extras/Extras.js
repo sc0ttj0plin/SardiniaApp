@@ -156,6 +156,7 @@ const styles = StyleSheet.create({
     height: 450,
     width: "100%",
     marginBottom: 2,
+    borderRadius: 0
   },
 });
 

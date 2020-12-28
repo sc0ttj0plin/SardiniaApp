@@ -307,10 +307,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 0,
     borderTopRightRadius: 30, 
     marginTop: -30,
-    borderTopColor: "#f2f2f2",
-    borderTopWidth: 2,
-    borderRightColor: "#f2f2f2",
-    borderRightWidth: 2
   },
   sectionTitle: {
     flex: 1,

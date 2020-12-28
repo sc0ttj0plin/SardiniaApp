@@ -99,7 +99,6 @@ class FavouritesScreen extends Component {
     this.props.actions.getItinerariesById({ uuids: itinerariesUuids });
     this.props.actions.getInspirersById({ uuids: inspirersUuids });
     this.props.actions.getAccomodationsById({ uuids: accomodationsUuids });
-
   }
 
   /**
@@ -113,31 +112,35 @@ class FavouritesScreen extends Component {
      *  doStuff();
      */
     //Once pois are retrieved you filter only the favourites
-    if ((prevProps.pois !== this.props.pois) || (prevProps.favourites.places !== this.props.favourites.places)) {
-      let favUuids = Object.keys(this.props.favourites.places);
-      this._getPois(favUuids)
-    }
 
-    if ((prevProps.itineraries !== this.props.itineraries) || (prevProps.favourites.itineraries !== this.props.favourites.itineraries)) {
-      let favUuids = Object.keys(this.props.favourites.itineraries);
-      this._getItineraries(favUuids)
-    }
-
-    if ((prevProps.inspirers !== this.props.inspirers) || (prevProps.favourites.inspirers !== this.props.favourites.inspirers)) {
-      let favUuids = Object.keys(this.props.favourites.inspirers);
-      this._getInspirers(favUuids)
-    }
-
-    if ((prevProps.events.eventsById !== this.props.events.eventsById) || (prevProps.favourites.events !== this.props.favourites.events)) {
-      let favUuids = Object.keys(this.props.favourites.events);
-      this._getEvents(favUuids)
-    }
+    setTimeout(() => {
+      if ((prevProps.pois !== this.props.pois) || (prevProps.favourites.places !== this.props.favourites.places)) {
+        let favUuids = Object.keys(this.props.favourites.places);
+        this._getPois(favUuids)
+      }
   
-    if ((prevProps.accomodations !== this.props.accomodations) || (prevProps.favourites.accomodations !== this.props.favourites.accomodations)) {
-      let favUuids = Object.keys(this.props.favourites.accomodations);
-      this._getAccomodations(favUuids)
-    }
+      if ((prevProps.itineraries !== this.props.itineraries) || (prevProps.favourites.itineraries !== this.props.favourites.itineraries)) {
+        let favUuids = Object.keys(this.props.favourites.itineraries);
+        this._getItineraries(favUuids)
+      }
+  
+      if ((prevProps.inspirers !== this.props.inspirers) || (prevProps.favourites.inspirers !== this.props.favourites.inspirers)) {
+        let favUuids = Object.keys(this.props.favourites.inspirers);
+        this._getInspirers(favUuids)
+      }
+  
+      if ((prevProps.events.eventsById !== this.props.events.eventsById) || (prevProps.favourites.events !== this.props.favourites.events)) {
+        let favUuids = Object.keys(this.props.favourites.events);
+        this._getEvents(favUuids)
+      }
+    
+      if ((prevProps.accomodations !== this.props.accomodations) || (prevProps.favourites.accomodations !== this.props.favourites.accomodations)) {
+        let favUuids = Object.keys(this.props.favourites.accomodations);
+        this._getAccomodations(favUuids)
+      }
+    }, 1);
   }
+    
 
   /**
    * Use this function to unsubscribe or clear any event hooks
@@ -169,10 +172,9 @@ class FavouritesScreen extends Component {
       if(this.props.pois.data[uuid])
         pois.push(this.props.pois.data[uuid])
     })
-    // console.log("places", pois.length)
-    this.setState({
-      favPlaces: pois
-    })
+    pois.loaded = true;
+    if(pois.length != this.state.favPlaces.length)
+      this.setState({ favPlaces: pois })
   }
   
   _getEvents = (uuids) => {
@@ -181,8 +183,9 @@ class FavouritesScreen extends Component {
       if(this.props.events.eventsById[uuid])
         events.push(this.props.events.eventsById[uuid])
     })
-    // console.log("events", events.length)
-    this.setState({ favEvents: events });
+    events.loaded = true;
+    if(events.length != this.state.favEvents.length)
+      this.setState({ favEvents: events });
   }
 
   _getInspirers = (uuids) => {
@@ -191,7 +194,9 @@ class FavouritesScreen extends Component {
       if(this.props.inspirers.dataById[uuid])
         inspirers.push(this.props.inspirers.dataById[uuid])
     })
-    this.setState({ favInspirers: inspirers });
+    inspirers.loaded = true;
+    if(inspirers.length != this.state.favInspirers.length)
+      this.setState({ favInspirers: inspirers });
   }
 
   _getItineraries = (uuids) => {
@@ -200,7 +205,9 @@ class FavouritesScreen extends Component {
       if(this.props.itineraries.dataById[uuid])
       itineraries.push(this.props.itineraries.dataById[uuid])
     })
-    this.setState({ favItineraries: itineraries });
+    itineraries.loaded = true;
+    if(itineraries.length != this.state.favItineraries.length)
+      this.setState({ favItineraries: itineraries });
   }
 
   _getAccomodations = (uuids) => {
@@ -209,10 +216,18 @@ class FavouritesScreen extends Component {
       if(this.props.accomodations.dataById[uuid])
         accomodations.push(this.props.accomodations.dataById[uuid])
     })
+    accomodations.loaded = true;
     // console.log("places", accomodations.length)
-    this.setState({
-      favAccomodations: accomodations
-    })
+    if(accomodations.length != this.state.favAccomodations.length)
+      this.setState({ favAccomodations: accomodations })
+  }
+
+  _isLoaded = () => {
+    return ((!this.props.accomodations.loading || this.state.favAccomodations.loaded) &&
+      (!this.props.events.eventsLoading || this.state.favEvents.loaded) &&
+      (!this.props.pois.loading || this.state.favPlaces.loaded) &&
+      (!this.props.inspirers.loading || this.state.favInspirers.loaded) && 
+      (!this.props.itineraries.loading || this.state.favItineraries.loaded))
   }
   
   _openItem = (item, type) => {
@@ -266,6 +281,7 @@ class FavouritesScreen extends Component {
   }
 
   _renderList = (list, title, type) => {
+    let renderItemFun = type == Constants.ENTITY_TYPES.accomodations ? this._renderAccomodationListItem : null;
     return (
       <View style={styles.listView}>
         <EntityRelatedList
@@ -281,8 +297,9 @@ class FavouritesScreen extends Component {
           listTitle={title}
           listTitleStyle={styles.sectionTitle}
           style={styles.list}
-          sideMargins={20}
+          sideMargins={10}
           disableSeparator
+          renderListItem={renderItemFun}
         />
         {list.length > 6 && 
           this._renderShowListButton(list, title, type)
@@ -291,60 +308,24 @@ class FavouritesScreen extends Component {
     )
   }
 
-  _renderAccomodationListItem = (item, index, horizontal) => {
+  _renderAccomodationListItem = (item, index) => {
     const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
     const termName = _.get(item, "term.name", "")
     return (
       <AccomodationItem 
         index={index}
         keyItem={item.nid}
-        horizontal={horizontal}
-        sideMargins={20}
+        horizontal={false}
+        sideMargins={10}
         title={title}
         term={termName}
         stars={item.stars}
         onPress={() => this._openItem(item, Constants.ENTITY_TYPES.accomodations)}
         location={item.location}
         distance={item.distanceStr}
+        extraStyle={styles.accomodationListItem}
       />
   )}
-
-  _renderAccomodationsList = (list, title, type) => {
-    return (
-    <View>
-      <AsyncOperationStatusIndicator
-        loading={true}
-        success={list && list.length > 0}
-        loadingLayout={<LLHorizontalItemsFlatlist horizontal={false} style={styles.listContainerHeader} title={title} titleStyle={styles.sectionTitle}/>}
-      >
-        <View style={styles.listView}>  
-          <CustomText style={styles.sectionTitle}>{title}</CustomText>
-          <View style={{alignItems: "center"}}>
-          <FlatList
-            style={styles.list}
-            horizontal={false}
-            numColumns={2}
-            renderItem={({item, index}) => this._renderAccomodationListItem(item, index, false)}
-            data={list ? list.slice(0, Constants.FAVOURITES_MAX_ITEMS_IN_LIST) : []}
-            extraData={this.props.locale}
-            keyExtractor={item => item.uuid}
-            contentContainerStyle={styles.listContainerHeader}
-            showsHorizontalScrollIndicator={false}
-            initialNumToRender={3} // Reduce initial render amount
-            maxToRenderPerBatch={2}
-            updateCellsBatchingPeriod={4000} // Increase time between renders
-            windowSize={5} // Reduce the window size
-            ItemSeparatorComponent={() => <View style={{height: 10}}></View>}
-          />
-          {list.length > 6 && 
-            this._renderShowListButton(list, title, type, true)
-          }
-          </View>
-        </View>
-      </AsyncOperationStatusIndicator>
-    </View>
-    );
-  }
 
   _renderNoFavourites = () => {
     const { noFavourites } = this.props.locale.messages;
@@ -365,7 +346,7 @@ class FavouritesScreen extends Component {
         {favInspirers.length > 0 && this._renderList(favInspirers, favouritesInspirers, Constants.ENTITY_TYPES.inspirers)}
         {favItineraries.length > 0 && this._renderList(favItineraries, favouriteItineraries, Constants.ENTITY_TYPES.itineraries)}
         {favEvents.length > 0 && this._renderList(favEvents, favouritesEvents, Constants.ENTITY_TYPES.events)}
-        {favAccomodations.length > 0 && this._renderAccomodationsList(favAccomodations, favouriteAccomodations, Constants.ENTITY_TYPES.accomodations)}
+        {favAccomodations.length > 0 && this._renderList(favAccomodations, favouriteAccomodations, Constants.ENTITY_TYPES.accomodations)}
       </ScrollView>
     )
   }
@@ -376,8 +357,21 @@ class FavouritesScreen extends Component {
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
         <ConnectedHeader />
-        {this._renderNoFavourites()}
-        {render && this._renderContent()}
+        <AsyncOperationStatusIndicator
+          loading={true}
+          success={this._isLoaded()}
+          error={false}
+          loadingLayout={<LLEntitiesFlatlist 
+            numColumns={2}
+            sideMargins={10} 
+            horizontal={false} 
+            style={[styles.fill, {paddingTop: 60, padding: 10}]}
+            error={false}/>
+            }>
+            {this._renderNoFavourites()}
+            {render && this._renderContent()}
+        </AsyncOperationStatusIndicator>
+        
       </View>
     )
   }
@@ -411,13 +405,16 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
   },
+  listItemSeparator: {
+    width: 10,
+    height: 10
+  },
   sectionTitle: {
     textAlign: "center",
     paddingTop: 10,
     paddingBottom: 10,
     color: "#000000E6",
     backgroundColor: "#F2F2F2",
-    marginBottom: 16,
     height: 40,
     fontSize: 15,
     fontFamily: "montserrat-bold",
@@ -426,11 +423,11 @@ const styles = StyleSheet.create({
   listContainerHeader: {
   },
   list: {
-    paddingTop: 10, 
+    paddingTop: 20, 
     backgroundColor: "transparent",
     marginHorizontal: 10,
     height: "100%",
-    paddingBottom: 10,
+    paddingBottom: 20,
   },
   listStyle: {
     paddingTop: 10, 
@@ -467,6 +464,9 @@ const styles = StyleSheet.create({
   noFavouritesText: {
     alignSelf: 'center',
     fontSize: 20,
+  },
+  accomodationListItem: {
+    backgroundColor: "rgb(250,250,250)"
   }
 });
 

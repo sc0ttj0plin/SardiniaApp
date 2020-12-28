@@ -342,9 +342,9 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 30, 
     marginTop: -30,
     borderTopColor: "#f2f2f2",
-    borderTopWidth: 2,
+    borderTopWidth: 1,
     borderRightColor: "#f2f2f2",
-    borderRightWidth: 2
+    borderRightWidth: 1
   },
   container: { 
     backgroundColor: "white",
