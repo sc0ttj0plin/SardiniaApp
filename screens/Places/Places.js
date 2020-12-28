@@ -275,6 +275,15 @@ class PlacesScreen extends PureComponent {
 
   }
 
+  /********************* Modal control methods go down here *********************/
+
+
+  /**
+   *  Entity Selected/deseleced on Map
+   *  Near Pois button pressed
+   *  Open/close modals 
+   */
+
   _onSelectedEntity = (entity) => {
     this.setState({selectedCluster: entity});
     if(entity) {
