@@ -46,14 +46,15 @@ class ClusteredMapViewTop extends PureComponent {
   }
 
   componentDidMount() {
-
+    if ( this.props.others.geolocation.coords) {
+      this._onUpdateCoords(this.props.others.geolocation, this.props.others.geolocationSource);
+    }
   }
   
   componentWillUnmount() {
   }
 
   componentDidUpdate(prevProps) {
-
     if ( prevProps.others.geolocation !== this.props.others.geolocation && this.props.others.geolocation.coords) {
       this._onUpdateCoords(this.props.others.geolocation, this.props.others.geolocationSource);
     }

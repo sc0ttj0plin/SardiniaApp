@@ -6,6 +6,55 @@ import { Image } from 'react-native-elements';
 import CustomText from "./CustomText";
 import ShimmerWrapper from "./ShimmerWrapper"
 
+import Animated, { Easing, stopClock } from 'react-native-reanimated';
+
+const {
+  useCode,
+  block,
+  set,
+  Value,
+  Clock,
+  eq,
+  clockRunning,
+  not,
+  cond,
+  startClock,
+  timing,
+  interpolate,
+  and,
+} = Animated;
+
+const runTiming = (clock) => {
+  const state = {
+    finished: new Value(0),
+    position: new Value(0),
+    time: new Value(0),
+    frameTime: new Value(0),
+  };
+
+  const config = {
+    duration: 5000,
+    toValue: 1,
+    easing: Easing.inOut(Easing.linear),
+  };
+
+  return block([
+    // we run the step here that is going to update position
+    cond(
+      not(clockRunning(clock)),
+      set(state.time, 0),
+      timing(clock, state, config),
+    ),
+    cond(eq(state.finished, 1), [
+      set(state.finished, 0),
+      set(state.position, 0),
+      set(state.frameTime, 0),
+      set(state.time, 0),
+    ]),
+    state.position,
+  ]);
+}
+
 /**
  * List item element that represents a category
  */
@@ -16,6 +65,7 @@ class CategoryListItem extends PureComponent {
       width: 0
     };
     this._fontScale = PixelRatio.getFontScale();
+
   }
 
   _renderBottomBox = (title, showBoxes, opacityBackground, bgColor) => {
@@ -37,13 +87,13 @@ class CategoryListItem extends PureComponent {
       <ScrollableContainerTouchableOpacity onPress={this.props.onPress} activeOpacity={0.7} style={[styles.container, this.props.style]} > 
        <ShimmerWrapper shimmerStyle={styles.shimmer} />
        <View style={styles.fill}>
-        <Image 
+        <Animated.Image 
             source={{ uri: image }} 
             style={[styles.image]}
             placeholderStyle={{backgroundColor: "transparent"}}
             >
-            {this._renderBottomBox(this.props.title, true, 0.8)}
-          </Image>
+          </Animated.Image>
+          {this._renderBottomBox(this.props.title, true, 0.8)}
         </View>
       </ScrollableContainerTouchableOpacity>
       );
@@ -78,7 +128,7 @@ const styles = StyleSheet.create({
       alignItems: 'flex-end',
       backgroundColor: "transparent",
       width: "100%",
-      height: 160,
+      height: "100%",
     },
     title: {
       fontSize: 18,
@@ -91,7 +141,9 @@ const styles = StyleSheet.create({
       width: "100%",
       justifyContent: "center",
       alignItems: "center",
-      minHeight: 40
+      minHeight: 40,
+      position: "absolute",
+      bottom: 0
     },
     boxes: {
         position: "absolute",
