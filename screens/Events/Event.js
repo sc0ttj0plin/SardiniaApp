@@ -123,6 +123,7 @@ class EventScreen extends Component {
           x: stepsCoordinatesCenter.longitude,
           y: stepsCoordinatesCenter.latitude,
         }));
+        console.log("nearAccomodations", nearAccomodations.length);
         // Compute dataRegion, the smallest enclosing region of the pois (center is current poi location)
         const centerCoords = [stepsCoordinatesCenter.longitude, stepsCoordinatesCenter.latitude];
         const nearAccomodationsRegion = boundingRect(nearAccomodations, centerCoords, (p) => p.georef.coordinates);
