@@ -293,8 +293,6 @@ const styles = StyleSheet.create({
     paddingTop: 10
   },
   listStyleLL: {
-    marginTop: 16,
-    paddingTop: 10, 
     backgroundColor: "transparent",
     marginHorizontal: 10,
     height: "100%",

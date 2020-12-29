@@ -13,10 +13,6 @@ import ShimmerWrapper from "../components/ShimmerWrapper"
 class GeoRefHListItem extends PureComponent{ 
   constructor(props){
     super(props);
-    this.state = {
-      width: 160,
-      height: 160
-    }
   }
   renderDistanceRow(distance) {
     if(distance)

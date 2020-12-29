@@ -58,7 +58,7 @@ class FavouritesListScreen extends Component {
     super(props);
 
     /* Get props from navigation */
-    let { items, title, type, isAccomodationsList } = props.route.params; 
+    let { items, title, type } = props.route.params; 
 
     this.state = {
       render: USE_DR ? false : true,
@@ -66,7 +66,6 @@ class FavouritesListScreen extends Component {
       items: items || [],
       title: title || "",
       type: type || "",
-      isAccomodationsList: isAccomodationsList || false
     };
       
   }
@@ -149,14 +148,14 @@ class FavouritesListScreen extends Component {
   }
 
   _renderList = (list, title, type) => {
+    let renderItemFun = type == Constants.ENTITY_TYPES.accomodations ? this._renderAccomodationListItem : null;
     return (
-      <View style={styles.listView}>
         <EntityRelatedList
           horizontal={false}
           data={list ? list : []} 
           extraData={this.props.locale}
           keyExtractor={item => item.uuid.toString()}
-          contentContainerStyle={styles.listContainerHeader}
+          contentContainerStyle={styles.listContainer}
           showsHorizontalScrollIndicator={false}
           locale={this.props.locale}
           numColumns={2}
@@ -165,73 +164,38 @@ class FavouritesListScreen extends Component {
           listTitle={title}
           listTitleStyle={styles.sectionTitle}
           style={styles.list}
-          sideMargins={20}
+          sideMargins={10}
           disableSeparator
+          renderListItem={renderItemFun}
         />
-      </View>
     )
   }
 
 
-  _renderAccomodationListItem = (item, index, horizontal) => {
+  _renderAccomodationListItem = (item, index) => {
     const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
     const termName = _.get(item, "term.name", "")
     return (
       <AccomodationItem 
         index={index}
         keyItem={item.nid}
-        horizontal={horizontal}
-        sizeMargins={20}
+        horizontal={false}
+        sizeMargins={10}
         title={title}
         term={termName}
         stars={item.stars}
         onPress={() => this._openItem(item, Constants.ENTITY_TYPES.accomodations)}
         location={item.location}
         distance={item.distanceStr}
+        extraStyle={styles.accomodationListItem}
       />
   )}
 
-  _renderAccomodationsList = (list, title, type) => {
-    return (
-    <View>
-      <AsyncOperationStatusIndicator
-        loading={true}
-        success={list && list.length > 0}
-        loadingLayout={<LLHorizontalItemsFlatlist horizontal={false} style={styles.listContainerHeader} title={title} titleStyle={styles.sectionTitle}/>}
-      >
-        <View style={styles.listView}>  
-          <CustomText style={styles.sectionTitle}>{title}</CustomText>
-          <FlatList
-            style={styles.list}
-            horizontal={false}
-            numColumns={2}
-            renderItem={({item, index}) => this._renderAccomodationListItem(item, index, false)}
-            data={list}
-            extraData={this.props.locale}
-            keyExtractor={item => item.uuid}
-            contentContainerStyle={styles.listContainerHeader}
-            showsHorizontalScrollIndicator={false}
-            initialNumToRender={3} // Reduce initial render amount
-            maxToRenderPerBatch={2}
-            updateCellsBatchingPeriod={4000} // Increase time between renders
-            windowSize={5} // Reduce the window size
-          />
-        </View>
-      </AsyncOperationStatusIndicator>
-    </View>
-    );
-  }
-
   _renderContent = () => {
     const { favouritesPlaces, favouritesEvents, favouriteItineraries } = this.props.locale.messages;
-    const { items, title, type, isAccomodationsList } = this.state;
+    const { items, title, type } = this.state;
 
-    return (
-      <ScrollView style={[styles.fill, styles.scrollview]}>
-        {!isAccomodationsList && this._renderList(items, title, type)}
-        {isAccomodationsList && this._renderAccomodationsList(items, title, type)}
-      </ScrollView>
-    )
+    return this._renderList(items, title, type);
   }
 
 
@@ -257,16 +221,12 @@ const styles = StyleSheet.create({
   fill: {
     flex: 1,
     backgroundColor: "white",
-    display: "flex",
-    flexDirection: "column"
-  },
-  scrollview: {
   },
   header: {
     backgroundColor: "white"
   },
   container: {
-    padding: 10,
+
   },
   sectionTitle: {
     textAlign: "center",
@@ -274,27 +234,26 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     color: "#000000E6",
     backgroundColor: "#F2F2F2",
-    marginBottom: 16,
     height: 40,
     fontSize: 15,
     fontFamily: "montserrat-bold",
   },
-  listContainerHeader: {
+  listContainer: {
+    paddingVertical: 20
   },
   list: {
-    paddingTop: 10, 
-    backgroundColor: "transparent",
-    marginHorizontal: 20,
-    height: "100%",
+    marginHorizontal: 10,
   },
   listStyle: {
     paddingTop: 10, 
     backgroundColor: "transparent",
-    marginHorizontal: 20,
-    height: "100%",
+    marginHorizontal: 10,
   },
   listView: {
-    width: "100%",
+    flex: 1,
+  },
+  accomodationListItem: {
+    backgroundColor: "rgb(250,250,250)"
   }
 });
 

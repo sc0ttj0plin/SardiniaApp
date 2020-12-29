@@ -179,7 +179,7 @@ class FiltersScreen extends Component {
     return(
         <TouchableOpacity 
             style={[styles.eventFilter, Constants.styles.shadow, {
-                backgroundColor: selected ? Colors.lightGray : "white" 
+                backgroundColor: selected ? Colors.colorEventsScreen  : "white" 
             }]} 
             onPress={() => this._onFilterPress(item)} 
             activeOpacity={0.7}>
@@ -191,7 +191,9 @@ class FiltersScreen extends Component {
                     color={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS["events"].iconColor}
                 />
             </View>
-            <CustomText style={styles.eventFilterText}>{item.name}</CustomText>
+            <CustomText style={[styles.eventFilterText,{color: selected ? "white" : "#000000DE"}]}>
+              {item.name}
+            </CustomText>
         </TouchableOpacity>
     )
   }
@@ -219,7 +221,7 @@ class FiltersScreen extends Component {
     const { render } = this.state;
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader onBackPress={this._onBackPress} />
+        <ConnectedHeader onBackPress={this._onBackPress} iconTintColor={Colors.colorEventsScreen}/>
         {render && this._renderContent()}
       </View>
     )

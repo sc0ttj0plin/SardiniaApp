@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { 
   View, Text, FlatList, ActivityIndicator, 
-  StyleSheet, BackHandler, Platform, ScrollView, SectionList, TouchableHighlight, NativeModules } from "react-native";
+  StyleSheet, BackHandler, Platform, ScrollView, SectionList, TouchableHighlight, NativeModules, PixelRatio} from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 const { StatusBarManager } = NativeModules;
 
@@ -24,7 +24,7 @@ import Colors from '../../constants/Colors';
 import { LLVerticalItemsFlatlist } from "../../components/loadingLayouts";
 import * as Animatable from 'react-native-animatable';
 import { FETCH_NUM_MONTHS_FORWARD, FETCH_NUM_MONTHS_BACKWARDS } from '../../constants';
-import { TouchableOpacity } from "react-native-gesture-handler";
+import TouchableOpacity from '../../components/ScrollableContainerTouchableOpacity';
 
 //Example calendar: https://github.com/wix/react-native-calendars/blob/master/example/src/screens/calendars.js
 const USE_DR = false;
@@ -162,6 +162,10 @@ class EventsScreen extends Component {
     let events = this.props.events.eventsByYearMonth[currentMonth];
     this.props.navigation.navigate(Constants.NAVIGATION.NavEventsMapScreen, {events, title: currentMonth});
   }
+
+  _openFilters = () => {
+    this.props.navigation.navigate(Constants.NAVIGATION.NavFiltersScreen, {filters: Constants.ENTITY_TYPES.events});
+  }
   
   /**
    * Navigate to subset of events (in this case of the day)
@@ -180,12 +184,21 @@ class EventsScreen extends Component {
     return(
       <View style={styles.toastContainer}>
         <View style={styles.toastInnerContainer}>
-          <CustomText style={styles.toastText}>Vuoi vedere gli eventi sulla mappa</CustomText>
+          <CustomText style={styles.toastText}>Esplora gli eventi sulla mappa</CustomText>
           <TouchableOpacity 
             style={styles.toastButton}
             activeOpacity={0.7}
             onPress={this._openMap}>
             <CustomText style={styles.toastButtonText}>VAI</CustomText>
+          </TouchableOpacity>
+        </View>
+        <View style={[styles.toastInnerContainer,{marginTop: 5}]}>
+          <CustomText style={styles.toastText}>Scegli quali eventi vedere</CustomText>
+          <TouchableOpacity 
+            style={styles.toastButton}
+            activeOpacity={0.7}
+            onPress={this._openFilters}>
+            <CustomText style={styles.toastButtonText}>FILTRI</CustomText>
           </TouchableOpacity>
         </View>
       </View>
@@ -234,7 +247,7 @@ class EventsScreen extends Component {
       <FlatList
         data={this.props.events.eventsByYearMonth[currentMonth]}
         keyExtractor={(item) => item.title}
-        contentContainerStyle={styles.content}
+        contentContainerStyle={[styles.content, {paddingBottom: 95 * PixelRatio.getFontScale()}]}
         ItemSeparatorComponent={() => <View style={{height: 10, backgroundColor: "transparent"}}></View>}
         renderItem={({ item }) => this._renderEventsListItem(item)}
         style={styles.listContent}
@@ -268,7 +281,7 @@ class EventsScreen extends Component {
     
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader iconTintColor={Colors.colorEventsScreen} filterType={Constants.ENTITY_TYPES.events}/>
+        <ConnectedHeader iconTintColor={Colors.colorEventsScreen}/>
         <UpdateHandler updateInProgressText={updateInProgressText} updateFinishedText={updateFinishedText} />
         {render && this._renderContent()}
       </View>
@@ -325,18 +338,14 @@ const styles = StyleSheet.create({
     bottom: 10,
     left: 0,
     width: "100%",
-    height: 48,
     paddingHorizontal: 16
     // marginHorizontal: 16,
   },
   toastInnerContainer: {
     width: "100%",
-    height: 48,
-    paddingVertical: 16,
     backgroundColor: "#000000",
     borderRadius: 4,
     paddingLeft: 13,
-    paddingRight: 29,
     display: "flex",
     flexDirection: "row",
     alignItems: "center"
@@ -347,9 +356,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   toastButton: {
-    display: "flex",
+    paddingVertical: 10,
+    paddingHorizontal: 30,
     alignItems: "flex-end",
-    justifyContent: "center"
   },
   toastButtonText: {
     fontSize: 14,

@@ -19,7 +19,7 @@ export default class LLEntitiesFlatlist extends PureComponent{
         let space = (Layout.window.width - (margins*2) - (width*2))/ 2;
         const marginRight = 0;
         const marginLeft = horizontal===false && index && index%2 != 0 ? space*2 : 0;
-        const marginBottom = horizontal===false ? 16 : 0
+        const marginBottom = horizontal===false ? 10 : 0
         return(
             <>
             { horizontal===false &&
