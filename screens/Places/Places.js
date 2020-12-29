@@ -439,7 +439,7 @@ class PlacesScreen extends PureComponent {
                   ItemSeparatorComponent={this._renderHorizontalSeparator}
                   contentContainerStyle={styles.listContainerHeader}
                   showsHorizontalScrollIndicator={false}
-                  initialNumToRender={3} // Reduce initial render amount
+                  initialNumToRender={5} // Reduce initial render amount
                   maxToRenderPerBatch={2}
                   updateCellsBatchingPeriod={4000} // Increase time between renders
                   windowSize={5} // Reduce the window size
