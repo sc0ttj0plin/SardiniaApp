@@ -36,7 +36,7 @@ class UpdateHandler extends PureComponent {
 
   async componentDidMount() {
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), DR_TIMEOUT))};
-    this._startUpdate();
+    !__DEV__ && this._startUpdate();
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
@@ -67,7 +67,7 @@ class UpdateHandler extends PureComponent {
   /********************* Render methods go down here *********************/
   _renderContent = () => {
     const { updating } = this.state;
-    if (updating) 
+    if (updating && !__DEV__) 
       return (
         <Modal
           animationType="fade"

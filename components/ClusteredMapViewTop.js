@@ -222,9 +222,7 @@ class ClusteredMapViewTop extends PureComponent {
    */
   _clearClusterSelection = () => {
     if(this.props.onSelectedEntity)
-    {
       this.props.onSelectedEntity(null);
-    }
     if(this.state.selectedCluster)
       this.setState({ selectedCluster: null });
   }
@@ -247,8 +245,8 @@ class ClusteredMapViewTop extends PureComponent {
 
   _onGoToMyLocationPressed = () => {
     this._animateMapToRegion(this._coords, 15, 1500);
-    if(this.props.goToMyLocationPressed)
-      this.props.goToMyLocationPressed()
+    if(this.props.showNearEntitiesOnPress)
+      this.props.showNearEntitiesOnPress()
   }
 
   /**

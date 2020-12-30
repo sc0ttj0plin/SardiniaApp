@@ -54,6 +54,6 @@ export EntityItemInModal from './EntityItemInModal';
 export UpdateHandler from './UpdateHandler';
 export ShimmerWrapper from './ShimmerWrapper';
 export ScrollableContainerTouchableOpacity from './ScrollableContainerTouchableOpacity';
-
+export ConnectedMapScrollable from './ConnectedMapScrollable';
 
 
