@@ -29,6 +29,8 @@ class ItineraryStagesMapScreen extends Component {
     const term = _.get(props.route, "params.term", "");
     const region = _.get(props.route, "params.region", "");
 
+    this.disableSelectDuringScrolling = false;
+
     this.state = {
       render: USE_DR ? false : true,
       //
@@ -36,7 +38,7 @@ class ItineraryStagesMapScreen extends Component {
       term,
       region: region || Constants.REGION_SARDINIA,
       coords: {},
-      tracksViewChanges: false
+      tracksViewChanges: false,
     };
       
   }
@@ -50,31 +52,26 @@ class ItineraryStagesMapScreen extends Component {
     // Detect when scrolling has stopped then animate!
     this.animation.addListener(({ value }) => {
       let index = Math.floor(value / Layout.map.card.width + 0.3); 
-      if (index >= this.state.markers.length)
-        index = this.state.markers.length - 1;
-      if (index <= 0) 
-        index = 0;
-
-      clearTimeout(this.regionTimeout);
-      this.regionTimeout = setTimeout(() => {
-        if (this.index !== index) {
-          this.index = index;
-          const coordinates = this.state.markers[index].coords;
-          this._selectMarker(index);
-          this.map.animateToRegion({
-              ...coordinates,
-              latitudeDelta: this.state.region.latitudeDelta,
-              longitudeDelta: this.state.region.longitudeDelta,
-            },
-            350
-          );
-        }
-      }, 10);
+        if (index >= this.state.markers.length)
+          index = this.state.markers.length - 1;
+        if (index <= 0) 
+          index = 0;
+      if(!this.disableSelectDuringScrolling ) {
+        clearTimeout(this.regionTimeout);
+        this.regionTimeout = setTimeout(() => {
+          if (this.index !== index) {
+            this.index = index;
+            this._selectMarker(index);
+          }
+        }, 10);
+      }
     });
 
     if(this.props.others.geolocation && this.props.others.geolocation.coords) {
       this._onUpdateCoords(this.props.others.geolocation.coords);
     }
+
+    this._selectMarker(0);
   }
 
   componentWillMount() {
@@ -105,7 +102,20 @@ class ItineraryStagesMapScreen extends Component {
     }
   }
 
+  _onScrollBeginDrag = () => {
+    this.disableSelectDuringScrolling = false;
+  }
+
   _selectMarker = (index) => {
+    const coordinates = this.state.markers[index].coords;
+    this.map.animateCamera({
+      center:
+        {
+          ...coordinates,
+        }
+      },
+      350
+    );
     this.setState({tracksViewChanges: true}, () => {
       this.setState({selectedIndex: index}, () => {
         this.setState({tracksViewChanges: false});
@@ -115,6 +125,7 @@ class ItineraryStagesMapScreen extends Component {
 
   _handleMarkerPress = (index) => {
     this._selectMarker(index);
+    this.disableSelectDuringScrolling = true;
     this._scroll.scrollTo({x: index * Layout.map.card.width, y: 0, animated: true});
   }
 
@@ -136,11 +147,6 @@ class ItineraryStagesMapScreen extends Component {
       default:
         break;
     }
-  }
-
-  
-  _onRegionChangeComplete = (region) => {
-    this.setState({region})
   }
 
   /********************* Render methods go down here *********************/
@@ -203,7 +209,6 @@ class ItineraryStagesMapScreen extends Component {
         <MapView
           ref={ map => this.map = map }
           initialRegion={ this.state.region }
-          onRegionChangeComplete={this._onRegionChangeComplete}
           provider={ PROVIDER_GOOGLE }
           style={styles.container}
           >
@@ -237,6 +242,7 @@ class ItineraryStagesMapScreen extends Component {
           onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: this.animation }}}], { useNativeDriver: true })}
           style={styles.flatlist}
           contentContainerStyle={{paddingRight: Layout.window.width - Layout.map.card.width}}
+          onScrollBeginDrag={this._onScrollBeginDrag}
           >
           {this.state.markers.map((marker, index) => this._renderStage(marker, index))}
 
