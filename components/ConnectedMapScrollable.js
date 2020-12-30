@@ -101,7 +101,7 @@ class ConnectedMapScrollable extends PureComponent {
     this._pageLayoutHeight = height;
     //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 24 (handle) - 36 (header text) - 160 (entityItem) - 10 (margin of entityItem) - 36 (whereToGo text)
     // this.setState({ snapPoints: [height - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight, 72 * this._fontScale, 0] });
-    this.setState({ snapPoints: [height - Constants.COMPONENTS.header.bottomLineHeight, 72 * this._fontScale, 0] });
+    this.setState({ snapPoints: [height, 72 * this._fontScale, 0] });
   }; 
 
   /**
@@ -401,7 +401,7 @@ class ConnectedMapScrollable extends PureComponent {
   /* Render content */
   _renderContent = () => {
     return (
-      <View style={styles.fill} onLayout={this._onPageLayout}>
+      <View style={[styles.fill, styles.view]} onLayout={this._onPageLayout}>
         {this._renderScrollable()}
         {this._renderMapEntityModal()}
         {this._renderExtraModal()}
@@ -430,6 +430,9 @@ ConnectedMapScrollable.navigationOptions = {
 const styles = StyleSheet.create({
   fill: {
     flex: 1,
+  },
+  view: {
+    overflow: "hidden"
   },
   container: {
     backgroundColor: Colors.colorPlacesScreen,
