@@ -16,7 +16,8 @@ import {
   ConnectedAuthHandler,
   CustomText,
   SectionTitle,
-  UpdateHandler
+  UpdateHandler,
+  ConnectedMapScrollable
  } from "../../components";
 import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
 import MapView from "react-native-map-clustering";
@@ -70,9 +71,8 @@ class PlacesScreen extends PureComponent {
       coords: {},
       region: Constants.MAP.defaultRegion,
       currentTerm: null,
-      scrollableSnap: 1,
       //
-      snapPoints: [],
+      selectedEntity: null
     };
       
     this._pageLayoutHeight = Layout.window.height;
@@ -209,11 +209,7 @@ class PlacesScreen extends PureComponent {
     const { region, coords } = this.state;
     // console.log(item)
     this.props.actions.pushCurrentCategoryPlaces(item);
-    this.setState({
-      region,
-      coords,
-      currentTerm: item.name
-    });
+    this.setState({ region, coords, currentTerm: item.name });
   }
 
   /**
@@ -243,206 +239,17 @@ class PlacesScreen extends PureComponent {
     this.props.actions.setCurrentMapEntity(undefined);
   }
 
-  /**
-   * Used to compute snap points
-   * @param {*} event layout event
-   */
-  _onPageLayout = (event) => {
-    const { width, height } = event.nativeEvent.layout;
-    this._pageLayoutHeight = height;
-    //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 24 (handle) - 36 (header text) - 160 (entityItem) - 10 (margin of entityItem) - 36 (whereToGo text)
-    this.setState({ snapPoints: [height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight, 72 * this._fontScale, 0] });
-  }; 
-
-
-  _onSettleIndex = (index) => {
-    //Set global snap index for the current entityType
-    this.setState({
-      snapIndex: index
-    })
-  }
-
-  _onMapRegionChanged = () => {
-
-  }
-
-  /********************* Modal control methods go down here *********************/
-
-
-  /**
-   *  Entity Selected/deseleced on Map
-   *  Near Pois button pressed
-   *  Open/close modals 
-   */
-
-  _onSelectedEntity = (entity) => {
-    this.setState({selectedCluster: entity});
-    if(entity) {
-      this._setModalState(MODAL_STATES.SELECTEDENTITY);
-    } else {
-      if(this._modalState == MODAL_STATES.SELECTEDENTITY)
-        this._setModalState(MODAL_STATES.EXPLORE);
-    }
-  }
-
-  _setModalState = (state) => {
-    this._modalState = state;
-
-    if(state == MODAL_STATES.EXPLORE) {
-      this.setState({scrollableSnap: 1});
-      this._refs["nearPoisModalRef"].close(); this._refs["nearPoisModalRef"].close();
-      this._refs["selectedEntityModalRef"].close(); this._refs["selectedEntityModalRef"].close();
-    }
-    else if(state == MODAL_STATES.NEARPOIS) {
-      this.setState({scrollableSnap: 2}, () => {
-        this._openModal(this._refs["selectedEntityModalRef"], false);
-        this._openModal(this._refs["nearPoisModalRef"], true);
-      });
-    }
-    else if(state == MODAL_STATES.SELECTEDENTITY) {
-      this.setState({scrollableSnap: 2}, () => {
-        this._openModal(this._refs["selectedEntityModalRef"], true);
-        this._openModal(this._refs["nearPoisModalRef"], false);
-      });
-    }
-  }
-
-  _showNearPoisWidget = () => {
-    this._setModalState(MODAL_STATES.NEARPOIS);
-  }
-
-  _onScrollableClosed = () => {
-    if(this._modalState == MODAL_STATES.EXPLORE) {
-      this.setState({scrollableSnap: 1});
-    }
-  }
-
-  _openModal = (ref, state) => {
-    if(state) {
-      if (ref){
-        ref.open();
-        ref.open();
-      }
-    } else {
-      if(ref)
-          ref.close();
-    }
-  }
-
-
-
-  _onNearPoisModalClosed = () => {
-    if(this._modalState == MODAL_STATES.NEARPOIS) {
-      this._setModalState(MODAL_STATES.EXPLORE);
-    }
-  }
-
-  _onSelectedEntityModalClosed = () => {
-    if(this._modalState == MODAL_STATES.SELECTEDENTITY) {
-      this._setModalState(MODAL_STATES.EXPLORE);
-    }
-  }
 
   /********************* Render methods go down here *********************/
-
-  /**
-   * Render single poi on bottom of mapview on press (outside scrollableContainer)
-   */
-  _renderEntityWidget = () => {
-    return (
-      <EntityWidgetInModal
-          locale={this.props.locale} 
-          isAccomodationItem={false} 
-          cluster={this.state.selectedCluster} 
-          coords={this.state.coords}
-        />
-    )
-  }
 
   _renderHeaderText = () => {
     const { whereToGo, explore } = this.props.locale.messages;
     const { term } = this._getCurrentTerm();
     const categoryTitle = term ? `${explore} ${term.name}` : whereToGo;
     return (
-    <SectionTitle text={categoryTitle} textStyle={{ fontSize: 20 }} style={{ paddingBottom: 15 }}/>
+      <SectionTitle text={categoryTitle} textStyle={{ fontSize: 20 }} style={{ paddingBottom: 15 }}/>
     );
   }
-
-  _renderTopComponentCategorySelector = (item) => 
-    <TouchableOpacity style={styles.categorySelectorBtn} onPress={() => this._selectCategory(item)} activeOpacity={0.7}>
-      <View style={styles.icon}>
-          <Ionicons
-            name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS["places"].iconName}
-            size={13}
-            style={styles.cornerIcon}
-            color={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS["places"].iconColor}
-          />
-      </View>
-      <CustomText style={styles.categorySelectorBtnText}>{item.name}</CustomText>
-    </TouchableOpacity>
-
-  /* Renders the topmost component: a category list + map in our case */
-  _renderTopComponent = () => {
-    const { term, childUuids } = this._getCurrentTerm(true);
-    const { coords, region, nearPois } = this.state;
-    return (
-      <ClusteredMapViewTop
-        term={term}
-        coords={coords}
-        region={region}
-        entityType={Constants.ENTITY_TYPES.places}
-        types={[Constants.NODE_TYPES.places]}
-        uuids={childUuids}
-        style={{flex: 1}}
-        mapRef={ref => (this._refs["ClusteredMapViewTop"] = ref)}
-        onSelectedEntity={this._onSelectedEntity}
-        goToMyLocationPressed={this._showNearPoisWidget}
-        onMapRegionChanged={this._onMapRegionChanged}
-        paddingBottom={this.state.snapPoints[1]}
-      />
-    )
-
-  }
-
-  /* Renders the Header of the scrollable container */
-  _renderNearToYou = () => {
-    const { nearPois, coords } = this.state;
-    const { nearToYou, whatToSee } = this.props.locale.messages;
-    const { term } = this._getCurrentTerm();
-      return (
-          <View style={styles.listNearPoisView}>
-            <AsyncOperationStatusIndicator
-              loading={true}
-              success={nearPois && nearPois.length > 0}
-
-              loadingLayout={<LLHorizontalItemsFlatlist horizontal={true} contentContainerStyle={styles.listContainerHeader} title={nearToYou} titleStyle={styles.sectionTitle}/>}
-            >
-              <View>  
-                <SectionTitle text={nearToYou} />
-                <FlatList
-                  horizontal={true}
-                  renderItem={({item}) => this._renderPoiListItem(item, null, true)}
-                  data={nearPois}
-                  extraData={this.props.locale}
-                  keyExtractor={item => item.uuid}
-                  onEndReachedThreshold={0.5} 
-                  onEndReached={() => this._fetchNearestPois(coords)}
-                  ItemSeparatorComponent={this._renderHorizontalSeparator}
-                  contentContainerStyle={styles.listContainerHeader}
-                  showsHorizontalScrollIndicator={false}
-                  initialNumToRender={3} // Reduce initial render amount
-                  maxToRenderPerBatch={2}
-                  updateCellsBatchingPeriod={4000} // Increase time between renders
-                  windowSize={5} // Reduce the window size
-                />
-              </View>
-            </AsyncOperationStatusIndicator>
-          </View>
-      )
-  }
-
-  /* Horizontal spacing for Header items */
-  _renderHorizontalSeparator = () => <View style={{ width: 10, flex: 1 }}></View>;
 
   /* Renders a poi in Header: index */
   _renderPoiListItem = (item, index, horizontal) => {
@@ -470,56 +277,71 @@ class PlacesScreen extends PureComponent {
   )}
 
   /* Renders categories list */
-  _renderCategoryListItem = (item, index, length) => {
-    return(
-      <CategoryListItem onPress={() => this._selectCategory(item)} image={item.image} title={item.name}/>
-    )
-  }
-
-  _renderFiltersList = () => {
-    const { term = [] } = this._getCurrentTerm(true);
-    /* Enable show last selected category, add _renderTopComponentCategorySelector(item, isLeaf)
-    const lastTerm = this.props.others.placesTerms[this.props.others.placesTerms.length - 1];
-    const data = term.length === 0 && lastTerm ? [lastTerm] : term;
-    const isLeaf = data.length === 1;
-    */
-    return(
-      <FlatList
-        horizontal={true}
-        renderItem={({item}) => this._renderTopComponentCategorySelector(item)}
-        data={term}
-        extraData={this.props.locale}
-        ref={(ref)=>this._filterList = ref}
-        keyExtractor={item => item.uuid}
-        style={styles.filtersList}
-        ItemSeparatorComponent={this._renderHorizontalSeparator}
-        contentContainerStyle={styles.listContainerHeader}
-        showsHorizontalScrollIndicator={false}
-      />
-    )
-  }
+  _renderCategoryListItem = (item, index, length) =>
+      <CategoryListItem onPress={() => this._selectCategory(item)} image={item.image} title={item.name}/>;
+    
 
   /* Render content */
   _renderContent = () => {
-    const { term } = this._getCurrentTerm(true);
-    const { pois, snapIndex } = this.state;
+    const { term, childUuids } = this._getCurrentTerm(true);
+    const { nearToYou } = this.props.locale.messages;
+    const { pois, snapIndex, coords, region, nearPois  } = this.state;
     // const { scrollableSnapIndex } = this.props.others;
     // const showExtraComponent = scrollableSnapIndex[Constants.ENTITY_TYPES.places];
     const isPoiList = this._isPoiList();
-    let data = [];
-    let renderItem = null;
-    let numColumns = 1; //One for categories, two for pois
+    let scrollableData = [];
+    let renderScrollableListItem = null;
     //if no more nested categories renders pois
     if (isPoiList) {
-      data = pois;
-      renderItem = ({ item, index }) => this._renderPoiListItem(item, index);
-      // numColumns = 2;
+      scrollableData = pois;
+      renderScrollableListItem = ({ item, index }) => this._renderPoiListItem(item, index);
     } else {
       //initially term is null so we get terms from redux, then term is populated with nested terms (categories) 
-      data = term;
-      renderItem = ({ item, index }) => this._renderCategoryListItem(item, index, data.length);
+      scrollableData = term;
+      renderScrollableListItem = ({ item, index }) => this._renderCategoryListItem(item, index, scrollableData.length);
     }
 
+    const scrollableProps = {
+      show: true,
+      entityType: Constants.ENTITY_TYPES.places,
+      data: scrollableData,
+      onEndReached: this._loadMorePois,
+      renderItem: renderScrollableListItem,
+      keyExtractor: item => item.uuid,
+    }
+
+    // ClusteredMapViewTopProps (CMVT)
+    const CMVTProps = { 
+      term, 
+      coords, 
+      region, 
+      entityType: Constants.ENTITY_TYPES.places,
+      types: [Constants.NODE_TYPES.places],
+      childUuids,
+    };
+
+    const extraComponentProps = {
+      data: term,
+      keyExtractor: item => item.uuid,
+      onPress: this._selectCategory,
+      iconProps: { 
+        name: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[Constants.ENTITY_TYPES.places].iconName,
+        color: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[Constants.ENTITY_TYPES.places].iconColor,
+      }
+    }
+
+    const mapEntityWidgetProps = { 
+      isAccomodationItem: false, 
+      coords: this.state.coords 
+    };
+
+    const extraModalProps = {
+      data: nearPois,
+      keyExtractor: item => item.uuid,
+      renderItem: ({ item }) => this._renderPoiListItem(item, null, true),
+      title: nearToYou,
+      onEndReached: () => this._fetchNearestPois(coords),
+    }
 
     /** 
      * NOTE: changing numColums on the fly isn't supported and causes the component to unmount, 
@@ -527,25 +349,29 @@ class PlacesScreen extends PureComponent {
      * set a key to the inner flatlist therefore 
     */
     return (
-      <ScrollableContainer 
-        entityType={Constants.ENTITY_TYPES.places}
-        topComponent={this._renderTopComponent}
-        extraComponent={this._renderFiltersList}
-        pageLayoutHeight={this._pageLayoutHeight}
-        data={data}
-        snapPoints={this.state.snapPoints}
-        initialSnapIndex={1}
-        closeSnapIndex={1}
-        onEndReached={this._loadMorePois}
-        numColumns={numColumns}
-        renderItem={renderItem}
-        keyExtractor={item => item.uuid}
-        onSettleIndex={this._onSettleIndex}
-        HeaderTextComponent={this._renderHeaderText}
-        ref={(ref) => this._refs["ScrollableContainer"] = ref}
-        snapTo={this.state.scrollableSnap}
-        onCloseEnd={this._onScrollableClosed}
-        isClosable={this.state.scrollableSnap!=1}
+      <ConnectedMapScrollable 
+        // Scrollable container props
+        scrollableProps={scrollableProps}
+
+        // Extra component: if scrollableRenderExtraComponent is undefined, must specify extra component props
+        // scrollableRenderExtraComponent={this._renderFiltersList}
+        scrollableExtraComponentProps={extraComponentProps}
+        
+        // Header text component: if scrollableHeaderTextComponent is undefined, must specify scrollableHeaderText
+        scrollableHeaderTextComponent={this._renderHeaderText}
+        // scrollableHeaderText={() => <Text>Header Text</Text>}
+
+        // Top component (ClusteredMapViewTop or MapView or Custom)
+        topComponentType="ClusteredMapViewTop" //or MapView or Custom (if Custom must implement topComponentRender)
+        topComponentCMVTProps={CMVTProps}
+        
+        // Map entity widget (in modal): if renderMapEntityWidget is undefined, must specify mapEntityWidgetProps
+        // renderMapEntityWidget={this._renderEntityWidget}
+        mapEntityWidgetProps={mapEntityWidgetProps}
+
+        // Extra modal content: if renderExtraModalComponent is undefined, must specify mapEntityWidgetProps
+        // renderExtraModalComponent={this._renderNearToYou}
+        extraModalProps={extraModalProps}
       />
     )
   }
@@ -556,7 +382,7 @@ class PlacesScreen extends PureComponent {
     const { updateInProgressText, updateFinishedText } = this.props.locale.messages;
     
     return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onPageLayout}>
+      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
         <ConnectedHeader 
           onBackPress={this._backButtonPress}
           iconTintColor={Colors.colorPlacesScreen}  
@@ -565,29 +391,6 @@ class PlacesScreen extends PureComponent {
         <UpdateHandler updateInProgressText={updateInProgressText} updateFinishedText={updateFinishedText} />
         <ConnectedAuthHandler loginOptional={true} />
         {render && this._renderContent()}
-        <Modalize 
-          ref={(ref) => this._refs["selectedEntityModalRef"] = ref}
-          adjustToContentHeight={true}
-          withOverlay={false}
-          modalStyle={styles.modal}
-          closeAnimationConfig={{timing: { duration: 800, easing: Easing.ease }} }
-          onClosed={this._onSelectedEntityModalClosed}
-          velocity={1000}
-          >
-          {this._renderEntityWidget()}
-        </Modalize>
-          
-        <Modalize 
-          ref={(ref) => this._refs["nearPoisModalRef"] = ref}
-          adjustToContentHeight={true}
-          withOverlay={false}
-          modalStyle={styles.modal}
-          closeAnimationConfig={{timing: { duration: 800, easing: Easing.ease }} }
-          onClosed={this._onNearPoisModalClosed}
-          velocity={1000}
-          >
-          {this._renderNearToYou()}
-        </Modalize>
       </View>
     )
   }
