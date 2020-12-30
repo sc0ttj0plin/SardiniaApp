@@ -29,8 +29,6 @@ class ItineraryStagesMapScreen extends Component {
     const term = _.get(props.route, "params.term", "");
     const region = _.get(props.route, "params.region", "");
 
-    console.log("term", props.route.params.term);
-
     this.state = {
       render: USE_DR ? false : true,
       //
