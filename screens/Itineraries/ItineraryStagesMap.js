@@ -13,6 +13,7 @@ import Layout from '../../constants/Layout';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
+import SectionTitle from '../../components/SectionTitle';
 import { distance, distanceToString, coordsInBound } from '../../helpers/maps';
 
 /* Deferred rendering to speedup page inital load: 
@@ -27,16 +28,20 @@ class ItineraryStagesMapScreen extends Component {
 
     const markers = _.get(props.route, "params.markers", []);
     const term = _.get(props.route, "params.term", "");
+    const region = _.get(props.route, "params.region", "");
+    const title = _.get(props.route, "params.title", "");
 
-    console.log("term", props.route.params.term);
+    this.disableSelectDuringScrolling = false;
 
     this.state = {
       render: USE_DR ? false : true,
       //
       markers,
       term,
-      region: Constants.REGION_SARDINIA,
+      region: region || Constants.REGION_SARDINIA,
+      title: title,
       coords: {},
+      tracksViewChanges: false,
     };
       
   }
@@ -50,30 +55,26 @@ class ItineraryStagesMapScreen extends Component {
     // Detect when scrolling has stopped then animate!
     this.animation.addListener(({ value }) => {
       let index = Math.floor(value / Layout.map.card.width + 0.3); 
-      if (index >= this.state.markers.length)
-        index = this.state.markers.length - 1;
-      if (index <= 0) 
-        index = 0;
-
-      clearTimeout(this.regionTimeout);
-      this.regionTimeout = setTimeout(() => {
-        if (this.index !== index) {
-          this.index = index;
-          const coordinates = this.state.markers[index].coords;
-          this.map.animateToRegion({
-              ...coordinates,
-              latitudeDelta: this.state.region.latitudeDelta,
-              longitudeDelta: this.state.region.longitudeDelta,
-            },
-            350
-          );
-        }
-      }, 10);
+        if (index >= this.state.markers.length)
+          index = this.state.markers.length - 1;
+        if (index <= 0) 
+          index = 0;
+      if(!this.disableSelectDuringScrolling ) {
+        clearTimeout(this.regionTimeout);
+        this.regionTimeout = setTimeout(() => {
+          if (this.index !== index) {
+            this.index = index;
+            this._selectMarker(index);
+          }
+        }, 10);
+      }
     });
 
     if(this.props.others.geolocation && this.props.others.geolocation.coords) {
       this._onUpdateCoords(this.props.others.geolocation.coords);
     }
+
+    this._selectMarker(0);
   }
 
   componentWillMount() {
@@ -104,8 +105,31 @@ class ItineraryStagesMapScreen extends Component {
     }
   }
 
-  _handleMarkerPress = (e) => {
-    this._scroll.scrollTo({x: e * Layout.map.card.width, y: 0, animated: true});
+  _onScrollBeginDrag = () => {
+    this.disableSelectDuringScrolling = false;
+  }
+
+  _selectMarker = (index) => {
+    const coordinates = this.state.markers[index].coords;
+    this.map.animateCamera({
+      center:
+        {
+          ...coordinates,
+        }
+      },
+      350
+    );
+    this.setState({tracksViewChanges: true}, () => {
+      this.setState({selectedIndex: index}, () => {
+        this.setState({tracksViewChanges: false});
+      })
+    });
+  }
+
+  _handleMarkerPress = (index) => {
+    this.disableSelectDuringScrolling = true;
+    this._selectMarker(index);
+    this._scroll.scrollTo({x: index * Layout.map.card.width, y: 0, animated: true});
   }
 
   _openRelatedEntity = (item) => {
@@ -128,11 +152,6 @@ class ItineraryStagesMapScreen extends Component {
     }
   }
 
-  
-  _onRegionChangeComplete = (region) => {
-    this.setState({region})
-  }
-
   /********************* Render methods go down here *********************/
   _renderStage = (stage) => {
     const { coords } = this.state;
@@ -146,29 +165,35 @@ class ItineraryStagesMapScreen extends Component {
     distanceStr = distanceToString(distance(coords.latitude, coords.longitude, stage.coords.latitude, stage.coords.longitude));
 
     return(
-      <View style={styles.widget}>
-        <EntityItem 
-          keyItem={stage.nid}
-          listType={Constants.ENTITY_TYPES.itineraries}
-          onPress={() => this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item: { uuid: stage.uuid } })}
-          title={`${title}`}
-          image={`${image}`}
-          subtitle={`${term}`}
-          style={styles.itinerariesListItem}
-          horizontal={false}
-          topSpace={10}
-          distance={this.state.isCordsInBound ? distanceStr : null}
-          extraStyle={{
-            marginBottom: 10,
-            width: Layout.map.card.width,
-            height: "100%",
-            marginLeft: 10,
-            marginRight: 10,
-          }}
-        />
-      </View>
+      <EntityItem 
+        keyItem={stage.nid}
+        listType={Constants.ENTITY_TYPES.itineraries}
+        onPress={() => this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item: { uuid: stage.uuid } })}
+        title={`${title}`}
+        image={`${image}`}
+        subtitle={`${term}`}
+        style={styles.itinerariesListItem}
+        horizontal={true}
+        topSpace={10}
+        distance={this.state.isCordsInBound ? distanceStr : null}
+        extraStyle={{
+          width: Layout.map.card.width,
+          marginLeft: 10,
+          marginRight: 10,
+        }}
+      />
     )
   }
+
+  _renderMapTitle = () => {
+    const { title } = this.state;
+      if(title != ""){
+        return (
+          <SectionTitle numberOfLines={3} text={title} textStyle={{ fontSize: 15 }} style={styles.mapTitle} />
+        )
+      }
+  }
+
   _renderContent = () => {
     const interpolations = this.state.markers.map((marker, index) => {
       const inputRange = [
@@ -189,31 +214,34 @@ class ItineraryStagesMapScreen extends Component {
       return { scale, opacity };
     });
 
+    let bgColor = Colors.colorItinerariesScreen;
+    let bgColorTransparent = Colors.colorItinerariesScreenTransparent;
+
     return (
       <View style={styles.container}>
         <MapView
           ref={ map => this.map = map }
           initialRegion={ this.state.region }
-          onRegionChangeComplete={this._onRegionChangeComplete}
           provider={ PROVIDER_GOOGLE }
           style={styles.container}
           >
           {this.state.markers.map((marker, index) => {
             const coordinates = marker.coords;
-            // const opacityStyle = { opacity: interpolations[index].opacity };
+            //const opacityStyle = { opacity: interpolations[index].opacity };
             const opacityStyle = { opacity: 1 };
+            var backgroundColor = index == this.state.selectedIndex ? bgColorTransparent : "transparent";
             return (
               <MapView.Marker
                 key={index} 
                 coordinate={coordinates}
-                tracksViewChanges={false}
+                tracksViewChanges={this.state.tracksViewChanges}
                 onPress={() => this._handleMarkerPress(index)}
               >
-                <Animated.View style={[styles.markerWrap, opacityStyle]}>
-                  <View style={styles.marker}>
-                    <CustomText style={styles.text}>{index+1}</CustomText>
+                <View style={[styles.markerContainer, { backgroundColor: backgroundColor}, opacityStyle]}>
+                  <View style={[styles.marker, { backgroundColor: bgColor }]}>
+                    <CustomText style={{color: "white"}}>{index + 1}</CustomText>
                   </View>
-                </Animated.View>
+                </View>
               </MapView.Marker>
             );
           })}
@@ -227,28 +255,9 @@ class ItineraryStagesMapScreen extends Component {
           onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: this.animation }}}], { useNativeDriver: true })}
           style={styles.flatlist}
           contentContainerStyle={{paddingRight: Layout.window.width - Layout.map.card.width}}
+          onScrollBeginDrag={this._onScrollBeginDrag}
           >
           {this.state.markers.map((marker, index) => this._renderStage(marker, index))}
-
-          {/* (
-
-<TouchableOpacity
-  style={[styles.card, {width: Layout.map.card.width}]}
-  onPress={() => this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item: { uuid: marker.uuid } })}
-  activeOpacity={0.7}
-  key={index}
->
-  <Image
-    source={{ uri: marker.image}}
-    style={[styles.cardImage, {width: Layout.map.card.width, height: 100}]}
-    resizeMode="cover"
-    PlaceholderContent={<ActivityIndicator/>}
-  />
-  <View style={styles.cardTextContainer}>
-    <CustomText numberOfLines={1} style={styles.cardtitle}>{marker.title}</CustomText>
-  </View>
-</TouchableOpacity>
-) */}
         </Animated.ScrollView>
       </View>
      );
@@ -260,6 +269,7 @@ class ItineraryStagesMapScreen extends Component {
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
         <ConnectedHeader iconTintColor={Colors.colorItinerariesScreen} />
+        {render && this._renderMapTitle()}
         {render && this._renderContent()}
       </View>
     )
@@ -284,65 +294,27 @@ const styles = StyleSheet.create({
   flatlist: {
     position: "absolute",
     bottom: 0,
-    left: 0,
-    right: 0,
     paddingVertical: 10,
-    backgroundColor: "transparent"
-  },
-  card: {
-    elevation: 2,
-    borderRadius: 10,
-    backgroundColor: "#FFF",
-    marginHorizontal: 10,
-    shadowColor: "#000",
-    shadowRadius: 5,
-    shadowOpacity: 0.3,
-    shadowOffset: { x: 2, y: -2 },
-    overflow: "hidden",
-  },
-  cardImage: {
-    flex: 3,
-    width: "100%",
-    height: "100%",
-    alignSelf: "center",
-  },
-  cardTextContainer: {
-    flex: 1,
-    padding: 10
-  },
-  cardtitle: {
-    fontSize: 12,
-    fontFamily: "montserrat-bold",
-  },
-  cardDescription: {
-    fontSize: 12,
-    color: "#444",
-  },
-  markerWrap: {
-    alignItems: "center",
-    justifyContent: "center",
-    height: 45, 
-    // width: 30
-    // width: 30,
-    // height: 30,
+    backgroundColor: "transparent",
   },
   marker: {
-    transform: [
-      { rotateZ: "-45deg" },  
-    ],
-    width: 30,
-    height: 30,
-    overflow: 'visible',
-    color: "white",
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 50,
-    borderTopLeftRadius: 50,
-    borderTopRightRadius: 50,
+    // backgroundColor: "transparent",
+    // justifyContent: 'center',
+    // alignItems: 'center'
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: Colors.colorItinerariesScreen,
-    borderColor: 'white',
-    borderWidth: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderRadius: 21
+  },
+  markerContainer: {
+    width: 42,
+    height: 42,
+    padding: 6,
+    borderRadius: 50,
   },
   text:{
     transform: [
@@ -350,14 +322,19 @@ const styles = StyleSheet.create({
     ],
     alignSelf: 'center'
   },
-  ring: {
-    width: 50,
-    height: 50,
-    borderRadius: 12,
-    backgroundColor: Colors.green,
-    position: "absolute",
-    borderWidth: 1,
-    borderColor: 'black',
+  itinerariesListItem: {
+    height: 160
+  },
+  mapTitle: {
+    width: "100%",
+    textAlign: "center",
+    paddingTop: 10,
+    paddingBottom: 10,
+    color: "#000000E6",
+    backgroundColor: "#F2F2F2",
+    fontSize: 15,
+    fontFamily: "montserrat-bold",
+    paddingHorizontal: 5
   },
 });
 

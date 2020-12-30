@@ -415,7 +415,6 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     color: "#000000E6",
     backgroundColor: "#F2F2F2",
-    height: 40,
     fontSize: 15,
     fontFamily: "montserrat-bold",
     width: "100%"

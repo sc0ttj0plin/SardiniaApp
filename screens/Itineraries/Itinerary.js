@@ -229,7 +229,7 @@ class ItineraryScreen extends Component {
           </View>
           <View style={[styles.container]}>
             <EntityAbstract abstract={abstract} />
-            <EntityMap coordinates={stagesMarkers} term={entity.term} hasMarkers uuid={uuid}/>
+            <EntityMap coordinates={stagesMarkers} term={entity.term} title={title} hasMarkers uuid={uuid}/>
             <EntityDescription title={descriptionTitle} text={description} color={Colors.colorItinerariesScreen}/>
             <EntityStages type="itinerary" stages={stages} locale={locale} />
             <View style={styles.separator}/>

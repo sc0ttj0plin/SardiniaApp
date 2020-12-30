@@ -295,6 +295,7 @@ class AccomodationsScreen extends Component {
         categoriesMap={term}
         isAccomodationsMap
         mapRef={ref => (this._refs["ClusteredMapViewTop"] = ref)}
+        paddingBottom={this.state.snapPoints[1]}
       />
     )
 

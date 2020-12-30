@@ -115,7 +115,7 @@ class InspirersScreen extends Component {
    */
   _selectCategory = (item) => {
     // console.log("item", item)
-    
+    this._refFlatList.scrollToOffset({offset: 0, animated: true});
     this.props.actions.pushCurrentCategoryInspirers(item);
   }
 
@@ -137,7 +137,8 @@ class InspirersScreen extends Component {
 
   _backButtonPress = () => {
     this.setState({ inspirers: [] });
-    this.props.actions.popCurrentCategoryInspirers()
+    this._refFlatList.scrollToOffset({offset: 0, animated: true});
+    this.props.actions.popCurrentCategoryInspirers();
   };
 
   _isSuccessData  = () => this.props.categories.success || this.props.inspirers.success;
@@ -203,6 +204,7 @@ class InspirersScreen extends Component {
             bodyContainerStyle={styles.listContainer}/>}>
           <View style={styles.listView}> 
             <FlatList
+              ref={(ref) => this._refFlatList = ref}
               ItemSeparatorComponent={() => <View style={{width: "100%", height: 10}}></View>}
               data={flatListData}
               renderItem={renderItem}
@@ -304,7 +306,7 @@ const styles = StyleSheet.create({
     width: "100%", 
   },
   inspirersListItem: {
-    width: "100%",
+    width: "100%"
   },
 });
 

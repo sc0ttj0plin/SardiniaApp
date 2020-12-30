@@ -81,7 +81,7 @@ class EntityAccomodations extends PureComponent {
                             // contentContainerStyle={contentContainerStyle ? contentContainerStyle : {}}
                             contentContainerStyle={{paddingLeft: 10}}
                             showsHorizontalScrollIndicator={showsHorizontalScrollIndicator ? showsHorizontalScrollIndicator : true}
-                            initialNumToRender={2} // Reduce initial render amount
+                            initialNumToRender={6} // Reduce initial render amount
                             updateCellsBatchingPeriod={400} // Increase time between renders
                             windowSize={10} // Reduce the window size
                         />

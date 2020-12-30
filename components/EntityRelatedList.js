@@ -107,7 +107,7 @@ export default class EntityRelatedList extends PureComponent {
         return (
            
             <View style={{flex: 1}}>   
-                <CustomText style={[listTitleStyle, {paddingBottom: 10}]}>{listTitle}</CustomText>
+                <CustomText style={[listTitleStyle]}>{listTitle}</CustomText>
                     <AsyncOperationStatusIndicator
                         loading={true}
                         success={data && data.length > 0}
@@ -124,7 +124,7 @@ export default class EntityRelatedList extends PureComponent {
                         style={[styles.fill, this.props.style]}
                         contentContainerStyle={contentContainerStyle}
                         showsHorizontalScrollIndicator={showsHorizontalScrollIndicator || true}
-                        initialNumToRender={4} // Reduce initial render amount
+                        initialNumToRender={6} // Reduce initial render amount
                         updateCellsBatchingPeriod={400} // Increase time between renders
                         windowSize={10} // Reduce the window size
                         ItemSeparatorComponent={() => <View style={{height: 10}}></View>}

@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import { View, StyleSheet, Text, Platform, Linking, TouchableOpacity, FlatList, Image } from 'react-native';
+import { View, StyleSheet, Text, Platform, Linking, FlatList, Image } from 'react-native';
 import * as Constants from '../constants';
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import Layout from '../constants/Layout';
@@ -11,7 +11,8 @@ import it from 'moment/locale/it'
 import en from 'moment/locale/en-gb'
 import _ from "lodash";
 import CustomText from "./CustomText";
-import EntityMap from "./EntityMap"
+import EntityMap from "./EntityMap";
+import TouchableOpacity from './ScrollableContainerTouchableOpacity';
 
 class EntityStages extends PureComponent {  
   
@@ -214,7 +215,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "flex-end",
-    height: 36,
     paddingRight: 30,
     paddingTop: 15
   },
@@ -275,11 +275,7 @@ const styles = StyleSheet.create({
   },
   bottomButton: {
     backgroundColor: "transparent",
-    width: 70,
-    height: 25,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "flex-end"
+    padding: 5,
   },
   eventContainer: {
   }
