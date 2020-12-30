@@ -68,13 +68,13 @@ class EntityMap extends PureComponent {
     const { coordinates, entityType, title } = this.props;
     switch(entityType){
       case Constants.ENTITY_TYPES.events: 
-        this.props.navigation.push(Constants.NAVIGATION.NavEventsMapScreen, { events: coordinates, hideScrollable: true, title: this.props.title });
+        this.props.navigation.push(Constants.NAVIGATION.NavEventsMapScreen, { events: coordinates, hideScrollable: true, title });
         break;
       case Constants.ENTITY_TYPES.itineraries:
-        this.props.navigation.push(Constants.NAVIGATION.NavItineraryStagesMapScreen, { markers: coordinates, term: this.props.term, region: this.state.region });
+        this.props.navigation.push(Constants.NAVIGATION.NavItineraryStagesMapScreen, { markers: coordinates, term: this.props.term, region: this.state.region, title });
         break;
       default:
-        this.props.navigation.push(Constants.NAVIGATION.NavItineraryStagesMapScreen, { markers: coordinates, term: this.props.term, region: this.state.region });
+        this.props.navigation.push(Constants.NAVIGATION.NavItineraryStagesMapScreen, { markers: coordinates, term: this.props.term, region: this.state.region, title });
     }
   }
 

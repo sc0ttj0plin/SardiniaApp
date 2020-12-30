@@ -13,6 +13,7 @@ import Layout from '../../constants/Layout';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
+import SectionTitle from '../../components/SectionTitle';
 import { distance, distanceToString, coordsInBound } from '../../helpers/maps';
 
 /* Deferred rendering to speedup page inital load: 
@@ -28,6 +29,7 @@ class ItineraryStagesMapScreen extends Component {
     const markers = _.get(props.route, "params.markers", []);
     const term = _.get(props.route, "params.term", "");
     const region = _.get(props.route, "params.region", "");
+    const title = _.get(props.route, "params.title", "");
 
     this.disableSelectDuringScrolling = false;
 
@@ -37,6 +39,7 @@ class ItineraryStagesMapScreen extends Component {
       markers,
       term,
       region: region || Constants.REGION_SARDINIA,
+      title: title,
       coords: {},
       tracksViewChanges: false,
     };
@@ -124,8 +127,8 @@ class ItineraryStagesMapScreen extends Component {
   }
 
   _handleMarkerPress = (index) => {
-    this._selectMarker(index);
     this.disableSelectDuringScrolling = true;
+    this._selectMarker(index);
     this._scroll.scrollTo({x: index * Layout.map.card.width, y: 0, animated: true});
   }
 
@@ -181,6 +184,16 @@ class ItineraryStagesMapScreen extends Component {
       />
     )
   }
+
+  _renderMapTitle = () => {
+    const { title } = this.state;
+      if(title != ""){
+        return (
+          <SectionTitle numberOfLines={3} text={title} textStyle={{ fontSize: 15 }} style={styles.mapTitle} />
+        )
+      }
+  }
+
   _renderContent = () => {
     const interpolations = this.state.markers.map((marker, index) => {
       const inputRange = [
@@ -245,26 +258,6 @@ class ItineraryStagesMapScreen extends Component {
           onScrollBeginDrag={this._onScrollBeginDrag}
           >
           {this.state.markers.map((marker, index) => this._renderStage(marker, index))}
-
-          {/* (
-
-<TouchableOpacity
-  style={[styles.card, {width: Layout.map.card.width}]}
-  onPress={() => this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item: { uuid: marker.uuid } })}
-  activeOpacity={0.7}
-  key={index}
->
-  <Image
-    source={{ uri: marker.image}}
-    style={[styles.cardImage, {width: Layout.map.card.width, height: 100}]}
-    resizeMode="cover"
-    PlaceholderContent={<ActivityIndicator/>}
-  />
-  <View style={styles.cardTextContainer}>
-    <CustomText numberOfLines={1} style={styles.cardtitle}>{marker.title}</CustomText>
-  </View>
-</TouchableOpacity>
-) */}
         </Animated.ScrollView>
       </View>
      );
@@ -276,6 +269,7 @@ class ItineraryStagesMapScreen extends Component {
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
         <ConnectedHeader iconTintColor={Colors.colorItinerariesScreen} />
+        {render && this._renderMapTitle()}
         {render && this._renderContent()}
       </View>
     )
@@ -330,6 +324,17 @@ const styles = StyleSheet.create({
   },
   itinerariesListItem: {
     height: 160
+  },
+  mapTitle: {
+    width: "100%",
+    textAlign: "center",
+    paddingTop: 10,
+    paddingBottom: 10,
+    color: "#000000E6",
+    backgroundColor: "#F2F2F2",
+    fontSize: 15,
+    fontFamily: "montserrat-bold",
+    paddingHorizontal: 5
   },
 });
 
