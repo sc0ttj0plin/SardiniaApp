@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { 
   View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
-  StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
+  StyleSheet, BackHandler, Platform, ScrollView, PixelRatio } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   // CategoryListItem, 
@@ -103,7 +103,7 @@ class EventsSubsetScreen extends Component {
     return(
       <View style={styles.toastContainer}>
         <View style={styles.toastInnerContainer}>
-          <CustomText style={styles.toastText}>Vuoi vedere gli eventi sulla mappa</CustomText>
+          <CustomText style={styles.toastText}>Esplora gli eventi sulla mappa</CustomText>
           <TouchableOpacity 
             style={styles.toastButton}
             activeOpacity={0.7}
@@ -138,7 +138,7 @@ class EventsSubsetScreen extends Component {
       <FlatList
         data={this.state.eventsSubset}
         keyExtractor={(item) => item.title}
-        contentContainerStyle={styles.content}
+        contentContainerStyle={[styles.content, {paddingBottom: 45 * PixelRatio.getFontScale()}]}
         renderItem={({ item }) => this._renderEventsListItem(item)}
         style={styles.listContent}
         ItemSeparatorComponent={() => <View style={{height: 10}}></View>}
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingTop: 10,
-    paddingBottom:20
+    paddingBottom:35
   },
   listContent: {
     paddingHorizontal: 5,
@@ -216,18 +216,14 @@ const styles = StyleSheet.create({
     bottom: 10,
     left: 0,
     width: "100%",
-    height: 48,
     paddingHorizontal: 16
     // marginHorizontal: 16,
   },
   toastInnerContainer: {
     width: "100%",
-    height: 48,
-    paddingVertical: 16,
     backgroundColor: "#000000",
     borderRadius: 4,
     paddingLeft: 13,
-    paddingRight: 29,
     display: "flex",
     flexDirection: "row",
     alignItems: "center"
@@ -238,9 +234,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   toastButton: {
-    display: "flex",
+    paddingVertical: 10,
+    paddingHorizontal: 30,
     alignItems: "flex-end",
-    justifyContent: "center"
   },
   toastButtonText: {
     fontSize: 14,

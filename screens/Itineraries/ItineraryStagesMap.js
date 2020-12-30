@@ -27,6 +27,7 @@ class ItineraryStagesMapScreen extends Component {
 
     const markers = _.get(props.route, "params.markers", []);
     const term = _.get(props.route, "params.term", "");
+    const region = _.get(props.route, "params.region", "");
 
     console.log("term", props.route.params.term);
 
@@ -35,8 +36,9 @@ class ItineraryStagesMapScreen extends Component {
       //
       markers,
       term,
-      region: Constants.REGION_SARDINIA,
+      region: region || Constants.REGION_SARDINIA,
       coords: {},
+      tracksViewChanges: false
     };
       
   }
@@ -60,6 +62,7 @@ class ItineraryStagesMapScreen extends Component {
         if (this.index !== index) {
           this.index = index;
           const coordinates = this.state.markers[index].coords;
+          this._selectMarker(index);
           this.map.animateToRegion({
               ...coordinates,
               latitudeDelta: this.state.region.latitudeDelta,
@@ -104,8 +107,17 @@ class ItineraryStagesMapScreen extends Component {
     }
   }
 
-  _handleMarkerPress = (e) => {
-    this._scroll.scrollTo({x: e * Layout.map.card.width, y: 0, animated: true});
+  _selectMarker = (index) => {
+    this.setState({tracksViewChanges: true}, () => {
+      this.setState({selectedIndex: index}, () => {
+        this.setState({tracksViewChanges: false});
+      })
+    });
+  }
+
+  _handleMarkerPress = (index) => {
+    this._selectMarker(index);
+    this._scroll.scrollTo({x: index * Layout.map.card.width, y: 0, animated: true});
   }
 
   _openRelatedEntity = (item) => {
@@ -146,27 +158,23 @@ class ItineraryStagesMapScreen extends Component {
     distanceStr = distanceToString(distance(coords.latitude, coords.longitude, stage.coords.latitude, stage.coords.longitude));
 
     return(
-      <View style={styles.widget}>
-        <EntityItem 
-          keyItem={stage.nid}
-          listType={Constants.ENTITY_TYPES.itineraries}
-          onPress={() => this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item: { uuid: stage.uuid } })}
-          title={`${title}`}
-          image={`${image}`}
-          subtitle={`${term}`}
-          style={styles.itinerariesListItem}
-          horizontal={false}
-          topSpace={10}
-          distance={this.state.isCordsInBound ? distanceStr : null}
-          extraStyle={{
-            marginBottom: 10,
-            width: Layout.map.card.width,
-            height: "100%",
-            marginLeft: 10,
-            marginRight: 10,
-          }}
-        />
-      </View>
+      <EntityItem 
+        keyItem={stage.nid}
+        listType={Constants.ENTITY_TYPES.itineraries}
+        onPress={() => this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item: { uuid: stage.uuid } })}
+        title={`${title}`}
+        image={`${image}`}
+        subtitle={`${term}`}
+        style={styles.itinerariesListItem}
+        horizontal={true}
+        topSpace={10}
+        distance={this.state.isCordsInBound ? distanceStr : null}
+        extraStyle={{
+          width: Layout.map.card.width,
+          marginLeft: 10,
+          marginRight: 10,
+        }}
+      />
     )
   }
   _renderContent = () => {
@@ -189,6 +197,9 @@ class ItineraryStagesMapScreen extends Component {
       return { scale, opacity };
     });
 
+    let bgColor = Colors.colorItinerariesScreen;
+    let bgColorTransparent = Colors.colorItinerariesScreenTransparent;
+
     return (
       <View style={styles.container}>
         <MapView
@@ -200,20 +211,21 @@ class ItineraryStagesMapScreen extends Component {
           >
           {this.state.markers.map((marker, index) => {
             const coordinates = marker.coords;
-            // const opacityStyle = { opacity: interpolations[index].opacity };
+            //const opacityStyle = { opacity: interpolations[index].opacity };
             const opacityStyle = { opacity: 1 };
+            var backgroundColor = index == this.state.selectedIndex ? bgColorTransparent : "transparent";
             return (
               <MapView.Marker
                 key={index} 
                 coordinate={coordinates}
-                tracksViewChanges={false}
+                tracksViewChanges={this.state.tracksViewChanges}
                 onPress={() => this._handleMarkerPress(index)}
               >
-                <Animated.View style={[styles.markerWrap, opacityStyle]}>
-                  <View style={styles.marker}>
-                    <CustomText style={styles.text}>{index+1}</CustomText>
+                <View style={[styles.markerContainer, { backgroundColor: backgroundColor}, opacityStyle]}>
+                  <View style={[styles.marker, { backgroundColor: bgColor }]}>
+                    <CustomText style={{color: "white"}}>{index + 1}</CustomText>
                   </View>
-                </Animated.View>
+                </View>
               </MapView.Marker>
             );
           })}
@@ -284,65 +296,27 @@ const styles = StyleSheet.create({
   flatlist: {
     position: "absolute",
     bottom: 0,
-    left: 0,
-    right: 0,
     paddingVertical: 10,
-    backgroundColor: "transparent"
-  },
-  card: {
-    elevation: 2,
-    borderRadius: 10,
-    backgroundColor: "#FFF",
-    marginHorizontal: 10,
-    shadowColor: "#000",
-    shadowRadius: 5,
-    shadowOpacity: 0.3,
-    shadowOffset: { x: 2, y: -2 },
-    overflow: "hidden",
-  },
-  cardImage: {
-    flex: 3,
-    width: "100%",
-    height: "100%",
-    alignSelf: "center",
-  },
-  cardTextContainer: {
-    flex: 1,
-    padding: 10
-  },
-  cardtitle: {
-    fontSize: 12,
-    fontFamily: "montserrat-bold",
-  },
-  cardDescription: {
-    fontSize: 12,
-    color: "#444",
-  },
-  markerWrap: {
-    alignItems: "center",
-    justifyContent: "center",
-    height: 45, 
-    // width: 30
-    // width: 30,
-    // height: 30,
+    backgroundColor: "transparent",
   },
   marker: {
-    transform: [
-      { rotateZ: "-45deg" },  
-    ],
-    width: 30,
-    height: 30,
-    overflow: 'visible',
-    color: "white",
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 50,
-    borderTopLeftRadius: 50,
-    borderTopRightRadius: 50,
+    // backgroundColor: "transparent",
+    // justifyContent: 'center',
+    // alignItems: 'center'
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: Colors.colorItinerariesScreen,
-    borderColor: 'white',
-    borderWidth: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderRadius: 21
+  },
+  markerContainer: {
+    width: 42,
+    height: 42,
+    padding: 6,
+    borderRadius: 50,
   },
   text:{
     transform: [
@@ -350,14 +324,8 @@ const styles = StyleSheet.create({
     ],
     alignSelf: 'center'
   },
-  ring: {
-    width: 50,
-    height: 50,
-    borderRadius: 12,
-    backgroundColor: Colors.green,
-    position: "absolute",
-    borderWidth: 1,
-    borderColor: 'black',
+  itinerariesListItem: {
+    height: 160
   },
 });
 

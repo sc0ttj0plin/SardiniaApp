@@ -107,7 +107,7 @@ export default class EntityRelatedList extends PureComponent {
         return (
            
             <View style={{flex: 1}}>   
-                <CustomText style={[listTitleStyle, {paddingBottom: 10}]}>{listTitle}</CustomText>
+                <CustomText style={[listTitleStyle]}>{listTitle}</CustomText>
                     <AsyncOperationStatusIndicator
                         loading={true}
                         success={data && data.length > 0}

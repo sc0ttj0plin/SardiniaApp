@@ -35,11 +35,9 @@ CustomDrawer.Line = class Line extends Component {
 CustomDrawer.Header = class Header extends Component {
   render() {
     return (
-      <View style={styles.drawerContent}>
-        <View style={{height: 100}}>
-          <Text style={styles.username}>Mario Rossi</Text>
-          <Text style={styles.email}>mariorossi@gmail.com</Text>
-        </View>
+      <View style={[styles.drawerContent,styles.header]}>
+          <CustomText numberOfLines={1} ellipsizeMode='tail' style={styles.email}>mariorossi@gmail.com</CustomText>
+          <CustomText numberOfLines={1} ellipsizeMode='tail' style={styles.username}>Mario Rossi</CustomText>
       </View>
     );
   }
@@ -81,15 +79,17 @@ CustomDrawer.Item = class Item extends Component {
 const styles = StyleSheet.create({
   drawerContent: {
     flex: 1,
+    
+  },
+  header: {
+    flexDirection: "column-reverse",
+    padding: 10
   },
   username: {
-    marginLeft: 16, 
-    marginTop: 40, 
     fontSize: 18, 
     fontWeight: 'bold'
   },
   email: {
-    marginLeft: 16, 
     marginTop: 3, 
     fontSize: 14, 
     color: Colors.mediumGray
