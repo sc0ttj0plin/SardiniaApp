@@ -239,7 +239,6 @@ class PlacesScreen extends PureComponent {
     this.props.actions.setCurrentMapEntity(undefined);
   }
 
-
   /********************* Render methods go down here *********************/
 
   _renderHeaderText = () => {
@@ -302,9 +301,10 @@ class PlacesScreen extends PureComponent {
       renderScrollableListItem = ({ item, index }) => this._renderCategoryListItem(item, index, scrollableData.length);
     }
 
+    const entitiesType = Constants.ENTITY_TYPES.places;
+
     const scrollableProps = {
       show: true,
-      entityType: Constants.ENTITY_TYPES.places,
       data: scrollableData,
       onEndReached: this._loadMorePois,
       renderItem: renderScrollableListItem,
@@ -315,8 +315,7 @@ class PlacesScreen extends PureComponent {
     const CMVTProps = { 
       term, 
       coords, 
-      region, 
-      entityType: Constants.ENTITY_TYPES.places,
+      region,
       types: [Constants.NODE_TYPES.places],
       childUuids,
     };
@@ -326,8 +325,9 @@ class PlacesScreen extends PureComponent {
       keyExtractor: item => item.uuid,
       onPress: this._selectCategory,
       iconProps: { 
-        name: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[Constants.ENTITY_TYPES.places].iconName,
-        color: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[Constants.ENTITY_TYPES.places].iconColor,
+        name: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].iconName,
+        backgroundColor: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].backgroundColor,
+        color: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].iconColor,
       }
     }
 
@@ -351,6 +351,8 @@ class PlacesScreen extends PureComponent {
     */
     return (
       <ConnectedMapScrollable 
+        // entities type
+        entitiesType={entitiesType}
         // Scrollable container props
         scrollableProps={scrollableProps}
 
@@ -366,7 +368,9 @@ class PlacesScreen extends PureComponent {
         topComponentType="ClusteredMapViewTop" //or MapView or Custom (if Custom must implement topComponentRender)
         topComponentCMVTProps={CMVTProps}
         
-        // Map entity widget (in modal): if renderMapEntityWidget is undefined, must specify mapEntityWidgetProps
+        // Map entity widget (in modal): if renderMapEntityWidget is undefined, must specify mapEntityWidgetProps and mapEntityWidgetOnPress 
+        // e.g. this.state.selectedEntity can now be used in renderMapEntityWidget
+        // mapEntityWidgetOnPress={(entity) => this.setState({ selectedEntity: entity })} 
         // renderMapEntityWidget={this._renderEntityWidget}
         mapEntityWidgetProps={mapEntityWidgetProps}
 

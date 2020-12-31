@@ -509,6 +509,8 @@ export const ACCOMODATIONS_DATA_DEFAULT = [
   {term: "categoria 5", title: "titolo 5", stars: 5, distance: 6, location: "città"}
 ]
 
+export const SCROLLABLE_MODAL_STATES = { explore: 'explore', extraModal: 'extraModal', selectedEntity: 'selectedEntity' };
+
 export const styles = {
   html: {
     shortText: "textAlign: center; color: #333333; font-family: montserrat-regular; font-size: 15; padding-left: 16px; padding-right: 16px;",

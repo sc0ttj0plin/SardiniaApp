@@ -225,7 +225,7 @@ class ScrollableContainer extends PureComponent {
               initialSnap={snapPoints.length-1}
               renderHeader={this._renderHandle}
               ref={(ref)=>this._scrollable = ref}
-              onSettle = {(index) => this._onSettle(index) }
+              onSettle = {(index) => this._onSettle(index)}
               enabledContentGestureInteraction = {false}
               callbackNode={this._translateAnim}
               springConfig={{toss: 0.05}}
@@ -235,7 +235,7 @@ class ScrollableContainer extends PureComponent {
               onCloseStart={this._onCloseStart}
               onCloseEnd={this._onCloseEnd}
               enabledBottomInitialAnimation={true}
-              />
+            />
             
         </View>
       )

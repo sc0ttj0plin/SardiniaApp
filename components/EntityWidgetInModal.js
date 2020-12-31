@@ -21,9 +21,8 @@ class EntityWidgetInModal extends PureComponent {
   constructor(props){ 
     super(props);
 
-    var {coords, cluster} = props;
+    var {coords, cluster, entity} = props;
     this._loaded = false;
-    var entity = cluster.terms_objs[0];
     if(cluster.centroid)
       entity.distance = this._computeDistance(cluster, coords);
     
@@ -49,7 +48,7 @@ class EntityWidgetInModal extends PureComponent {
   _fetchEntity = () => {
     const { isAccomodationItem } = this.props;
     if(this.props.cluster){
-      const entity = this.props.cluster.terms_objs[0];
+      const { entity } = this.state;
       var query, params;
 
       if(isAccomodationItem) {
@@ -72,7 +71,6 @@ class EntityWidgetInModal extends PureComponent {
       });
     }
   }
-
 
   /**
    * Navigate to entity screen
