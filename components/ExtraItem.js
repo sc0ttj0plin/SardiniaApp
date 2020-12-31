@@ -7,6 +7,7 @@ import _ from 'lodash';
 import CustomText from "./CustomText";
 import Layout from "../constants/Layout";
 import ShimmerWrapper from "./ShimmerWrapper";
+import AnimatedImage from "./AnimatedImage";
 
 /**
  * ExtraItem is a list item component used in the Extra screen 
@@ -26,11 +27,11 @@ class ExtraItem extends PureComponent{
         <ShimmerWrapper
                 shimmerStyle={[styles.shimmer]}>
         </ShimmerWrapper>
-        <Image 
-          source={{ uri: image}} 
+        <AnimatedImage 
+          image={image}
           style={[styles.image, imageStyle, {width: this.state.width}]}
-          placeholderStyle={{backgroundColor: "transparent"}}
-          >
+          animated={true}
+          />
         <View style={styles.imageOverlay}>
           <CustomText style={styles.itemTitle}>
             {title || "text"}
@@ -42,7 +43,7 @@ class ExtraItem extends PureComponent{
                     <CustomText style={styles.itemButtonText}>{btnTitle}</CustomText>
             </ScrollableContainerTouchableOpacity>
         </View>
-       </Image>
+        
       </View>
       );
     }
@@ -53,6 +54,7 @@ const styles = StyleSheet.create({
       width: "100%",
       height: 450,
       alignItems: 'center',
+      overflow: "hidden"
     },
     shimmer: {
       position: "absolute",
@@ -113,11 +115,10 @@ const styles = StyleSheet.create({
       textAlign: "center"
     },
     image: {
+      position: "absolute",
       resizeMode: "cover",
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
       width: "100%",
+      height: "100%",
       backgroundColor: "transparent",
     },
 });

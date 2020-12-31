@@ -163,6 +163,7 @@ class InspirersScreen extends Component {
         horizontal={false}
         sideMargins={10}
         extraStyle={styles.inspirersListItem}
+        animated={true}
       />
   )}
 

@@ -319,10 +319,10 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingBottom:50,
-    paddingTop: 15
+    paddingTop: 15,
+    paddingHorizontal: 5
   },
   listContent: {
-    paddingHorizontal: 5,
     flex: 1
   },
   calendarList: {
