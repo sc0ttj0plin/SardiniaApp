@@ -5,7 +5,8 @@ import { Image } from 'react-native-elements';
 import { LinearGradient } from 'expo-linear-gradient';
 import {distanceToString} from '../helpers/maps'
 import CustomText from "./CustomText";
-import ShimmerWrapper from "../components/ShimmerWrapper"
+import ShimmerWrapper from "./ShimmerWrapper";
+import AnimatedImage from "./AnimatedImage";
 
 /**
  * Similar to PoiItemsList but with geographical information 
@@ -21,12 +22,12 @@ class GeoRefHListItem extends PureComponent{
 
 
   render() {
-    const { distance = "", title = "", subtitle = "" } = this.props;
+    const { distance = "", title = "", subtitle = "", animated } = this.props;
     return (
       <View style={[styles.container, this.props.style]}>
         <ShimmerWrapper shimmerStyle={styles.shimmer} />
-        <Image source={{ uri: this.props.image }} style={styles.image}>
-          <LinearGradient
+        <AnimatedImage animated={animated} image={this.props.image} style={[styles.image]} />
+        <LinearGradient
           style={styles.textContainer}
           colors={['rgba(255,255,255,0.8)', 'rgba(240,240,240,1)']}
           >
@@ -42,7 +43,6 @@ class GeoRefHListItem extends PureComponent{
               </CustomText>
              {this.renderDistanceRow(distance)}
           </LinearGradient>
-        </Image>
       </View>
       );
     }

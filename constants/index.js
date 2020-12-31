@@ -497,6 +497,10 @@ export const VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS = {
 
 export const FAVOURITES_MAX_ITEMS_IN_LIST = 6;
 
+export const AnimationConfig = {
+  imageAnimationDuration: 30000
+}
+
 export const ACCOMODATIONS_DATA_DEFAULT = [
   {term: "categoria 1", title: "titolo 1", stars: 1, distance: 2, location: "città"},
   {term: "categoria 2", title: "titolo 2", stars: 2, distance: 3, location: "città"},

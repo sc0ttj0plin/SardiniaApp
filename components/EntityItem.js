@@ -22,7 +22,7 @@ export default class EntityItem extends PureComponent {
   }
 
   render() {
-    const { onPress, keyItem, title, subtitle, image, distance, horizontal, extraStyle } = this.props;
+    const { onPress, keyItem, title, subtitle, image, distance, horizontal, extraStyle, animated = false } = this.props;
 
     return (
         <ScrollableContainerTouchableOpacity 
@@ -43,7 +43,8 @@ export default class EntityItem extends PureComponent {
                 subtitle={subtitle}
                 image={image}
                 distance={distance}
-                style={styles.fill} />
+                style={styles.fill}
+                animated={animated} />
             <View style={[styles.corner, {
               borderTopColor: this.entityIconOpts.backgroundTopRightCorner,
             }]}>

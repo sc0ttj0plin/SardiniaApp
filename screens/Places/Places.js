@@ -273,6 +273,7 @@ class PlacesScreen extends PureComponent {
         horizontal={horizontal}
         sideMargins={20}
         topSpace={10}
+        animated={true}
       />
   )}
 

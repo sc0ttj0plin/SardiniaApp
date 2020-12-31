@@ -337,6 +337,7 @@ class ItinerariesScreen extends PureComponent {
         extraStyle={{
           width: "100%"
         }}
+        animated={true}
       />
   )}
 
