@@ -40,7 +40,7 @@ class EntityWidgetInModal extends PureComponent {
 
   componentDidUpdate(prevProps) {
     if (prevProps.entity !== this.props.entity) {
-      console.log("entity changed", this.props.entity.uuid)
+      // console.log("entity changed", this.props.entity.uuid)
       this.setState({ entity: this.props.entity });
       this._fetchEntity();
     }
@@ -132,7 +132,7 @@ class EntityWidgetInModal extends PureComponent {
     if (entity) {
       const title = _.get(entity.title, [this.props.locale.lan, 0, "value"], null);
       const termName = _.get(entity, "term.name", "")
-      console.log("entity details", title, termName)
+      // console.log("entity details", title, termName)
       let distance = entity.distanceString || null;
 
       return(
