@@ -2,7 +2,6 @@ import React, { PureComponent } from "react";
 import { 
   View, Text, ActivityIndicator, Pressable,
   StyleSheet, BackHandler, Platform, ScrollView, NativeModules, Easing, PixelRatio } from "react-native";
-
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler"
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Animated from 'react-native-reanimated';
@@ -12,7 +11,6 @@ import ScrollableContainer from './ScrollableContainer';
 import CustomText from './CustomText';
 import SectionTitle from './SectionTitle';
 import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../helpers/maps';
-import MapView from "react-native-map-clustering";
 import ScrollableAnimatedHandle from '../components/ScrollableAnimatedHandle';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -30,6 +28,7 @@ import {Modalize} from 'react-native-modalize';
 import BottomSheet from 'reanimated-bottom-sheet';
 import EntityWidgetInModal from "../components/EntityWidgetInModal";
 import * as Location from 'expo-location';
+import MapViewTop from "./MapViewTop";
 
 /**
  * Map:             Clusters + pois that update with user map's interaction
@@ -42,7 +41,6 @@ import * as Location from 'expo-location';
  */
 
 const USE_DR = false;
-const MODAL_STATES = { explore: 'explore', extraModal: 'extraModal', selectedEntity: 'selectedEntity' };
 
 class ConnectedMapScrollable extends PureComponent {
 
@@ -62,7 +60,7 @@ class ConnectedMapScrollable extends PureComponent {
       scrollableSnap: 1,
       snapPoints: [],
       //
-      selectedEntity: null 
+      selectedEntity: null // is only used in this._renderDefaultEntityWidget if renderMapEntityWidget props is undefined
     };
       
     this._pageLayoutHeight = Layout.window.height;
@@ -101,7 +99,7 @@ class ConnectedMapScrollable extends PureComponent {
     this._pageLayoutHeight = height;
     //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 24 (handle) - 36 (header text) - 160 (entityItem) - 10 (margin of entityItem) - 36 (whereToGo text)
     // this.setState({ snapPoints: [height - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight, 72 * this._fontScale, 0] });
-    this.setState({ snapPoints: [height - Constants.COMPONENTS.header.bottomLineHeight, 72 * this._fontScale, 0] });
+    this.setState({ snapPoints: [height, 72 * this._fontScale, 0] });
   }; 
 
   /**
@@ -122,19 +120,21 @@ class ConnectedMapScrollable extends PureComponent {
   _setModalState = (state) => {
     this._modalState = state;
     // Explore (main)
-    if(state == MODAL_STATES.explore) {
+    if(state == Constants.SCROLLABLE_MODAL_STATES.explore) {
       this.setState({ scrollableSnap: 1 });
-      this._refs["extraModalRef"].close(); this._refs["extraModalRef"].close();
-      this._refs["selectedEntityModalRef"].close(); this._refs["selectedEntityModalRef"].close();
+      this._refs["extraModalRef"] && this._refs["extraModalRef"].close(); 
+      this._refs["extraModalRef"] && this._refs["extraModalRef"].close();
+      this._refs["selectedEntityModalRef"] && this._refs["selectedEntityModalRef"].close(); 
+      this._refs["selectedEntityModalRef"] && this._refs["selectedEntityModalRef"].close();
     } 
     // Extra modal
-    else if(state == MODAL_STATES.extraModal)
+    else if(state == Constants.SCROLLABLE_MODAL_STATES.extraModal)
       this.setState({ scrollableSnap: 2 }, () => {
         this._openModal(this._refs["selectedEntityModalRef"], false);
         this._openModal(this._refs["extraModalRef"], true);
       });
     // Selected entity on map
-    else if(state == MODAL_STATES.selectedEntity)
+    else if(state == Constants.SCROLLABLE_MODAL_STATES.selectedEntity)
       this.setState({ scrollableSnap: 2 }, () => {
         this._openModal(this._refs["selectedEntityModalRef"], true);
         this._openModal(this._refs["extraModalRef"], false);
@@ -146,30 +146,31 @@ class ConnectedMapScrollable extends PureComponent {
    * Invoked also to clean the currently selected entity (on map move for instance)
    */
   _onSelectedEntity = (entity) => {
-    if (this.props.mapEntityWidgetOnPress)
+    console.log("enter entity selection")
+    if (this.props.renderMapEntityWidget)
       this.props.mapEntityWidgetOnPress(entity);
     else 
       this.setState({ selectedEntity: entity });
 
     if (entity)
-      this._setModalState(MODAL_STATES.selectedEntity);
+      this._setModalState(Constants.SCROLLABLE_MODAL_STATES.selectedEntity);
     else
-      if(this._modalState == MODAL_STATES.selectedEntity)
-        this._setModalState(MODAL_STATES.explore);
+      if(this._modalState == Constants.SCROLLABLE_MODAL_STATES.selectedEntity)
+        this._setModalState(Constants.SCROLLABLE_MODAL_STATES.explore);
   }
 
   /**
    * On show extra modal
    */
   _showExtraModal = () => {
-    this._setModalState(MODAL_STATES.extraModal);
+    this._setModalState(Constants.SCROLLABLE_MODAL_STATES.extraModal);
   }
 
   /**
    * On main scrollable close
    */
   _onScrollableClosed = () => {
-    if(this._modalState == MODAL_STATES.explore)
+    if(this._modalState == Constants.SCROLLABLE_MODAL_STATES.explore)
       this.setState({ scrollableSnap: 1 });
   }
 
@@ -178,6 +179,7 @@ class ConnectedMapScrollable extends PureComponent {
    */
   _openModal = (ref, state) => {
     if (state && ref) {
+      // There's a bug in modalizer: we need to call it twice
       ref.open();
       ref.open();
     } else if (ref) {
@@ -189,16 +191,16 @@ class ConnectedMapScrollable extends PureComponent {
    * On extra modal close
    */
   _onExtraModalClosed = () => {
-    if(this._modalState == MODAL_STATES.extraModal) 
-      this._setModalState(MODAL_STATES.explore);
+    if(this._modalState == Constants.SCROLLABLE_MODAL_STATES.extraModal) 
+      this._setModalState(Constants.SCROLLABLE_MODAL_STATES.explore);
   }
 
   /**
    * On selected entity close
    */
   _onSelectedEntityModalClosed = () => {
-    if(this._modalState == MODAL_STATES.selectedEntity)
-      this._setModalState(MODAL_STATES.explore);
+    if(this._modalState == Constants.SCROLLABLE_MODAL_STATES.selectedEntity)
+      this._setModalState(Constants.SCROLLABLE_MODAL_STATES.explore);
   }
 
   /********************* Render methods go down here *********************/
@@ -208,9 +210,10 @@ class ConnectedMapScrollable extends PureComponent {
    */
   _renderDefaultExtraComponentListItem = (item) => {
     const { onPress, iconProps } = this.props.scrollableExtraComponentProps;
+    const backgroundColor = iconProps.backgroundColor || Colors.colorPlacesScreen;
     return (
       <TouchableOpacity style={styles.categorySelectorBtn} onPress={() => onPress(item)} activeOpacity={0.7}>
-        <View style={styles.icon}>
+        <View style={[styles.icon, { backgroundColor }]}>
             <Ionicons
               size={13}
               style={styles.cornerIcon}
@@ -226,21 +229,25 @@ class ConnectedMapScrollable extends PureComponent {
    * Renders default extra component (a list with icons)
    */
   _renderDefaultExtraComponent = () => {
-    const { data = [], keyExtractor } = this.props.scrollableExtraComponentProps; 
-    return(
-      <FlatList
-        horizontal={true}
-        renderItem={({item}) => this._renderDefaultExtraComponentListItem(item)}
-        data={data}
-        extraData={this.props.locale}
-        ref={(ref)=>this._filterList = ref}
-        keyExtractor={keyExtractor}
-        style={styles.filtersList}
-        ItemSeparatorComponent={this._renderHorizontalSeparator}
-        contentContainerStyle={styles.listContainerHeader}
-        showsHorizontalScrollIndicator={false}
-      />
-    )
+    if (this.props.scrollableExtraComponentProps) {
+      const { data = [], keyExtractor } = this.props.scrollableExtraComponentProps; 
+      return(
+        <FlatList
+          horizontal={true}
+          renderItem={({item}) => this._renderDefaultExtraComponentListItem(item)}
+          data={data}
+          extraData={this.props.locale}
+          ref={(ref)=>this._filterList = ref}
+          keyExtractor={keyExtractor}
+          style={styles.filtersList}
+          ItemSeparatorComponent={this._renderHorizontalSeparator}
+          contentContainerStyle={styles.listContainerHeader}
+          showsHorizontalScrollIndicator={false}
+        />
+      )
+    } else {
+      return null;
+    }
   }
 
   /**
@@ -250,9 +257,12 @@ class ConnectedMapScrollable extends PureComponent {
   _renderDefaultEntityWidget = () => {
     return (
       <EntityWidgetInModal
+        entityType={this.props.entitiesType}
         {...this.props.mapEntityWidgetProps}
         locale={this.props.locale} 
-        cluster={this.state.selectedEntity} 
+        // cluster={this.state.selectedEntity} 
+        // entity={entity}
+        entity={this.state.selectedEntity}
       />
     )
   }
@@ -262,13 +272,15 @@ class ConnectedMapScrollable extends PureComponent {
    */
   _renderTopComponent = () => {
     if (this.props.topComponentType === "ClusteredMapViewTop") {
-      const { term, coords, region, entityType, types, childUuids } = this.props.topComponentCMVTProps;
+      const { term, coords, region, types, childUuids } = this.props.topComponentCMVTProps;
+      const { entitiesType } = this.props;
       return (
         <ClusteredMapViewTop
           term={term}
           coords={coords}
           region={region}
-          entityType={entityType}
+          entityType={entitiesType}
+          modalState={this._modalState}
           types={types}
           uuids={childUuids}
           style={{flex: 1}}
@@ -279,12 +291,29 @@ class ConnectedMapScrollable extends PureComponent {
         />
       )
     } else if (this.props.topComponentType === "MapView") {
-      //TODO
+      const { entitiesType } = this.props;
+      const { data } = this.props.scrollableProps;
+      const { coords, region, getCoordsFun, onMarkerPressEvent } = this.props.topComponentMVTProps;
+      // console.log("enter hereee")
+      return (
+        <MapViewTop
+          coords={coords}
+          initialRegion={region}
+          entityType={entitiesType}
+          modalState={this._modalState}
+          style={{flex: 1}}
+          entities={data}
+          getCoordsFun={getCoordsFun}
+          onMarkerPressEvent={onMarkerPressEvent}
+          onSelectedEntity={this._onSelectedEntity}
+          paddingBottom={this.state.snapPoints[1]} /* set padding as the height of the first snap point */
+        />
+      )
     } else {
       if (!this.props.topComponentRender) {
         throw new Error("If topComponentType is not one of ClusteredMapViewTop or MapView topComponentRender prop must be passed.")
       } else {
-
+        this.props.topComponentRender();
       }
     }
   }
@@ -296,36 +325,40 @@ class ConnectedMapScrollable extends PureComponent {
    * Render extra content
    */
   _renderDefaultExtraModal = () => {
-    const { data, keyExtractor, renderItem, title, onEndReached } = this.props.extraModalProps;
-    return (
-        <View style={styles.listExtraModalView}>
-          <AsyncOperationStatusIndicator
-            loading={true}
-            success={data && data.length > 0}
-            loadingLayout={<LLHorizontalItemsFlatlist horizontal={true} contentContainerStyle={styles.listContainerHeader} title={title} titleStyle={styles.sectionTitle}/>}
-          >
-            <View>  
-              <SectionTitle text={title} />
-              <FlatList
-                horizontal={true}
-                renderItem={renderItem}
-                data={data}
-                extraData={this.props.locale}
-                keyExtractor={keyExtractor}
-                onEndReachedThreshold={0.5} 
-                onEndReached={onEndReached}
-                ItemSeparatorComponent={this._renderHorizontalSeparator}
-                contentContainerStyle={styles.listContainerHeader}
-                showsHorizontalScrollIndicator={false}
-                initialNumToRender={3} // Reduce initial render amount
-                maxToRenderPerBatch={2}
-                updateCellsBatchingPeriod={4000} // Increase time between renders
-                windowSize={5} // Reduce the window size
-              />
-            </View>
-          </AsyncOperationStatusIndicator>
-        </View>
-    )
+    if (this.props.extraModalProps) {
+      const { data, keyExtractor, renderItem, title, onEndReached } = this.props.extraModalProps;
+      return (
+          <View style={styles.listExtraModalView}>
+            <AsyncOperationStatusIndicator
+              loading={true}
+              success={data && data.length > 0}
+              loadingLayout={<LLHorizontalItemsFlatlist horizontal={true} contentContainerStyle={styles.listContainerHeader} title={title} titleStyle={styles.sectionTitle}/>}
+            >
+              <View>  
+                <SectionTitle text={title} />
+                <FlatList
+                  horizontal={true}
+                  renderItem={renderItem}
+                  data={data}
+                  extraData={this.props.locale}
+                  keyExtractor={keyExtractor}
+                  onEndReachedThreshold={0.5} 
+                  onEndReached={onEndReached}
+                  ItemSeparatorComponent={this._renderHorizontalSeparator}
+                  contentContainerStyle={styles.listContainerHeader}
+                  showsHorizontalScrollIndicator={false}
+                  initialNumToRender={3} // Reduce initial render amount
+                  maxToRenderPerBatch={2}
+                  updateCellsBatchingPeriod={4000} // Increase time between renders
+                  windowSize={5} // Reduce the window size
+                />
+              </View>
+            </AsyncOperationStatusIndicator>
+          </View>
+      )
+    } else {
+      return null;
+    }
   }
 
 
@@ -334,12 +367,13 @@ class ConnectedMapScrollable extends PureComponent {
     const renderHeaderTextComponent = this.props.scrollableHeaderTextComponent ? this.props.scrollableHeaderTextComponent : this.props.scrollableHeaderText;
 
     //scrollable props
-    const { show, entityType, data, onEndReached, renderItem, keyExtractor } = this.props.scrollableProps;
+    const { show, data, onEndReached, renderItem, keyExtractor } = this.props.scrollableProps;
+    const { entitiesType } = this.props;
     
     if (show)
       return (
         <ScrollableContainer 
-          entityType={entityType}
+          entityType={entitiesType}
           topComponent={this._renderTopComponent}
           extraComponent={renderExtraComponent}
           pageLayoutHeight={this._pageLayoutHeight}
@@ -359,7 +393,7 @@ class ConnectedMapScrollable extends PureComponent {
           isClosable={this.state.scrollableSnap!=1}
         />
       )
-    return null;
+    return this._renderTopComponent();
   }
 
   _renderMapEntityModal = () => {
@@ -401,7 +435,7 @@ class ConnectedMapScrollable extends PureComponent {
   /* Render content */
   _renderContent = () => {
     return (
-      <View style={styles.fill} onLayout={this._onPageLayout}>
+      <View style={[styles.fill, styles.view]} onLayout={this._onPageLayout}>
         {this._renderScrollable()}
         {this._renderMapEntityModal()}
         {this._renderExtraModal()}
@@ -430,6 +464,9 @@ ConnectedMapScrollable.navigationOptions = {
 const styles = StyleSheet.create({
   fill: {
     flex: 1,
+  },
+  view: {
+    overflow: "hidden"
   },
   container: {
     backgroundColor: Colors.colorPlacesScreen,

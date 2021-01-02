@@ -63,6 +63,9 @@ export const GET_NODES_FAIL = 'sardinia/nodes/LOAD_FAIL';
 export const GET_ACCOMODATIONS = 'sardinia/accomodations/LOAD';
 export const GET_ACCOMODATIONS_SUCCESS = 'sardinia/accomodations/LOAD_SUCCESS';
 export const GET_ACCOMODATIONS_FAIL = 'sardinia/accomodations/LOAD_FAIL';
+export const GET_ACCOMODATION = 'sardinia/accomodation/LOAD';
+export const GET_ACCOMODATION_SUCCESS = 'sardinia/accomodation/LOAD_SUCCESS';
+export const GET_ACCOMODATION_FAIL = 'sardinia/accomodation/LOAD_FAIL';
 export const GET_ACCOMODATIONS_BY_ID = 'sardinia/accomodationsById/LOAD';
 export const GET_ACCOMODATIONS_BY_ID_SUCCESS = 'sardinia/accomodationsById/LOAD_SUCCESS';
 export const GET_ACCOMODATIONS_BY_ID_FAIL = 'sardinia/accomodationsById/LOAD_FAIL';
@@ -497,6 +500,10 @@ export const VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS = {
 
 export const FAVOURITES_MAX_ITEMS_IN_LIST = 6;
 
+export const AnimationConfig = {
+  imageAnimationDuration: 15000
+}
+
 export const ACCOMODATIONS_DATA_DEFAULT = [
   {term: "categoria 1", title: "titolo 1", stars: 1, distance: 2, location: "città"},
   {term: "categoria 2", title: "titolo 2", stars: 2, distance: 3, location: "città"},
@@ -504,6 +511,8 @@ export const ACCOMODATIONS_DATA_DEFAULT = [
   {term: "categoria 4", title: "titolo 4", stars: 4, distance: 5, location: "città"},
   {term: "categoria 5", title: "titolo 5", stars: 5, distance: 6, location: "città"}
 ]
+
+export const SCROLLABLE_MODAL_STATES = { explore: 'explore', extraModal: 'extraModal', selectedEntity: 'selectedEntity' };
 
 export const styles = {
   html: {

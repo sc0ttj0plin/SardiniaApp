@@ -17,6 +17,7 @@ export default function reducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case Constants.GET_ACCOMODATIONS: 
     case Constants.GET_ACCOMODATIONS_BY_ID: 
+    case Constants.GET_ACCOMODATION:
       return { 
         ...state, 
         success: false,
@@ -25,6 +26,7 @@ export default function reducer(state = INITIAL_STATE, action) {
       };
     case Constants.GET_ACCOMODATIONS_SUCCESS:
     case Constants.GET_ACCOMODATIONS_BY_ID_SUCCESS:
+    case Constants.GET_ACCOMODATION_SUCCESS:
       return { 
         ...state, 
         data: [ ...state.data, ...action.payload.data ],
@@ -35,6 +37,7 @@ export default function reducer(state = INITIAL_STATE, action) {
       };
     case Constants.GET_ACCOMODATIONS_FAIL:
     case Constants.GET_ACCOMODATIONS_BY_ID_FAIL:
+    case Constants.GET_ACCOMODATION_FAIL:
       return { 
         ...state,
         success: false,

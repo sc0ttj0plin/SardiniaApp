@@ -30,6 +30,14 @@ export function getAccomodations(query, props) {
   };
 }
 
+export function getAccomodation(query, props) {
+  return {
+    type: Constants.GET_ACCOMODATION,
+    query: query,
+    ...props
+  };
+}
+
 export function getAccomodationsById(query, props) {
   return {
     type: Constants.GET_ACCOMODATIONS_BY_ID,

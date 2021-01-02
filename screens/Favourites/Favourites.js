@@ -162,8 +162,14 @@ class FavouritesScreen extends Component {
    *    Loading state is stored in this.props.searchAutocomplete.searchLoading
    *    Error state is stored in this.props.searchAutocomplete.searchError
    */
-  _isSuccessData  = () => false;    /* e.g. this.props.pois.success; */
-  _isLoadingData  = () => true;   /* e.g. this.props.pois.loading; */
+  _isSuccessData = () => {
+    return ((!this.props.accomodations.loading || this.state.favAccomodations.loaded) &&
+      (!this.props.events.eventsLoading || this.state.favEvents.loaded) &&
+      (!this.props.pois.loading || this.state.favPlaces.loaded) &&
+      (!this.props.inspirers.loading || this.state.favInspirers.loaded) && 
+      (!this.props.itineraries.loading || this.state.favItineraries.loaded))
+  }
+  _isLoadingData  = () => true;    /* e.g. this.props.pois.loading; */
   _isErrorData    = () => null;    /* e.g. this.props.pois.error; */
 
   _getPois = (uuids) => {
@@ -222,13 +228,7 @@ class FavouritesScreen extends Component {
       this.setState({ favAccomodations: accomodations })
   }
 
-  _isLoaded = () => {
-    return ((!this.props.accomodations.loading || this.state.favAccomodations.loaded) &&
-      (!this.props.events.eventsLoading || this.state.favEvents.loaded) &&
-      (!this.props.pois.loading || this.state.favPlaces.loaded) &&
-      (!this.props.inspirers.loading || this.state.favInspirers.loaded) && 
-      (!this.props.itineraries.loading || this.state.favItineraries.loaded))
-  }
+  
   
   _openItem = (item, type) => {
     switch(type) {
@@ -358,9 +358,9 @@ class FavouritesScreen extends Component {
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
         <ConnectedHeader />
         <AsyncOperationStatusIndicator
-          loading={true}
-          success={this._isLoaded()}
-          error={false}
+          loading={this._isLoadingData()}
+          success={this._isSuccessData()}
+          error={this._isErrorData()}
           loadingLayout={<LLEntitiesFlatlist 
             numColumns={2}
             sideMargins={10} 

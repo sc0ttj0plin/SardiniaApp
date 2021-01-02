@@ -10,6 +10,7 @@ import {
   AsyncOperationStatusIndicator, 
   ClusteredMapViewTop,
   ConnectedHeader, 
+  ConnectedMapScrollable,
   ScrollableContainer,
   EntityItem,
   CustomText,
@@ -81,6 +82,7 @@ class EventsMapScreen extends PureComponent {
    * On mount load categories and start listening for user's location
    */
   componentDidMount() {
+    console.log("map did mount")
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
     if(this.props.others.geolocation && this.props.others.geolocation.coords) {
       this._onUpdateCoords(this.props.others.geolocation.coords);
@@ -148,191 +150,20 @@ class EventsMapScreen extends PureComponent {
     this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item });
   }
 
-  _selectMarker = (event) => {
-    if(event) {
-      this.props.actions.setScrollableSnapIndex(Constants.ENTITY_TYPES.events, 2);
-      this.setState({ selectedEntity: null }, () => {
-        this._tracksViewChanges = true;
-        this.setState({ 
-          selectedEntity: event,
-          tracksViewChanges: true
-        }, () => {
-          this._tracksViewChanges = false;
-          // this.setState({
-          //   tracksViewChanges: false
-          // })
-        });
-      })
-    } else {
-      this.setState({ 
-        selectedEntity: null,
-        tracksViewChanges: true
-      }, () => {
-        this._tracksViewChanges = false;
-        // this.setState({
-        //   tracksViewChanges: false
-        // })
-      });
-    }
-  }
-
-    /**
-   * Used to compute snap points
-   * @param {*} event layout event
-   */
-  _onPageLayout = (event) => {
-    const { width, height } = event.nativeEvent.layout;
-    this._pageLayoutHeight = height;
-
-    let margins = 20
-    let itemWidth = ((Layout.window.width - (margins*2))/2) - 5;
-    //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 24 (handle) - 36 (header text) - itemWidth (entityItem) - 10 (margin of entityItem)
-    /* OLD: 4 snap points this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 24 - 76 - itemWidth - 10, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 24 - 76, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 34] }); */
-    this.setState({ snapPoints: [height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight, 80] });
-  }; 
-
-
-  /********************* Render methods go down here *********************/
-
-  _renderCluster = (cluster) => {
-    const { id, geometry, onPress, properties } = cluster;
-    const points = properties.point_count;
-
-    return (
-      <Marker
-        key={`cluster-${id}`}
-        coordinate={{
-          longitude: geometry.coordinates[0],
-          latitude: geometry.coordinates[1]
-        }}
-        onPress={onPress}
-      >
-        <View style={styles.cluster}>
-          <CustomText style={styles.clusterText}>{points}</CustomText>
-        </View>
-      </Marker>
-    )
-  }
-  
-  /* Renders the topmost component: a map in our use case */
-  _renderTopComponent = () => {
-    const { coords, region, selectedEntity } = this.state;
-    return (
-      <>
-      <MapView
-        coords={coords}
-        initialRegion={region}
-        provider={ PROVIDER_GOOGLE }
-        mapType='standard'
-        provider={PROVIDER_GOOGLE}
-        showsUserLocation={ true }
-        showsIndoorLevelPicker={true}
-        showsCompass={false}
-        renderCluster={this._renderCluster}
-        clusteringEnabled={true}
-        clusterColor={Colors.colorEventsScreen}
-        style={{flex: 1}}
-        onPress={() => this._selectMarker(null)}
-        onPanDrag={() => selectedEntity && this._selectMarker(null)}
-      >
-        {this._renderMarkers()}
-        {/* {this.state.selectedEntity && this._renderMarker(this.state.selectedEntity, true)} */}
-      </MapView>
-      {selectedEntity && this._renderWidget()}
-
-      </>
-    )
-
-  }
-
-  _renderWidget = () => {
-    const { selectedEntity, coords } = this.state;
-    const { lan } = this.props.locale;
-    const title = _.get(selectedEntity.title, [lan, 0, "value"], null);
-    const term = selectedEntity.term.name;
-    const image = selectedEntity.image;
-    const coordinates = _.get(selectedEntity, ["itinerary", 0], null);
-    var distanceStr = null;
-
-    if (coordinates) {
-      console.log(_.get(selectedEntity, ["itinerary", 0], null));
-      distanceStr = distanceToString(distance(coords.latitude, coords.longitude, coordinates.lat, coordinates.lon));
-    }
-
-    return(
-      <View style={styles.widget}>
-        <EntityItem 
-          keyItem={selectedEntity.nid}
-          listType={Constants.ENTITY_TYPES.events}
-          onPress={() => this._openItem(selectedEntity)}
-          title={`${title}`}
-          image={`${image}`}
-          subtitle={`${term}`}
-          distance={this.state.isCordsInBound ? distanceStr : null}
-          style={styles.itinerariesListItem}
-          horizontal={false}
-          topSpace={10}
-          extraStyle={{
-            marginBottom: 10,
-            width: "100%",
-            height: "100%"
-          }}
-        />
-      </View>
-    )
-  }
-
-  _renderMarkers = () => {
-    return this.state.events.map( event => {
-      return this._renderMarker(event)
-    })
-  }
-
-  _renderMarker = (event) => {
-    const coordinates1 = _.get(event, ["itinerary", 0], null)
-    const coordinates2 = _.get(event, "coords", null);
-    let coords = null;
-    let onClick = null;
-    let selected = false;
-    if(coordinates1){
-      const lat = _.get(coordinates1, "lat", null)
-      const long = _.get(coordinates1, "lon", null)
-      if(lat && long){
-        coords = { longitude: parseFloat(long),  latitude: parseFloat(lat) };
-        onClick = () => this._selectMarker(event);
-        selected = this.state.selectedEntity == event;
-      }
-    }
-    else if(coordinates2){
-      coords = { longitude: parseFloat(coordinates2.longitude),  latitude: parseFloat(coordinates2.latitude) };
-      onClick = () => linkingOpenNavigator("", coords);
-    }
-
-    if(coords){
-      const width = 32;
-      return(
-        <Marker.Animated
-          coordinate={coords}
-          onPress={onClick}
-          tracksViewChanges={this.state.tracksViewChanges}
-          style={styles.markerAnimated}>
-            <View style={[styles.markerContainer, { backgroundColor: selected ? Colors.colorEventsScreenTransparent : "transparent"}]}>
-              <View
-                style={[styles.marker]}>
-                <Ionicons
-                  name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.events.iconName}
-                  size={19}
-                  color={"#ffffff"}
-                  style={styles.markerIcon}
-                />
-              </View>
-            </View>
-        </Marker.Animated>
-      )
+  _getEntityCoords = (entity, isEvent) => {
+    if(isEvent){
+      const coordinates = _.get(entity, ["itinerary", 0], null);
+      // console.log("coordinates", coordinates)
+      if(coordinates)
+        return { latitude: parseFloat(coordinates.lat), longitude: parseFloat(coordinates.lon) };
+      else
+        return null;
     }
     else
       return null;
   }
+
+  /********************* Render methods go down here *********************/
 
   /* Renders the Header of the scrollable container */
   _renderHeaderText = () => {
@@ -343,23 +174,8 @@ class EventsMapScreen extends PureComponent {
       )
   }
 
-  _renderMapTitle = () => {
-    const { title } = this.state;
-      if(title != ""){
-        return (
-          //onStartShouldSetResponder={this._onListHeaderPressIn}
-          <SectionTitle numberOfLines={3} text={title} textStyle={{ fontSize: 15 }} style={styles.mapTitle} />
-        )
-      }
-      else
-        return null;
-  }
-
-  /* Horizontal spacing for Header items */
-  _renderHorizontalSeparator = () => <View style={{ width: 5, flex: 1 }}></View>;
-
   /* Renders a poi in Header */
-  _renderListItem = ({item, index}) => {
+  _renderListItem = (item, index) => {
     const { coords } = this.state;
     const { lan } = this.props.locale;
     const title = _.get(item.title, [lan, 0, "value"], null);
@@ -387,41 +203,71 @@ class EventsMapScreen extends PureComponent {
       />
   )}
 
-  _renderMap = () => {
-    return(
-      <View style={styles.fill}>
-        {this._renderTopComponent()}
-        <View style={styles.topHeader}>
-          {this._renderMapTitle()}
-        </View>
-      </View>
-    )
+/* Render content */
+_renderContent = () => {
+  const { nearToYou } = this.props.locale.messages;
+  const { pois, snapIndex, coords, region, events  } = this.state;
+  const entitiesType = Constants.ENTITY_TYPES.events;
+
+  //scrollable props
+  const scrollableProps = {
+    show: true,
+    data: events,
+    onEndReached: null,
+    renderItem: ({ item, index }) => this._renderListItem(item, index),
+    keyExtractor: item => item.uuid,
   }
 
-  /* Render content */
-  _renderContent = () => {
-    const { selectedEntity, events } = this.state;
-    let data = events;
-    let snapIndex = selectedEntity ? 3 : 2
+  // MapViewTopProps (MVT)
+  const MVTProps = {
+    coords, 
+    region,
+    types: [Constants.NODE_TYPES.events],
+    onMarkerPressEvent: "openEntity",
+    getCoordsFun: (entity) => this._getEntityCoords(entity, true)
+  };
 
-    return (
-      <ScrollableContainer 
-        entityType={Constants.ENTITY_TYPES.events}
-        topComponent={this._renderTopComponent}
-        extraComponent={this._renderMapTitle}
-        data={data}
-        initialSnapIndex={1}
-        pageLayoutHeight={this._pageLayoutHeight}
-        snapIndex={snapIndex}
-        snapPoints={this.state.snapPoints}
-        numColums={1}
-        renderItem={this._renderListItem}
-        keyExtractor={item => item.uuid}
-        HeaderTextComponent={this._renderHeaderText}
-        closeSnapIndex={1}
-      />
-    )
-  }
+  const mapEntityWidgetProps = { 
+
+  };
+
+  /** 
+   * NOTE: changing numColums on the fly isn't supported and causes the component to unmount, 
+   * thus slowing down the process
+   * set a key to the inner flatlist therefore 
+  */
+  return (
+    <ConnectedMapScrollable
+      // entities type
+      entitiesType={entitiesType}
+      // Scrollable container props
+      scrollableProps={scrollableProps}
+
+      // Extra component: if scrollableRenderExtraComponent is undefined, must specify extra component props
+      // scrollableRenderExtraComponent={this._renderFiltersList}
+      // scrollableExtraComponentProps={extraComponentProps}
+      
+      // Header text component: if scrollableHeaderTextComponent is undefined, must specify scrollableHeaderText
+      scrollableHeaderTextComponent={this._renderHeaderText}
+      // scrollableHeaderText={() => <Text>Header Text</Text>}
+
+      // Top component (ClusteredMapViewTop or MapView or Custom)
+      topComponentType="MapView" //or ClusteredMapViewTop or Custom (if Custom must implement topComponentRender)
+      // topComponentCMVTProps={CMVTProps}
+      // if topComponentType is MapView must specify topComponentMVTProps 
+      topComponentMVTProps={MVTProps}
+      // Map entity widget (in modal): if renderMapEntityWidget is undefined, must specify mapEntityWidgetProps and mapEntityWidgetOnPress 
+      // e.g. this.state.selectedEntity can now be used in renderMapEntityWidget
+      // mapEntityWidgetOnPress={(entity) => this.setState({ selectedEntity: entity })} 
+      // renderMapEntityWidget={this._renderEntityWidget}
+      mapEntityWidgetProps={mapEntityWidgetProps}
+
+      // Extra modal content: if renderExtraModalComponent is undefined, must specify mapEntityWidgetProps
+      // renderExtraModalComponent={this._renderNearToYou}
+      //extraModalProps={{extraModalProps}}
+    />
+  )
+}
 
 
   render() {
@@ -432,8 +278,7 @@ class EventsMapScreen extends PureComponent {
           iconTintColor={Colors.colorEventsScreen}  
           backButtonVisible={true}
         />
-        {render && !hideScrollable && this._renderContent()}
-        {render && hideScrollable && this._renderMap()}
+        {render && this._renderContent()}
       </View>
     )
   }

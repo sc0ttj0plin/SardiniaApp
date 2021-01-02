@@ -72,6 +72,12 @@ class ClusteredMapViewTop extends PureComponent {
     if (prevTerm !== currentTerm) {
       this._fetchClusters();
     }
+
+    const prevModalState = prevProps.modalState;
+    const currentModalState = this.props.modalState;
+    if(prevModalState != currentModalState && prevModalState == Constants.SCROLLABLE_MODAL_STATES.selectedEntity){
+      this.setState({selectedCluster: null})
+    }
   }
 
   _onUpdateCoords = (position, source) => {

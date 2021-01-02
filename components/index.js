@@ -55,5 +55,5 @@ export UpdateHandler from './UpdateHandler';
 export ShimmerWrapper from './ShimmerWrapper';
 export ScrollableContainerTouchableOpacity from './ScrollableContainerTouchableOpacity';
 export ConnectedMapScrollable from './ConnectedMapScrollable';
-
-
+export AnimatedImage from './AnimatedImage';
+export MapViewTop from "./MapViewTop"

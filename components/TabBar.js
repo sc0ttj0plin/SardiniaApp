@@ -125,7 +125,7 @@ const TabBar = props => {
                     display: isRouteActive ? 'flex' : 'none',
                     height: isRouteActive ? 20 : 0,
                   }}>
-                    <ConnectedText textStyle={[Styles.iconText, {
+                    <ConnectedText textStyle={[ {
                         color: route.backgroundActiveColor,
                         fontFamily: "montserrat-bold",
                         textAlign: "center",
@@ -203,7 +203,6 @@ const Styles = StyleSheet.create({
     textAlign: "right",
     alignSelf: "center",
     textAlign: "center",
-    paddingBottom: 10
   },
   iconContainer: {
       flex: 1,

@@ -618,6 +618,31 @@ query ($limit: Int, $offset: Int) {
 }
 `;
 
+
+export const getAccomodation = gql`
+query ($uuid: String!) {
+  nodes(where: {type: {_eq: "${Constants.NODE_TYPES.accomodations}"}, uuid: {_eq: $uuid} }) {
+    nid
+    uuid
+    type
+    title: legacy(path: "title_field")
+    georef
+    distance
+    image: legacy(path: "field_immagine_top.und[0].uri")
+    gallery: legacy(path: "field_galleria_multimediale.und")
+    email: legacy(path: "field_email.und[0].email")
+    website: legacy(path: "field_sito_web_ricettive.und[0].url")
+    address: legacy(path: "field_indirizzo.und[0].value")
+    location: legacy(path: "field_localit.und[0].value")
+    stars: legacy(path: "field_numero_stelle.und[0].value")
+    phone: legacy(path: "telefono.und[0].value")
+    term {
+      name
+    }
+  }
+}
+`;
+
 export const getAccomodationsById = gql`
 query ($uuids: [String!]) {
   nodes(where: {type: {_eq: "${Constants.NODE_TYPES.accomodations}"}, uuid: {_in: $uuids} }) {

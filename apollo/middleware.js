@@ -323,6 +323,23 @@ const apolloMiddleware = client => {
             store.dispatch({ type: Constants.GET_ACCOMODATIONS_FAIL, payload: e });
           });
         }
+        else if (action.type === Constants.GET_ACCOMODATION) {
+          client.query({
+              query: Queries.getAccomodation,
+              variables: action.query
+          }).then((resp) => {
+            let dispatch = { type: Constants.GET_ACCOMODATION_SUCCESS, payload: {} };
+            if (resp.data && resp.data.nodes && resp.data.nodes.length > 0) {
+              processEntity(resp.data.nodes[0]);
+              dispatch.payload = { dataById: {[resp.data.nodes[0].uuid]: resp.data.nodes[0]}, data: [resp.data.nodes[0]] };
+            }
+            store.dispatch(dispatch);
+          }).catch((e) => {
+            console.log(e);
+            //also dispatch the id which has failed
+            store.dispatch({ type: Constants.GET_ACCOMODATION_FAIL, payload: e });
+          });
+        }
         else if (action.type === Constants.GET_ACCOMODATIONS_BY_ID) {
           client.query({
               query: Queries.getAccomodationsById,

@@ -18,130 +18,154 @@ import CustomText from "./CustomText";
  * EntityWidgetInModal 
  */
 class EntityWidgetInModal extends PureComponent {  
-  constructor(props){ 
+
+  constructor(props) { 
     super(props);
 
-    var {coords, cluster} = props;
-    this._loaded = false;
-    var entity = cluster.terms_objs[0];
-    if(cluster.centroid)
-      entity.distance = this._computeDistance(cluster, coords);
+    var { entity, entityType } = props;
+
+    /* Only for entityType == 'places' and 'accomodations', for 'event' or 'itinerary' we already have data in props.entity */
+    this._isClusteredEntity = (entityType === Constants.ENTITY_TYPES.places || entityType === Constants.ENTITY_TYPES.accomodations); 
     
     this.state = {
-      entity
+      entity,
+      isEntityLoaded: this._isClusteredEntity ? false : true,
     };
   }
 
   componentDidMount() {
-    this._fetchEntity(), 2000;
+    if (this._isClusteredEntity && this.props.entity) 
+      this._fetchEntity();
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.cluster !== this.props.cluster) {
+    if (prevProps.entity !== this.props.entity) {
+      this.setState({ entity: this.props.entity });
       this._fetchEntity();
     }
   }
 
-  _computeDistance = (cluster, coords) => {
-    return distance(coords.longitude, coords.latitude, cluster.centroid.coordinates[0], cluster.centroid.coordinates[1]);
+
+  _computeDistance = (entity, coords) => {
+    return distance(coords.longitude, coords.latitude, entity.centroid.coordinates[0], entity.centroid.coordinates[1]);
   }
 
   _fetchEntity = () => {
-    const { isAccomodationItem } = this.props;
-    if(this.props.cluster){
-      const entity = this.props.cluster.terms_objs[0];
-      var query, params;
-
-      if(isAccomodationItem) {
-        query = actions.getAccomodationsById;
-        params = { uuids: [entity.uuid] };
+    // If is cluster (pois + accomodation) we don't have any data and we must fetch details, else we already have data and we show directly
+    if(this.props.entity) {
+    
+      let query, params;
+      if (this._isClusteredEntity) {
+        // Get real entity from the cluster object (i.e. inside terms_objs[0])
+        const entity = this.props.entity.terms_objs[0];
+        if (this.props.entityType === Constants.ENTITY_TYPES.accomodations) {
+          query = actions.getAccomodationsById;
+          params = { uuids: [entity.uuid] };
+        } else if (this.props.entityType === Constants.ENTITY_TYPES.places) {
+          query = actions.getPoi;
+          params = { uuid: entity.uuid };
+        }
+        // Launch the query to get the real entity from the cluster
+        apolloQuery(query(params)).then((data) => {
+          this._isEntityLoaded = true;
+          let entity = data[0];
+          entity.distance = this._computeDistance(this.props.entity, this.props.coords); 
+          entity.distanceString = entity.distance ? distanceToString(entity.distance) : null
+          this.setState({ entity });
+        }).catch(e => {
+          console.error(e.message);
+        });
       }
-      else {
-        query = actions.getPoi;
-        params = { nid: entity.nid };
-      }
-
-      apolloQuery(query(params)).then((data) => {
-        this._loaded = true;
-        let entity = data[0];
-        entity.distance = this._computeDistance(this.props.cluster, this.props.coords); 
-        entity.distanceString = entity.distance ? distanceToString(entity.distance) : null
-        this.setState({ entity });
-      }).catch(e => {
-        console.error(e.message);
-      });
     }
   }
 
-
-  /**
-   * Navigate to entity screen
-   * @param {*} item: poi
-   */
-  _openEntity(item) {
-    console.log("GOTO ENTITY!", item.uuid);
-    const { isAccomodationItem } = this.props;
-    let screen = isAccomodationItem ? Constants.NAVIGATION.NavAccomodationScreen : Constants.NAVIGATION.NavPlaceScreen;
-    this.props.navigation.navigate(screen, {
-      item, mustFetch: !this._loaded
-    }) 
-  }
+  _openEntity = (entity) => {
+    switch(this.props.entityType) {
+      case Constants.ENTITY_TYPES.places:
+        this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { entity });
+        break;
+      case Constants.ENTITY_TYPES.events:
+        this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { entity });
+        break;
+      case Constants.ENTITY_TYPES.itineraries:
+        this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, { entity })
+        break;
+      case Constants.ENTITY_TYPES.accomodations:
+        this.props.navigation.navigate(Constants.NAVIGATION.NavAccomodationScreen, { entity })
+        break;
+      default:
+        break;
+    }
+  } 
 
   /* Renders a poi in Header */
-  _renderAccomodationItem = () => {
+  _renderAccomodation = () => {
     const { entity } = this.state;
-    const title = _.get(entity.title, [this.props.locale.lan, 0, "value"], null);
-    const termName = _.get(entity, "term.name", "")
-    return (
-      <AccomodationItem
-        keyItem={entity.nid}
-        extraStyle={{
-          width: '100%',
-          borderColor: Colors.lightGray,
-          borderWidth: 1,
-          marginLeft: 0,
-          height: 160,
-        }}
-        title={title}
-        term={termName}
-        stars={entity.stars}
-        onPress={null}
-        location={entity.location}
-        distance={entity.distanceString}
-        onPress={() => this._openEntity(entity)}
-      />
-  )}
+    if (entity) {
+      const title = _.get(entity.title, [this.props.locale.lan, 0, "value"], null);
+      const termName = _.get(entity, "term.name", "")
+      return (
+        <AccomodationItem
+          keyItem={entity.nid}
+          extraStyle={{
+            width: '100%',
+            borderColor: Colors.lightGray,
+            borderWidth: 1,
+            marginLeft: 0,
+            height: 160,
+          }}
+          title={title}
+          term={termName}
+          stars={entity.stars}
+          onPress={null}
+          location={entity.location}
+          distance={entity.distanceString}
+          onPress={() => this._openEntity(entity)}
+        />
+      )
+    }
+  }
 
   _renderPoi = () => {
-    var {entity} = this.state;
-    const title = _.get(entity.title, [this.props.locale.lan, 0, "value"], null);
-    const termName = _.get(entity, "term.name", "")
+    var { entity } = this.state;
 
-    return(
-      <EntityItemInModal
-        keyItem={entity.nid}
-        listType={Constants.ENTITY_TYPES.places}
-        onPress={() => this._openEntity(entity)}
-        title={`${title}`}
-        image={`${entity.image}`}
-        distance={entity.distanceString}
-        subtitle={termName}
-        extraStyle={this.props.extraStyle}
-        coords={this.props.coords}
-      />
-    )
+    if (entity) {
+      const title = _.get(entity.title, [this.props.locale.lan, 0, "value"], null);
+      const termName = _.get(entity, "term.name", "")
+      return(
+        <EntityItemInModal
+          keyItem={entity.nid}
+          listType={this.props.entityType}
+          onPress={() => this._openEntity(entity)}
+          title={title}
+          image={entity.image}
+          distance={entity.distanceString}
+          subtitle={termName}
+          extraStyle={this.props.extraStyle}
+          coords={this.props.coords}
+        />
+      )
+    }
   }
+  
   _renderEntity = () => {
-    const { isAccomodationItem } = this.props;
-    if(isAccomodationItem)
-      return this._renderAccomodationItem()
-    else
-      return this._renderPoi()
+    switch(this.props.entityType) {
+      case Constants.ENTITY_TYPES.places:
+      case Constants.ENTITY_TYPES.events:
+        return this._renderPoi();
+        // this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { entity });
+        break;
+      case Constants.ENTITY_TYPES.itineraries:
+        // this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, { entity });
+        break;
+      case Constants.ENTITY_TYPES.accomodations:
+        return this._renderAccomodation();
+      default:
+        break;
+    }
   }
 
   render() { 
-    const { isAccomodationItem } = this.props;
-    const {entity} = this.state;
     return (
       <View style={[styles.container]}>
         {this._renderEntity()}
