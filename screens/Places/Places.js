@@ -111,6 +111,10 @@ class PlacesScreen extends PureComponent {
 
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
+  
+  _isSuccessData  = () => this.props.categories.success;
+  _isLoadingData  = () => this.props.categories.loading;
+  _isErrorData    = () => this.props.categories.error;  
 
   /**
    * Get current term (category) and its child uuids, 
@@ -349,25 +353,20 @@ class PlacesScreen extends PureComponent {
         entitiesType={entitiesType}
         // Scrollable container props
         scrollableProps={scrollableProps}
-
         // Extra component: if scrollableRenderExtraComponent is undefined, must specify extra component props
         // scrollableRenderExtraComponent={this._renderFiltersList}
         scrollableExtraComponentProps={extraComponentProps}
-        
         // Header text component: if scrollableHeaderTextComponent is undefined, must specify scrollableHeaderText
         scrollableHeaderTextComponent={this._renderHeaderText}
         // scrollableHeaderText={() => <Text>Header Text</Text>}
-
         // Top component (ClusteredMapViewTop or MapView or Custom)
         topComponentType="ClusteredMapViewTop" //or MapView or Custom (if Custom must implement topComponentRender)
         topComponentCMVTProps={CMVTProps}
-        
         // Map entity widget (in modal): if renderMapEntityWidget is undefined, must specify mapEntityWidgetProps and mapEntityWidgetOnPress 
         // e.g. this.state.selectedEntity can now be used in renderMapEntityWidget
         // mapEntityWidgetOnPress={(entity) => this.setState({ selectedEntity: entity })} 
         // renderMapEntityWidget={this._renderEntityWidget}
         mapEntityWidgetProps={mapEntityWidgetProps}
-
         // Extra modal content: if renderExtraModalComponent is undefined, must specify mapEntityWidgetProps
         // renderExtraModalComponent={this._renderNearToYou}
         extraModalProps={extraModalProps}

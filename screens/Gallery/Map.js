@@ -227,8 +227,6 @@ class GalleryMapScreen extends PureComponent {
   }
 
   _getPois = (region)  => {
-    console.log("getPois");
-    
     this._region = region;
 
     var cells = this.state.cells;

@@ -157,7 +157,6 @@ class ClusteredMapViewTop extends PureComponent {
       if(!this._panTimeout){
         this.setState({ clusters });
       }
-      
     });
   }
 

@@ -181,7 +181,7 @@ _renderContent = () => {
     renderItem: ({ item, index }) => this._renderListItem(item, index),
     keyExtractor: item => item.uuid,
   }
-  
+
   // MapViewTopProps (MVT)
   const MVTProps = {
     coords, 
@@ -221,26 +221,19 @@ _renderContent = () => {
       onEndReached: () => null,
     }
   
-    /** 
-     * NOTE: changing numColums on the fly isn't supported and causes the component to unmount, 
-     * thus slowing down the process
-     * set a key to the inner flatlist therefore 
-    */
+
     return (
       <ConnectedMapScrollable
         // entities type
         entitiesType={entitiesType}
         // Scrollable container props
         scrollableProps={scrollableProps}
-  
         // Extra component: if scrollableRenderExtraComponent is undefined, must specify extra component props
         // scrollableRenderExtraComponent={this._renderFiltersList}
         scrollableExtraComponentProps={extraComponentProps}
-        
         // Header text component: if scrollableHeaderTextComponent is undefined, must specify scrollableHeaderText
         scrollableHeaderTextComponent={this._renderHeaderText}
         // scrollableHeaderText={() => <Text>Header Text</Text>}
-  
         // Top component (ClusteredMapViewTop or MapView or Custom)
         topComponentType="MapView" //or ClusteredMapViewTop or Custom (if Custom must implement topComponentRender)
         // topComponentCMVTProps={CMVTProps}
@@ -251,7 +244,6 @@ _renderContent = () => {
         // mapEntityWidgetOnPress={(entity) => this.setState({ selectedEntity: entity })} 
         // renderMapEntityWidget={this._renderEntityWidget}
         mapEntityWidgetProps={mapEntityWidgetProps}
-  
         // Extra modal content: if renderExtraModalComponent is undefined, must specify mapEntityWidgetProps
         // renderExtraModalComponent={this._renderNearToYou}
         extraModalProps={extraModalProps}

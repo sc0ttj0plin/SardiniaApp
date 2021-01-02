@@ -82,16 +82,16 @@ class EntityWidgetInModal extends PureComponent {
   _openEntity = (entity) => {
     switch(this.props.entityType) {
       case Constants.ENTITY_TYPES.places:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { entity });
+        this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item: entity });
         break;
       case Constants.ENTITY_TYPES.events:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { entity });
+        this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item: entity });
         break;
       case Constants.ENTITY_TYPES.itineraries:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, { entity })
+        this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, { item: entity })
         break;
       case Constants.ENTITY_TYPES.accomodations:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavAccomodationScreen, { entity })
+        this.props.navigation.navigate(Constants.NAVIGATION.NavAccomodationScreen, { item: entity })
         break;
       default:
         break;
@@ -128,7 +128,6 @@ class EntityWidgetInModal extends PureComponent {
 
   _renderPoi = () => {
     var { entity } = this.state;
-    console.log("render poi", entity)
     if (entity) {
       const title = _.get(entity.title, [this.props.locale.lan, 0, "value"], null);
       const termName = _.get(entity, "term.name", "")

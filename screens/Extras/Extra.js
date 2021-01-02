@@ -77,9 +77,6 @@ class ExtraScreen extends Component {
       relatedEvents: [],
       scrollY: new Animated.Value(0)
     };
-
-
-    console.log(this.state.entity.uuid)
       
   }
 

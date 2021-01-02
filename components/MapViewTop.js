@@ -154,7 +154,6 @@ class MapViewTop extends PureComponent {
   /* Renders the topmost component: a map in our use case */
   _renderMap = () => {
     const { coords, region, selectedEntity } = this.state;
-    const { entitiesType } = this.props;
     const {mapPaddingBottom = 65} = this.props;
 
     return (
@@ -183,7 +182,7 @@ class MapViewTop extends PureComponent {
   }
 
   _renderMarkers = () => {
-    return this.state.entities.map( entity => {
+    return this.props.entities.map( entity => {
       return this._renderMarker(entity)
     })
   }

@@ -81,10 +81,7 @@ class ConnectedMapScrollable extends PureComponent {
    * @param {*} prevProps
    */
   componentDidUpdate(prevProps) {
-    // if (prevProps.others.geolocation !== this.props.others.geolocation && this.props.others.geolocation.coords) {
-    //   // { coords: { latitude, longitude }, altitude, accuracy, altitudeAccuracy, heading, speed, timestamp (ms since epoch) }
-    //   this._onUpdateCoords(this.props.others.geolocation.coords);
-    // }
+
   }
 
 

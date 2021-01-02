@@ -89,7 +89,6 @@ class EntityWidgetInMapView extends PureComponent {
    * @param {*} item: poi
    */
   _openEntity(item) {
-    console.log("GOTO ENTITY!", item.uuid);
     const { isAccomodationItem } = this.props;
     let screen = isAccomodationItem ? Constants.NAVIGATION.NavAccomodationScreen : Constants.NAVIGATION.NavPlaceScreen;
     this.props.navigation.navigate(screen, {
