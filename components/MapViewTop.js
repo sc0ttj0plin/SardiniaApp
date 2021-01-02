@@ -174,7 +174,6 @@ class MapViewTop extends PureComponent {
         showsIndoorLevelPicker={true}
         showsCompass={false}
         style={{flex: 1}}
-        onPress={(event) => this._selectMarker(null, event)}
         onPanDrag={(event) => selectedEntity && this._selectMarker(null, event)}
       >
         {this._renderMarkers()}
@@ -190,8 +189,9 @@ class MapViewTop extends PureComponent {
   }
 
   _renderMarker = (entity) => {
-    const { getCoordsFun, onMarkerPressEvent } = this.props;
+    const { getCoordsFun, onMarkerPressEvent, entitiesType } = this.props;
     let coords = null;
+    // console.log("get coords", getCoordsFun)
     if(getCoordsFun)
       coords = getCoordsFun(entity);
     let onClick = null;
@@ -214,19 +214,27 @@ class MapViewTop extends PureComponent {
 
     if(validCoords){
       const width = 32;
+      const { iconProps } = this.props;
+      const iconName = iconProps.name || Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.events.iconName;
+      const color = iconProps.color || Colors.white;
+      const backgroundColor = iconProps.backgroundColor || Colors.colorEventsScreen;
+      const backgroundTransparent = iconProps.backgroundTransparent || Colors.colorEventsScreenTransparent;
+
       return(
         <Marker.Animated
           coordinate={coords}
           onPress={onClick}
           tracksViewChanges={this.state.tracksViewChanges}
           style={styles.markerAnimated}>
-            <View style={[styles.markerContainer, { backgroundColor: selected ? Colors.colorEventsScreenTransparent : "transparent"}]}>
+            <View style={[styles.markerContainer, { backgroundColor: selected ? backgroundTransparent : "transparent"}]}>
               <View
-                style={[styles.marker]}>
+                style={[styles.marker, {
+                  backgroundColor
+                }]}>
                 <Ionicons
-                  name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.events.iconName}
+                  name={iconName}
                   size={19}
-                  color={"#ffffff"}
+                  color={Colors.white}
                   style={styles.markerIcon}
                 />
               </View>

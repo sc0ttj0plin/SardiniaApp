@@ -71,8 +71,6 @@ class EventsMapScreen extends PureComponent {
       hideScrollable,
       title
     };
-      
-    this._pageLayoutHeight = Layout.window.height;
 
   }
 
@@ -205,9 +203,9 @@ class EventsMapScreen extends PureComponent {
 
 /* Render content */
 _renderContent = () => {
-  const { nearToYou } = this.props.locale.messages;
-  const { pois, snapIndex, coords, region, events  } = this.state;
-  const entitiesType = Constants.ENTITY_TYPES.events;
+const { nearToYou } = this.props.locale.messages;
+const { pois, snapIndex, coords, region, events  } = this.state;
+const entitiesType = Constants.ENTITY_TYPES.events;
 
   //scrollable props
   const scrollableProps = {
@@ -224,12 +222,37 @@ _renderContent = () => {
     region,
     types: [Constants.NODE_TYPES.events],
     onMarkerPressEvent: "openEntity",
-    getCoordsFun: (entity) => this._getEntityCoords(entity, true)
+    getCoordsFun: (entity) => this._getEntityCoords(entity, true),
+    iconProps: { 
+      name: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].iconName,
+      backgroundColor: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].backgroundColor,
+      backgroundTransparent: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].backgroundTransparent,
+      color: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].iconColor,
+    }
   };
 
   const mapEntityWidgetProps = { 
-
+    isAccomodationItem: false, 
+    coords: this.state.coords 
   };
+
+  const extraComponentProps = {
+    data: [],
+    keyExtractor: item => item.uuid,
+    onPress: this._selectCategory,
+    iconProps: { 
+      name: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].iconName,
+      backgroundColor: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].backgroundColor,
+      color: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].iconColor,
+    }
+  }
+const extraModalProps = {
+    data: [],
+    keyExtractor: item => item.uuid,
+    renderItem: ({ item }) => null,
+    title: nearToYou,
+    onEndReached: () => null,
+  }
 
   /** 
    * NOTE: changing numColums on the fly isn't supported and causes the component to unmount, 
@@ -245,7 +268,7 @@ _renderContent = () => {
 
       // Extra component: if scrollableRenderExtraComponent is undefined, must specify extra component props
       // scrollableRenderExtraComponent={this._renderFiltersList}
-      // scrollableExtraComponentProps={extraComponentProps}
+      scrollableExtraComponentProps={extraComponentProps}
       
       // Header text component: if scrollableHeaderTextComponent is undefined, must specify scrollableHeaderText
       scrollableHeaderTextComponent={this._renderHeaderText}
@@ -264,7 +287,7 @@ _renderContent = () => {
 
       // Extra modal content: if renderExtraModalComponent is undefined, must specify mapEntityWidgetProps
       // renderExtraModalComponent={this._renderNearToYou}
-      //extraModalProps={{extraModalProps}}
+      extraModalProps={{extraModalProps}}
     />
   )
 }

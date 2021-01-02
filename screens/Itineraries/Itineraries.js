@@ -10,6 +10,7 @@ import {
   AsyncOperationStatusIndicator, 
   ClusteredMapViewTop,
   ConnectedHeader, 
+  ConnectedMapScrollable,
   ScrollableContainer,
   EntityItem,
   CustomText,
@@ -56,11 +57,7 @@ class ItinerariesScreen extends PureComponent {
       selectedEntity: null,
       snapPoints: [],
       tracksViewChanges: true,
-    };
-
-    this._pageLayoutHeight = Layout.window.height;
-
-      
+    };      
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
@@ -111,53 +108,6 @@ class ItinerariesScreen extends PureComponent {
   }
 
 
-  _selectMarker = (itinerary) => {
-    if(itinerary) {
-      this.props.actions.setScrollableSnapIndex(Constants.ENTITY_TYPES.itineraries, 1);
-      this.setState({ selectedEntity: null }, () => {
-        this.setState({ 
-          selectedEntity: itinerary,
-          tracksViewChanges: true
-        }, () => {
-          this.setState({
-            tracksViewChanges: false
-          })
-        });
-      })
-    } else {
-      this.setState({ 
-        selectedEntity: null,
-        tracksViewChanges: true
-      }, () => {
-        this.setState({
-          tracksViewChanges: false
-        })
-      });
-    }
-  }
-
-  
-  /**
-   * Used to compute snap points
-   * @param {*} event layout event
-   */
-  _onPageLayout = (event) => {
-    const { width, height } = event.nativeEvent.layout;
-    this._pageLayoutHeight = height;
-    let margins = 20
-    let itemWidth = ((Layout.window.width - (margins*2))/2) - 5;
-    //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 24 (handle) - 36 (header text) - itemWidth (entityItem) - 10 (margin of entityItem)
-    /* Old: 3 snap points: this.setState({ snapPoints: [0, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 24 - 76 - itemWidth - 10, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 24 - 76, height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight - 34] }); */
-    this.setState({ snapPoints: [height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight, 65] });
-  }; 
-
-  _onSettle = () => {
-    this.setState({
-      selectedEntity: null
-    })
-  }
-
-
   _imageLoaded = () => {
     this._iconLoaded++;
     if(this._iconLoaded == this.state.itineraries.length) {
@@ -165,152 +115,28 @@ class ItinerariesScreen extends PureComponent {
     }
   }
 
-  /********************* Render methods go down here *********************/
-  
-  _renderCluster = (cluster) => {
-    const { id, geometry, onPress, properties } = cluster;
-    const points = properties.point_count;
-
-    return (
-      <Marker
-        key={`cluster-${id}`}
-        coordinate={{
-          longitude: geometry.coordinates[0],
-          latitude: geometry.coordinates[1]
-        }}
-        onPress={onPress}
-      >
-        <View style={styles.cluster}>
-          <CustomText style={styles.clusterText}>{points}</CustomText>
-        </View>
-      </Marker>
-    )
-  }
-  /* Renders the topmost component: a map in our use case */
-  _renderTopComponent = () => {
-    const { coords, region, selectedEntity } = this.state;
-    return (
-      <>
-      <MapView
-        coords={coords}
-        initialRegion={region}
-        mapType='standard'
-        provider={PROVIDER_GOOGLE}
-        showsUserLocation={ true }
-        showsIndoorLevelPicker={true}
-        showsCompass={false}
-        renderCluster={this._renderCluster}
-        ref={(ref) => this._map = ref}
-        clusterColor={Colors.colorItinerariesScreen}
-        style={{flex: 1}}
-        onPress={() => this._selectMarker(null)}
-        onPanDrag={() => selectedEntity && this._selectMarker(null)}
-      >
-        {this._renderMarkers()}
-      </MapView>
-      {selectedEntity && this._renderWidget()}
-      </>
-    )
-  }
-
-  _renderWidget = () => {
-    
-    const { selectedEntity, coords } = this.state;
+  _getEntityCoords = (entity) => {
     const { lan } = this.props.locale;
-    const title = _.get(selectedEntity.title, [lan, 0, "value"], null);
-    const term = selectedEntity.term.name;
-    const image = selectedEntity.image;
-    let distanceStr = null;
-
-    // Add distance from the first itinerary stage
-    if (selectedEntity.stages && selectedEntity.stages[lan].length > 0) {
-      const stage = selectedEntity.stages[lan][0];
-      const coordinates = _.get(stage, ["poi", "georef", "coordinates"], null) 
-      distanceStr = distanceToString(distance(coords.latitude, coords.longitude, coordinates[1], coordinates[0]));
-    }
-
-    return(
-      <View style={styles.widget}>
-        <EntityItem 
-          keyItem={selectedEntity.nid}
-          listType={Constants.ENTITY_TYPES.itineraries}
-          onPress={() => this._openItem(selectedEntity)}
-          title={title}
-          image={image}
-          subtitle={term}
-          style={styles.itinerariesListItem}
-          horizontal={false}
-          topSpace={10}
-          distance={this.state.isCordsInBound ? distanceStr : null}
-          extraStyle={{
-            marginBottom: 10,
-            width: "100%",
-            height: "100%"
-          }}
-        />
-      </View>
-    )
-  }
-
-  _renderMarkers = () => {
-    return this.state.itineraries.map( itinerary => {
-      return this._renderMarker(itinerary)
-    })
-  }
-
-  _renderMarker = (itinerary) => {
-    const { lan } = this.props.locale;
-    const coordinates = _.get(itinerary, ["stages", lan, 0, "poi", "georef", "coordinates"], null)
-    if(coordinates){
-      const lat = _.get(coordinates, [1], null)
-      const long = _.get(coordinates, [0], null)
-      const selected = this.state.selectedEntity == itinerary;
-      const width = 32;
-
-      return(
-        lat && long && (
-        <Marker.Animated
-          coordinate={{ longitude: parseFloat(long),  latitude: parseFloat(lat) }}
-          onPress={() => this._selectMarker(itinerary)}
-          tracksViewChanges={this.state.tracksViewChanges}
-          //tracksViewChanges={false}
-          style={{width: 42, height: 42, zIndex: 1}}>
-            <View style={[styles.markerContainer, {
-              backgroundColor: selected ? Colors.greenTransparent : "transparent"
-            }]}>
-              <View
-                style={[styles.marker]}>
-                <Image
-                  source={require("./../../assets/icons/itineraries_icon.png")}
-                  onLoad={this._imageLoaded}
-                  style={{
-                    paddingTop: Platform.OS === 'ios' ? 3 : 0,
-                    width: 20,
-                    height: 20
-                  }}
-                />
-              </View>
-            </View>
-        </Marker.Animated>
-        )
-      )
-    }
+    const coordinates = _.get(entity, ["stages", lan, 0, "poi", "georef", "coordinates"], null)
+    // console.log("coordinates", coordinates)
+    if(coordinates)
+      return { latitude: parseFloat(coordinates[1]), longitude: parseFloat(coordinates[0]) };
     else
-      return null
+      return null;
   }
+
+  /********************* Render methods go down here *********************/
 
   _renderHeaderText = () => {
-    const { exploreItineraries } = this.props.locale.messages;
-      return (
-        <SectionTitle text={exploreItineraries} textStyle={{ fontSize: 20 }} onStartShouldSetResponder={this._onListHeaderPressIn}/>
-      )
+    const { whereToGo, explore, itineraries } = this.props.locale.messages;
+    const categoryTitle = `${explore} ${itineraries}`;
+    return (
+      <SectionTitle text={categoryTitle} textStyle={{ fontSize: 20 }} style={{ paddingBottom: 15 }}/>
+    );
   }
 
-  /* Horizontal spacing for Header items */
-  _renderHorizontalSeparator = () => <View style={{ width: 5, flex: 1 }}></View>;
-
   /* Renders a poi in Header */
-  _renderListItem = ({item, index}) => {
+  _renderListItem = (item, index) => {
     const { coords } = this.state;
     const { lan } = this.props.locale;
     const title = _.get(item.title, [lan, 0, "value"], null);
@@ -341,28 +167,94 @@ class ItinerariesScreen extends PureComponent {
       />
   )}
 
-  /* Render content */
-  _renderContent = () => {
-    const { selectedEntity, itineraries } = this.state;
-    let data = itineraries;
-    if(!data.length)
-      data = []
-    let snapIndex = selectedEntity ? 3 : 2;
-    let numColumns = 1;
+/* Render content */
+_renderContent = () => {
+  const { nearToYou } = this.props.locale.messages;
+  const { coords, region, itineraries  } = this.state;
+  const entitiesType = Constants.ENTITY_TYPES.itineraries;
+  
+  //scrollable props
+  const scrollableProps = {
+    show: true,
+    data: itineraries,
+    onEndReached: () => null,
+    renderItem: ({ item, index }) => this._renderListItem(item, index),
+    keyExtractor: item => item.uuid,
+  }
+  
+  // MapViewTopProps (MVT)
+  const MVTProps = {
+    coords, 
+    region,
+    types: [Constants.NODE_TYPES.itineraries],
+    onMarkerPressEvent: "openEntity",
+    getCoordsFun: (entity) => this._getEntityCoords(entity),
+    iconProps: { 
+      name: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].iconName,
+      backgroundColor: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].backgroundColor,
+      backgroundTransparent: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].backgroundTransparent,
+      color: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].iconColor,
+    }
+  };
+  
+  const mapEntityWidgetProps = { 
+    isAccomodationItem: false, 
+    coords: this.state.coords, 
+  };
+  
+  const extraComponentProps = {
+    data: [],
+    keyExtractor: item => item.uuid,
+    onPress: this._selectCategory,
+    iconProps: { 
+      name: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].iconName,
+      backgroundColor: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].backgroundColor,
+      color: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].iconColor,
+    }
+  }
+  
+  const extraModalProps = {
+      data: [],
+      keyExtractor: item => item.uuid,
+      renderItem: ({ item }) => null,
+      title: nearToYou,
+      onEndReached: () => null,
+    }
+  
+    /** 
+     * NOTE: changing numColums on the fly isn't supported and causes the component to unmount, 
+     * thus slowing down the process
+     * set a key to the inner flatlist therefore 
+    */
     return (
-      <ScrollableContainer 
-        entityType={Constants.ENTITY_TYPES.itineraries}
-        topComponent={this._renderTopComponent}
-        data={data}
-        initialSnapIndex={1}
-        pageLayoutHeight={this._pageLayoutHeight}
-        numColumns={numColumns}
-        snapPoints={this.state.snapPoints}
-        onSettle={this._onSettle}
-        renderItem={this._renderListItem}
-        keyExtractor={item => item.uuid}
-        HeaderTextComponent={this._renderHeaderText}
-        closeSnapIndex={1}
+      <ConnectedMapScrollable
+        // entities type
+        entitiesType={entitiesType}
+        // Scrollable container props
+        scrollableProps={scrollableProps}
+  
+        // Extra component: if scrollableRenderExtraComponent is undefined, must specify extra component props
+        // scrollableRenderExtraComponent={this._renderFiltersList}
+        scrollableExtraComponentProps={extraComponentProps}
+        
+        // Header text component: if scrollableHeaderTextComponent is undefined, must specify scrollableHeaderText
+        scrollableHeaderTextComponent={this._renderHeaderText}
+        // scrollableHeaderText={() => <Text>Header Text</Text>}
+  
+        // Top component (ClusteredMapViewTop or MapView or Custom)
+        topComponentType="MapView" //or ClusteredMapViewTop or Custom (if Custom must implement topComponentRender)
+        // topComponentCMVTProps={CMVTProps}
+        // if topComponentType is MapView must specify topComponentMVTProps 
+        topComponentMVTProps={MVTProps}
+        // Map entity widget (in modal): if renderMapEntityWidget is undefined, must specify mapEntityWidgetProps and mapEntityWidgetOnPress 
+        // e.g. this.state.selectedEntity can now be used in renderMapEntityWidget
+        // mapEntityWidgetOnPress={(entity) => this.setState({ selectedEntity: entity })} 
+        // renderMapEntityWidget={this._renderEntityWidget}
+        mapEntityWidgetProps={mapEntityWidgetProps}
+  
+        // Extra modal content: if renderExtraModalComponent is undefined, must specify mapEntityWidgetProps
+        // renderExtraModalComponent={this._renderNearToYou}
+        extraModalProps={extraModalProps}
       />
     )
   }

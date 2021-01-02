@@ -40,6 +40,7 @@ class EntityWidgetInModal extends PureComponent {
 
   componentDidUpdate(prevProps) {
     if (prevProps.entity !== this.props.entity) {
+      console.log("entity changed", this.props.entity.uuid)
       this.setState({ entity: this.props.entity });
       this._fetchEntity();
     }
@@ -53,10 +54,9 @@ class EntityWidgetInModal extends PureComponent {
   _fetchEntity = () => {
     // If is cluster (pois + accomodation) we don't have any data and we must fetch details, else we already have data and we show directly
     if(this.props.entity) {
-    
-      let query, params;
       if (this._isClusteredEntity) {
         // Get real entity from the cluster object (i.e. inside terms_objs[0])
+        let query, params;
         const entity = this.props.entity.terms_objs[0];
         if (this.props.entityType === Constants.ENTITY_TYPES.accomodations) {
           query = actions.getAccomodationsById;
@@ -128,10 +128,13 @@ class EntityWidgetInModal extends PureComponent {
 
   _renderPoi = () => {
     var { entity } = this.state;
-
+    console.log("render poi", entity)
     if (entity) {
       const title = _.get(entity.title, [this.props.locale.lan, 0, "value"], null);
       const termName = _.get(entity, "term.name", "")
+      console.log("entity details", title, termName)
+      let distance = entity.distanceString || null;
+
       return(
         <EntityItemInModal
           keyItem={entity.nid}
@@ -139,25 +142,23 @@ class EntityWidgetInModal extends PureComponent {
           onPress={() => this._openEntity(entity)}
           title={title}
           image={entity.image}
-          distance={entity.distanceString}
+          distance={distance}
           subtitle={termName}
           extraStyle={this.props.extraStyle}
           coords={this.props.coords}
         />
       )
     }
+    else
+      return null;
   }
   
   _renderEntity = () => {
     switch(this.props.entityType) {
       case Constants.ENTITY_TYPES.places:
       case Constants.ENTITY_TYPES.events:
-        return this._renderPoi();
-        // this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { entity });
-        break;
       case Constants.ENTITY_TYPES.itineraries:
-        // this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, { entity });
-        break;
+        return this._renderPoi();
       case Constants.ENTITY_TYPES.accomodations:
         return this._renderAccomodation();
       default:

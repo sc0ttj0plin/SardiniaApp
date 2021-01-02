@@ -146,7 +146,6 @@ class ConnectedMapScrollable extends PureComponent {
    * Invoked also to clean the currently selected entity (on map move for instance)
    */
   _onSelectedEntity = (entity) => {
-    console.log("enter entity selection")
     if (this.props.renderMapEntityWidget)
       this.props.mapEntityWidgetOnPress(entity);
     else 
@@ -293,7 +292,7 @@ class ConnectedMapScrollable extends PureComponent {
     } else if (this.props.topComponentType === "MapView") {
       const { entitiesType } = this.props;
       const { data } = this.props.scrollableProps;
-      const { coords, region, getCoordsFun, onMarkerPressEvent } = this.props.topComponentMVTProps;
+      const { coords, region, getCoordsFun, onMarkerPressEvent, iconProps } = this.props.topComponentMVTProps;
       // console.log("enter hereee")
       return (
         <MapViewTop
@@ -304,6 +303,7 @@ class ConnectedMapScrollable extends PureComponent {
           style={{flex: 1}}
           entities={data}
           getCoordsFun={getCoordsFun}
+          iconProps={iconProps}
           onMarkerPressEvent={onMarkerPressEvent}
           onSelectedEntity={this._onSelectedEntity}
           paddingBottom={this.state.snapPoints[1]} /* set padding as the height of the first snap point */
