@@ -343,11 +343,6 @@ class PlacesScreen extends PureComponent {
       onEndReached: () => this._fetchNearestPois(coords),
     }
 
-    /** 
-     * NOTE: changing numColums on the fly isn't supported and causes the component to unmount, 
-     * thus slowing down the process
-     * set a key to the inner flatlist therefore 
-    */
     return (
       <ConnectedMapScrollable 
         // Scrollable container props
@@ -365,7 +360,9 @@ class PlacesScreen extends PureComponent {
         topComponentType="ClusteredMapViewTop" //or MapView or Custom (if Custom must implement topComponentRender)
         topComponentCMVTProps={CMVTProps}
         
-        // Map entity widget (in modal): if renderMapEntityWidget is undefined, must specify mapEntityWidgetProps
+        // Map entity widget (in modal): if renderMapEntityWidget is undefined, must specify mapEntityWidgetProps and mapEntityWidgetOnPress 
+        //   e.g. this.state.selectedEntity can now be used in renderMapEntityWidget
+        // mapEntityWidgetOnPress={(entity) => this.setState({ selectedEntity: entity })} 
         // renderMapEntityWidget={this._renderEntityWidget}
         mapEntityWidgetProps={mapEntityWidgetProps}
 

@@ -62,7 +62,7 @@ class ConnectedMapScrollable extends PureComponent {
       scrollableSnap: 1,
       snapPoints: [],
       //
-      selectedEntity: null
+      selectedEntity: null 
     };
       
     this._pageLayoutHeight = Layout.window.height;
