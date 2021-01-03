@@ -65,12 +65,12 @@ class EventsSubsetScreen extends Component {
     moment.locale(Constants.DEFAULT_LANGUAGE);
 
     /* Get props from navigation */
-    let { dateString, dateHeaderFormat, eventsSubset } = props.route.params; 
+    let { headerTitle, eventsSubset } = props.route.params; 
 
     this.state = {
       render: USE_DR ? false : true,
       //
-      headerDate: moment(dateString).format(dateHeaderFormat),
+      headerTitle,
       eventsSubset,
     };
       
@@ -94,8 +94,8 @@ class EventsSubsetScreen extends Component {
 
 
   _openMap = () => {
-    const { eventsSubset, headerDate } = this.state;
-    this.props.navigation.navigate(Constants.NAVIGATION.NavEventsMapScreen, {events: eventsSubset, title: headerDate});
+    const { eventsSubset, headerTitle } = this.state;
+    this.props.navigation.navigate(Constants.NAVIGATION.NavEventsMapScreen, {events: eventsSubset, headerTitle});
   }
   
   /********************* Render methods go down here *********************/
@@ -150,7 +150,7 @@ class EventsSubsetScreen extends Component {
      return (
       <View style={styles.calendarList}>
         <View style={styles.calendarListTitleView}>
-          <CustomText style={styles.calendarListTitle}>{this.state.headerDate}</CustomText>
+          <CustomText style={styles.calendarListTitle}>{this.state.headerTitle}</CustomText>
         </View>
         {this._renderEventsList()}
         {this._renderBottomToast()}
@@ -201,7 +201,8 @@ const styles = StyleSheet.create({
   },
   calendarListTitleView: {
     backgroundColor: "rgb(248,248,248)",
-    height: 60,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
     justifyContent: 'center',
     alignItems: "center"
   },

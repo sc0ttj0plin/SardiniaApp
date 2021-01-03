@@ -38,7 +38,7 @@ export const getCoordinates = (entity, locale='it') => {
   // if (entity.steps && entity.steps[locale])
   //   return entity.steps[locale].map(c => ({ latitude: c.georef.coordinates[1], longitude: c.georef.coordinates[0] }));
   // Generic 
-  if (entity.georef)
+  if (entity && entity.georef)
     return ({ latitude: entity.georef.coordinates[1], longitude: entity.georef.coordinates[0] });
   else 
     return null;

@@ -56,6 +56,7 @@ class AccomodationScreen extends Component {
   constructor(props) {
     super(props);
 
+    this._entity = props.route.params.item;
     const { uuid } = props.route.params.item;
     const { mustFetch } = props.route.params;
     this.state = {
@@ -92,7 +93,7 @@ class AccomodationScreen extends Component {
     if (mustFetch)
       this.props.actions.getAccomodationsById({ uuids: [uuid] });
     else 
-      this._parseEntity(this.props.accomodations.dataById[uuid]);
+      this._parseEntity(this._entity);
   }
 
   componentDidUpdate(prevProps) {
@@ -106,6 +107,8 @@ class AccomodationScreen extends Component {
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
 
   _parseEntity = (entity) => {
+    if(!entity)
+      return;
     const { locale } = this.props;
     const { lan } = locale;
     const { abstract, title, description, whyVisit } = getEntityInfo(entity, ["abstract", "title", "description", "whyVisit"], [lan, 0, "value"], null, {"description": {s: /\. /g, d: ".<br/>"}});

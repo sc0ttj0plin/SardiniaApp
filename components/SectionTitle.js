@@ -12,10 +12,10 @@ class SectionTitle extends PureComponent{
   }
   
   render() {
-    const { text, style, textStyle } = this.props;
+    const { text, style, textStyle, numberOfLines } = this.props;
     return (
       <View style={[styles.sectionTitleView, style]}>
-        <CustomText style={[styles.sectionTitle, textStyle]}>{text}</CustomText>
+        <CustomText numberOfLines={numberOfLines} style={[styles.sectionTitle, textStyle]}>{text}</CustomText>
       </View>
       );
     }
@@ -26,7 +26,6 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     justifyContent: "center",
-    alignItems: "center",
   },
   sectionTitle: {
     fontSize: 16,

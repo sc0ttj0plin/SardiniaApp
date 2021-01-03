@@ -82,8 +82,13 @@ class ClusteredMapViewTop extends PureComponent {
 
   _onUpdateCoords = (position, source) => {
     //check geolocation source
-     if (source === Constants.GEOLOCATION.sources.foregroundGetOnce)
+     if (source === Constants.GEOLOCATION.sources.foregroundGetOnce){
       this._computeNearestPoisEnclosingPolygon(position);
+      this._animateMapToRegion(this._coords, 10, 1000, 500);
+     }
+     else {
+      this._computeNearestPoisEnclosingPolygon(position);
+     }
   }
 
 
@@ -92,7 +97,7 @@ class ClusteredMapViewTop extends PureComponent {
     this._coords = position.coords;
     if (nearPois)
       this._region = boundingRect(nearPois, [this._coords.longitude, this._coords.latitude], (p) => _.get(p, "georef.coordinates", []));
-    this._animateMapToRegion(this._coords, 10, 1000, 500);
+    
   }
 
   _animateMapToRegion = (coords, zoom, duration = 200, delay = 0) => {
@@ -173,7 +178,7 @@ class ClusteredMapViewTop extends PureComponent {
       this._disableRegionChangeCallback = true;
       if(Platform.OS == "ios")
         this._animateMapToRegion({latitude: item.centroid.coordinates[1], longitude: item.centroid.coordinates[0]});
-      setTimeout(() => this._disableRegionChangeCallback = false, 3000);
+      setTimeout(() => this._disableRegionChangeCallback = false, 1000);
       this.setState({ selectedCluster: item });
       if(this.props.onSelectedEntity)
         this.props.onSelectedEntity(item);

@@ -180,7 +180,7 @@ function MainStackScreen() {
       {/* Events */}
       <MainStack.Screen name={NavEventScreen} component={EventScreen} />
       <MainStack.Screen name={NavEventsSubset} component={EventsSubset} />
-      <MainStack.Screen name={NavEventsMapScreen} component={EventsMapScreen} options={{...FromTopTransition}} />
+      <MainStack.Screen name={NavEventsMapScreen} component={EventsMapScreen} /*options={{...FromTopTransition}}*/ />
       <MainStack.Screen name={NavFiltersScreen} component={FiltersScreen}/>
       {/* Extra */}
       <MainStack.Screen name={NavExtraScreen} component={ExtraScreen} />
@@ -216,7 +216,7 @@ function FavouritesStackScreen() {
       {/* Events */}
       <FavouritesStack.Screen name={NavEventScreen} component={EventScreen} />
       <FavouritesStack.Screen name={NavEventsSubset} component={EventsSubset} />
-      <FavouritesStack.Screen name={NavEventsMapScreen} component={EventsMapScreen} options={{...FromTopTransition}} />
+      <FavouritesStack.Screen name={NavEventsMapScreen} component={EventsMapScreen} />
       <FavouritesStack.Screen name={NavFiltersScreen} component={FiltersScreen}/>
       {/* Extra */}
       <FavouritesStack.Screen name={NavExtraScreen} component={ExtraScreen} />
@@ -250,7 +250,7 @@ function SearchStackScreen() {
       {/* Events */}
       <SearchStack.Screen name={NavEventScreen} component={EventScreen} />
       <SearchStack.Screen name={NavEventsSubset} component={EventsSubset} />
-      <SearchStack.Screen name={NavEventsMapScreen} component={EventsMapScreen} options={{...FromTopTransition}} />
+      <SearchStack.Screen name={NavEventsMapScreen} component={EventsMapScreen} />
       <SearchStack.Screen name={NavFiltersScreen} component={FiltersScreen}/>
       {/* Extra */}
       <SearchStack.Screen name={NavExtraScreen} component={ExtraScreen} />

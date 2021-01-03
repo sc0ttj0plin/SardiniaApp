@@ -29,6 +29,7 @@ import BottomSheet from 'reanimated-bottom-sheet';
 import EntityWidgetInModal from "../components/EntityWidgetInModal";
 import * as Location from 'expo-location';
 import MapViewTop from "./MapViewTop";
+import { useSafeArea } from 'react-native-safe-area-context';
 
 /**
  * Map:             Clusters + pois that update with user map's interaction
@@ -94,9 +95,10 @@ class ConnectedMapScrollable extends PureComponent {
   _onPageLayout = (event) => {
     const { width, height } = event.nativeEvent.layout;
     this._pageLayoutHeight = height;
+    const bottom = this.props.fullscreen ? this.props.insets.bottom - 25 : 0;
     //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 24 (handle) - 36 (header text) - 160 (entityItem) - 10 (margin of entityItem) - 36 (whereToGo text)
     // this.setState({ snapPoints: [height - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight, 72 * this._fontScale, 0] });
-    this.setState({ snapPoints: [height, 72 * this._fontScale, 0] });
+    this.setState({ snapPoints: [height, bottom + 72 * this._fontScale, 0] });
   }; 
 
   /**
@@ -251,6 +253,11 @@ class ConnectedMapScrollable extends PureComponent {
    * NOTE: overridable with renderMapEntityWidget
    */
   _renderDefaultEntityWidget = () => {
+    const { lan } = this.props.locale;
+    const bottom = this.props.fullscreen ? this.props.insets.bottom : 0;
+
+    //TODO: refactoring -> 'getCoordsFun' is used by topComponentMVTProps and by EntityWidgetInModal, so we might move to more general props Object (not topComponentMVTProps).
+    const getCoordsFun = this.props.topComponentMVTProps ? this.props.topComponentMVTProps.getCoordsFun : null;
     return (
       <EntityWidgetInModal
         entityType={this.props.entitiesType}
@@ -259,6 +266,10 @@ class ConnectedMapScrollable extends PureComponent {
         // cluster={this.state.selectedEntity} 
         // entity={entity}
         entity={this.state.selectedEntity}
+        containerStyle={{paddingBottom: bottom}}
+        extraStyle={{borderBottomLeftRadius: 0, borderBottomRightRadius: 0}}
+        lan={lan}
+        getCoordsFun={getCoordsFun}
       />
     )
   }
@@ -290,7 +301,6 @@ class ConnectedMapScrollable extends PureComponent {
       const { entitiesType } = this.props;
       const { data } = this.props.scrollableProps;
       const { coords, region, getCoordsFun, onMarkerPressEvent, iconProps } = this.props.topComponentMVTProps;
-      // console.log("enter hereee")
       return (
         <MapViewTop
           coords={coords}
@@ -324,15 +334,15 @@ class ConnectedMapScrollable extends PureComponent {
   _renderDefaultExtraModal = () => {
     if (this.props.extraModalProps) {
       const { data, keyExtractor, renderItem, title, onEndReached } = this.props.extraModalProps;
+      const bottom = this.props.fullscreen ? this.props.insets.bottom : 0;
       return (
-          <View style={styles.listExtraModalView}>
+          <View style={[styles.listExtraModalView, {paddingBottom: bottom}]}>
+            <SectionTitle text={title} />
             <AsyncOperationStatusIndicator
               loading={true}
               success={data && data.length > 0}
-              loadingLayout={<LLHorizontalItemsFlatlist horizontal={true} contentContainerStyle={styles.listContainerHeader} title={title} titleStyle={styles.sectionTitle}/>}
+              loadingLayout={<LLHorizontalItemsFlatlist horizontal={true} contentContainerStyle={styles.listContainerHeader}/>}
             >
-              <View>  
-                <SectionTitle text={title} />
                 <FlatList
                   horizontal={true}
                   renderItem={renderItem}
@@ -349,7 +359,6 @@ class ConnectedMapScrollable extends PureComponent {
                   updateCellsBatchingPeriod={4000} // Increase time between renders
                   windowSize={5} // Reduce the window size
                 />
-              </View>
             </AsyncOperationStatusIndicator>
           </View>
       )
@@ -531,12 +540,14 @@ function ConnectedMapScrollableContainer(props) {
   const navigation = useNavigation();
   const route = useRoute();
   const store = useStore();
+  const insets = useSafeArea();
 
   return <ConnectedMapScrollable 
     {...props}
     navigation={navigation}
     route={route}
-    store={store} />;
+    store={store}
+    insets={insets} />;
 }
 
 

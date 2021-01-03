@@ -88,6 +88,9 @@ class PlacesScreen extends PureComponent {
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
     //If it's the first mount gets pois categories ("art and archeology...")
     this.props.actions.getCategories({ vid: Constants.VIDS.poisCategories });
+    if ( this.props.others.geolocation.coords) {
+      this._onUpdateCoords(this.props.others.geolocation.coords);
+    }
   }
 
   /**
@@ -105,6 +108,7 @@ class PlacesScreen extends PureComponent {
 
     if (prevProps.others.geolocation !== this.props.others.geolocation && this.props.others.geolocation.coords) {
       // { coords: { latitude, longitude }, altitude, accuracy, altitudeAccuracy, heading, speed, timestamp (ms since epoch) }
+      console.log("_onUpdateCoords");
       this._onUpdateCoords(this.props.others.geolocation.coords);
     }
   }
@@ -221,7 +225,7 @@ class PlacesScreen extends PureComponent {
    * @param {*} item: item list
    */
   _openPoi = (item) => {
-    this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item });
+    this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item, mustFetch: true});
   }
 
   /**
@@ -250,7 +254,7 @@ class PlacesScreen extends PureComponent {
     const { term } = this._getCurrentTerm();
     const categoryTitle = term ? `${explore} ${term.name}` : whereToGo;
     return (
-      <SectionTitle text={categoryTitle} textStyle={{ fontSize: 20 }} style={{ paddingBottom: 15 }}/>
+      <SectionTitle text={categoryTitle} numberOfLines={1} textStyle={{fontSize: 20 }} style={{ paddingBottom: 15, paddingLeft: 40, paddingRight: 40 }}/>
     );
   }
 

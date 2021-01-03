@@ -110,18 +110,18 @@ class ItineraryScreen extends Component {
   }
 
   _parseEntity = (entity) => {
-    if(entity) {
-      const { locale } = this.props;
-      const { lan } = locale;
-      // console.log("language", lan)
-      const { abstract, title, description } = getEntityInfo(entity, ["abstract", "title", "description"], [lan, 0, "value"], null, {"description": {s: /\.\s?/g, d: ".<br/><br/>"}});
-      const socialUrl = `${Constants.WEBSITE_URL}${greedyArrayFinder(entity.url_alias, "language", lan, "alias", "")}`;
-      const stagesMarkers = this._getItineraryStagesMarkers(entity.stages[lan]);
-      //Get the first stage coordinates to show on map
-      const coordinates = _.get(entity, ["stages", lan, 0, "poi", "georef", "coordinates"], null);
-      const term = entity.term.name;
-      this.setState({ entity, abstract, term, title,  description, coordinates, socialUrl, stages: entity.stages[lan], stagesMarkers });
-    }
+    if(!entity)
+      return;
+    const { locale } = this.props;
+    const { lan } = locale;
+    // console.log("language", lan)
+    const { abstract, title, description } = getEntityInfo(entity, ["abstract", "title", "description"], [lan, 0, "value"], null, {"description": {s: /\.\s?/g, d: ".<br/><br/>"}});
+    const socialUrl = `${Constants.WEBSITE_URL}${greedyArrayFinder(entity.url_alias, "language", lan, "alias", "")}`;
+    const stagesMarkers = this._getItineraryStagesMarkers(entity.stages[lan]);
+    //Get the first stage coordinates to show on map
+    const coordinates = _.get(entity, ["stages", lan, 0, "poi", "georef", "coordinates"], null);
+    const term = entity.term.name;
+    this.setState({ entity, abstract, term, title,  description, coordinates, socialUrl, stages: entity.stages[lan], stagesMarkers });
   }
 
   _getItineraryStagesMarkers = (stages) => {

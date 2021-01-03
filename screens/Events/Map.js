@@ -55,7 +55,7 @@ class EventsMapScreen extends PureComponent {
 
     const events = _.get(props.route, "params.events", []);
     const hideScrollable = _.get(props.route, "params.hideScrollable", false);
-    const title = _.get(props.route, "params.title", "");
+    const headerTitle = _.get(props.route, "params.headerTitle");
 
     // console.log("events", props.route.params.events.length, events.length)
     this.state = {
@@ -69,7 +69,7 @@ class EventsMapScreen extends PureComponent {
       snapPoints: [],
       tracksViewChanges: false,
       hideScrollable,
-      title
+      headerTitle
     };
 
   }
@@ -168,7 +168,7 @@ class EventsMapScreen extends PureComponent {
     const { exploreEvents } = this.props.locale.messages;
       return (
         //onStartShouldSetResponder={this._onListHeaderPressIn}
-        <SectionTitle text={exploreEvents} textStyle={{ fontSize: 20 }} style={{marginBottom: 15}} />
+        <SectionTitle text={exploreEvents} numberOfLines={1} textStyle={{ fontSize: 20 }} style={{ marginBottom: 15, paddingLeft: 40, paddingRight: 40 }} />
       )
   }
 
@@ -211,7 +211,7 @@ const entitiesType = Constants.ENTITY_TYPES.events;
   const scrollableProps = {
     show: true,
     data: events,
-    onEndReached: null,
+    onEndReached: () => {},
     renderItem: ({ item, index }) => this._renderListItem(item, index),
     keyExtractor: item => item.uuid,
   }
@@ -249,9 +249,9 @@ const entitiesType = Constants.ENTITY_TYPES.events;
 const extraModalProps = {
     data: [],
     keyExtractor: item => item.uuid,
-    renderItem: ({ item }) => null,
+    renderItem: ({ item }) => {},
     title: nearToYou,
-    onEndReached: () => null,
+    onEndReached: () => {},
   }
 
   /** 
@@ -288,6 +288,8 @@ const extraModalProps = {
       // Extra modal content: if renderExtraModalComponent is undefined, must specify mapEntityWidgetProps
       // renderExtraModalComponent={this._renderNearToYou}
       extraModalProps={{extraModalProps}}
+
+      fullscreen={true}
     />
   )
 }
@@ -301,6 +303,12 @@ const extraModalProps = {
           iconTintColor={Colors.colorEventsScreen}  
           backButtonVisible={true}
         />
+        {this.state.headerTitle && 
+          <View style={styles.calendarListTitleView}>
+            <CustomText style={styles.calendarListTitle}>{this.state.headerTitle}</CustomText>
+          </View>
+        }
+        
         {render && this._renderContent()}
       </View>
     )
@@ -431,7 +439,20 @@ const styles = StyleSheet.create({
     top: Constants.COMPONENTS.header.bottomLineHeight + 5,
     left: 0,
     width: "100%"
-  }
+  },
+  calendarListTitleView: {
+    backgroundColor: "rgb(248,248,248)",
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    justifyContent: 'center',
+    alignItems: "center"
+  },
+  calendarListTitle: {
+    fontSize: 16,
+    color: "#000000E6",
+    fontFamily: "montserrat-bold",
+    textTransform: "capitalize"
+  },
 });
 
 
@@ -439,12 +460,11 @@ function EventsMapScreenContainer(props) {
   const navigation = useNavigation();
   const route = useRoute();
   const store = useStore();
-
   return <EventsMapScreen 
     {...props}
     navigation={navigation}
     route={route}
-    store={store} />;
+    store={store}/>;
 }
 
 

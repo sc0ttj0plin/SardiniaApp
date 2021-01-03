@@ -68,7 +68,6 @@ class EntityAccomodations extends PureComponent {
                     error={false}
                     loadingLayout={<LLEntitiesFlatlist horizontal={true} style={styles.contentContainerStyle} title={listTitle} titleStyle={this.props.listTitleStyle} error={false}/>}>
                     <View style={{flex: 1}}>   
-                        <CustomText style={[{...listTitleStyle}, {}]}>{listTitle}</CustomText>
                         <FlatList 
                             horizontal={horizontal ? horizontal : false}
                             key={listTitle + "-1"}
@@ -114,13 +113,14 @@ const styles = StyleSheet.create({
         fontFamily: "montserrat-bold",
         color: "black",
         marginBottom: 0,
-        textAlign: 'center'
+        textAlign: 'center',
+        paddingBottom: 10
     },
     contentContainerStyle: {
         paddingLeft: 30
     },
     showButton: {
-        marginTop: 16,
+        marginTop: 20,
         backgroundColor: "white",
         padding: 10,
         display: "flex",

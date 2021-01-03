@@ -174,8 +174,10 @@ class EventsScreen extends Component {
   _onDatePress = (dateString) => {
     const { eventsByYearMonthDay } = this.props.events;
     const eventsSubset = eventsByYearMonthDay[dateString];
-    if (eventsSubset)
-      this.props.navigation.navigate(Constants.NAVIGATION.NavEventsSubset, { dateString, dateHeaderFormat: "DD MMMM", eventsSubset });
+    if (eventsSubset) {
+      var headerTitle = moment(dateString).format("DD MMMM");
+      this.props.navigation.navigate(Constants.NAVIGATION.NavEventsSubset, { headerTitle, eventsSubset });
+    }
   }
 
   /********************* Render methods go down here *********************/

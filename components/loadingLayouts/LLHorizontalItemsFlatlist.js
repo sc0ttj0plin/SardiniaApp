@@ -17,7 +17,7 @@ class LLHorizontalItemsFlatlist extends PureComponent {
     }
 
     render(){
-        let listTitle = this.props.title ? this.props.title : null;
+        let listTitle = this.props.title;
         return (
             <View> 
                 { listTitle &&

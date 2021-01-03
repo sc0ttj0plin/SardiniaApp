@@ -15,6 +15,7 @@ import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
 import SectionTitle from '../../components/SectionTitle';
 import { distance, distanceToString, coordsInBound } from '../../helpers/maps';
+import { useSafeArea } from 'react-native-safe-area-context';
 
 /* Deferred rendering to speedup page inital load: 
    deferred rendering delays the rendering reducing the initial 
@@ -195,6 +196,7 @@ class ItineraryStagesMapScreen extends Component {
   }
 
   _renderContent = () => {
+    const bottom = this.props.insets.bottom;
     const interpolations = this.state.markers.map((marker, index) => {
       const inputRange = [
         (index - 1) * Layout.map.card.width,
@@ -253,7 +255,7 @@ class ItineraryStagesMapScreen extends Component {
           showsHorizontalScrollIndicator={false}
           snapToInterval={Layout.map.card.width}
           onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: this.animation }}}], { useNativeDriver: true })}
-          style={styles.flatlist}
+          style={[styles.flatlist, {bottom: bottom}]}
           contentContainerStyle={{paddingRight: Layout.window.width - Layout.map.card.width}}
           onScrollBeginDrag={this._onScrollBeginDrag}
           >
@@ -343,12 +345,14 @@ function ItineraryScreenContainer(props) {
   const navigation = useNavigation();
   const route = useRoute();
   const store = useStore();
+  const insets = useSafeArea();
 
   return <ItineraryStagesMapScreen 
     {...props}
     navigation={navigation}
     route={route}
-    store={store} />;
+    store={store}
+    insets={insets} />;
 }
 
 

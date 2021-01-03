@@ -90,8 +90,9 @@ class PlaceScreen extends Component {
   async componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
-    if(this.state.mustFetch || typeof this.state.mustFetch === "undefined") {
-      this.props.actions.getPoi({ uuid: this.state.uuid });
+    const { uuid, mustFetch } = this.state;
+    if(mustFetch) {
+      this.props.actions.getPoi({ uuid: uuid });
     } else {
       this._parseEntity(this._entity);
     }
@@ -149,6 +150,8 @@ class PlaceScreen extends Component {
   }
   
   _parseEntity = (entity, callback) => {
+    if(!entity)
+      return;
     const { locale } = this.props;
     const { lan } = locale;
     const { abstract, title, description, whyVisit } = getEntityInfo(entity, ["abstract", "title", "description", "whyVisit"], [lan, 0, "value"], null, {"description": {s: /\. /g, d: ".<br/>"}, "whyVisit": {s: /<\/?[^>]+(>|$)/g, d: ""}});
@@ -183,7 +186,7 @@ class PlaceScreen extends Component {
   }
 
   _openAccomodationsMap = () => {
-    if(!this.state.entity.georef)
+    if(!this.state.entity || !this.state.entity.georef)
       return;
 
     //Compute region of nearest pois and send to accomodations screen
@@ -355,7 +358,7 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: "center",
     paddingTop: 10,
-    paddingBottom: 0,
+    paddingBottom: 10,
     color: "#000000E6",
     fontFamily: "montserrat-bold",
   },

@@ -22,11 +22,11 @@ class EntityWidgetInModal extends PureComponent {
   constructor(props) { 
     super(props);
 
-    var { entity, entityType } = props;
+    var { entity, entityType, coords } = props;
 
     /* Only for entityType == 'places' and 'accomodations', for 'event' or 'itinerary' we already have data in props.entity */
     this._isClusteredEntity = (entityType === Constants.ENTITY_TYPES.places || entityType === Constants.ENTITY_TYPES.accomodations); 
-    
+
     this.state = {
       entity,
       isEntityLoaded: this._isClusteredEntity ? false : true,
@@ -34,15 +34,33 @@ class EntityWidgetInModal extends PureComponent {
   }
 
   componentDidMount() {
-    if (this._isClusteredEntity && this.props.entity) 
-      this._fetchEntity();
+    const {entity} = this.state;
+    this._parseEntity(entity);
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.entity !== this.props.entity) {
-      // console.log("entity changed", this.props.entity.uuid)
-      this.setState({ entity: this.props.entity });
-      this._fetchEntity();
+      this.setState({ entity: this.props.entity }, () => {
+        this._parseEntity(this.state.entity);
+      });
+    }
+  }
+
+  _parseEntity = (entity) => {
+    const {coords, lan} = this.props;
+
+    if(entity) {
+      if (this._isClusteredEntity) 
+        this._fetchEntity();
+      else {
+        if(this.props.getCoordsFun) {
+          const coordinates = this.props.getCoordsFun(entity);
+          if (coordinates) {
+            entity.distanceStr = distanceToString(distance(coords.latitude, coords.longitude, coordinates.latitude, coordinates.longitude));
+          }
+        }
+        this.setState({...entity});
+      }
     }
   }
 
@@ -67,10 +85,9 @@ class EntityWidgetInModal extends PureComponent {
         }
         // Launch the query to get the real entity from the cluster
         apolloQuery(query(params)).then((data) => {
-          this._isEntityLoaded = true;
           let entity = data[0];
-          entity.distance = this._computeDistance(this.props.entity, this.props.coords); 
-          entity.distanceString = entity.distance ? distanceToString(entity.distance) : null
+          entity.distance = this._computeDistance(this.props.entity, this.props.coords);
+          entity.distanceStr = entity.distance ? distanceToString(entity.distance) : null
           this.setState({ entity });
         }).catch(e => {
           console.error(e.message);
@@ -82,7 +99,7 @@ class EntityWidgetInModal extends PureComponent {
   _openEntity = (entity) => {
     switch(this.props.entityType) {
       case Constants.ENTITY_TYPES.places:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item: entity });
+        this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item: entity, mustFetch: false } );
         break;
       case Constants.ENTITY_TYPES.events:
         this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item: entity });
@@ -91,7 +108,7 @@ class EntityWidgetInModal extends PureComponent {
         this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, { item: entity })
         break;
       case Constants.ENTITY_TYPES.accomodations:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavAccomodationScreen, { item: entity })
+        this.props.navigation.navigate(Constants.NAVIGATION.NavAccomodationScreen, { item: entity, mustFetch: false })
         break;
       default:
         break;
@@ -107,19 +124,19 @@ class EntityWidgetInModal extends PureComponent {
       return (
         <AccomodationItem
           keyItem={entity.nid}
-          extraStyle={{
+          extraStyle={[{
             width: '100%',
             borderColor: Colors.lightGray,
             borderWidth: 1,
             marginLeft: 0,
             height: 160,
-          }}
+          },this.props.extraStyle]}
           title={title}
           term={termName}
           stars={entity.stars}
           onPress={null}
           location={entity.location}
-          distance={entity.distanceString}
+          distance={entity.distanceStr}
           onPress={() => this._openEntity(entity)}
         />
       )
@@ -132,7 +149,7 @@ class EntityWidgetInModal extends PureComponent {
       const title = _.get(entity.title, [this.props.locale.lan, 0, "value"], null);
       const termName = _.get(entity, "term.name", "")
       // console.log("entity details", title, termName)
-      let distance = entity.distanceString || null;
+      let distance = entity.distanceStr || null;
 
       return(
         <EntityItemInModal
@@ -167,7 +184,7 @@ class EntityWidgetInModal extends PureComponent {
 
   render() { 
     return (
-      <View style={[styles.container]}>
+      <View style={[styles.container, this.props.containerStyle]}>
         {this._renderEntity()}
       </View>
       );

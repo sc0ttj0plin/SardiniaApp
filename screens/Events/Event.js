@@ -134,6 +134,8 @@ class EventScreen extends Component {
   }
 
   _parseEntity = (entity) => {
+    if(!entity)
+      return;
     const { locale } = this.props;
     const { lan } = locale;
     const { abstract, title, description } = getEntityInfo(entity, ["abstract", "title", "description"], [lan, 0, "value"], null, {"description": {s: /\. /g, d: ".<br/>"}});
@@ -354,7 +356,7 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: "center",
     paddingTop: 10,
-    paddingBottom: 5,
+    paddingBottom: 10,
     color: "#000000E6",
     fontFamily: "montserrat-bold",
   },

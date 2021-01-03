@@ -11,6 +11,7 @@ import {
  } from ".";
 import { coordsInBound, distance, distanceToString, regionToPoligon, regionDiagonalKm } from '../helpers/maps';
 import MapView from "react-native-maps";
+import { Button } from "react-native-elements";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
@@ -21,6 +22,7 @@ import Colors from '../constants/Colors';
 import { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
 import { linkingOpenNavigator } from "../helpers/utils"
+import { FontAwesome5 } from '@expo/vector-icons'; 
 
 /**
  * Map:             Clusters + pois that update with user map's interaction
@@ -69,14 +71,14 @@ class MapViewTop extends PureComponent {
   componentDidMount() {
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
     if(this.props.others.geolocation && this.props.others.geolocation.coords) {
-      this._onUpdateCoords(this.props.others.geolocation.coords);
+      this._onUpdateCoords(this.props.others.geolocation);
     }
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.others.geolocation !== this.props.others.geolocation && this.props.others.geolocation.coords) {
       // { coords: { latitude, longitude }, altitude, accuracy, altitudeAccuracy, heading, speed, timestamp (ms since epoch) }
-      this._onUpdateCoords(this.props.others.geolocation.coords);
+      this._onUpdateCoords(this.props.others.geolocation);
     }
 
     const prevModalState = prevProps.modalState;
@@ -89,16 +91,43 @@ class MapViewTop extends PureComponent {
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
 
+  _animateMapToRegion = (coords, zoom, duration = 200, delay = 0) => {
+    var camera = {center: coords}
+    if(zoom) {
+      camera.zoom = zoom;
+    }
+    if(delay && delay > 0) {
+      setTimeout(() => this._mapRef && this._mapRef.animateCamera(camera, {duration: duration}), delay); 
+    } else {
+      this._mapRef.animateCamera(camera, {duration: duration});
+    }
+  }
+  
+  _onGoToMyLocationPressed = () => {
+    this._animateMapToRegion(this._coords, 12, 1500);
+    if(this.props.showNearEntitiesOnPress)
+      this.props.showNearEntitiesOnPress()
+  }
+  
   _onUpdateCoords = (position, source) => {
     //check geolocation source
-     if (source === Constants.GEOLOCATION.sources.foregroundGetOnce)
-      this._computeNearestPoisEnclosingPolygon(position);
+    this._coords = position.coords;
   }
 
-  _selectMarker = (entity, event) => {
+  _selectMarker = (entity) => {
     // console.log("enter en", entity)
 
     if(entity) {
+      this._disableRegionChangeCallback = true;
+
+      if(Platform.OS == "ios") {
+        if(this.props.getCoordsFun) {
+          const coords = this.props.getCoordsFun(entity);
+          this._animateMapToRegion(coords);
+        }
+      }
+      setTimeout(() => this._disableRegionChangeCallback = false, 1000);
+
       this.setState({ selectedEntity: null }, () => {
         this.setState({ 
           selectedEntity: entity,
@@ -127,6 +156,18 @@ class MapViewTop extends PureComponent {
     }
   }
 
+  _onRegionChangeComplete = (region) => {
+    if(this.props._onMapRegionChanged)
+      this.props._onMapRegionChanged();
+
+    if(this._disableRegionChangeCallback) {
+      return;
+    } 
+
+    if(this.state.selectedEntity)
+      this._selectMarker(null);
+  }
+
   /********************* Render methods go down here *********************/
 
   _renderCluster = (cluster) => {
@@ -153,11 +194,12 @@ class MapViewTop extends PureComponent {
   
   /* Renders the topmost component: a map in our use case */
   _renderMap = () => {
-    const { coords, region, selectedEntity } = this.state;
+    const { coords, region } = this.state;
     const {mapPaddingBottom = 65} = this.props;
 
     return (
       <MapView
+        ref={(ref) => this._mapRef = ref}
         coords={coords}
         initialRegion={region}
         mapPadding={{
@@ -173,7 +215,8 @@ class MapViewTop extends PureComponent {
         showsIndoorLevelPicker={true}
         showsCompass={false}
         style={{flex: 1}}
-        onPanDrag={(event) => selectedEntity && this._selectMarker(null, event)}
+        onRegionChange={this._onRegionChangeComplete}
+        onPress={this._onRegionChangeComplete}
       >
         {this._renderMarkers()}
       </MapView>
@@ -264,6 +307,17 @@ class MapViewTop extends PureComponent {
         <View style={styles.topHeader}>
           {this._renderMapTitle()}
         </View>
+        {this.props.others.geolocation.coords && 
+          <Button
+          type="clear"
+          containerStyle={[styles.buttonGoToMyLocationContainer, {bottom: 15 + (this.props.paddingBottom || 0) }]}
+          buttonStyle={[styles.buttonGoToMyLocation]}
+          onPress={this._onGoToMyLocationPressed}
+          icon={
+            <FontAwesome5 name={"street-view"} size={25} color={Colors.colorPlacesScreen} />
+            }
+        />
+          }
       </View>
     )
   }
@@ -393,6 +447,18 @@ const styles = StyleSheet.create({
     top: Constants.COMPONENTS.header.bottomLineHeight + 5,
     left: 0,
     width: "100%"
+  },
+  buttonGoToMyLocationContainer:{
+    position: "absolute",
+    bottom: 95,
+    right: 20,
+    backgroundColor: "white",
+    borderRadius: 50,
+    width: 50,
+    height: 50,
+    padding: 0,
+    overflow: "hidden",
+    paddingTop: 5
   }
 });
 

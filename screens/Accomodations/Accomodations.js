@@ -69,6 +69,9 @@ class AccomodationsScreen extends Component {
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
     //If it's the first mount gets pois categories ("art and archeology...")
     this.props.actions.getCategories({ vid: Constants.VIDS.accomodations });
+    if ( this.props.others.geolocation.coords) {
+      this._onUpdateCoords(this.props.others.geolocation.coords);
+    }
   }
 
   /**
@@ -80,14 +83,9 @@ class AccomodationsScreen extends Component {
     if(prevProps.others.accomodationsTerms !== this.props.others.accomodationsTerms) {
       /* update also the header pois based on current cat */
       // this.setState({ nearPois: [] }, () => this._fetchNearestPois(this.state.coords)); 
+      this.setState({poisRefreshing: false});
       this._loadMorePois();
     }
-
-    const entityType = Constants.ENTITY_TYPES.accomodations;
-    if (prevProps.others.currentMapEntity !== this.props.others.currentMapEntity)
-      this.props.actions.setScrollableSnapIndex(entityType, this.state.snapPoints.length-1);
-    if (prevProps.others.mapIsDragging[entityType] !== this.props.others.mapIsDragging[entityType]) 
-      this.props.actions.setScrollableSnapIndex(entityType, this.state.snapPoints.length-1);
 
     // NEW-GEO
     if (prevProps.others.geolocation !== this.props.others.geolocation && this.props.others.geolocation.coords) {
@@ -157,6 +155,7 @@ class AccomodationsScreen extends Component {
       // uuids: childUuids, /* no need to specify the category since we get random pois */
       offset: nearPois.length,
     })).then((pois) => {
+      console.log(pois.length);
       this.setState({ nearPois: [...nearPois, ...pois] });
     });
   }
@@ -249,7 +248,6 @@ class AccomodationsScreen extends Component {
   _onPageLayout = (event) => {
     const { width, height } = event.nativeEvent.layout;
     //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 24 (handle) - 36 (header text) - 160 (entityItem) - 10 (margin of entityItem) - 36 (whereToGo text)
-    this.setState({ snapPoints: [height -  Layout.statusbarHeight - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight, 80 + 24 + 36 + 160, + 80] });
   }; 
 
   /**
@@ -270,7 +268,7 @@ class AccomodationsScreen extends Component {
 
       const categoryTitle = term ? `${explore} ${term.name}` : exploreAccomodation;
       return (
-        <SectionTitle text={categoryTitle} textStyle={{ fontSize: 20 }} style={{marginBottom: 15}} />
+        <SectionTitle text={categoryTitle} numberOfLines={1} textStyle={{ fontSize: 20 }} style={{ marginBottom: 15, paddingLeft: 40, paddingRight: 40 }} />
       )
   }
 
@@ -411,6 +409,8 @@ _renderContent = () => {
       // Extra modal content: if renderExtraModalComponent is undefined, must specify mapEntityWidgetProps
       // renderExtraModalComponent={this._renderNearToYou}
       extraModalProps={extraModalProps}
+
+      fullscreen={true}
     />
   )
 }
