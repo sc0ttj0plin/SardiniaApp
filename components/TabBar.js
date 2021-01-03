@@ -123,13 +123,15 @@ const TabBar = props => {
                  
                   <Animated.View style={{
                     display: isRouteActive ? 'flex' : 'none',
-                    height: isRouteActive ? 20 : 0,
+                    overflow: 'hidden',
+                    height: isRouteActive ? 22 : 0,
                   }}>
                     <ConnectedText textStyle={[ {
                         color: route.backgroundActiveColor,
                         fontFamily: "montserrat-bold",
                         textAlign: "center",
-                        fontSize: 11 / fontScale
+                        fontSize: 11 / fontScale,
+                        lineHeight: 20
                     }]} languageKey={route.languageKey}/>
                   </Animated.View>
               </Scaler>
