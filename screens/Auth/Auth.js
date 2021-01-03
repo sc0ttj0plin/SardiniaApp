@@ -42,7 +42,13 @@ class Login extends Component {
 
   componentDidMount() {
     if (this.props.auth.user)
-       this.setState({ authFSM: "logout" });
+    {
+      if(this.props.auth.user.info) {
+        this.setState({ authFSM: "logout" });
+      } else {
+        this.setState({ authFSM: "selectedEntity" });
+      }
+    }
     else
       this.setState({ authFSM: "emailInput" });
   }
@@ -125,7 +131,7 @@ class Login extends Component {
 
   _onBackPress = () => {
     const { authFSM } = this.state;
-    if (authFSM === "emailInput" || authFSM === "logout") 
+    if (authFSM === "emailInput" || authFSM === "logout" || authFSM === "selectedEntity") 
       this.props.navigation.goBack();
     else 
       this.setState({ authFSM: "emailInput" });
@@ -285,7 +291,7 @@ class Login extends Component {
               <Item style={styles.item} regular>
                 <View style={{marginLeft: 20, marginRight: 10}}>
                 </View>
-                <Input placeholder="Email" onChangeText={(email) => this.setState({email: email.toLowerCase()})} />
+                <Input autoCapitalize={'none'} placeholder="Email" onChangeText={(email) => this.setState({email: email.toLowerCase()})} />
               </Item>
             </Form>
             <TouchableOpacity style={styles.signInButton} onPress={this._validateForm}>

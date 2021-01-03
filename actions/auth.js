@@ -106,6 +106,8 @@ export const logout = () =>
       console.log('Logout..');
       await AsyncStorage.removeItem('email');
       await AsyncStorage.removeItem('username');
+      const user = firebase.auth().currentUser;
+      await firebase.database().ref(`users/${user.uid}/info`).remove();
       await firebase.auth().signOut();
     } catch(e) {
       console.log("Logout error", e.message);
