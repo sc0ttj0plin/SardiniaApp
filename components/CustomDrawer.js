@@ -4,9 +4,13 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerI
 import { Avatar, Icon, Overlay, Divider } from 'react-native-elements';
 import { View, Text, ScrollView, StyleSheet, TouchableNativeFeedback, TouchableOpacity } from 'react-native';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import actions from '../actions';
 import Colors from '../constants/Colors';
 import * as Constants from '../constants';
 import CustomText from "./CustomText";
+import AsyncStorage from '@react-native-community/async-storage';
+import { NavigationEvents, useNavigation, useRoute } from '@react-navigation/native';
+import { bindActionCreators } from 'redux';
 
 
 class CustomDrawer extends Component {
@@ -32,16 +36,54 @@ CustomDrawer.Line = class Line extends Component {
   }
 }
 
-CustomDrawer.Header = class Header extends Component {
+class Header extends Component {
   render() {
+    const { user } = this.props.auth;
+    const email = user && user.email;
+    const username = user && user.info && user.info.username;
     return (
       <View style={[styles.drawerContent,styles.header]}>
-          <CustomText numberOfLines={1} ellipsizeMode='tail' style={styles.email}>mariorossi@gmail.com</CustomText>
-          <CustomText numberOfLines={1} ellipsizeMode='tail' style={styles.username}>Mario Rossi</CustomText>
+          {email && <CustomText numberOfLines={1} ellipsizeMode='tail' style={styles.email}>{email}</CustomText> }
+          {username && <CustomText numberOfLines={1} ellipsizeMode='tail' style={styles.username}>{username}</CustomText>}
       </View>
     );
   }
 }
+
+function HeaderContainer(props) {
+  const navigation = useNavigation();
+  const route = useRoute();
+  const store = useStore();
+
+  return <Header 
+    {...props}
+    navigation={navigation}
+    route={route}
+    store={store} />;
+}
+
+const mapStateToProps = state => {
+  return {
+    auth: state.authState,
+    //mixed state
+    others: state.othersState,
+    //language
+    locale: state.localeState,
+  };
+};
+
+
+const mapDispatchToProps = dispatch => {
+  return {...bindActionCreators({ ...actions }, dispatch)};
+};
+
+CustomDrawer.Header = connect(mapStateToProps, mapDispatchToProps, (stateProps, dispatchProps, props) => {
+  return {
+    ...stateProps,
+    actions: dispatchProps,
+    ...props
+  }
+})(HeaderContainer)
 
 CustomDrawer.Separator = class Separator extends Component {
   render() {

@@ -103,6 +103,7 @@ const dict = {
     lanItalian: '🇮🇹 Italiano',
     lanEnglish: '🇬🇧 Inglese',
     //AUTH
+    username: "Inserisci un nome", 
     name: "Nome", 
     surname: "Cognome", 
     birth: "Data di nascita", 
@@ -227,6 +228,7 @@ const dict = {
     lanItalian: '🇮🇹 Italian',
     lanEnglish: '🇬🇧 English',
     //AUTH
+    username: "Username", 
     name: "Name", 
     surname: "Surname", 
     birth: "Birth date", 

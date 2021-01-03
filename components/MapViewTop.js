@@ -5,10 +5,8 @@ import {
 
 import { FlatList } from "react-native-gesture-handler"
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { 
-  CustomText,
-  SectionTitle
- } from ".";
+import CustomText from "./CustomText";
+import SectionTitle from "./SectionTitle";
 import { coordsInBound, distance, distanceToString, regionToPoligon, regionDiagonalKm } from '../helpers/maps';
 import MapView from "react-native-maps";
 import { Button } from "react-native-elements";

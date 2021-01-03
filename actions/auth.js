@@ -56,7 +56,9 @@ _checkAuthStatus = () => {
   return new Promise((resolve, reject) => {
     try {
       firebase.auth().onAuthStateChanged(user => {
-        if (user) resolve(user);
+        if (user) {
+          resolve(user);
+        }
         else reject();
       });
     } catch {
@@ -72,6 +74,8 @@ async (dispatch, getState) => {
   dispatch({ type: Constants.AUTH });
   try  {
     let user = await _checkAuthStatus();
+    let userInfo = await firebase.database().ref(`users/${user.uid}/info`).once('value');
+    user.info = userInfo.val();
     const token = await firebase.auth().currentUser.getIdToken(/* forceRefresh */ true);
     dispatch({ type: Constants.AUTH_SUCCESS, payload: { user, token } });
  } catch(e) {
@@ -87,8 +91,9 @@ export const editUser = (el) =>
       dispatch({ type: Constants.USER_EDIT });
       const user = firebase.auth().currentUser;
       let ref = firebase.database().ref(`users/${user.uid}/info`);
-      ref.update(el);
-      dispatch({ type: Constants.USER_EDIT_SUCCESS });
+      await AsyncStorage.setItem('username',el.username);
+      ref.set({...el});
+      dispatch({ type: Constants.USER_EDIT_SUCCESS, payload: {userInfo: {...el}}});
     } catch(error) { 
       dispatch({ type: Constants.USER_EDIT_FAIL });
       console.log(error); 
@@ -100,6 +105,7 @@ export const logout = () =>
     try  {
       console.log('Logout..');
       await AsyncStorage.removeItem('email');
+      await AsyncStorage.removeItem('username');
       await firebase.auth().signOut();
     } catch(e) {
       console.log("Logout error", e.message);

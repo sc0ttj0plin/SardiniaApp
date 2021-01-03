@@ -15,7 +15,7 @@ import itCountries from "world_countries_lists/data/it/countries.json";
 // import enCountries from "world_countries_lists/data/en/countries.json";
 
 // console.log("itcountries", itCountries)
-const INITIAL_AUTH_FSM_STATE = "emailInput"; /* Possible states: emailInput, emailSent, loginSuccess, loginError, logout */
+const INITIAL_AUTH_FSM_STATE = "emailInput"; /* Possible states: emailInput, emailSent, selectedEntity, loginError, logout */
 class Login extends Component {
 
   constructor(props) {
@@ -23,8 +23,10 @@ class Login extends Component {
     super(props);
     this.state = {
       email: "",
-      authFSM: "loginSuccess", 
+      authFSM: "selectedEntity", 
       isVerifyingEmail: false,
+      username: "",
+      usernameError: false,
       name: "",
       nameError: false,
       surname: "",
@@ -39,8 +41,10 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    // if (this.props.auth.user)
-    //   this.setState({ authFSM: "logout" });
+    if (this.props.auth.user)
+       this.setState({ authFSM: "logout" });
+    else
+      this.setState({ authFSM: "emailInput" });
   }
 
   componentDidUpdate(prevProps) {
@@ -50,7 +54,7 @@ class Login extends Component {
   
   _verifyLoginState = async () => {
     if (this.props.auth.success)
-      this.setState({ authFSM: "loginSuccess" });
+      this.setState({ authFSM: "selectedEntity" });
     else if (this.props.auth.error)
       this.setState({ authFSM: "loginError" });
   }
@@ -66,19 +70,24 @@ class Login extends Component {
   }
 
   _setUserData = () => {
-    const { name, surname, birth, country, sex, } = this.state;
+    const { username, name, surname, birth, country, sex, } = this.state;
     const { country: countryText, sex: sexText, birth: birthText } = this.props.locale.messages;
     let nameError = false 
     let surnameError = false 
+    let usernameError = false
     let birthError = false 
     let countryError = false 
     let sexError = false
 
-    if(!this._validateName(name)){
+    /*if(!this._validateName(name)){
       nameError = true;
     }
     if(!this._validateName(surname)){
       surnameError = true;
+    }*/
+
+    if(!this._validateUserName(username)){
+      usernameError = true;
     }
     if(birth == "" || birth == birthText){
       birthError = true;
@@ -90,8 +99,8 @@ class Login extends Component {
       sexError = true;
     }
 
-    if(!nameError && !surnameError && !birthError && !countryError && !sexError){
-      const userData = { name, surname, birth, country, sex, };
+    if(!usernameError && /*!nameError && !surnameError &&*/ !birthError && !countryError && !sexError){
+      const userData = { username, /*name, surname,*/ birth, country, sex, };
       this.props.actions.editUser(userData);
       this.props.navigation.goBack();
     }
@@ -101,7 +110,8 @@ class Login extends Component {
         surnameError, 
         birthError, 
         countryError, 
-        sexError, 
+        sexError,
+        usernameError
       })
 
     }
@@ -135,9 +145,29 @@ class Login extends Component {
       return false
   }
 
+  _validateUserName = (value) => {
+    let pattern = null;
+    pattern = new RegExp("^(?=[a-zA-Z0-9._]{3,20}$)(?!.*[_.]{2})[^_.].*[^_.]$");
+    let validation = pattern.exec(value);
+    if(validation !== null){
+      return true;
+    }
+    else
+      return false
+  }
+
 
   _setNameField = (stateField, stateFieldError, value) => {
     if(this._validateName(value) || value == ""){
+      this.setState({
+        [stateField]: value,
+        [stateFieldError]: false
+      })
+    }
+  }
+
+  _setUsernameField = (stateField, stateFieldError, value) => {
+    if(this._validateUsername(value)){
       this.setState({
         [stateField]: value,
         [stateFieldError]: false
@@ -177,9 +207,9 @@ class Login extends Component {
 
   _renderCountry = (country) => <Picker.Item label={country.name} value={country.name} />
 
-  _renderLoginSuccess = () => {
-    const { name, surname, birth, country, sex, confirm, fillInformation, man, woman } = this.props.locale.messages;
-    const {nameError, surnameError, birthError, countryError, sexError} = this.state;
+  _renderSelectedEntity = () => {
+    const { username, name, surname, birth, country, sex, confirm, fillInformation, man, woman } = this.props.locale.messages;
+    const {nameError, surnameError, usernameError, birthError, countryError, sexError} = this.state;
 
       return (
       <View style={styles.mainView}>
@@ -187,27 +217,19 @@ class Login extends Component {
           <View style={styles.view1s}>
           <CustomText style={styles.text0}>{fillInformation}</CustomText> 
           <Form>
-            <Item style={[styles.item1, nameError ? styles.itemError : {}]} regular>
-              <Input placeholder={name}  style={{fontFamily: "montserrat-regular"}} value={this.state.name} onChangeText={(text) => this._setNameField("name", "nameError",text)} />
-            </Item>
-            <Item style={[styles.item1, surnameError ? styles.itemError : {}]} regular>
-              <Input placeholder={surname} style={{fontFamily: "montserrat-regular"}} value={this.state.surname} onChangeText={(text) => this._setNameField("surname", "surnameError",text)} />
+            <Item style={[styles.item1, usernameError ? styles.itemError : {}]} regular>
+              <Input placeholder={username}  style={{fontFamily: "montserrat-regular"}} value={this.state.username} onChangeText={(text) => this._setNameField("username", "usernameError",text)} />
             </Item>
             <Item style={[styles.item1, birthError ? styles.itemError : {}]} regular>
               {/* <Input placeholder={birth} onChangeText={(text) => this.setState({birth: text})} /> */}
               <DatePicker
-                defaultDate={new Date(2018, 4, 4)}
-                minimumDate={new Date(2018, 1, 1)}
-                maximumDate={new Date(2018, 12, 31)}
+                minimumDate={new Date(1900, 1, 1)}
                 locale={"it"}
                 timeZoneOffsetInMinutes={undefined}
                 modalTransparent={false}
                 animationType={"fade"}
                 androidMode={"default"}
                 placeHolderText={birth}
-                contentStyle={{
-                  backgroundColor: "red"
-                }}
                 placeHolderTextStyle={{width: Layout.window.width - 50, fontFamily: "montserrat-regular"}}
                 textStyle={{ color: "black", width: Layout.window.width - 50, fontFamily: "montserrat-bold"}}
                 onDateChange={(date) => this.setState({birth: date, birthError: false})}
@@ -317,6 +339,7 @@ class Login extends Component {
   render() {
     ///contain, cover, stretch, center, repeat.
     const { authFSM } = this.state;
+    console.log("authFSM", authFSM);
     if (!this.props.auth.success) {
       // Not yet authenticated (input -> sent -> error)
       const { register } = this.props.locale.messages;
@@ -329,11 +352,11 @@ class Login extends Component {
           {authFSM === "loginError" && this._renderLoginError()}
         </View>
       )
-    } else if (this.props.auth.success && authFSM === "loginSuccess") {
+    } else if (this.props.auth.success && authFSM === "selectedEntity") {
       return (
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
           <ConnectedHeader onBackPress={this._onBackPress} />
-          {this._renderLoginSuccess()}
+          {this._renderSelectedEntity()}
         </View>
       );
     } else if (this.props.auth.user) {

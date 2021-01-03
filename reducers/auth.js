@@ -8,6 +8,7 @@ const INITIAL_STATE = {
   loading: false,
   error: null,
   success: false,
+  userInfo: null,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -26,11 +27,17 @@ export default (state = INITIAL_STATE, action) => {
       return { 
         ...state, 
         user: action.payload.user, 
+        userInfo: action.payload.userInfo, 
         token: action.payload.token, 
         error: null, 
         loading: false,
         success: true
       };
+    case Constants.USER_EDIT_SUCCESS:
+      console.log("Constants.USER_EDIT_SUCCESS:");
+      var state = {...state};
+      state.user.info = action.payload.userInfo;
+      return state;
     case Constants.AUTH_FAIL:
       console.log("Error in auth", action.payload.message);
       return { 
@@ -41,9 +48,13 @@ export default (state = INITIAL_STATE, action) => {
       };
     //LOGOUT
     case Constants.LOGOUT:
-      return INITIAL_STATE;
+      return {
+        ...INITIAL_STATE
+      }
     case Constants.LOGOUT_SUCCESS:
-      return INITIAL_STATE;
+      return {
+        ...INITIAL_STATE
+      }
     default:
       return state;
   }
