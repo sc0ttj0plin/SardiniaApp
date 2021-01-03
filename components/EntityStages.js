@@ -34,7 +34,7 @@ class EntityStages extends PureComponent {
 
   _openPoi = (uuid) => {
     // console.log("uuid poi", uuid)
-    this.props.navigation.push(Constants.NAVIGATION.NavPlaceScreen, { item: { uuid } });
+    this.props.navigation.push(Constants.NAVIGATION.NavPlaceScreen, { item: { uuid }, mustFetch: true });
   }
 
   _renderEventStage = (item, index) => {

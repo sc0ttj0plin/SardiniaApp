@@ -133,24 +133,8 @@ class ItineraryStagesMapScreen extends Component {
     this._scroll.scrollTo({x: index * Layout.map.card.width, y: 0, animated: true});
   }
 
-  _openRelatedEntity = (item) => {
-    var type = item.type;
-    switch(type) {
-      case Constants.NODE_TYPES.places:
-        this.props.navigation.push(Constants.NAVIGATION.NavPlaceScreen, { item });
-        break;
-      case Constants.NODE_TYPES.events:
-        this.props.navigation.navigate(Constants.NAVIGATION.ItineraryStagesMapScreen, { item });
-        break;
-      case Constants.NODE_TYPES.itineraries:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, { item })
-        break;
-      case Constants.NODE_TYPES.inspirers:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavInspirerScreen, { item })
-        break;
-      default:
-        break;
-    }
+  _openEntity = (entity) => {
+    this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item: { uuid: entity.uuid }, mustFetch: true })
   }
 
   /********************* Render methods go down here *********************/
@@ -169,7 +153,7 @@ class ItineraryStagesMapScreen extends Component {
       <EntityItem 
         keyItem={stage.nid}
         listType={Constants.ENTITY_TYPES.itineraries}
-        onPress={() => this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item: { uuid: stage.uuid } })}
+        onPress={() => this._openEntity(stage)}
         title={`${title}`}
         image={`${image}`}
         subtitle={`${term}`}
