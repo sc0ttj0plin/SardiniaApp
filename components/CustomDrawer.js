@@ -42,7 +42,7 @@ class Header extends Component {
     const email = user && user.email;
     const username = user && user.info && user.info.username;
     return (
-      <View style={[styles.drawerContent,styles.header]}>
+      <View style={[styles.drawerContent, styles.header]}>
           {email && <CustomText numberOfLines={1} ellipsizeMode='tail' style={styles.email}>{email}</CustomText> }
           {username && <CustomText numberOfLines={1} ellipsizeMode='tail' style={styles.username}>{username}</CustomText>}
       </View>
@@ -121,11 +121,11 @@ CustomDrawer.Item = class Item extends Component {
 const styles = StyleSheet.create({
   drawerContent: {
     flex: 1,
-    minHeight: 50,
   },
   header: {
     flexDirection: "column-reverse",
-    padding: 10
+    padding: 10,
+    minHeight: 50
   },
   username: {
     fontSize: 18, 

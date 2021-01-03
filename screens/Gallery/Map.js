@@ -305,10 +305,9 @@ class GalleryMapScreen extends PureComponent {
     var index = this._getPressedCell(point);
     
     if(index >= 1) {
-      console.log("animate", index);
+      //("animate", index);
       this._selectPoi(index);
     } else if (index==0){
-      console.log("open poi");
       this._selected = null;
       this._openPoi(this.state.pois[index]);
     } else {

@@ -14,6 +14,7 @@ import * as Constants from '../../constants';
 import itCountries from "world_countries_lists/data/it/countries.json";
 // import enCountries from "world_countries_lists/data/en/countries.json";
 
+
 // console.log("itcountries", itCountries)
 const INITIAL_AUTH_FSM_STATE = "emailInput"; /* Possible states: emailInput, emailSent, selectedEntity, loginError, logout */
 class Login extends Component {
@@ -46,7 +47,21 @@ class Login extends Component {
       if(this.props.auth.user.info) {
         this.setState({ authFSM: "logout" });
       } else {
-        this.setState({ authFSM: "selectedEntity" });
+        var countries = [];
+        var italy = null;
+        var italyKey = null;
+        itCountries.map((country, key) => {
+          if(country.alpha2 == "it") {
+            italy = {...country};
+            italyKey = key;
+          } else {
+            countries[key+1] = country;
+          }
+        });
+        if(italy) {
+          countries[0] = italy;
+        }
+        this.setState({ countries: countries, authFSM: "selectedEntity" });
       }
     }
     else
@@ -206,7 +221,8 @@ class Login extends Component {
   }
 
   _renderCountries = () => {
-    return itCountries.map( country => {
+    return this.state.countries && this.state.countries.map( country => {
+      //console.log(JSON.stringify(country));
       return this._renderCountry(country)
     })
   }
@@ -230,6 +246,7 @@ class Login extends Component {
               {/* <Input placeholder={birth} onChangeText={(text) => this.setState({birth: text})} /> */}
               <DatePicker
                 minimumDate={new Date(1900, 1, 1)}
+                maximumDate={new Date()}
                 locale={"it"}
                 timeZoneOffsetInMinutes={undefined}
                 modalTransparent={false}

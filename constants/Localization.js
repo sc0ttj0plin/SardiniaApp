@@ -116,7 +116,7 @@ const dict = {
     checkInbox: "Controlla la tua mail",
     logoutMsg: "Vuoi disconnettere il tuo account?",
     logoutBtn: "DISCONNETTI",
-    fillInformation: "Inserisci qui i tuoi dati personali",
+    fillInformation: "Inserisci qui i tuoi dati",
     //Parks
     nearParks: "Parcheggi nelle vicinanze!", 
     discoverParks: "Scopri i parcheggi liberi più vicini a te attraverso uno dei servizi convenzionati.",
