@@ -81,12 +81,12 @@ class GalleryMapScreen extends PureComponent {
    */
   componentDidMount() {
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
+    setTimeout(() => (this._regionOnCompleteEnabled = true ), 500);
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.others.geolocation !== this.props.others.geolocation && this.props.others.geolocation.coords) {
       // { coords: { latitude, longitude }, altitude, accuracy, altitudeAccuracy, heading, speed, timestamp (ms since epoch) }
-      this._onUpdateCoords(this.props.others.geolocation.coords);
     }
   }
 
@@ -102,23 +102,6 @@ class GalleryMapScreen extends PureComponent {
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
 
-  /**
-   * Invoked whenever the coordinates get updated (either on initial load or when the user moves)
-   *  Pois: fetches new nearest pois and clusters.
-   *  PoisCategories: if there are no more nested categories then, instead of loading subcategories load just pois (leaf)
-   * @param {*} newCoords: the new user's coordinates
-   */
-  _onUpdateCoords(newCoords) {
-    // const { coords, term } = this.state;
-    const { coords } = this.state;
-    if(!coords || coords.latitude !== newCoords.latitude || coords.longitude !== newCoords.longitude) {
-      let isCordsInBound = coordsInBound(newCoords); 
-      // Are coordinates within sardinia's area? fetch the updated pois list
-      if (isCordsInBound) {
-        this.setState({ isCordsInBound, coords: newCoords, nearPoisRefreshing: true });
-      }
-    }
-  }
 
 
   /**
@@ -126,7 +109,7 @@ class GalleryMapScreen extends PureComponent {
    * @param {*} item: item list
    */
   _openPoi = (item) => {
-    this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item });
+    this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item, mustFetch: true });
   }
 
 
@@ -273,6 +256,9 @@ class GalleryMapScreen extends PureComponent {
   }
 
   _onRegionChangeComplete = (region) => {
+    if(!this._regionOnCompleteEnabled)
+      return;
+
     var pois = {};
     if(!this._selected)
       this.setState({pois: {...pois}},() => {this.forceUpdate()});
@@ -280,7 +266,6 @@ class GalleryMapScreen extends PureComponent {
       clearTimeout(this._panTimeout);
     }
     this._panTimeout = setTimeout(() => {
-      
       this._getPois(region);
     }, 1500);
   }
@@ -379,13 +364,20 @@ class GalleryMapScreen extends PureComponent {
   /* Render content */
   _renderContent = () => {
 
-    const { coords, region, panning, cells, pois } = this.state;
+    const { region, panning, cells, pois } = this.state;
+    
+    var selectedCoordinate = null;
+    var selectedPoi = null;
+
+    if(this.state.pois[0]) {
+      selectedPoi = this.state.pois[0];
+      selectedCoordinate = {latitude: selectedPoi.georef.coordinates[1], longitude: selectedPoi.georef.coordinates[0]};
+    }
 
     return (
       <View style={styles.fill} onLayout={this._onPageLayout}>
         <MapView
           ref={(ref) => this._mapRef = ref}
-          coords={coords}
           initialRegion={region}
           provider={ PROVIDER_GOOGLE }
           mapType='standard'
@@ -403,14 +395,17 @@ class GalleryMapScreen extends PureComponent {
           onDoublePress={this._onDoublePress}
           moveOnMarkerPress={true}
         >
-          {Object.keys(pois).length > 0 && Object.keys(pois).map((key) => {
+
+          {selectedPoi && 
+            (<Marker id={0} coordinate={selectedCoordinate} onPress={() => this._openPoi(selectedPoi)}></Marker>)
+          }
+          {this.state.debug && Object.keys(pois).length > 0 && Object.keys(pois).map((key) => {
             var poi = pois[key];
             if(poi && poi.georef) {
               var coordinate = {latitude: poi.georef.coordinates[1], longitude: poi.georef.coordinates[0]};
-              if(!this.state.debug && key == 0 || this.state.debug)
-                return (<Marker id={key} coordinate={coordinate} onMarkerPress={() => this._selectPoi(key)}>
-                  {this.state.debug && <Text style={{height: 20, fontWeight: "800", width: 20, textAlign: "center", textAlignVertical: "center", backgroundColor: "white"}}>{key}</Text>}
-                  </Marker>)
+              return (<Marker id={key} coordinate={coordinate} onPress={() => this._selectPoi(key)}>
+                {this.state.debug && <Text style={{height: 20, fontWeight: "800", width: 20, textAlign: "center", textAlignVertical: "center", backgroundColor: "white"}}>{key}</Text>}
+                </Marker>)
               }
             })
           }

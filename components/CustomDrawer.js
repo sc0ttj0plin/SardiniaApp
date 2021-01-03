@@ -121,7 +121,7 @@ CustomDrawer.Item = class Item extends Component {
 const styles = StyleSheet.create({
   drawerContent: {
     flex: 1,
-    
+    minHeight: 50,
   },
   header: {
     flexDirection: "column-reverse",
