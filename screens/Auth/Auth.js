@@ -345,7 +345,6 @@ class Login extends Component {
   render() {
     ///contain, cover, stretch, center, repeat.
     const { authFSM } = this.state;
-    console.log("authFSM", authFSM);
     if (!this.props.auth.success) {
       // Not yet authenticated (input -> sent -> error)
       const { register } = this.props.locale.messages;
