@@ -88,7 +88,6 @@ class ItinerariesScreen extends PureComponent {
 
   _onUpdateCoords(newCoords) {
     // const { coords, term } = this.state;
-    console.log(newCoords);
     const { coords } = this.state;
     if(!coords || coords.latitude !== newCoords.latitude || coords.longitude !== newCoords.longitude) {
       let isCordsInBound = coordsInBound(newCoords); 

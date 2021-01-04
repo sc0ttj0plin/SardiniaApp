@@ -108,7 +108,6 @@ class PlacesScreen extends PureComponent {
 
     if (prevProps.others.geolocation !== this.props.others.geolocation && this.props.others.geolocation.coords) {
       // { coords: { latitude, longitude }, altitude, accuracy, altitudeAccuracy, heading, speed, timestamp (ms since epoch) }
-      console.log("_onUpdateCoords");
       this._onUpdateCoords(this.props.others.geolocation.coords);
     }
   }

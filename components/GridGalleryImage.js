@@ -13,7 +13,6 @@ ViewAnimatable = Animatable.createAnimatableComponent(View);
 export default class GalleryImage extends PureComponent {
   render() {
     const { source, index, onPress, style } = this.props;
-    console.log(source);
     return (
         <ScrollableContainerTouchableOpacity 
             onPress={() => onPress(index)}
