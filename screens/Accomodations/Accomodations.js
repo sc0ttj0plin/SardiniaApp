@@ -57,7 +57,6 @@ class AccomodationsScreen extends Component {
       //
       snapPoints: null,
     };
-      
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
@@ -411,6 +410,8 @@ _renderContent = () => {
       extraModalProps={extraModalProps}
 
       fullscreen={true}
+
+      onBackPress={this._backButtonPress}
     />
   )
 }

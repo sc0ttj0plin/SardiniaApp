@@ -3,7 +3,7 @@ import {
   View, Text, ActivityIndicator, Pressable,
   StyleSheet, BackHandler, Platform, ScrollView, NativeModules, Easing, PixelRatio } from "react-native";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler"
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 import Animated from 'react-native-reanimated';
 import AsyncOperationStatusIndicator from './AsyncOperationStatusIndicator';
 import ClusteredMapViewTop from './ClusteredMapViewTop';
@@ -66,6 +66,9 @@ class ConnectedMapScrollable extends PureComponent {
       
     this._pageLayoutHeight = Layout.window.height;
     this._filterList = null;
+
+    this._onHardwareBackButtonClick = this._onHardwareBackButtonClick.bind(this);
+    this._onScrollableOpened = this._onScrollableOpened.bind(this);
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
@@ -75,6 +78,10 @@ class ConnectedMapScrollable extends PureComponent {
    */
   async componentDidMount() {
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
+
+    if(this.props.entitiesType === Constants.ENTITY_TYPES.places || this.props.entitiesType === Constants.ENTITY_TYPES.accomodations) {
+      BackHandler.addEventListener('hardwareBackPress', this._onHardwareBackButtonClick);
+    }
   }
 
   /**
@@ -82,11 +89,54 @@ class ConnectedMapScrollable extends PureComponent {
    * @param {*} prevProps
    */
   componentDidUpdate(prevProps) {
-
+    if(
+      this.props.entitiesType === Constants.ENTITY_TYPES.places ||
+      this.props.entitiesType === Constants.ENTITY_TYPES.inspirers ||
+      this.props.entitiesType === Constants.ENTITY_TYPES.accomodations
+    ) {
+      if(prevProps.isFocused !== this.props.isFocused){
+        console.log(this.props.entitiesType, this.props.isFocused);
+        if(this.props.isFocused)
+          BackHandler.addEventListener('hardwareBackPress', this._onHardwareBackButtonClick);
+        else
+          BackHandler.removeEventListener('hardwareBackPress', this._onHardwareBackButtonClick);
+      }
+    }
   }
 
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
+
+  _onHardwareBackButtonClick = () => {
+    if (this.props.isFocused) {
+      var terms = null;
+      
+      if(this.props.entitiesType === Constants.ENTITY_TYPES.places)
+        terms = this.props.others.placesTerms;
+      else if (this.props.entitiesType === Constants.ENTITY_TYPES.accomodations)
+        terms = this.props.others.accomodationsTerms; 
+
+      if(terms && terms.length > 0) {
+        if(this.props.onBackPress){
+          this.props.onBackPress();
+          return true;
+        }
+      } else {
+        console.log("_onHardwareBackButtonClick", this._scrollableOpened);
+        if(this._scrollableOpened) {
+          console.log(this._refs["ScrollableContainer"]);
+          this._refs["ScrollableContainer"].close();
+          return true;
+        }
+        if(this.props.entitiesType === Constants.ENTITY_TYPES.places){
+          BackHandler.exitApp();
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
 
   /**
    * Used to compute snap points
@@ -199,6 +249,11 @@ class ConnectedMapScrollable extends PureComponent {
   _onSelectedEntityModalClosed = () => {
     if(this._modalState == Constants.SCROLLABLE_MODAL_STATES.selectedEntity)
       this._setModalState(Constants.SCROLLABLE_MODAL_STATES.explore);
+  }
+
+  _onScrollableOpened = (opened) => {
+    console.log("_onScrollableOpened", opened);
+    this._scrollableOpened = opened;
   }
 
   /********************* Render methods go down here *********************/
@@ -393,9 +448,9 @@ class ConnectedMapScrollable extends PureComponent {
           keyExtractor={keyExtractor}
           onSettleIndex={this._onSettleIndex}
           HeaderTextComponent={renderHeaderTextComponent}
-          ref={(ref) => this._refs["ScrollableContainer"] = ref}
+          reference={(ref) => {this._refs["ScrollableContainer"] = ref;}}
           snapTo={this.state.scrollableSnap}
-          onCloseEnd={this._onScrollableClosed}
+          isOpen={this._onScrollableOpened}
           isClosable={this.state.scrollableSnap!=1}
         />
       )
@@ -541,13 +596,15 @@ function ConnectedMapScrollableContainer(props) {
   const route = useRoute();
   const store = useStore();
   const insets = useSafeArea();
+  const isFocused = useIsFocused();
 
   return <ConnectedMapScrollable 
     {...props}
     navigation={navigation}
     route={route}
     store={store}
-    insets={insets} />;
+    insets={insets}
+    isFocused={isFocused} />;
 }
 
 

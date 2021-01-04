@@ -4,7 +4,7 @@ import {
   StyleSheet, BackHandler, Platform, ScrollView, NativeModules, Easing, PixelRatio } from "react-native";
 
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler"
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, useIsFocused} from '@react-navigation/native';
 import Animated from 'react-native-reanimated';
 import { 
   CategoryListItem, 
@@ -74,7 +74,7 @@ class PlacesScreen extends PureComponent {
       //
       selectedEntity: null
     };
-      
+
     this._pageLayoutHeight = Layout.window.height;
     this._filterList = null;
   }
@@ -374,6 +374,7 @@ class PlacesScreen extends PureComponent {
         // Extra modal content: if renderExtraModalComponent is undefined, must specify mapEntityWidgetProps
         // renderExtraModalComponent={this._renderNearToYou}
         extraModalProps={extraModalProps}
+        onBackPress={this._backButtonPress}
       />
     )
   }
@@ -475,12 +476,14 @@ function PlacesScreenContainer(props) {
   const navigation = useNavigation();
   const route = useRoute();
   const store = useStore();
+  const isFocused = useIsFocused();
 
   return <PlacesScreen 
     {...props}
     navigation={navigation}
     route={route}
-    store={store} />;
+    store={store}
+    isFocused={isFocused} />;
 }
 
 

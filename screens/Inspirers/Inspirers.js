@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { 
   View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
   StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native';
 import { 
   CategoryListItem, 
   EntityItem,
@@ -41,6 +41,7 @@ class InspirersScreen extends Component {
       inspirers: props.inspirers.data || []
     };
       
+    this._onHardwareBackButtonClick = this._onHardwareBackButtonClick.bind(this);
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
@@ -49,6 +50,8 @@ class InspirersScreen extends Component {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
     this.props.actions.getCategories({ vid: Constants.VIDS.inspirersCategories });
+
+    BackHandler.addEventListener('hardwareBackPress', this._onHardwareBackButtonClick);
   }
 
   /**
@@ -60,6 +63,14 @@ class InspirersScreen extends Component {
     if(prevProps.others.inspirersTerms !== this.props.others.inspirersTerms && this._isPoiList()) {
       this._loadMorePois();
     }
+
+    if(prevProps.isFocused !== this.props.isFocused){
+      if(this.props.isFocused)
+        BackHandler.addEventListener('hardwareBackPress', this._onHardwareBackButtonClick);
+      else
+        BackHandler.removeEventListener('hardwareBackPress', this._onHardwareBackButtonClick);
+    }
+
     // if(prevProps.inspirers.data !== this.props.inspirers.data && this._isPoiList() && this.state.inspirers.length == 0) {
     //   this.setState({inspirers: this.props.inspirers.data})
     // }
@@ -73,6 +84,17 @@ class InspirersScreen extends Component {
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
 
+  _onHardwareBackButtonClick = () => {
+    if (this.props.isFocused) {
+      if(this.props.others.inspirersTerms.length > 0) {
+        this._backButtonPress()
+      } else {
+        return false;
+      }
+    }
+    return true;
+  }
+  
   /**
    * Get current term (category) and its child uuids, 
    *   if fallbackToCategories is true fallbacks to initial categories
@@ -316,12 +338,14 @@ function InspirersScreenContainer(props) {
   const navigation = useNavigation();
   const route = useRoute();
   const store = useStore();
+  const isFocused = useIsFocused();
 
   return <InspirersScreen 
     {...props}
     navigation={navigation}
     route={route}
-    store={store} />;
+    store={store}
+    isFocused={isFocused} />;
 }
 
 

@@ -72,6 +72,13 @@ class ScrollableContainer extends PureComponent {
     });
 
     this._snapping = false;
+
+    if(this.props.reference) {
+      console.log("this.props.ref");
+      this.props.reference({
+        close: this.close.bind(this)
+      });
+    };
   }
 
   componentDidMount() {
@@ -113,18 +120,35 @@ class ScrollableContainer extends PureComponent {
     }
   }
 
+
+
   snapTo = (index) => {
     this._scrollable.snapTo(index);
   }
 
+  close() {
+    this._closePressed();
+  }
+
+  _onOpenEnd = () => {
+    console.log("_onOpenEnd");
+    if(this.props.isOpen) {
+      this.props.isOpen(true);
+    }
+  }
+
   _onCloseEnd = () => {
+    console.log("_onCloseEnd");
     if(!this.props.isClosable) {
-      console.log("_onCloseEnd");
       this._scrollable.snapTo(1);
     }
   }
 
   _onCloseStart = () => {
+    console.log("_onCloseStart");
+    if(this.props.isOpen) {
+      this.props.isOpen(false);
+    }
     if(this._scrollableInner)
       this._scrollableInner.scrollToOffset({offset: 0, animated: true});
   }
@@ -134,7 +158,8 @@ class ScrollableContainer extends PureComponent {
       closeSnapIndex = this.props.snapPoints.length - 1
     } = this.props;
     //this._onSettle(closeSnapIndex);
-    this._scrollable.snapTo(closeSnapIndex);
+    if(this._scrollable)
+      this._scrollable.snapTo(closeSnapIndex);
     if(this._scrollableInner)
       this._scrollableInner.scrollToOffset({offset: 0, animated: true});
   }
@@ -234,6 +259,7 @@ class ScrollableContainer extends PureComponent {
               }]}
               onCloseStart={this._onCloseStart}
               onCloseEnd={this._onCloseEnd}
+              onOpenEnd={this._onOpenEnd}
               enabledBottomInitialAnimation={true}
             />
             

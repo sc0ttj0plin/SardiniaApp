@@ -24,7 +24,7 @@ const Scaler = posed.View({
  
 // define click zoom
 const CenterScaler = posed.View({ 
-    active: { scale: 0.6 },
+    active: { scale: 0.56 },
     inactive: { scale: 0.45 } 
 })
 
