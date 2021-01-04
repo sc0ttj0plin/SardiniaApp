@@ -36,7 +36,8 @@ import {
   // PoiItemsList, 
   // ExtrasListItem, 
   // MapViewItinerary,
-  CustomText
+  CustomText,
+  ShimmerWrapper
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -117,7 +118,7 @@ class AccomodationScreen extends Component {
     const sampleVideoUrl = getSampleVideoIndex(entity.nid);
     const gallery = getGalleryImages(entity);
     const stars = entity.stars;
-    this.setState({ entity, abstract,  title,  description,  whyVisit,  coordinates,  socialUrl, sampleVideoUrl, gallery, stars });
+    this.setState({ entity, abstract,  title,  description,  whyVisit,  coordinates,  socialUrl, sampleVideoUrl, gallery, stars, loaded: true });
   }
 
   _isSuccessData  = () => this.props.accomodations.success; 
@@ -177,6 +178,15 @@ class AccomodationScreen extends Component {
     return stars.map( star => <Ionicons name={"md-star"} size={25} color={Colors.stars} style={styles.star}/>);
   }
 
+  _renderButtonsShimmer = () => {
+    return (
+      <>
+        <ShimmerWrapper shimmerStyle={{ width: "100%", minHeight: 78, marginBottom: 13, marginTop: 3, borderRadius: 8, overflow: "hidden"}} />
+        <ShimmerWrapper shimmerStyle={{ width: "100%", minHeight: 78, marginBottom: 13, marginTop: 3, borderRadius: 8, overflow: "hidden"}} />
+      </>
+    )
+  }
+
   
   _renderContent = () => {
     const { uuid, entity, title, coordinates, socialUrl, stars } = this.state;
@@ -200,7 +210,13 @@ class AccomodationScreen extends Component {
      return (
        <View style={styles.fill}>
          <ScrollView style={styles.fill}>
-          <EntityMap coordinates={coordinates} hideOpenNavigatorButton containerStyle={{marginBottom: 0, marginTop: 0}}/>
+         <AsyncOperationStatusIndicator
+                    loading={true}
+                    success={coordinates}
+                    error={false}
+                    loadingLayout={<ShimmerWrapper shimmerStyle={{height: Layout.window.height / 2.8, width: "100%"}} />}>
+            <EntityMap coordinates={coordinates} hideOpenNavigatorButton containerStyle={{marginBottom: 0, marginTop: 0}}/>
+          </AsyncOperationStatusIndicator>
           {this._renderFab(entity.uuid, title, coordinates, socialUrl)}   
           <View style={[styles.headerContainer]}> 
             <EntityHeader title={title} term={entity.term ? entity.term.name : ""} borderColor={Colors.colorAccomodationsScreen}/>
@@ -209,6 +225,7 @@ class AccomodationScreen extends Component {
             {this._renderStars(stars)}
           </View>
           <View style={styles.container}>
+            {!this.state.loaded && this._renderButtonsShimmer()}
             { entity.address && <EntityAccomodationDetail 
               onPress={() => this.setState({ 
                 modalAction: () => linkingOpenNavigator(entity.address, coordinates), 
