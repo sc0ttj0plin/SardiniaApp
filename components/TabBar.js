@@ -131,7 +131,7 @@ const TabBar = props => {
                         fontFamily: "montserrat-bold",
                         textAlign: "center",
                         fontSize: 11 / fontScale,
-                        lineHeight: 20
+                        lineHeight: 20 / fontScale
                     }]} languageKey={route.languageKey}/>
                   </Animated.View>
               </Scaler>

@@ -139,7 +139,7 @@ class ConnectedMapScrollable extends PureComponent {
     const bottom = this.props.fullscreen ? Math.max(this.props.insets.bottom - 25, 0) : 0;
     //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 24 (handle) - 36 (header text) - 160 (entityItem) - 10 (margin of entityItem) - 36 (whereToGo text)
     // this.setState({ snapPoints: [height - Constants.COMPONENTS.header.height - Constants.COMPONENTS.header.bottomLineHeight, 72 * this._fontScale, 0] });
-    this.setState({ snapPoints: [height, bottom + 72 * this._fontScale, 0] });
+    this.setState({ snapPoints: [height, bottom + 55 + 20 * this._fontScale, 0] });
   }; 
 
   /**
