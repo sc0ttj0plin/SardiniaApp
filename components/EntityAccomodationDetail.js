@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View, Platform, StyleSheet, ActivityIndicator, Text, Image } from 'react-native';
+import { View, Platform, StyleSheet, ActivityIndicator, Text, Image} from 'react-native';
 import TouchableOpacity from "./ScrollableContainerTouchableOpacity";
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
@@ -51,8 +51,6 @@ const styles = StyleSheet.create({
       width: 0,
       height: 1,
     },
-    borderWidth: 1,
-    borderColor: "#eeeeee",
     shadowOpacity: 0.25,
     shadowRadius: 1,
     elevation: 2,
@@ -80,7 +78,13 @@ const styles = StyleSheet.create({
     paddingRight: 5,
     paddingBottom: 10,
     // paddingRight: 10,
-    flex: 1
+    flex: 1,
+    borderTopWidth: 1,
+    borderWidth: Platform.OS == "ios" ? 1 : 0,
+    borderRightWidth: 0,
+    borderBottomLeftRadius: 8,
+    borderTopLeftRadius: 8,
+    borderColor: "#eeeeee",
   },
   listItemImage: {
     width: "100%", 
