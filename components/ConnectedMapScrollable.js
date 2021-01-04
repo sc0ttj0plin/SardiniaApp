@@ -122,9 +122,7 @@ class ConnectedMapScrollable extends PureComponent {
           return true;
         }
       } else {
-        console.log("_onHardwareBackButtonClick", this._scrollableOpened);
-        if(this._scrollableOpened) {
-          console.log(this._refs["ScrollableContainer"]);
+        if(this._scrollableOpened && this._refs["ScrollableContainer"]) {
           this._refs["ScrollableContainer"].close();
           return true;
         }
