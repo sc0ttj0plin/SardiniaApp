@@ -47,20 +47,7 @@ class Login extends Component {
       if(this.props.auth.user.info) {
         this.setState({ authFSM: "logout" });
       } else {
-        var countries = [];
-        var italy = null;
-        var italyKey = null;
-        itCountries.map((country, key) => {
-          if(country.alpha2 == "it") {
-            italy = {...country};
-            italyKey = key;
-          } else {
-            countries[key+1] = country;
-          }
-        });
-        if(italy) {
-          countries[0] = italy;
-        }
+        this._setCountries();
         this.setState({ countries: countries, authFSM: "selectedEntity" });
       }
     }
@@ -72,12 +59,33 @@ class Login extends Component {
     if (this.props.auth !== prevProps.auth)
       this._verifyLoginState();
   }
+
+  _setCountries = () => {
+    var countries = [];
+    var italy = null;
+    var italyKey = null;
+    itCountries.map((country, key) => {
+      if(country.alpha2 == "it") {
+        italy = {...country};
+        italyKey = key;
+      } else {
+        countries[key+1] = country;
+      }
+    });
+    if(italy) {
+      countries[0] = italy;
+      this.setState({ countries: countries});
+    }
+  }
   
   _verifyLoginState = async () => {
-    if (this.props.auth.success)
+    if (this.props.auth.success) {
+      this._setCountries();
       this.setState({ authFSM: "selectedEntity" });
-    else if (this.props.auth.error)
+    }
+    else if (this.props.auth.error) {
       this.setState({ authFSM: "loginError" });
+    }
   }
 
   _validateForm = async () => {
@@ -408,7 +416,6 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     color: "#000000E6",
     backgroundColor: "#F2F2F2",
-    height: 40,
     fontSize: 15,
     fontFamily: "montserrat-bold",
     textTransform: "uppercase"

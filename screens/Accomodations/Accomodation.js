@@ -346,8 +346,7 @@ const styles = StyleSheet.create({
     width: '100%', 
     height: '100%', 
     zIndex: 1, 
-    position: 'absolute', 
-    top: Layout.statusbarHeight, 
+    position: 'absolute',
     left: 0, 
     backgroundColor: "rgba(0,0,0,0.5)",
     alignItems: "center",
@@ -359,7 +358,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white", 
     zIndex: 2, 
     width: Layout.window.width - 20, 
-    height: 200,
     flexDirection: "column",
   },
   modalTitle: {
@@ -372,12 +370,12 @@ const styles = StyleSheet.create({
     color: "#333333"
   },
   modalBtn: {
-    flex: 1,
-    height: 36,
     borderRadius: 8,
     paddingVertical: 9,
     justifyContent: "center",
     alignItems: "center",
+    marginTop: 5,
+    marginBottom: 10
   },
   modalBtnText: {
     color: "white",

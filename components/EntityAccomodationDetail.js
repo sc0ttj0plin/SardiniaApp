@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
 import { View, Platform, StyleSheet, ActivityIndicator, Text, Image } from 'react-native';
-import { TouchableOpacity } from "react-native-gesture-handler";
+import TouchableOpacity from "./ScrollableContainerTouchableOpacity";
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 import CustomText from "./CustomText";
+import { over } from 'lodash';
 
 /**
  * EntityAccomodationDetail
@@ -13,7 +14,7 @@ export default class EntityAccomodationDetail extends PureComponent {
     const { title, subtitle, iconName, iconColor, iconSize, onPress } = this.props
 
     return (
-      <TouchableOpacity style={styles.listItemButton} activeOpacity={0.7} onPress={onPress}>
+      <TouchableOpacity style={styles.listItemButton} onPress={onPress}>
         <View style={styles.listItem}>
           <View style={styles.itemDescView}>
               <CustomText style={styles.listItemTitle}>{title}</CustomText>
@@ -48,26 +49,27 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 1,
     },
+    borderTopWidth: 1,
+    borderColor: "#eeeeee",
     shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowRadius: 1,
+    elevation: 2,
     marginBottom: 13,
     marginTop: 3,
     borderRadius: 8,
     width: "100%",
     display: "flex",
-    flexDirection: "row"
+    flexDirection: "row",
+    overflow: "hidden"
   },
   iconView: {
     justifyContent: "center",
     alignItems: "center",
-    width: 78,
-    height: 78,
+    maxWidth: 78,
+    flex: 1,
     // borderRadius: 5,
-    borderTopRightRadius: 8,
-    borderBottomRightRadius: 8,
     backgroundColor: Colors.colorAccomodationsScreen,
     borderRightColor: Colors.lightGray,
     borderRightWidth: 1
@@ -75,6 +77,8 @@ const styles = StyleSheet.create({
   itemDescView: {
     paddingTop: 14,
     paddingLeft: 10,
+    paddingRight: 5,
+    paddingBottom: 10,
     // paddingRight: 10,
     flex: 1
   },
@@ -92,6 +96,6 @@ const styles = StyleSheet.create({
     fontFamily: "montserrat-bold",
   },
   listItemTerm: {
-    fontSize: 13,
+    fontSize: 13
   }
 });
