@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react';
-import { TouchableOpacity, ActivityIndicator, View } from 'react-native';
-import { Image } from 'react-native-elements';
+import { ActivityIndicator, View, Image} from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import CustomText from "./CustomText";
+import ShimmerWrapper from './ShimmerWrapper';
+import ScrollableContainerTouchableOpacity from './ScrollableContainerTouchableOpacity';
 
 ViewAnimatable = Animatable.createAnimatableComponent(View);
 
@@ -12,8 +13,9 @@ ViewAnimatable = Animatable.createAnimatableComponent(View);
 export default class GalleryImage extends PureComponent {
   render() {
     const { source, index, onPress, style } = this.props;
+    console.log(source);
     return (
-        <TouchableOpacity 
+        <ScrollableContainerTouchableOpacity 
             onPress={() => onPress(index)}
             activeOpacity={0.7}
             style={[{
@@ -34,17 +36,18 @@ export default class GalleryImage extends PureComponent {
                     height: 80
                     }, style
                 ]}>
+                <ShimmerWrapper shimmerStyle={[{ position: "absolute", height: 80, width: 100}, style]} />
                 <Image
                     source={ source }
-                    PlaceholderContent={<ActivityIndicator />}
                     style={[{
                         height: 80,
                         resizeMode: 'cover',
-                        width: 100
+                        width: 100,
+                        backgroundColor: "transparent"
                     }, style]}
                     />
         </ViewAnimatable>
-      </TouchableOpacity>
+      </ScrollableContainerTouchableOpacity>
     );
   }
 }

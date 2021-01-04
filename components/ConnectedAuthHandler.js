@@ -126,8 +126,8 @@ ConnectedAuthHandler.navigationOptions = {
 const styles = StyleSheet.create({
   fill: {
     position: "absolute",
-    width: Layout.window.width,
-    height: Layout.window.height,
+    width: "100%",
+    height: "100%",
     backgroundColor: "rgba(0,0,0, 0.5)",
     zIndex: 11,
   },

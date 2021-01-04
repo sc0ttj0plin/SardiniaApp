@@ -11,21 +11,27 @@ export default class LLEntitiesFlatlist extends PureComponent{
     }
 
     _renderItem = ({ item, index }) => {
-        const { sideMargins, horizontal, vertical } = this.props;
-        let margins = sideMargins || 20
-        let itemWidth = ((Layout.window.width - (margins*2))/2) - 5;
-        let width = horizontal===false ? itemWidth : "100%";
-        let height = width;
-        let space = (Layout.window.width - (margins*2) - (width*2))/ 2;
-        const marginRight = 0;
-        const marginLeft = horizontal===false && index && index%2 != 0 ? space*2 : 0;
-        const marginBottom = horizontal===false ? 10 : 0
+        const { size, horizontal, vertical } = this.props;
+
+        var itemSize = null;
+
+        if(size){
+            itemSize = {...this.props.size};
+            itemSize.marginLeft = (horizontal==false && index%2 != 0) ? itemSize.space : 0;
+        }
+
         return(
             <>
             { horizontal===false &&
                 <ShimmerWrapper 
                     style={[styles.item]} 
-                    shimmerStyle={[styles.item, this.props.itemStyle,  { marginRight, marginLeft, marginBottom, width, height }]}/>
+                    shimmerStyle={[styles.item, this.props.itemStyle,  
+                        size && {
+                        marginRight: itemSize.marginRight,
+                        marginLeft: itemSize.marginLeft,
+                        marginBottom: itemSize.marginBottom, 
+                        width: itemSize.width,
+                        height: itemSize.height }]}/>
             }
             { horizontal || vertical &&
                 <ShimmerWrapper 

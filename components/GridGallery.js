@@ -1,8 +1,10 @@
 import React, { PureComponent } from 'react';
-import { View, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, FlatList, ActivityIndicator } from 'react-native';
 import { Image } from 'react-native-elements';
 import GridGalleryImage from './GridGalleryImage';
 import CustomText from "./CustomText";
+import Layout from '../constants/Layout';
+import ScrollableContainerTouchableOpacity from './ScrollableContainerTouchableOpacity';
 
 /**
  * Grid gallery wrapper, used in Extra, Inspirers and Place screen to show related gallery
@@ -12,39 +14,43 @@ export default class Gallery extends PureComponent {
     super(props);
     this.state = {
       numColumns: typeof props.numColumns !== "undefined" ? props.numColumns : 3,
-      width: 100,
+      windowWidth: Layout.window.width,
       height: 80
     };
   }
   
   render() {
     const { images, useFlatList = true } = this.props;
-    const cellWidth = this.state.width / this.state.numColumns - 1;
+    const cellWidth = this.state.windowWidth / this.state.numColumns - 1;
+    var cellHeight = cellWidth / 16 * 9;
+    
     return (
       <View
         style={{
           flexDirection: 'row',
           flexWrap: 'wrap',
         }}
-        onLayout={(event) => { this.setState({ width: event.nativeEvent.layout.width})}}
+        onLayout={(event) => { 
+          this.setState({ windowWidth: event.nativeEvent.layout.width });
+          }}
       >
         { useFlatList ? 
           <FlatList 
             data={images}
-            renderItem={({item, idx}) => (
-              <TouchableOpacity 
+            renderItem={({item, idx}) => 
+              <ScrollableContainerTouchableOpacity 
               onPress={() => this.props.onPress(idx)}>
                 <Image
                   source={ item.source }
                   PlaceholderContent={<ActivityIndicator />}
                   style={[{
-                      height: 80,
+                      height: this.state.height,
                       resizeMode: 'cover',
                       width: cellWidth
                   }]}
                 />
-              </TouchableOpacity>
-            )}
+              </ScrollableContainerTouchableOpacity>
+            }
             numColumns={this.state.numColumns}
             keyExtractor={(item, index) => index}
           /> 
@@ -55,7 +61,7 @@ export default class Gallery extends PureComponent {
               key={idx}
               onPress={() => this.props.onPress(idx)}
               source={image.source}
-              style={{width: cellWidth}}
+              style={{width: cellWidth, height: cellHeight}}
             />)
         }
         

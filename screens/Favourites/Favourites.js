@@ -308,7 +308,7 @@ class FavouritesScreen extends Component {
     )
   }
 
-  _renderAccomodationListItem = (item, index) => {
+  _renderAccomodationListItem = (item, index, size) => {
     const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
     const termName = _.get(item, "term.name", "")
     return (
@@ -324,6 +324,7 @@ class FavouritesScreen extends Component {
         location={item.location}
         distance={item.distanceStr}
         extraStyle={styles.accomodationListItem}
+        size={size}
       />
   )}
 
@@ -355,7 +356,7 @@ class FavouritesScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
+      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onLayout}>
         <ConnectedHeader />
         <AsyncOperationStatusIndicator
           loading={this._isLoadingData()}

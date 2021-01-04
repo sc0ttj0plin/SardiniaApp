@@ -5,14 +5,20 @@ import {LLEntitiesFlatlist, LLHorizontalItemsFlatlist} from "./loadingLayouts/"
 import EntityItem from './EntityItem';
 import AsyncOperationStatusIndicator from "./AsyncOperationStatusIndicator"
 import CustomText from "./CustomText";
-import * as Constants from "../constants"
+import * as Constants from "../constants";
+import Layout from "../constants/Layout";
 export default class EntityRelatedList extends PureComponent {
 
     constructor(props){
         super(props)
 
+        this.space = 10;
+        var itemSizeProperties = this._getItemSizeProperties(Layout.window.width);
+
         this.state = {
-            data: props.data || []
+            data: props.data || [],
+            windowWidth: Layout.window.width,
+            itemSizeProperties: itemSizeProperties,
         }
     }
 
@@ -22,13 +28,36 @@ export default class EntityRelatedList extends PureComponent {
         }
     }
 
+    _onLayout = (event) => { 
+        var itemSizeProperties = this._getItemSizeProperties(event.nativeEvent.layout.width);
+        this.setState({itemSizeProperties: itemSizeProperties});
+    }
+
+    _getItemSizeProperties = (windowWidth) => {
+        const { horizontal, index, sideMargins } = this.props;
+        const margins = sideMargins || 20
+        const itemWidth = ((windowWidth - (margins*2))/2) - this.space / 2;
+        const width = horizontal==false ? itemWidth : 160;
+        const height = width;
+        const marginRight = 0;
+        const marginBottom = horizontal===true ? 10 : 0
+        return { width, height, marginRight, marginBottom, space: this.space};
+    }
+
     _renderPoiListItem = (item, index) => {
-        if(this.props.renderListItem) {
-            return this.props.renderListItem(item, index);
-        }
+        const {listType, listTitle, horizontal, itemStyle, disableSeparator} = this.props
         const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
-        const {listType, listTitle, sideMargins, horizontal, itemStyle, disableSeparator} = this.props
+
+        var itemSizeProperties = {...this.state.itemSizeProperties};
+        itemSizeProperties.marginLeft = (horizontal==false && index%2 != 0) ? this.space : 0;
+
+        if(this.props.renderListItem) {
+            return this.props.renderListItem(item, index, itemSizeProperties);
+        }
+        
+        
         let place = item && item.term ? item.term.name : "";
+
         return (
             <>
             <EntityItem 
@@ -42,8 +71,8 @@ export default class EntityRelatedList extends PureComponent {
                 image={item.image}
                 distance={item.distanceStr}
                 style={itemStyle}
+                size={itemSizeProperties}
                 horizontal={horizontal}
-                sideMargins={sideMargins}
             />
             {!disableSeparator && this._renderHorizontalSeparator()}
             </>
@@ -68,6 +97,7 @@ export default class EntityRelatedList extends PureComponent {
             sideMargins,
             itemStyle
         } = this.props; 
+
         return(
             <>
                 {!horizontal && 
@@ -78,6 +108,7 @@ export default class EntityRelatedList extends PureComponent {
                         horizontal={horizontal} 
                         style={[styles.fill, this.props.style]} 
                         contentContainerStyle={contentContainerStyle}
+                        size={this.state.itemSizeProperties}
                         error={false}/>
                 }
                 {horizontal &&
@@ -106,7 +137,7 @@ export default class EntityRelatedList extends PureComponent {
         const {data} = this.state
         return (
            
-            <View style={{flex: 1}}>   
+            <View style={{flex: 1}} onLayout={this._onLayout}>   
                 <CustomText style={[listTitleStyle]}>{listTitle}</CustomText>
                     <AsyncOperationStatusIndicator
                         loading={true}

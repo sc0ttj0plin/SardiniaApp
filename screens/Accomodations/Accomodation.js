@@ -374,7 +374,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     backgroundColor: "white", 
     zIndex: 2, 
-    width: Layout.window.width - 20, 
+    width: "90%", 
     flexDirection: "column",
   },
   modalTitle: {

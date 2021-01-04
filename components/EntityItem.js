@@ -9,33 +9,25 @@ import Layout from "../constants/Layout";
 export default class EntityItem extends PureComponent {
   constructor(props){
     super(props)
-    // console.log("props", props)
-    const { listType, horizontal, index, sideMargins } = props;
-    let margins = sideMargins || 20
-    let space = 10;
-    let itemWidth = ((Layout.window.width - (margins*2))/2) - space / 2;
-    this.width = horizontal==false ? itemWidth : 160;
-    this.height = this.width;
-    this.entityIconOpts = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[listType] || Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.places
-    this.marginRight = 0;
-    this.marginLeft = horizontal==false && index && index%2 != 0 ? space : 0;
+    this.entityIconOpts = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[props.listType] || Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.places
   }
 
-  render() {
-    const { onPress, keyItem, title, subtitle, image, distance, horizontal, extraStyle, animated = false } = this.props;
 
+  
+  render() {
+    const { onPress, keyItem, title, subtitle, image, distance, size, extraStyle, style, animated = false } = this.props;
     return (
         <ScrollableContainerTouchableOpacity 
             key={keyItem}  
             onPress={onPress}
+            onLayout={this._onLayout}
             activeOpacity={0.7}
-            style={[this.props.style, {
-              marginRight: this.marginRight,
-              marginLeft: this.marginLeft,
-              width: this.width,
-              height: this.height,
-              maxHeight: this.height,
-              minHeight: this.height,
+            style={[styles.item, style, size && {
+              width: size.width,
+              height: size.height,
+              marginLeft: size.marginLeft,
+              marginRight: size.marginRight,
+              marginBottom: size.marginBottom
             }, extraStyle, /*styles.shadow*/]}
         >
             <GeoRefHListItem
@@ -64,6 +56,10 @@ const styles = StyleSheet.create({
   fill: {
     flex: 1,
     backgroundColor: "white"
+  },
+  item: {
+    width: 160,
+    height: 160,
   },
   corner: {
     position: "absolute",

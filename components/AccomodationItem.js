@@ -13,16 +13,7 @@ export default class AccomodationItem extends PureComponent {
 
   constructor(props){
     super(props);
-
-    const { listType, horizontal, index, sideMargins } = props;
-    let margins = sideMargins || 20
-    let space = 10;
-    let itemWidth = ((Layout.window.width - (margins*2))/2) - space / 2;
-    this.width = horizontal==false ? itemWidth : 160;
-    this.height = this.width;
-    this.entityIconOpts = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[listType] || Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.places
-    this.marginRight = 0;
-    this.marginLeft = horizontal==false && index && index%2 != 0 ? space : 0;
+    this.entityIconOpts = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[props.listType] || Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.places
   }
 
   _renderStars = (count) => {
@@ -43,17 +34,21 @@ export default class AccomodationItem extends PureComponent {
   }
 
   render() {
-    const { title, term, stars, location, distance, onPress, hideBorder, extraStyle } = this.props;
+    const { title, term, stars, location, distance, onPress, hideBorder, horizontal, size, extraStyle } = this.props;
 
     return (
-        <ScrollableContainerTouchableOpacity onPress={onPress} style={[styles.item, 
+        <ScrollableContainerTouchableOpacity onPress={onPress} style={[styles.item, size && {
+            width: size.width,
+            height: size.height,
+            marginLeft: size.marginLeft,
+            marginRight: size.marginRight,
+            marginBottom: size.marginBottom
+          }, 
           {
-            marginRight: this.marginRight, 
-            marginLeft: this.marginLeft,
-            width: this.width, 
-            height: this.height,
+            marginBottom: horizontal ? 10 : 0,
             borderColor: hideBorder ? "transparent" : Colors.lightGray
-          }, extraStyle, /*Constants.styles.shadow*/]} activeOpacity={0.8}>
+          }, 
+          extraStyle, /*Constants.styles.shadow*/]} activeOpacity={0.8}>
           <View style={styles.content}>
             <View style={[styles.corner]}>
               <Ionicons
@@ -86,11 +81,9 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 8,
     position: "relative",
-    // borderColor: Colors.lightGray,
-    // borderWidth: 1,
-    // paddingLeft: 10,
-    // backgroundColor: "red"
-
+    width: 160,
+    height: 160,
+    overflow: "hidden"
   },
   content:{
     paddingTop: 10,
@@ -119,7 +112,6 @@ const styles = StyleSheet.create({
     borderBottomColor: "transparent",
     borderTopWidth: 35,
     borderRightWidth: 0,
-    borderTopRightRadius: 10,
     borderTopColor: Colors.colorAccomodationsScreen
   },
   distanceView: {

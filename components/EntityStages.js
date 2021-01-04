@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
   eventStageLocation: {
     fontSize: 17,
     fontFamily: "montserrat-bold",
-    maxWidth: Layout.window.width - 100,
+    maxWidth: "80%",
     textAlign: "center"
   },
   eventStageDate: {

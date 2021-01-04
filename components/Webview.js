@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   fabStyle2: {
     position: "absolute", 
     top: 5, 
-    left: Layout.window.width - 45, 
+    right: 45, 
     borderRadius: 50, 
   },
   image: {

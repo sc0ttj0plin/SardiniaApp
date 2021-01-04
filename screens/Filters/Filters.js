@@ -252,13 +252,11 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     color: "#000000E6",
     backgroundColor: "#F2F2F2",
-    height: 40,
     fontSize: 15,
     fontFamily: "montserrat-bold",
     textTransform: "uppercase"
   },
   eventFilter: {
-    height: 32, 
     paddingVertical: 7, 
     backgroundColor: "white", 
     display: "flex",
@@ -268,7 +266,8 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     paddingLeft: 5,
     marginRight: 10,
-    marginTop: 10
+    marginTop: 10,
+    paddingVertical: 5
   },
   eventFilterText: {
     color: "#000000DE",

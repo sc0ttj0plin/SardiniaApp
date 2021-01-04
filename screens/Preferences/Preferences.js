@@ -457,7 +457,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between"
   },
   step: {
-    width: Layout.window.width/8 - 10,
+    width: "10",
     height: 8
   },
   entityImage: {

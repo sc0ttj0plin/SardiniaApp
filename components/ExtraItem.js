@@ -16,20 +16,24 @@ class ExtraItem extends PureComponent{
   constructor(props) {
     super(props);
     this.state = {
-      width: Layout.window.width,
+      windowWidth: Layout.window.width,
     };
+  }
+
+  _onLayout = (event) => {
+    this.setState({windowWidth: event.nativeEvent.layout.width});
   }
   
   render() {
     const { title, image, imageStyle, onPress, btnTitle } = this.props;
     return (
-      <View style={styles.container}>
+      <View style={styles.container} onLayout={this._onLayout}>
         <ShimmerWrapper
                 shimmerStyle={[styles.shimmer]}>
         </ShimmerWrapper>
         <AnimatedImage 
           image={image}
-          style={[styles.image, imageStyle, {width: this.state.width}]}
+          style={[styles.image, imageStyle, {width: this.state.windowWidth}]}
           animated={true}
           />
         <View style={styles.imageOverlay}>

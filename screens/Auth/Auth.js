@@ -254,10 +254,12 @@ class Login extends Component {
                 animationType={"fade"}
                 androidMode={"default"}
                 placeHolderText={birth}
-                placeHolderTextStyle={{width: Layout.window.width - 50, fontFamily: "montserrat-regular"}}
-                textStyle={{ color: "black", width: Layout.window.width - 50, fontFamily: "montserrat-bold"}}
+                placeHolderTextStyle={{width: "100%", fontFamily: "montserrat-regular"}}
+                textStyle={{ color: "black", width: "100%", fontFamily: "montserrat-bold"}}
                 onDateChange={(date) => this.setState({birth: date, birthError: false})}
-                disabled={false}/>
+                disabled={false}
+                style={{width: "100%"}}/>
+                
                 
             </Item>
             <Item style={[styles.item1, countryError ? styles.itemError : {}]} regular>
@@ -427,7 +429,7 @@ const styles = StyleSheet.create({
     alignItems: 'center' 
   },
   view01: {
-    width: Layout.window.width - 40, 
+    width: "90%", 
     alignItems: 'center', 
     marginTop: 20, 
     justifyContent: 'center' 
@@ -437,13 +439,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'white' 
   },
   view1: {
-    width: Layout.window.width - 50, 
+    width: "90%", 
     alignItems: 'center', 
     marginTop: 30, 
     justifyContent: 'center' 
   },
   view1s: {
-    width: Layout.window.width - 50, 
+    width: "90%",
     alignItems: 'center', 
     marginTop: 50, 
     justifyContent: 'center' 
@@ -550,7 +552,7 @@ const styles = StyleSheet.create({
   item1: {
     width: '100%',
     backgroundColor: 'white',
-    height: 55,
+    minHeight: 50,
     marginTop: 5,
     marginBottom: 5,
     borderColor: "white",

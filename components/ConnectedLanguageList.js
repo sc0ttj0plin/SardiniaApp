@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   },
   btn: {
     marginBottom: 30,
-    width: Layout.window.width / 2,
+    width: "50%",
     height: 50,
     borderRadius: 10,
     borderColor: Colors.tintColor,

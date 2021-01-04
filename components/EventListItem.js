@@ -21,7 +21,7 @@ export default class EventListItem extends PureComponent {
     const { title, term, image } = this.props
     
     return (
-      <ScrollableContainerTouchableOpacity style={styles.listItemButton} activeOpacity={0.7} onPress={this.props.onPress}>
+      <ScrollableContainerTouchableOpacity style={[styles.listItemButton]} activeOpacity={0.7} onPress={this.props.onPress}>
         <View style={styles.listItem}>
           <View style={styles.imageView}>
             <Image

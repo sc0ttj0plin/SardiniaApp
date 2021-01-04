@@ -18,7 +18,11 @@ class ImageGridItem extends PureComponent{
   }
   render() { 
     return (
-      <View style={[styles.container, this.props.style]} onLayout={(event) => { this.setState({ width: event.nativeEvent.layout.width, height: event.nativeEvent.layout.height }) }}>
+      <View style={[styles.container, this.props.style]} onLayout={(event) => { 
+        const width = event.nativeEvent.layout.width / 3;
+        var height = width / 16 * 9;
+        this.setState({ width, height });
+        }}>
           <Image source={{ uri: this.props.image }} style={styles.image, {width: this.state.width, height: this.state.height}} PlaceholderContent={<ActivityIndicator />}>
             <View style={styles.textContainer}>
               <Text
