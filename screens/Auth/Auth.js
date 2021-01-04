@@ -38,6 +38,7 @@ class Login extends Component {
       countryError: false,
       sex: "",
       sexError: false,
+      countries: []
     };
   }
 
@@ -48,7 +49,7 @@ class Login extends Component {
         this.setState({ authFSM: "logout" });
       } else {
         this._setCountries();
-        this.setState({ countries: countries, authFSM: "selectedEntity" });
+        this.setState({ authFSM: "selectedEntity" });
       }
     }
     else
@@ -62,6 +63,7 @@ class Login extends Component {
 
   _setCountries = () => {
     var countries = [];
+    countries.push({});
     var italy = null;
     var italyKey = null;
     itCountries.map((country, key) => {
@@ -69,13 +71,13 @@ class Login extends Component {
         italy = {...country};
         italyKey = key;
       } else {
-        countries[key+1] = country;
+        countries.push({...country});
       }
     });
     if(italy) {
       countries[0] = italy;
-      this.setState({ countries: countries});
     }
+    this.setState({ countries: countries});
   }
   
   _verifyLoginState = async () => {
@@ -227,16 +229,7 @@ class Login extends Component {
       </View>
     );
   }
-
-  _renderCountries = () => {
-    return this.state.countries && this.state.countries.map( country => {
-      //console.log(JSON.stringify(country));
-      return this._renderCountry(country)
-    })
-  }
-
-  _renderCountry = (country) => <Picker.Item label={country.name} value={country.name} />
-
+  
   _renderSelectedEntity = () => {
     const { username, name, surname, birth, country, sex, confirm, fillInformation, man, woman } = this.props.locale.messages;
     const {nameError, surnameError, usernameError, birthError, countryError, sexError} = this.state;
@@ -277,7 +270,11 @@ class Login extends Component {
                   selectedValue={this.state.country}
                   onValueChange={(value) => this.setState({country: value, countryError: false})}>
                   <Picker.Item label={country} value={country} />
-                  {this._renderCountries()}
+                  {
+                      this.state.countries.map( country => {
+                       return <Picker.Item label={country.name} value={country.name} />
+                      })
+                  }
                 </Picker>
             </Item>
             <Item style={[styles.item1, sexError ? styles.itemError : {}]} regular>
