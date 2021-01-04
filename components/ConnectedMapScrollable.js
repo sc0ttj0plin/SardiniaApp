@@ -89,18 +89,11 @@ class ConnectedMapScrollable extends PureComponent {
    * @param {*} prevProps
    */
   componentDidUpdate(prevProps) {
-    if(
-      this.props.entitiesType === Constants.ENTITY_TYPES.places ||
-      this.props.entitiesType === Constants.ENTITY_TYPES.inspirers ||
-      this.props.entitiesType === Constants.ENTITY_TYPES.accomodations
-    ) {
-      if(prevProps.isFocused !== this.props.isFocused){
-        console.log(this.props.entitiesType, this.props.isFocused);
-        if(this.props.isFocused)
-          BackHandler.addEventListener('hardwareBackPress', this._onHardwareBackButtonClick);
-        else
-          BackHandler.removeEventListener('hardwareBackPress', this._onHardwareBackButtonClick);
-      }
+    if(prevProps.isFocused !== this.props.isFocused){
+      if(this.props.isFocused)
+        BackHandler.addEventListener('hardwareBackPress', this._onHardwareBackButtonClick);
+      else
+        BackHandler.removeEventListener('hardwareBackPress', this._onHardwareBackButtonClick);
     }
   }
 

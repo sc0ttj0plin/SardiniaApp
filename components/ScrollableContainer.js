@@ -74,7 +74,6 @@ class ScrollableContainer extends PureComponent {
     this._snapping = false;
 
     if(this.props.reference) {
-      console.log("this.props.ref");
       this.props.reference({
         close: this.close.bind(this)
       });
