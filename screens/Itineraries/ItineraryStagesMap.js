@@ -43,6 +43,7 @@ class ItineraryStagesMapScreen extends Component {
       title: title,
       coords: {},
       tracksViewChanges: false,
+      windowWidth: Layout.window.width
     };
       
   }
@@ -93,6 +94,10 @@ class ItineraryStagesMapScreen extends Component {
 
   
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
+
+  _onLayout = (event) => { 
+    this.setState({windowWidth: event.nativeEvent.layout.width});
+  }
 
   _onUpdateCoords(newCoords) {
     // const { coords, term } = this.state;
@@ -240,7 +245,7 @@ class ItineraryStagesMapScreen extends Component {
           snapToInterval={Layout.map.card.width}
           onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: this.animation }}}], { useNativeDriver: true })}
           style={[styles.flatlist, {bottom: bottom}]}
-          contentContainerStyle={{paddingRight: Layout.window.width - Layout.map.card.width}}
+          contentContainerStyle={{paddingRight: this.state.windowWidth - Layout.map.card.width}}
           onScrollBeginDrag={this._onScrollBeginDrag}
           >
           {this.state.markers.map((marker, index) => this._renderStage(marker, index))}
@@ -253,7 +258,7 @@ class ItineraryStagesMapScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
+      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onLayout}>
         <ConnectedHeader iconTintColor={Colors.colorItinerariesScreen} />
         {render && this._renderMapTitle()}
         {render && this._renderContent()}
