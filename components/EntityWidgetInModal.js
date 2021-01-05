@@ -55,7 +55,7 @@ class EntityWidgetInModal extends PureComponent {
       else {
         if(this.props.getCoordsFun) {
           const coordinates = this.props.getCoordsFun(entity);
-          if (coordinates) {
+          if (coordinates && coords.latitude && coords.longitude) {
             entity.distanceStr = distanceToString(distance(coords.latitude, coords.longitude, coordinates.latitude, coordinates.longitude));
           }
         }
