@@ -157,10 +157,14 @@ class EventsScreen extends Component {
   _isErrorData    = () => this.props.events.eventsError;    /* e.g. this.props.pois.error; */
 
 
+  /*
+  * TODO: remove .add/.subtract(1,"year")
+  */
   _openMap = () => {
     const { currentMonth } = this.state;
     let events = this.props.events.eventsByYearMonth[currentMonth];
-    this.props.navigation.navigate(Constants.NAVIGATION.NavEventsMapScreen, {events, title: currentMonth});
+    var headerTitle = moment(this._currentMonth).add(1,"year").format("MMMM YYYY");
+    this.props.navigation.navigate(Constants.NAVIGATION.NavEventsMapScreen, {events, headerTitle: headerTitle});
   }
 
   _openFilters = () => {
@@ -175,7 +179,7 @@ class EventsScreen extends Component {
     const { eventsByYearMonthDay } = this.props.events;
     const eventsSubset = eventsByYearMonthDay[dateString];
     if (eventsSubset) {
-      var headerTitle = moment(dateString).format("DD MMMM");
+      var headerTitle = moment(dateString).format("DD MMMM YYYY");
       this.props.navigation.navigate(Constants.NAVIGATION.NavEventsSubset, { headerTitle, eventsSubset });
     }
   }

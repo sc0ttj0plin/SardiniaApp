@@ -51,6 +51,7 @@ import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
 import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
+import { useSafeArea } from 'react-native-safe-area-context';
 
 /* Deferred rendering to speedup page inital load: 
    deferred rendering delays the rendering reducing the initial 
@@ -101,7 +102,7 @@ class EventsSubsetScreen extends Component {
   /********************* Render methods go down here *********************/
   _renderBottomToast = () => {
     return(
-      <View style={styles.toastContainer}>
+      <View style={[styles.toastContainer, {marginBottom: this.props.insets.bottom}]}>
         <View style={styles.toastInnerContainer}>
           <CustomText style={styles.toastText}>Esplora gli eventi sulla mappa</CustomText>
           <TouchableOpacity 
@@ -138,7 +139,7 @@ class EventsSubsetScreen extends Component {
       <FlatList
         data={this.state.eventsSubset}
         keyExtractor={(item) => item.title}
-        contentContainerStyle={[styles.content, {paddingBottom: 45 * PixelRatio.getFontScale()}]}
+        contentContainerStyle={[styles.content, {paddingBottom: 45 * PixelRatio.getFontScale() + this.props.insets.bottom}]}
         renderItem={({ item }) => this._renderEventsListItem(item)}
         style={styles.listContent}
         ItemSeparatorComponent={() => <View style={{height: 10}}></View>}
@@ -252,12 +253,15 @@ function EventsSubsetScreenContainer(props) {
   const navigation = useNavigation();
   const route = useRoute();
   const store = useStore();
+  const insets = useSafeArea();
 
   return <EventsSubsetScreen 
     {...props}
     navigation={navigation}
     route={route}
-    store={store} />;
+    store={store}
+    insets={insets}
+     />;
 }
 
 
