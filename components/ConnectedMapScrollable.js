@@ -119,6 +119,11 @@ class ConnectedMapScrollable extends PureComponent {
           this._refs["ScrollableContainer"].close();
           return true;
         }
+        if(this._modalState === Constants.SCROLLABLE_MODAL_STATES.extraModal ||
+          this._modalState === Constants.SCROLLABLE_MODAL_STATES.selectedEntity) {
+          this._setModalState(Constants.SCROLLABLE_MODAL_STATES.explore);
+          return true;
+        }
         if(this.props.entitiesType === Constants.ENTITY_TYPES.places){
           BackHandler.exitApp();
           return true;
@@ -460,6 +465,7 @@ class ConnectedMapScrollable extends PureComponent {
         closeAnimationConfig={{timing: { duration: 800, easing: Easing.ease }} }
         onClosed={this._onSelectedEntityModalClosed}
         velocity={1000}
+        onBackButtonPress={() => {}}
       >
         {renderMapEntityWidget()}
       </Modalize>
@@ -478,6 +484,7 @@ class ConnectedMapScrollable extends PureComponent {
         closeAnimationConfig={{timing: { duration: 800, easing: Easing.ease }} }
         onClosed={this._onExtraModalClosed}
         velocity={1000}
+        onBackButtonPress={() => {}}
       >
         {renderExtraModal()}
       </Modalize>
