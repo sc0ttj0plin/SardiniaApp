@@ -2,40 +2,10 @@ import React, { Component } from "react";
 import { View, Text, FlatList, ActivityIndicator, StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
-  // CategoryListItem, 
-  // GeoRefHListItem, 
-  // GridGallery, 
-  // GridGalleryImage, 
-  // MapViewTop, 
-  // ScrollableHeader,
-  // TabBarIcon, 
-  // CalendarListItem, 
-  // EntityAbstract,
-  // EntityDescription,
-  // EntityGallery,
-  // EntityHeader,
-  EntityItem,
-  // EventListItem,
-  // EntityMap,
   EntityRelatedList,
-  // EntityVirtualTour,
   AccomodationItem,
-  // EntityWhyVisit,
-  // TopMedia,
   AsyncOperationStatusIndicator, 
-  // AsyncOperationStatusIndicatorPlaceholder,
-  // Webview, 
-  // ConnectedText, 
   ConnectedHeader, 
-  // GeoRefHListItem
-  // ImageGridItem, 
-  // ConnectedLanguageList, 
-  // BoxWithText,
-  // ConnectedFab, 
-  // PoiItem, 
-  // PoiItemsList, 
-  // ExtrasListItem, 
-  // MapViewItinerary,
   CustomText
  } from "../../components";
 import TouchableOpacity from "../../components/ScrollableContainerTouchableOpacity"
@@ -84,6 +54,7 @@ class FavouritesScreen extends Component {
   componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
+    this.props.actions.checkForUpdates();
     let placesUuids = Object.keys(this.props.favourites.places);
     let eventsUuids = Object.keys(this.props.favourites.events);
     let itinerariesUuids = Object.keys(this.props.favourites.itineraries);

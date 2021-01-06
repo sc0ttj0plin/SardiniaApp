@@ -2,16 +2,10 @@ import React, { PureComponent } from "react";
 import { 
   View, Text, ActivityIndicator, TouchableOpacity, 
   StyleSheet, BackHandler, Platform, ScrollView, NativeModules } from "react-native";
-
-import { FlatList } from "react-native-gesture-handler"
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
-  CategoryListItem, 
-  AsyncOperationStatusIndicator, 
-  ClusteredMapViewTop,
   ConnectedHeader, 
   ConnectedMapScrollable,
-  ScrollableContainer,
   EntityItem,
   CustomText,
   SectionTitle
@@ -105,7 +99,7 @@ class EventsMapScreen extends PureComponent {
       let isCordsInBound = coordsInBound(newCoords); 
       // Are coordinates within sardinia's area? fetch the updated pois list
       if (isCordsInBound) {
-        this.setState({ isCordsInBound, coords: newCoords, nearPoisRefreshing: true });
+        this.setState({ isCordsInBound, coords: newCoords, isNearEntitiesLoading: true });
       }
     }
   }
@@ -120,9 +114,9 @@ class EventsMapScreen extends PureComponent {
   _loadMorePois = () => {
     const { childUuids } = this._getCurrentTerm();
     var { coords } = this.state;
-    if(coords && this._isPoiList() && !this.state.poisRefreshing){
+    if(coords && this._isPoiList() && !this.state.isEntitiesLoading){
       this.setState({
-        poisRefreshing: true
+        isEntitiesLoading: true
       }, () => {
         apolloQuery(actions.getNearestPois({
           limit: this.state.poisLimit,
@@ -133,7 +127,7 @@ class EventsMapScreen extends PureComponent {
         })).then((pois) => {
           this.setState({
             pois: this.state.pois ? [...this.state.pois, ...pois] : pois,
-            poisRefreshing: false
+            isEntitiesLoading: false
           });
         })
       });
@@ -211,6 +205,7 @@ const entitiesType = Constants.ENTITY_TYPES.events;
   const scrollableProps = {
     show: true,
     data: events,
+    // scrollableTopComponentIsLoading: this.state.isEntitiesLoading,
     onEndReached: () => {},
     renderItem: ({ item, index }) => this._renderListItem(item, index),
     keyExtractor: item => item.uuid,

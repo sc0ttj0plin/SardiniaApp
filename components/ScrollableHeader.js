@@ -193,7 +193,7 @@ class ScrollableHeader extends PureComponent {
                 horizontal={this.props.horizontal}
                 numColumns={this.props.numColumns}
                 bodyContainerStyle={this.props.bodyContainerStyle}
-                refreshing={this.props.poisRefreshing}
+                refreshing={this.props.isEntitiesLoading}
                 initialNumToRender={2} // Reduce initial render amount
                 updateCellsBatchingPeriod={4000} // Increase time between renders
                 windowSize={10} // Reduce the window size

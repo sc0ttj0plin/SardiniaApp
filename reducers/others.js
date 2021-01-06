@@ -8,10 +8,10 @@ const INITIAL_STATE = {
   accomodationsTerms: [],
   currentMapEntity: null,
   mapIsDragging: {},
-  scrollableSnapIndex: {},
-  scrollablePressIn: {},
   geolocation: {},
-  geolocationSource: null
+  geolocationSource: null,
+  checkForUpdates: true, // see notes in reducer.
+  networkStatus: {},
 }
 
 
@@ -113,25 +113,31 @@ export default function reducer(state = INITIAL_STATE, action) {
         ...state, 
         mapIsDragging: { ...state.mapIsDragging, [action.payload.id]: action.payload.val }, 
       };
-    // SNAP INDEX
-    case Constants.SCROLLABLE_SET_SCROLLINDEX:
-      return { 
-        ...state, 
-        scrollableSnapIndex: { ...state.scrollableSnapIndex, [action.payload.id]: action.payload.val }, 
-      };
-    // SNAP INDEX
-    case Constants.SCROLLABLE_SET_PRESSIN:
-      return { 
-        ...state, 
-        scrollablePressIn: { ...state.scrollablePressIn, [action.payload.id]: action.payload.val }, 
-      };
     // GEOLOCATION 
     case Constants.SET_GEOLOCATION:
-      console.log('Geolocation', action.payload.source);
       return {
         ...state,
         geolocation: action.payload.geolocation,
         geolocationSource: action.payload.source,
+      }
+    // CHECK FOR UDPATES
+    // NOTE: OTA updates are checked initially and randomly during app execution (see didMount)
+    //       however the actual check is performed with a probability of p. ConnectedUpdateHandler performs actual update and restart
+    case Constants.CHECK_FOR_UPDATES:
+      const prob = Constants.CHECK_FOR_UPDATES_WHILE_FOREGROUNDED_PROB;
+      if (Math.random() <= prob) {
+        console.log('Update check triggered with probability', 1-prob);
+        return {
+          ...state,
+          checkForUpdates: !state.checkForUpdates
+        }
+      }
+      else 
+        return state;
+    case Constants.SET_NETWORK_STATUS:
+      return {
+        ...state,
+        networkStatus: action.payload
       }
     default:
       return state;

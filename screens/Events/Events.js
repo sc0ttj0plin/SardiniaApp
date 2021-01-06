@@ -4,13 +4,11 @@ import {
   StyleSheet, BackHandler, Platform, ScrollView, SectionList, TouchableHighlight, NativeModules, PixelRatio} from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 const { StatusBarManager } = NativeModules;
-
 import { 
   AsyncOperationStatusIndicator, 
   ConnectedHeader,
   EventListItem, 
-  CustomText,
-  UpdateHandler
+  CustomText
  } from "../../components";
 import moment from "moment";
 import { connect, useStore } from 'react-redux';
@@ -69,6 +67,7 @@ class EventsScreen extends Component {
   componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
+    this.props.actions.checkForUpdates();
     this.props.actions.resetEvents()
     this._loadEvents(INITIAL_DATE);
 
@@ -279,12 +278,9 @@ class EventsScreen extends Component {
 
   render() {
     const { render } = this.state;
-    const { updateInProgressText, updateFinishedText } = this.props.locale.messages;
-    
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
         <ConnectedHeader iconTintColor={Colors.colorEventsScreen}/>
-        <UpdateHandler updateInProgressText={updateInProgressText} updateFinishedText={updateFinishedText} />
         {render && this._renderContent()}
       </View>
     )

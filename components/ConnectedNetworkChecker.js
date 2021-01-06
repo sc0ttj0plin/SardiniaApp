@@ -3,16 +3,20 @@ import {
   View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
   StyleSheet, BackHandler, Platform, ScrollView, TouchableWithoutFeedback, Modal } from "react-native";
 import _ from 'lodash';
+import NetInfo from "@react-native-community/netinfo";
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { connect, useStore } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import actions from '../actions';
 import Layout from '../constants/Layout';
 import * as Constants from '../constants';
 import Colors from '../constants/Colors';
-import * as Updates from 'expo-updates';
 
 const USE_DR = true;
 const DR_TIMEOUT = 1000;
 const RESTART_DELAY = 2000;
 
-class UpdateHandler extends PureComponent {
+class ConnectedNetworkChecker extends PureComponent {
 
   constructor(props) {
     super(props);
@@ -23,56 +27,44 @@ class UpdateHandler extends PureComponent {
       url: null,
       //
       modalVisible: true,
-      modalTitle: "",
-      modalDescription: "",
-      modalBtnTitle: "",
       modalAction: null,
       //
-      updating: false
+      isConnected: true
     };
-    this.authSubscription = () => {};
-  }
 
-
-  async componentDidMount() {
-    {(USE_DR && setTimeout(() => (this.setState({ render: true })), DR_TIMEOUT))};
-    !__DEV__ && this._startUpdate();
+    this._unsubscribeNetInfo = null;
+    // Subscribe
+    this._unsubscribeNetInfo = NetInfo.addEventListener(state => {
+      this.setState({ isConnected: state.isConnected });
+      this.props.actions.setNetworkStatus(state);
+    });
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
 
-  async componentDidUpdate(prevProps) {
-
+  async componentDidMount() {
+    {(USE_DR && setTimeout(() => (this.setState({ render: true })), DR_TIMEOUT))};
+    // const netResult = await Network.getNetworkStateAsync();
+    //{ type: Network.StateType.CELL ULAR,isConnected: true,isInternetReachable: true,}
   }
 
   componentWillUnmount() {
+    // Unsubscribe
+    this._unsubscribeNetInfo();
   }
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
-  _startUpdate = async () => {
-    try {
-      const update = await Updates.checkForUpdateAsync();
-      if (update.isAvailable) {
-        this.setState({ updating: true });
-        await Updates.fetchUpdateAsync();
-        this.setState({ updating: false }, this._reloadApp);
-      }
-    } catch(e) {
-      console.error(e);
-    }
-  }
-
-  _reloadApp = () => setTimeout(async () => await Updates.reloadAsync(), RESTART_DELAY);
 
   /********************* Render methods go down here *********************/
   _renderContent = () => {
-    const { updating } = this.state;
-    if (updating && !__DEV__) 
+    const { isConnected } = this.state;
+    const { disconnected, pleaseConnect } = this.props.locale.messages;
+    if (!isConnected) 
       return (
         <Modal
           animationType="fade"
           transparent={true}
-          visible={updating}
+          visible={!isConnected}
           onRequestClose={() => { }}>
             <View style={[styles.fill]}>
             <View 
@@ -80,11 +72,8 @@ class UpdateHandler extends PureComponent {
             >
               <TouchableWithoutFeedback>
                 <View style={styles.modalWindow}>
-                  {this.state.updating ? 
-                    <Text style={styles.modalTitle}>{this.props.updateInProgressText}</Text> 
-                    :
-                    <Text style={styles.modalTitle}>{this.props.updateFinishedText}</Text> 
-                  }
+                  <Text style={styles.modalTitle}>{disconnected}</Text> 
+                  <Text style={styles.modalTitle}>{pleaseConnect}</Text> 
                 </View>
               </TouchableWithoutFeedback>
             </View>
@@ -104,8 +93,8 @@ class UpdateHandler extends PureComponent {
 }
 
 
-UpdateHandler.navigationOptions = {
-  title: 'UpdateHandler',
+ConnectedNetworkChecker.navigationOptions = {
+  title: 'ConnectedNetworkChecker',
 };
 
 
@@ -238,4 +227,34 @@ const styles = StyleSheet.create({
   }
 });
 
-export default UpdateHandler;
+
+function ConnectedNetworkCheckerContainer(props) {
+  const store = useStore();
+
+  return <ConnectedNetworkChecker 
+    {...props}
+    store={store} />;
+}
+
+
+const mapStateToProps = state => {
+  return {
+    others: state.othersState,
+    //language
+    locale: state.localeState,
+  };
+};
+
+
+const mapDispatchToProps = dispatch => {
+  return {...bindActionCreators({ ...actions }, dispatch)};
+};
+
+
+export default connect(mapStateToProps, mapDispatchToProps, (stateProps, dispatchProps, props) => {
+  return {
+    ...stateProps,
+    actions: dispatchProps,
+    ...props
+  }
+})(ConnectedNetworkCheckerContainer)

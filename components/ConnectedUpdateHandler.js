@@ -2,21 +2,22 @@ import React, { PureComponent } from "react";
 import { 
   View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
   StyleSheet, BackHandler, Platform, ScrollView, TouchableWithoutFeedback, Modal } from "react-native";
+import _ from 'lodash';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import actions from '../actions';
-import _ from 'lodash';
 import Layout from '../constants/Layout';
-import AsyncStorage from '@react-native-community/async-storage';
 import * as Constants from '../constants';
+import LoadingDots from './LoadingDots';
 import Colors from '../constants/Colors';
-import CustomText from "./CustomText";
-import { LLEntitiesFlatlist } from "../components/loadingLayouts";
+import * as Updates from 'expo-updates';
 
 const USE_DR = true;
 const DR_TIMEOUT = 1000;
-class ConnectedAuthHandler extends PureComponent {
+const RESTART_DELAY = 2000;
+
+class UpdateHandler extends PureComponent {
 
   constructor(props) {
     super(props);
@@ -27,82 +28,76 @@ class ConnectedAuthHandler extends PureComponent {
       url: null,
       //
       modalVisible: true,
-      modalTitle: "",
-      modalDescription: "",
-      modalBtnTitle: "",
       modalAction: null,
+      //
+      updating: false
     };
-    this.authSubscription = () => {};
   }
 
-  //////////////////////////////////////
+
   async componentDidMount() {
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), DR_TIMEOUT))};
+    !__DEV__ && this._startUpdate();
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
 
   async componentDidUpdate(prevProps) {
-    //auth is updated by passwordLessLogin action
-    if (this.props.auth !== prevProps.auth)
-      if (this.props.auth.success) {
-        console.log("AUTH SUCCESS")
-      }
+    if (prevProps.others.checkForUpdates !== this.props.others.checkForUpdates) 
+      !__DEV__ && this._startUpdate();
   }
 
   componentWillUnmount() {
   }
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
-
-  _isSuccessData = () => this.props.auth.success;
-  _isLoadingData = () => this.props.auth.loading;
-  _isErrorData = () => this.props.auth.error;
-
-  _onRegister = () => {
-    this.setState({ modalVisible: false });
-    this.props.navigation.navigate(Constants.NAVIGATION.NavAuthScreen);
+  _startUpdate = async () => {
+    try {
+      const update = await Updates.checkForUpdateAsync();
+      if (update.isAvailable) {
+        this.setState({ updating: true });
+        await Updates.fetchUpdateAsync();
+        this.setState({ updating: false }, this._reloadApp);
+      }
+    } catch(e) {
+      console.error(e);
+    }
   }
 
-  _onSkip = () => { 
-    const { loginOptional = false } = this.props;
-    this.setState({ modalVisible: false });
-    if (!loginOptional)
-      this.props.navigation.goBack();
-  }
+  _reloadApp = () => setTimeout(async () => await Updates.reloadAsync(), RESTART_DELAY);
 
   /********************* Render methods go down here *********************/
   _renderContent = () => {
-    const { modalVisible, modalTitle, modalDescription } = this.state;
-    const { locale, loginOptional = false} = this.props;
-    const { user } = this.props.auth;
-    const { access, skip, login, loginText } = locale.messages;
-
-    if (!user)
+    const { updating } = this.state;
+    const { updateInProgressText, updateFinishedText } = this.props.locale.messages;
+    const showUpdate = updating && !__DEV__;
+    if (showUpdate) 
       return (
         <Modal
           animationType="fade"
           transparent={true}
-          visible={modalVisible}>
+          visible={showUpdate}
+          onRequestClose={() => { }}>
             <View style={[styles.fill]}>
+            <View style={styles.loadingDotsView1}>
+              <View style={styles.loadingDotsView2}>
+                <LoadingDots />
+              </View>
+            </View>
             <View 
               style={styles.modalView} 
             >
+              <TouchableWithoutFeedback>
                 <View style={styles.modalWindow}>
-                  <CustomText style={styles.modalTitle}>{login}</CustomText>
-                  <CustomText style={styles.modalDescription}>{loginText}</CustomText>
-                  <View style={styles.modalButtons}>
-                    <TouchableOpacity activeOpacity={0.7} style={[styles.modalBtn, styles.loginButton, Constants.styles.shadow]} onPress={this._onRegister}>
-                      <CustomText style={[styles.modalBtnText, styles.loginButtonText]}>{access}</CustomText>
-                    </TouchableOpacity>
-                    <View style={styles.buttonsSeparator} />
-                    <TouchableOpacity activeOpacity={0.7} style={[styles.modalBtn, styles.skipButton, Constants.styles.shadow]} onPress={this._onSkip}>
-                      <CustomText style={[styles.modalBtnText, styles.skipButtonText]}>{skip}</CustomText>
-                    </TouchableOpacity>
-                  </View>
+                  {showUpdate ? 
+                    <Text style={styles.modalTitle}>{updateInProgressText}</Text> 
+                    :
+                    <Text style={styles.modalTitle}>{updateFinishedText}</Text> 
+                  }
                 </View>
+              </TouchableWithoutFeedback>
             </View>
-            </View>
+          </View>
         </Modal>
       )
     else 
@@ -118,23 +113,61 @@ class ConnectedAuthHandler extends PureComponent {
 }
 
 
-ConnectedAuthHandler.navigationOptions = {
-  title: 'ConnectedAuthHandler',
+UpdateHandler.navigationOptions = {
+  title: 'UpdateHandler',
 };
 
 
 const styles = StyleSheet.create({
   fill: {
-    position: "absolute",
+    // position: "absolute",
     width: "100%",
     height: "100%",
     backgroundColor: "rgba(0,0,0, 0.5)",
-    zIndex: 11,
+    zIndex: 10,
+  },
+  fab: {
+    position: "absolute",
+    zIndex: 1,
+    top: 25,
+    right: 20,
+    height: 50,
+    width: 50
+  },
+  header: {
+    backgroundColor: "white"
   },
   container: {
     marginTop: 20,
     marginBottom: 30,
     marginHorizontal: 20,
+  },
+  headerContainer: {
+    padding: 10,
+    backgroundColor: "white",
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 30, 
+    marginTop: -30,
+    borderTopColor: "#f2f2f2",
+    borderTopWidth: 2,
+    borderRightColor: "#f2f2f2",
+    borderRightWidth: 2
+  },
+  sectionTitle: {
+    flex: 1,
+    textAlign: "center",
+    paddingTop: 10,
+    paddingBottom: 10,
+    color: "#000000E6",
+  },
+  listContainerHeader: {
+    paddingLeft: 10,
+  },
+  separator: {
+    width: "100%",
+    height: 8,
+    backgroundColor: "#F2F2F2",
+    marginVertical: 32
   },
   itemStyle: {
     backgroundColor: "white",
@@ -142,28 +175,37 @@ const styles = StyleSheet.create({
     borderColor: "#f2f2f2",
     borderRadius: 10
   },
+  starsView: {
+    marginTop: -5,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center"
+  },
   modalView: {
     flex: 1, 
     width: '100%', 
     height: '100%', 
     zIndex: 1, 
-    backgroundColor: "rgba(0,0,0, 0.5)",
-    position: 'absolute',
+    position: 'absolute', 
+    top: Layout.statusbarHeight, 
     left: 0, 
+    backgroundColor: "rgba(0,0,0,0.5)",
     alignItems: "center",
     justifyContent: "center",
   },
-  modalWindow: {
-    margin: 30,
-    padding: 28.5,
+  modalWindow: { 
+    paddingHorizontal: 28.5,
+    paddingTop: 20,
     backgroundColor: "white", 
-    zIndex: 2,
+    zIndex: 2, 
+    width: 280, 
+    height: 200,
     flexDirection: "column",
     borderRadius: 4
   },
   modalTitle: {
     fontSize: 15,
-    fontFamily: "montserrat-bold",
     marginBottom: 14,
   },
   modalDescription: {
@@ -174,8 +216,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: "100%",
     height: 36,
-    marginTop: 21,
-    justifyContent: "center",
+    marginTop: 21
   },
   modalBtn: {
     minWidth: 106,
@@ -185,7 +226,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "black",
     display: "flex",
-    paddingHorizontal: 10
   },
   loginButton: {
     alignSelf: "flex-start"
@@ -199,33 +239,40 @@ const styles = StyleSheet.create({
   },
   modalBtnText: {
     color: "white",
-    fontFamily: "montserrat-bold",
     width: "100%",
     textAlign: "center"
   },
   buttonsSeparator: {
     width: 11
+  },
+  loadingDotsView1: {
+    position: "absolute",
+    zIndex: 999,
+    backgroundColor: 'rgba(255,255,255,0.5)',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  loadingDotsView2: {
+    width: 100
   }
 });
 
 
-function ConnectedAuthHandlerContainer(props) {
-  const navigation = useNavigation();
-  const route = useRoute();
+function UpdateHandlerContainer(props) {
   const store = useStore();
 
-  return <ConnectedAuthHandler 
+  return <UpdateHandler 
     {...props}
-    navigation={navigation}
-    route={route}
     store={store} />;
 }
 
 
 const mapStateToProps = state => {
   return {
-    auth: state.authState,
-    //mixed state
     others: state.othersState,
     //language
     locale: state.localeState,
@@ -244,4 +291,4 @@ export default connect(mapStateToProps, mapDispatchToProps, (stateProps, dispatc
     actions: dispatchProps,
     ...props
   }
-})(ConnectedAuthHandlerContainer)
+})(UpdateHandlerContainer)

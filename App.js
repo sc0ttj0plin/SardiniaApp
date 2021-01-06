@@ -17,6 +17,7 @@ import actions from './actions';
 import { PersistGate } from 'redux-persist/lib/integration/react';
 import { persistor, store } from './store';
 import { Video } from 'expo-av';
+import { ConnectedUpdateHandler, ConnectedNetworkChecker } from './components';
 import { enableScreens } from 'react-native-screens';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import config from './config/config';
@@ -215,6 +216,8 @@ export default class App extends Component {
               <View style={[styles.container]}>
                 {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
                 <AppNavigator ref={nav => { this._navigator = nav; }} />
+                <ConnectedUpdateHandler />
+                <ConnectedNetworkChecker />
               </View>
             </SafeAreaProvider>
           </ApolloProvider>

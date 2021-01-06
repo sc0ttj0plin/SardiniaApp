@@ -130,12 +130,16 @@ export const MAP_SET_DRAGGING = 'sardinia/others/MAP_SET_DRAGGING';
 export const SCROLLABLE_SET_PRESSIN = 'sardinia/others/SCROLLABLE_SET_PRESSIN';
 export const SCROLLABLE_SET_SCROLLINDEX = 'sardinia/others/SCROLLABLE_SET_SCROLLINDEX';
 export const SET_GEOLOCATION = 'sardinia/others/SET_GEOLOCATION';
+export const CHECK_FOR_UPDATES = 'sardinia/others/CHECK_FOR_UPDATES';
+export const SET_NETWORK_STATUS = 'sardinia/others/SET_NETWORK_STATUS';
 
 
 // API
 export const FETCH_NUM_MONTHS_BACKWARDS = 1;
 export const FETCH_NUM_MONTHS_FORWARD = 0;
 // Others
+/* probability that a main component checks for OTA updates on didMount: 0.5: 50%, 0.2: 20% */
+export const CHECK_FOR_UPDATES_WHILE_FOREGROUNDED_PROB = 0.1; 
 export const DEFAULT_LANGUAGE = 'it';
 export const DATE_SEP = '-';
 export const DATE_FORMAT = `YYYY${DATE_SEP}MM${DATE_SEP}DD`;
