@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Sardinia - Debug",
-    "slug": "sardinia-debug",
+    "name": "Sardinia",
+    "slug": "sardinia",
     "privacy": "unlisted",
     "platforms": [
       "ios",

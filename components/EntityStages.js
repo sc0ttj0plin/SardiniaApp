@@ -40,8 +40,18 @@ class EntityStages extends PureComponent {
   _renderEventStage = (item, index) => {
     const startDate = _.get(item.date, "start", null);
     const endDate = _.get(item.date, "end", null);
-    const formattedStartDate = moment(startDate).format("DD MMMM YYYY");
-    const formattedEndDate = moment(endDate).format("DD MMMM YYYY");
+
+    var formattedDate = "";
+
+    if(startDate) {
+      const formattedStartDate = moment(startDate).format("DD MMMM YYYY");
+      formattedDate += formattedStartDate;
+    }
+    if(endDate) {
+      const formattedEndDate = moment(endDate).format("DD MMMM YYYY");
+      formattedDate += ' - ' +  formattedEndDate;
+    }
+
     return(
       <View style={styles.eventStageView}>
         { index != 0 &&
@@ -51,7 +61,7 @@ class EntityStages extends PureComponent {
           <CustomText style={styles.eventStageNumber}>{index + 1}</CustomText>
         </View>
         <CustomText style={styles.eventStageLocation}>{item.nome}</CustomText>
-        <CustomText style={styles.eventStageDate}>{formattedStartDate} - {formattedEndDate}</CustomText>
+        <CustomText style={styles.eventStageDate}>{formattedDate}</CustomText>
       </View>
     )
   }
@@ -271,7 +281,8 @@ const styles = StyleSheet.create({
   },
   eventStageDate: {
     fontSize: 16,
-    textTransform: "capitalize"
+    textTransform: "capitalize",
+    textAlign: "center"
   },
   bottomButton: {
     backgroundColor: "transparent",

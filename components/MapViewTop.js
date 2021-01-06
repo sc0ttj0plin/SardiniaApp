@@ -18,9 +18,10 @@ import actions from '../actions';
 import * as Constants from '../constants';
 import Colors from '../constants/Colors';
 import { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { Ionicons } from '@expo/vector-icons';
+import CustomIcon  from './CustomIcon';
 import { linkingOpenNavigator } from "../helpers/utils"
 import { FontAwesome5 } from '@expo/vector-icons'; 
+import { Ionicons } from '@expo/vector-icons';
 
 /**
  * Map:             Clusters + pois that update with user map's interaction

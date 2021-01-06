@@ -23,7 +23,7 @@ import config from './config/config';
 import * as firebase from 'firebase';
 import * as Constants from './constants';
 import * as Location from 'expo-location';
-import backgroundTasks from './helpers/backgroundTasks'; /* Loads background tasks even if not invoked */
+//import backgroundTasks from './helpers/backgroundTasks'; /* Loads background tasks even if not invoked */
 
 enableScreens();
 
@@ -137,6 +137,7 @@ export default class App extends Component {
         'montserrat-semiBold': require('./assets/fonts/Montserrat-SemiBold.ttf'),
         'montserrat-light': require('./assets/fonts/Montserrat-Light.ttf'),
         'montserrat-medium': require('./assets/fonts/Montserrat-Medium.ttf'),
+        'icomoon': require('./assets/fonts/custom/icomoon.ttf'),
       })
     ]);
   }

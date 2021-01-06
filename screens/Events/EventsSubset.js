@@ -62,9 +62,6 @@ class EventsSubsetScreen extends Component {
 
   constructor(props) {
     super(props);
-
-    moment.locale(Constants.DEFAULT_LANGUAGE);
-
     /* Get props from navigation */
     let { headerTitle, eventsSubset } = props.route.params; 
 

@@ -36,6 +36,8 @@ class EventsScreen extends Component {
   constructor(props) {
     super(props);
 
+    moment.locale(Constants.DEFAULT_LANGUAGE);
+
     /* Get props from navigation */
     //let { someNavProps } = props.route.params; 
     for (let language in Constants.SCREENS.events.agendaLocale)

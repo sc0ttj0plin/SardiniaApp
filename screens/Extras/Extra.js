@@ -185,7 +185,7 @@ class ExtraScreen extends Component {
         horizontal={true}
         data={relatedList ? relatedList : []} 
         extraData={this.props.locale}
-        keyExtractor={item => item.uuid.toString()}
+        keyExtractor={item => item && item.uuid && item.uuid.toString()}
         contentContainerStyle={styles.relatedListContent}
         showsHorizontalScrollIndicator={false}
         locale={this.props.locale}
@@ -231,6 +231,9 @@ class ExtraScreen extends Component {
       inputRange: [0, 600],
       outputRange: ['0deg', '360deg']
     });
+
+    console.log(entity.uuid);
+
     return (
       <View style={styles.fill}>
         <Animated.ScrollView style={styles.fill}
@@ -241,8 +244,14 @@ class ExtraScreen extends Component {
             <EntityHeader title={title} borderColor={Colors.black}/>
           </View>
           <View style={[styles.container]}>
+            
             <EntityAbstract abstract={abstract}/>
+            <View style={styles.separator} />
+            {
+              (entity.uuid  == "eae5bf1e-1358-49a4-8681-a82b824a031c" || 
+              entity.uuid  == "60910491-48ce-480d-9f3c-9ce08c086070") &&
             <EntityVirtualTour rotation={iconRotation} onPress={this._openVRContent}/>
+            }
             <EntityGallery images={gallery} title={galleryTitle}/>
             <View style={styles.separator}/>
             {this._renderRelatedList("Luoghi", relatedPlaces, Constants.ENTITY_TYPES.places)}
@@ -321,8 +330,7 @@ const styles = StyleSheet.create({
   separator: {
     width: "100%",
     height: 8,
-    backgroundColor: "#F2F2F2",
-    marginVertical: 32
+    marginVertical: 10
   },
   relatedListItem: {
     // marginLeft: 0,
