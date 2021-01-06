@@ -7,7 +7,7 @@ import { FlatList } from "react-native-gesture-handler"
 import { useNavigation, useRoute } from '@react-navigation/native';
 import CustomText from "./CustomText";
 import SectionTitle from "./SectionTitle";
-import { coordsInBound, distance, distanceToString, regionToPoligon, regionDiagonalKm } from '../helpers/maps';
+import { coordsInBound } from '../helpers/maps';
 import MapView from "react-native-maps";
 import { Button } from "react-native-elements";
 import { connect, useStore } from 'react-redux';
@@ -46,6 +46,7 @@ class MapViewTop extends PureComponent {
     const hideScrollable = _.get(props.route, "params.hideScrollable", false);
     const title = _.get(props, "title", "");
     const entities = _.get(props, "entities", []);
+    let isCoordsInBound = coordsInBound(coords);
     // console.log("events", props.route.params.events.length, events.length)
     this.state = {
       render: USE_DR ? false : true,
@@ -56,7 +57,8 @@ class MapViewTop extends PureComponent {
       region: Constants.MAP.defaultRegion,
       selectedEntity: null,
       tracksViewChanges: false,
-      title
+      title,
+      isCoordsInBound
     };
 
   }
@@ -110,11 +112,14 @@ class MapViewTop extends PureComponent {
   _onUpdateCoords = (position, source) => {
     //check geolocation source
     this._coords = position.coords;
+    let isCoordsInBound = coordsInBound(position.coords);
+    this.setState({
+      isCoordsInBound
+    })
   }
 
   _selectMarker = (entity) => {
     // console.log("enter en", entity)
-
     if(entity) {
       this._disableRegionChangeCallback = true;
 
@@ -305,7 +310,7 @@ class MapViewTop extends PureComponent {
         <View style={styles.topHeader}>
           {this._renderMapTitle()}
         </View>
-        {this.props.others.geolocation.coords && 
+        {this.state.isCoordsInBound && 
           <Button
           type="clear"
           containerStyle={[styles.buttonGoToMyLocationContainer, {bottom: 15 + (this.props.paddingBottom || 0) }]}

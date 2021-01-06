@@ -380,10 +380,10 @@ class PlacesScreen extends PureComponent {
           onBackPress={this._backButtonPress}
           iconTintColor={Colors.colorPlacesScreen}  
           backButtonVisible={this.props.others.placesTerms.length > 0}
-        />
+        /> 
         <ConnectedAuthHandler loginOptional={true} />
         {render && this._renderContent()}
-      </View>
+      </View> 
     )
   }
   

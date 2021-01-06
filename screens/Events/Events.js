@@ -195,7 +195,7 @@ class EventsScreen extends Component {
             style={styles.toastButton}
             activeOpacity={0.7}
             onPress={this._openMap}>
-            <CustomText style={styles.toastButtonText}>{go}}</CustomText>
+            <CustomText style={styles.toastButtonText}>{go}</CustomText>
           </TouchableOpacity>
         </View>
         <View style={[styles.toastInnerContainer,{marginTop: 5}]}>

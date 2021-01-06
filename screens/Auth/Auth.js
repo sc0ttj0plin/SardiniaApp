@@ -207,9 +207,10 @@ class Login extends Component {
   }
 
   renderAuthOutcome = () => {
-    if (this.props.auth.loading) return (<CustomText style={styles.errorBox}>Login in corso..</CustomText>);
-    if (this.props.auth.error) return (<CustomText style={styles.errorBox}>Errore: {this.props.auth.error}</CustomText>);
-    if (this.props.auth.success) return (<CustomText style={styles.errorBox}>Autenticazione riuscita!</CustomText>);
+    const { successfullLogin, loggingIn, loginError } = this.props.locale.messages;
+    if (this.props.auth.loading) return (<CustomText style={styles.errorBox}>{loggingIn}</CustomText>);
+    if (this.props.auth.error) return (<CustomText style={styles.errorBox}>{loginError} {this.props.auth.error}</CustomText>);
+    if (this.props.auth.success) return (<CustomText style={styles.errorBox}>{successfullLogin}</CustomText>);
   }
 
   _renderLogout = () => {
@@ -350,15 +351,16 @@ class Login extends Component {
   }
 
   _renderLoginError = () => {
+    const { unsuccessfulLogin, retry } = this.props.locale.messages;
     return (
       <View style={styles.mainView}>
         <View style={styles.view0}>
           <View style={styles.view1}>
               <CustomText style={styles.text0}>
-                We are sorry but the login was unsuccessful
+                {unsuccessfulLogin}
               </CustomText>
               <TouchableOpacity style={styles.signInButton} onPress={() => this.setState({ authFSM: "emailInput" })}>
-                <CustomText style={styles.registerTxt}>RETRY</CustomText>
+                <CustomText style={styles.registerTxt}>{retry}</CustomText>
               </TouchableOpacity>
           </View>
         </View>

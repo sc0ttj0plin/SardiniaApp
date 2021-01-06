@@ -9,7 +9,7 @@ import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 import actions from '../actions';
 import { apolloQuery } from '../apollo/queries';
-import { boundingRect, regionToPoligon, regionDiagonalKm } from '../helpers/maps';
+import { boundingRect, regionToPoligon, regionDiagonalKm, coordsInBound } from '../helpers/maps';
 import EntityMarker from './map/EntityMarker'
 import ClusterMarker from './map/ClusterMarker'
 import * as Constants from '../constants';
@@ -31,14 +31,15 @@ class ClusteredMapViewTop extends PureComponent {
     this._refs = [];
 
     const typesForQuery = `{${types.join(",")}}`; /* needs a list like: {"attrattori","strutture_ricettive", ...} */
+    let isCoordsInBound = coordsInBound(coords);
     this._mapRef = null; /* used for animation */
     this.state = {
       initRegion: region,
       clusters: [],
       nearPois, /* to calculate the smallest enclosing polygon and zoom to it */
       types: typesForQuery,
-      
       selectedCluster: null, /* currently selected cluster/poi */
+      isCoordsInBound
     };
 
     this._region = region;
@@ -75,13 +76,17 @@ class ClusteredMapViewTop extends PureComponent {
 
   _onUpdateCoords = (position, source) => {
     //check geolocation source
-     if (source === Constants.GEOLOCATION.sources.foregroundGetOnce){
+    if (source === Constants.GEOLOCATION.sources.foregroundGetOnce){
       this._computeNearestPoisEnclosingPolygon(position);
       this._animateMapToRegion(this._coords, 10, 1000, 500);
-     }
-     else {
+    }
+    else {
       this._computeNearestPoisEnclosingPolygon(position);
-     }
+    }
+    let isCoordsInBound = coordsInBound(position.coords);
+    this.setState({
+      isCoordsInBound
+    })
   }
 
 
@@ -366,7 +371,7 @@ class ClusteredMapViewTop extends PureComponent {
           {this._renderClustersOrPoi(clusters)}
           {this._renderSelectedPoi(selectedCluster)}
         </MapView>
-        {this.props.others.geolocation.coords && 
+        {this.state.isCoordsInBound && 
           <Button
           type="clear"
           containerStyle={[styles.buttonGoToMyLocationContainer, {bottom: 15 + (this.props.paddingBottom || 0) }]}
