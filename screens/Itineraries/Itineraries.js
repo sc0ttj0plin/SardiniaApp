@@ -2,20 +2,13 @@ import React, { PureComponent } from "react";
 import { 
   View, Text, ActivityIndicator, TouchableOpacity, 
   StyleSheet, Image, BackHandler, Platform, ScrollView, NativeModules, Dimensions, StatusBar } from "react-native";
-
 import { FlatList } from "react-native-gesture-handler"
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
-  CategoryListItem, 
-  AsyncOperationStatusIndicator, 
-  ClusteredMapViewTop,
   ConnectedHeader, 
   ConnectedMapScrollable,
-  ScrollableContainer,
   EntityItem,
-  CustomText,
-  SectionTitle,
-  UpdateHandler
+  SectionTitle
  } from "../../components";
 import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
 import MapView from "react-native-maps";
@@ -57,6 +50,8 @@ class ItinerariesScreen extends PureComponent {
       selectedEntity: null,
       snapPoints: [],
       tracksViewChanges: true,
+      //loading
+      isEntitiesLoading: false, /* map view top loading */
     };      
   }
 
@@ -67,6 +62,7 @@ class ItinerariesScreen extends PureComponent {
    */
   componentDidMount() {
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
+    this.props.actions.checkForUpdates();
     if(this.props.others.geolocation && this.props.others.geolocation.coords) {
       this._onUpdateCoords(this.props.others.geolocation.coords);
     }
@@ -86,6 +82,10 @@ class ItinerariesScreen extends PureComponent {
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
 
+  _isSuccessData  = () => true;
+  _isLoadingData  = () => this.props.itineraries.loading;
+  _isErrorData    = () => null;
+
   _onUpdateCoords(newCoords) {
     // const { coords, term } = this.state;
     const { coords } = this.state;
@@ -93,7 +93,7 @@ class ItinerariesScreen extends PureComponent {
       let isCordsInBound = coordsInBound(newCoords); 
       // Are coordinates within sardinia's area? fetch the updated pois list
       if (isCordsInBound) {
-        this.setState({ isCordsInBound, coords: newCoords, nearPoisRefreshing: true });
+        this.setState({ isCordsInBound, coords: newCoords, isNearEntitiesLoading: true });
       }
     }
   }
@@ -166,59 +166,60 @@ class ItinerariesScreen extends PureComponent {
       />
   )}
 
-/* Render content */
-_renderContent = () => {
-  const { nearToYou } = this.props.locale.messages;
-  const { coords, region, itineraries  } = this.state;
-  const entitiesType = Constants.ENTITY_TYPES.itineraries;
-  
-  //scrollable props
-  const scrollableProps = {
-    show: true,
-    data: itineraries,
-    onEndReached: () => null,
-    renderItem: ({ item, index }) => this._renderListItem(item, index),
-    keyExtractor: item => item.uuid,
-  }
+  /* Render content */
+  _renderContent = () => {
+    const { nearToYou } = this.props.locale.messages;
+    const { coords, region, itineraries  } = this.state;
+    const entitiesType = Constants.ENTITY_TYPES.itineraries;
+    
+    //scrollable props
+    const scrollableProps = {
+      show: true,
+      data: itineraries,
+      scrollableTopComponentIsLoading: this._isLoadingData(),
+      onEndReached: () => null,
+      renderItem: ({ item, index }) => this._renderListItem(item, index),
+      keyExtractor: item => item.uuid,
+    }
 
-  // MapViewTopProps (MVT)
-  const MVTProps = {
-    coords, 
-    region,
-    types: [Constants.NODE_TYPES.itineraries],
-    onMarkerPressEvent: "openEntity",
-    getCoordsFun: (entity) => this._getEntityCoords(entity),
-    iconProps: { 
-      name: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].iconName,
-      backgroundColor: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].backgroundColor,
-      backgroundTransparent: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].backgroundTransparent,
-      color: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].iconColor,
-    }
-  };
-  
-  const mapEntityWidgetProps = { 
-    isAccomodationItem: false, 
-    coords: this.state.coords, 
-  };
-  
-  const extraComponentProps = {
-    data: [],
-    keyExtractor: item => item.uuid,
-    onPress: this._selectCategory,
-    iconProps: { 
-      name: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].iconName,
-      backgroundColor: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].backgroundColor,
-      color: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].iconColor,
-    }
-  }
-  
-  const extraModalProps = {
+    // MapViewTopProps (MVT)
+    const MVTProps = {
+      coords, 
+      region,
+      types: [Constants.NODE_TYPES.itineraries],
+      onMarkerPressEvent: "openEntity",
+      getCoordsFun: (entity) => this._getEntityCoords(entity),
+      iconProps: { 
+        name: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].iconName,
+        backgroundColor: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].backgroundColor,
+        backgroundTransparent: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].backgroundTransparent,
+        color: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].iconColor,
+      }
+    };
+    
+    const mapEntityWidgetProps = { 
+      isAccomodationItem: false, 
+      coords: this.state.coords, 
+    };
+    
+    const extraComponentProps = {
       data: [],
       keyExtractor: item => item.uuid,
-      renderItem: ({ item }) => null,
-      title: nearToYou,
-      onEndReached: () => null,
+      onPress: this._selectCategory,
+      iconProps: { 
+        name: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].iconName,
+        backgroundColor: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].backgroundColor,
+        color: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].iconColor,
+      }
     }
+  
+    const extraModalProps = {
+        data: [],
+        keyExtractor: item => item.uuid,
+        renderItem: ({ item }) => null,
+        title: nearToYou,
+        onEndReached: () => null,
+      }
   
 
     return (
@@ -253,12 +254,9 @@ _renderContent = () => {
 
   render() {
     const { render } = this.state;
-    const { updateInProgressText, updateFinishedText } = this.props.locale.messages;
-    
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onPageLayout}>
         <ConnectedHeader iconTintColor={Colors.colorItinerariesScreen} />
-        <UpdateHandler updateInProgressText={updateInProgressText} updateFinishedText={updateFinishedText} />
         {render && this._renderContent()}
       </View>
     )

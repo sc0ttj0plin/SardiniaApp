@@ -6,13 +6,7 @@ import {
 import { Flablist } from "react-native-gesture-handler"
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
-  CategoryListItem, 
-  AsyncOperationStatusIndicator, 
-  ClusteredMapViewTop,
   ConnectedHeader, 
-  ScrollableContainer,
-  EntityItem,
-  CustomText
  } from "../../components";
 import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
 // import MapView from "react-native-map-clustering";

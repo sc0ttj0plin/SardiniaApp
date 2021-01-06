@@ -128,7 +128,10 @@ const dict = {
     findParkBtn: "TROVA UN PARCHEGGIO",
     //Update
     updateInProgressText: "AGGIORNAMENTO IN CORSO", 
-    updateFinishedText: "AGGIORNAMENTO TERMINATO, RIAVVIO IN CORSO..."
+    updateFinishedText: "AGGIORNAMENTO TERMINATO, RIAVVIO IN CORSO...",
+    //Networking
+    disconnected: "Disconnesso...",
+    pleaseConnect: "Riattiva la connessione per utilizzare l'applicazione"
   },
   "en-gb": {
     //GENERIC
@@ -258,7 +261,10 @@ const dict = {
     findParkBtn: "FIND A PARK",
     //Update
     updateInProgressText: "UPDATE IN PROGRESS", 
-    updateFinishedText: "UPDATE FINISHED, RESTARTING..."
+    updateFinishedText: "UPDATE FINISHED, RESTARTING...",
+    //Networking
+    disconnected: "Disconnected...",
+    pleaseConnect: "Please turn on internet connection to access the app contents"
   }
 }
 

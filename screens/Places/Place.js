@@ -4,40 +4,18 @@ import {
   StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
-  // CategoryListItem, 
-  // GeoRefHListItem, 
-  // GridGallery, 
-  // GridGalleryImage, 
-  // MapViewTop, 
-  // ScrollableHeader,
-  // TabBarIcon, 
-  // CalendarListItem, 
   AsyncOperationStatusIndicator, 
-  // AsyncOperationStatusIndicatorPlaceholder,
-  // Webview, 
-  // ConnectedText, 
   ConnectedHeader, 
   EntityAbstract,
   EntityDescription,
   EntityGallery,
   EntityHeader,
-  EntityItem,
-  EventListItem,
   EntityMap,
   EntityRelatedList,
-  EntityVirtualTour,
   EntityWhyVisit,
   EntityAccomodations,
   TopMedia,
-  // ImageGridItem, 
-  // ConnectedLanguageList, 
-  // BoxWithText,
   ConnectedFab, 
-  // PoiItem, 
-  // PoiItemsList, 
-  // ExtrasListItem, 
-  // MapViewItinerary,
-  CustomText
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';

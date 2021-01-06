@@ -330,9 +330,10 @@ class ConnectedMapScrollable extends PureComponent {
    */
   _renderTopComponent = () => {
     if (this.props.topComponentType === "ClusteredMapViewTop") {
-      const { term, coords, region, types, childUuids } = this.props.topComponentCMVTProps;
+      const { term, coords, region, types, childUuids, isLoadingCb } = this.props.topComponentCMVTProps;
       const { entitiesType } = this.props;
       return (
+        <> 
         <ClusteredMapViewTop
           term={term}
           coords={coords}
@@ -346,7 +347,9 @@ class ConnectedMapScrollable extends PureComponent {
           onSelectedEntity={this._onSelectedEntity}
           showNearEntitiesOnPress={this._showExtraModal}
           paddingBottom={this.state.snapPoints[1]} /* set padding as the height of the first snap point */
+          isLoadingCb={isLoadingCb} /* to know if is loading */
         />
+        </>
       )
     } else if (this.props.topComponentType === "MapView") {
       const { entitiesType } = this.props;
@@ -424,14 +427,16 @@ class ConnectedMapScrollable extends PureComponent {
     const renderHeaderTextComponent = this.props.scrollableHeaderTextComponent ? this.props.scrollableHeaderTextComponent : this.props.scrollableHeaderText;
 
     //scrollable props
-    const { show, data, onEndReached, renderItem, keyExtractor } = this.props.scrollableProps;
+    const { show, data, onEndReached, renderItem, keyExtractor, scrollableTopComponentIsLoading } = this.props.scrollableProps;
     const { entitiesType } = this.props;
     
     if (show)
       return (
+        <>
         <ScrollableContainer 
           entityType={entitiesType}
           topComponent={this._renderTopComponent}
+          topComponentIsLoading={scrollableTopComponentIsLoading}
           extraComponent={renderExtraComponent}
           pageLayoutHeight={this._pageLayoutHeight}
           data={data}
@@ -449,6 +454,7 @@ class ConnectedMapScrollable extends PureComponent {
           isOpen={this._onScrollableOpened}
           isClosable={this.state.scrollableSnap!=1}
         />
+        </>
       )
     return this._renderTopComponent();
   }

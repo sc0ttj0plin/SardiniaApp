@@ -59,13 +59,6 @@ class ClusteredMapViewTop extends PureComponent {
       this._onUpdateCoords(this.props.others.geolocation, this.props.others.geolocationSource);
     }
 
-    // On scrollable container press hide selected element
-    const prevScrollablePressIn = prevProps.others.scrollablePressIn[this.props.entityType];
-    const currScrollablePressIn = this.props.others.scrollablePressIn[this.props.entityType];
-    if (prevScrollablePressIn !== currScrollablePressIn && typeof(currScrollablePressIn) === 'boolean')
-      this._clearClusterSelection();
-
-
     // If the term changes reload pois
     const prevTerm = this._getTerm(prevProps).term;
     const currentTerm = this._getTerm(this.props).term;
@@ -133,8 +126,7 @@ class ClusteredMapViewTop extends PureComponent {
    *   clusters === pois when the cluster count is 1
    */
   _fetchClusters() {
-    if(this._query)
-      return;
+    this.props.isLoadingCb && this.props.isLoadingCb(true);
     const { term, childUuids } = this._getTerm();
     const { types } = this.state;
     let region = this._region;
@@ -152,16 +144,18 @@ class ClusteredMapViewTop extends PureComponent {
     }
     uuidString += "}";
 
-    this._query = apolloQuery(actions.getClusters({
+    apolloQuery(actions.getClusters({
       polygon: regionString,
       cats: uuidString,
       dbscan_eps: dEps,
       types,
     })).then((clusters) => {
-      this._query = null;
-      if(!this._panTimeout){
+      if(!this._panTimeout)
         this.setState({ clusters });
-      }
+      this.props.isLoadingCb && this.props.isLoadingCb(false);
+    }).catch(e => {
+      console.error(e);
+      this.props.isLoadingCb && this.props.isLoadingCb(false);
     });
   }
 

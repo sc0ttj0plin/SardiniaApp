@@ -4,29 +4,15 @@ import {
   StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
-  AsyncOperationStatusIndicator, 
-  // AsyncOperationStatusIndicatorPlaceholder,
-  // Webview, 
-  // ConnectedText, 
   ConnectedHeader, 
-  EntityAbstract,
   EntityDescription,
-  EntityGallery,
   EntityHeader,
-  EntityItem,
-  EventListItem,
   EntityMap,
   EntityRelatedList,
   EntityStages,
-  EntityVirtualTour,
-  EntityWhyVisit,
   EntityAccomodations,
   TopMedia,
-  // ImageGridItem, 
-  // ConnectedLanguageList, 
-  // BoxWithText,
   ConnectedFab, 
-  CustomText
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
