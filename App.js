@@ -33,8 +33,7 @@ export default class App extends Component {
 
   constructor(props){
     super(props);
-    this._skipVideo = false;  
-  
+    this._skipVideo = true;  
     this.state = {
       isSplashReady: false,
       isAppReady: false,

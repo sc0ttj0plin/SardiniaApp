@@ -46,7 +46,6 @@ class MapViewTop extends PureComponent {
     const hideScrollable = _.get(props.route, "params.hideScrollable", false);
     const title = _.get(props, "title", "");
     const entities = _.get(props, "entities", []);
-    let isCoordsInBound = coordsInBound(coords);
     // console.log("events", props.route.params.events.length, events.length)
     this.state = {
       render: USE_DR ? false : true,
@@ -58,7 +57,7 @@ class MapViewTop extends PureComponent {
       selectedEntity: null,
       tracksViewChanges: false,
       title,
-      isCoordsInBound
+      isCoordsInBound: false
     };
 
   }
