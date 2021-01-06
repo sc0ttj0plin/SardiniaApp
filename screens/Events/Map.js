@@ -51,7 +51,7 @@ class EventsMapScreen extends PureComponent {
     const hideScrollable = _.get(props.route, "params.hideScrollable", false);
     const headerTitle = _.get(props.route, "params.headerTitle");
 
-    // console.log("events", props.route.params.events.length, events.length)
+    console.log("events", events.length, hideScrollable)
     this.state = {
       render: USE_DR ? false : true,
       events: events,
@@ -151,8 +151,13 @@ class EventsMapScreen extends PureComponent {
       else
         return null;
     }
-    else
-      return null;
+    else{
+      const coordinates = _.get(entity, "coords", null);
+      if(coordinates)
+        return { latitude: parseFloat(coordinates.latitude), longitude: parseFloat(coordinates.longitude) };
+      else
+        return null;
+    }
   }
 
   /********************* Render methods go down here *********************/
@@ -198,12 +203,12 @@ class EventsMapScreen extends PureComponent {
 /* Render content */
 _renderContent = () => {
 const { nearToYou } = this.props.locale.messages;
-const { pois, snapIndex, coords, region, events  } = this.state;
+const { coords, region, events, hideScrollable  } = this.state;
 const entitiesType = Constants.ENTITY_TYPES.events;
 
   //scrollable props
   const scrollableProps = {
-    show: true,
+    show: !hideScrollable,
     data: events,
     // scrollableTopComponentIsLoading: this.state.isEntitiesLoading,
     onEndReached: () => {},
@@ -216,8 +221,8 @@ const entitiesType = Constants.ENTITY_TYPES.events;
     coords, 
     region,
     types: [Constants.NODE_TYPES.events],
-    onMarkerPressEvent: "openEntity",
-    getCoordsFun: (entity) => this._getEntityCoords(entity, true),
+    onMarkerPressEvent: hideScrollable ? "openNavigator" : "openEntity",
+    getCoordsFun: (entity) => this._getEntityCoords(entity, !hideScrollable),
     iconProps: { 
       name: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].iconName,
       backgroundColor: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].backgroundColor,
