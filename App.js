@@ -34,7 +34,7 @@ export default class App extends Component {
   constructor(props){
     super(props);
     this._skipVideo = false;  
-
+  
     this.state = {
       isSplashReady: false,
       isAppReady: false,
@@ -46,7 +46,8 @@ export default class App extends Component {
     //Ignores warning boxes
     LogBox.ignoreLogs(['Warning:']); //or: LogBox.ignoreAllLogs();
     SplashScreen.preventAutoHideAsync();
-    SplashScreen.hideAsync();
+    if(this._skipVideo)
+      SplashScreen.hideAsync();
   }
 
   async componentDidMount() {
@@ -167,22 +168,16 @@ export default class App extends Component {
     }, 2900); 
   }
 
-  _playVideo() {
-    if(this.state.isLoadingComplete && this.state.isVideoLoaded && this.vPlayer) {
-      // this.vPlayer.playAsync();
-    }
-  }
-
-  _onPlaybackStatusUpdate(status) {
-    if(status.didJustFinish) {
-      this._onVideoEnd();
-    }
-    if(status.isPlaying && !this.state.isVideoPlaying) {
-      this.setState({
-        isVideoPlaying: true
-      }, () => SplashScreen.hide());
-    }
-  }
+  // _onPlaybackStatusUpdate(status) {
+  //   if(status.didJustFinish) {
+  //     this._onVideoEnd();
+  //   }
+  //   if(status.isPlaying && !this.state.isVideoPlaying) {
+  //     this.setState({
+  //       isVideoPlaying: true
+  //     }, () => SplashScreen.hide());
+  //   }
+  // }
 
   _renderSplashGif = () => {
     return (
