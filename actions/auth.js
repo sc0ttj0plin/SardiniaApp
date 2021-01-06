@@ -91,7 +91,6 @@ export const editUser = (el) =>
       dispatch({ type: Constants.USER_EDIT });
       const user = firebase.auth().currentUser;
       let ref = firebase.database().ref(`users/${user.uid}/info`);
-      await AsyncStorage.setItem('username',el.username);
       ref.set({...el});
       dispatch({ type: Constants.USER_EDIT_SUCCESS, payload: {userInfo: {...el}}});
     } catch(error) { 
@@ -105,7 +104,6 @@ export const logout = () =>
     try  {
       console.log('Logout..');
       await AsyncStorage.removeItem('email');
-      await AsyncStorage.removeItem('username');
       const user = firebase.auth().currentUser;
       await firebase.database().ref(`users/${user.uid}/info`).remove();
       await firebase.auth().signOut();

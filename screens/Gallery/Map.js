@@ -303,7 +303,9 @@ class GalleryMapScreen extends PureComponent {
       this._selectPoi(index);
     } else if (index==0){
       this._selected = null;
-      this._openPoi(this.state.pois[index]);
+      if(this.state.pois[index]){
+        this._openPoi(this.state.pois[index]);
+      }
     } else {
       this._selected = null;
     }
