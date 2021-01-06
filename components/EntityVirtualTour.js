@@ -4,7 +4,7 @@ import Colors from '../constants/Colors';
 import { Fontisto } from '@expo/vector-icons';
 import CustomText from "./CustomText";
 
-export default class EntityHeader extends PureComponent {  
+export default class EntityVirtualTour extends PureComponent {  
   
   constructor(props) {
     super(props);
@@ -19,7 +19,7 @@ export default class EntityHeader extends PureComponent {
   }
   render() {
     const { link } = this.props;
-
+    
     return (
       <>
         {/* { link &&( */}
