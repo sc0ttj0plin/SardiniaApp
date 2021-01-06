@@ -28,6 +28,12 @@ const CenterScaler = posed.View({
     inactive: { scale: 0.45 } 
 })
 
+// define click zoom
+const TextScaler = posed.View({ 
+  active: { scale: 1 },
+  inactive: { scale: 0 } 
+})
+
 /**
  * TabBar is the bottom tab bar used in tab navigation screens.
  * Includes an animated component that scales up on focus
@@ -120,20 +126,25 @@ const TabBar = props => {
                         <TabBarIcon focused={isRouteActive} name={route.icon} iconSourceDefault={route.iconSourceDefault} iconSourceActive={route.iconSourceActive}/>
                     </View>
                   }
-                 
-                  <Animated.View style={{
-                    display: isRouteActive ? 'flex' : 'none',
-                    overflow: 'hidden',
-                    height: isRouteActive ? 22 : 0,
-                  }}>
-                    <ConnectedText textStyle={[ {
-                        color: route.backgroundActiveColor,
-                        fontFamily: "montserrat-bold",
-                        textAlign: "center",
-                        fontSize: 11 / fontScale,
-                        lineHeight: 20 / fontScale
-                    }]} languageKey={route.languageKey}/>
-                  </Animated.View>
+                  <TextScaler
+                    style={[Styles.scaler, {
+                      height: isRouteActive ? 22 : 0,
+                    }]}
+                    pose={isRouteActive ? 'active' : 'inactive'}>
+                    <Animated.View style={{
+                      display: 'flex',
+                      overflow: 'hidden',
+                      height: 22,
+                    }}>
+                      <ConnectedText textStyle={[ {
+                          color: route.backgroundActiveColor,
+                          fontFamily: "montserrat-bold",
+                          textAlign: "center",
+                          fontSize: 11 / fontScale,
+                          lineHeight: 20 / fontScale
+                      }]} languageKey={route.languageKey}/>
+                    </Animated.View>
+                  </TextScaler>
               </Scaler>
             )}
           </TouchableOpacity>
