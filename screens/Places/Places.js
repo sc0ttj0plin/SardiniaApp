@@ -8,20 +8,13 @@ import { useNavigation, useRoute, useIsFocused} from '@react-navigation/native';
 import Animated from 'react-native-reanimated';
 import { 
   CategoryListItem, 
-  AsyncOperationStatusIndicator, 
-  ClusteredMapViewTop,
   ConnectedHeader, 
-  ScrollableContainer,
   EntityItem,
   ConnectedAuthHandler,
-  CustomText,
   SectionTitle,
-  UpdateHandler,
   ConnectedMapScrollable
  } from "../../components";
 import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
-import MapView from "react-native-map-clustering";
-import ScrollableAnimatedHandle from '../../components/ScrollableAnimatedHandle';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { apolloQuery } from '../../apollo/queries';
@@ -30,14 +23,7 @@ import Layout from '../../constants/Layout';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-import { LLHorizontalItemsFlatlist } from "../../components/loadingLayouts";
-import { Button } from "react-native-paper";
-import { Ionicons } from '@expo/vector-icons';
 const { Value, event, interpolate } = Animated;
-import {Modalize} from 'react-native-modalize';
-import BottomSheet from 'reanimated-bottom-sheet';
-import EntityWidgetInModal from "../../components/EntityWidgetInModal";
-import * as Location from 'expo-location';
 
 /**
  * Map:             Clusters + pois that update with user map's interaction
@@ -67,12 +53,16 @@ class PlacesScreen extends PureComponent {
       render: USE_DR ? false : true,
       pois: [],
       nearPois: [],
-      nearPoisRefreshing: false,
+      isNearEntitiesLoading: false,
       coords: {},
       region: Constants.MAP.defaultRegion,
       currentTerm: null,
       //
-      selectedEntity: null
+      selectedEntity: null,
+      // loading
+      isEntitiesLoading: false, /* entities scrollable */
+      isNearEntitiesLoading: false, /* near entities in modal */
+      isCMVTLoading: false, /* clustered map view top loading  */
     };
 
     this._pageLayoutHeight = Layout.window.height;
@@ -88,6 +78,7 @@ class PlacesScreen extends PureComponent {
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
     //If it's the first mount gets pois categories ("art and archeology...")
     this.props.actions.getCategories({ vid: Constants.VIDS.poisCategories });
+    this.props.actions.checkForUpdates();
     if ( this.props.others.geolocation.coords) {
       this._onUpdateCoords(this.props.others.geolocation.coords);
     }
@@ -102,7 +93,7 @@ class PlacesScreen extends PureComponent {
     if(prevProps.others.placesTerms !== this.props.others.placesTerms) {
       /* update also the header pois based on current cat */
       // this.setState({ nearPois: [] }, () => this._fetchNearestPois(this.state.coords)); 
-      this.setState({poisRefreshing: false});
+      this.setState({ isEntitiesLoading: false });
       this._loadMorePois();
     }
 
@@ -116,7 +107,7 @@ class PlacesScreen extends PureComponent {
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
   
   _isSuccessData  = () => this.props.categories.success;
-  _isLoadingData  = () => this.props.categories.loading;
+  _isLoadingData  = () => this.props.categories.loading || this.state.isCMVTLoading || this.state.isEntitiesLoading || this.state.isNearEntitiesLoading;
   _isErrorData    = () => this.props.categories.error;  
 
   /**
@@ -144,9 +135,9 @@ class PlacesScreen extends PureComponent {
       let isCordsInBound = coordsInBound(newCoords); 
       // Are coordinates within sardinia's area? fetch the updated pois list
       if (isCordsInBound) {
-        this.setState({ isCordsInBound, coords: newCoords, nearPoisRefreshing: true });
+        this.setState({ isCordsInBound, coords: newCoords, isNearEntitiesLoading: true });
         this._fetchNearestPois(newCoords).then(() => {
-          this.setState({ nearPoisRefreshing: false });
+          this.setState({ isNearEntitiesLoading: false });
         });
       }
     }
@@ -183,10 +174,10 @@ class PlacesScreen extends PureComponent {
    */
   _loadMorePois = () => {
     const { childUuids } = this._getCurrentTerm();
-    const { poisRefreshing, pois: statePois, coords } = this.state;
-    if(coords && this._isPoiList() && !poisRefreshing){
+    const { isEntitiesLoading, pois: statePois, coords } = this.state;
+    if(coords && this._isPoiList() && !isEntitiesLoading){
       this.setState({
-        poisRefreshing: true
+        isEntitiesLoading: true
       }, () => {
         apolloQuery(actions.getNearestPois({
           limit: Constants.PAGINATION.poisLimit,
@@ -196,9 +187,11 @@ class PlacesScreen extends PureComponent {
           uuids: childUuids
         })).then((pois) => {
           if (pois && pois.length > 0)
-            this.setState({ pois: [...statePois, ...pois], poisRefreshing: false });
+            this.setState({ pois: [...statePois, ...pois], isEntitiesLoading: false });
+          else 
+            this.setState({ isEntitiesLoading: false });
         }).catch(e => {
-          this.setState({ poisRefreshing: false });
+          this.setState({ isEntitiesLoading: false });
         });
       });
     }
@@ -293,8 +286,6 @@ class PlacesScreen extends PureComponent {
     const { term, childUuids } = this._getCurrentTerm(true);
     const { nearToYou } = this.props.locale.messages;
     const { pois, snapIndex, coords, region, nearPois  } = this.state;
-    // const { scrollableSnapIndex } = this.props.others;
-    // const showExtraComponent = scrollableSnapIndex[Constants.ENTITY_TYPES.places];
     const isPoiList = this._isPoiList();
     let scrollableData = [];
     let renderScrollableListItem = null;
@@ -313,6 +304,7 @@ class PlacesScreen extends PureComponent {
     const scrollableProps = {
       show: true,
       data: scrollableData,
+      scrollableTopComponentIsLoading: this._isLoadingData(),
       onEndReached: this._loadMorePois,
       renderItem: renderScrollableListItem,
       keyExtractor: item => item.uuid,
@@ -325,6 +317,7 @@ class PlacesScreen extends PureComponent {
       region,
       types: [Constants.NODE_TYPES.places],
       childUuids,
+      isLoadingCb: (isLoading) => this.setState({ isCMVTLoading: isLoading }),
     };
 
     const extraComponentProps = {
@@ -381,19 +374,16 @@ class PlacesScreen extends PureComponent {
 
   render() {
     const { render } = this.state;
-    const { updateInProgressText, updateFinishedText } = this.props.locale.messages;
-    
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
         <ConnectedHeader 
           onBackPress={this._backButtonPress}
           iconTintColor={Colors.colorPlacesScreen}  
           backButtonVisible={this.props.others.placesTerms.length > 0}
-        />
-        <UpdateHandler updateInProgressText={updateInProgressText} updateFinishedText={updateFinishedText} />
+        /> 
         <ConnectedAuthHandler loginOptional={true} />
         {render && this._renderContent()}
-      </View>
+      </View> 
     )
   }
   

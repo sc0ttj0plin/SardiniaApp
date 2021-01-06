@@ -110,3 +110,9 @@ export const setMapIsDragging = (id, val) =>
  
 export const setGeolocation = (geolocation, source) => 
   ({ type: Constants.SET_GEOLOCATION , payload: { geolocation, source } });
+
+
+export const checkForUpdates = () => ({ type: Constants.CHECK_FOR_UPDATES });
+
+
+export const setNetworkStatus = (status) => ({ type: Constants.SET_NETWORK_STATUS, payload: status });

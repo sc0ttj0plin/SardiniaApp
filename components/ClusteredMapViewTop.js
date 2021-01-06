@@ -9,7 +9,7 @@ import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 import actions from '../actions';
 import { apolloQuery } from '../apollo/queries';
-import { boundingRect, regionToPoligon, regionDiagonalKm } from '../helpers/maps';
+import { boundingRect, regionToPoligon, regionDiagonalKm, coordsInBound } from '../helpers/maps';
 import EntityMarker from './map/EntityMarker'
 import ClusterMarker from './map/ClusterMarker'
 import * as Constants from '../constants';
@@ -31,14 +31,15 @@ class ClusteredMapViewTop extends PureComponent {
     this._refs = [];
 
     const typesForQuery = `{${types.join(",")}}`; /* needs a list like: {"attrattori","strutture_ricettive", ...} */
+    let isCoordsInBound = coordsInBound(coords);
     this._mapRef = null; /* used for animation */
     this.state = {
       initRegion: region,
       clusters: [],
       nearPois, /* to calculate the smallest enclosing polygon and zoom to it */
       types: typesForQuery,
-      
       selectedCluster: null, /* currently selected cluster/poi */
+      isCoordsInBound
     };
 
     this._region = region;
@@ -59,13 +60,6 @@ class ClusteredMapViewTop extends PureComponent {
       this._onUpdateCoords(this.props.others.geolocation, this.props.others.geolocationSource);
     }
 
-    // On scrollable container press hide selected element
-    const prevScrollablePressIn = prevProps.others.scrollablePressIn[this.props.entityType];
-    const currScrollablePressIn = this.props.others.scrollablePressIn[this.props.entityType];
-    if (prevScrollablePressIn !== currScrollablePressIn && typeof(currScrollablePressIn) === 'boolean')
-      this._clearClusterSelection();
-
-
     // If the term changes reload pois
     const prevTerm = this._getTerm(prevProps).term;
     const currentTerm = this._getTerm(this.props).term;
@@ -82,13 +76,17 @@ class ClusteredMapViewTop extends PureComponent {
 
   _onUpdateCoords = (position, source) => {
     //check geolocation source
-     if (source === Constants.GEOLOCATION.sources.foregroundGetOnce){
+    if (source === Constants.GEOLOCATION.sources.foregroundGetOnce){
       this._computeNearestPoisEnclosingPolygon(position);
       this._animateMapToRegion(this._coords, 10, 1000, 500);
-     }
-     else {
+    }
+    else {
       this._computeNearestPoisEnclosingPolygon(position);
-     }
+    }
+    let isCoordsInBound = coordsInBound(position.coords);
+    this.setState({
+      isCoordsInBound
+    })
   }
 
 
@@ -133,8 +131,7 @@ class ClusteredMapViewTop extends PureComponent {
    *   clusters === pois when the cluster count is 1
    */
   _fetchClusters() {
-    if(this._query)
-      return;
+    this.props.isLoadingCb && this.props.isLoadingCb(true);
     const { term, childUuids } = this._getTerm();
     const { types } = this.state;
     let region = this._region;
@@ -152,16 +149,18 @@ class ClusteredMapViewTop extends PureComponent {
     }
     uuidString += "}";
 
-    this._query = apolloQuery(actions.getClusters({
+    apolloQuery(actions.getClusters({
       polygon: regionString,
       cats: uuidString,
       dbscan_eps: dEps,
       types,
     })).then((clusters) => {
-      this._query = null;
-      if(!this._panTimeout){
+      if(!this._panTimeout)
         this.setState({ clusters });
-      }
+      this.props.isLoadingCb && this.props.isLoadingCb(false);
+    }).catch(e => {
+      console.error(e);
+      this.props.isLoadingCb && this.props.isLoadingCb(false);
     });
   }
 
@@ -372,7 +371,7 @@ class ClusteredMapViewTop extends PureComponent {
           {this._renderClustersOrPoi(clusters)}
           {this._renderSelectedPoi(selectedCluster)}
         </MapView>
-        {this.props.others.geolocation.coords && 
+        {this.state.isCoordsInBound && 
           <Button
           type="clear"
           containerStyle={[styles.buttonGoToMyLocationContainer, {bottom: 15 + (this.props.paddingBottom || 0) }]}

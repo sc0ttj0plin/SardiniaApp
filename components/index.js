@@ -51,9 +51,11 @@ export CustomText from './CustomText';
 export SectionTitle from './SectionTitle';
 export EntityWidgetInModal from './EntityWidgetInModal';
 export EntityItemInModal from './EntityItemInModal';
-export UpdateHandler from './UpdateHandler';
+export ConnectedUpdateHandler from './ConnectedUpdateHandler';
 export ShimmerWrapper from './ShimmerWrapper';
 export ScrollableContainerTouchableOpacity from './ScrollableContainerTouchableOpacity';
 export ConnectedMapScrollable from './ConnectedMapScrollable';
 export AnimatedImage from './AnimatedImage';
-export MapViewTop from "./MapViewTop"
+export MapViewTop from "./MapViewTop";
+export LoadingDots from './LoadingDots';
+export ConnectedNetworkChecker from './ConnectedNetworkChecker';

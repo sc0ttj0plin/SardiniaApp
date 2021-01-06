@@ -66,13 +66,6 @@ class ScrollableContainer extends PureComponent {
   componentDidUpdate(prevProps){
     const prevSnap = prevProps.others.scrollableSnapIndex[this.props.entityType];
     const currentSnap = this.props.others.scrollableSnapIndex[this.props.entityType];
-    //console.log(prevSnap, currentSnap);
-    // if (prevSnap !== currentSnap && currentSnap !== this.state.currentSnapIndex && typeof(currentSnap) === 'number') {
-    //   this._snapping = true;
-    //   setTimeout( () => { 
-    //     this._scrollable.snapTo(currentSnap) 
-    //   }, 300);
-    // }
     if(prevProps.data !== this.props.data){
       this.setState({
         data: []
@@ -116,10 +109,6 @@ class ScrollableContainer extends PureComponent {
         </View>}
         <HeaderTextComponent></HeaderTextComponent>
       </Animated.View>);
-  }
-
-  _onPressIn = () => {
-    this.props.actions.setScrollablePressIn(this.props.entityType, !this.props.others.scrollablePressIn[this.props.entityType])
   }
 
   _onPositionChange = (v) => {

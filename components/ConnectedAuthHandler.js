@@ -5,10 +5,10 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import actions from '../actions';
 import _ from 'lodash';
 import Layout from '../constants/Layout';
 import AsyncStorage from '@react-native-community/async-storage';
-import actions from '../actions';
 import * as Constants from '../constants';
 import Colors from '../constants/Colors';
 import CustomText from "./CustomText";

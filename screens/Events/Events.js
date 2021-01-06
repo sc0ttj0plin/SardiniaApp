@@ -4,13 +4,11 @@ import {
   StyleSheet, BackHandler, Platform, ScrollView, SectionList, TouchableHighlight, NativeModules, PixelRatio} from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 const { StatusBarManager } = NativeModules;
-
 import { 
   AsyncOperationStatusIndicator, 
   ConnectedHeader,
   EventListItem, 
-  CustomText,
-  UpdateHandler
+  CustomText
  } from "../../components";
 import moment from "moment";
 import { connect, useStore } from 'react-redux';
@@ -71,6 +69,7 @@ class EventsScreen extends Component {
   componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
+    this.props.actions.checkForUpdates();
     this.props.actions.resetEvents()
     this._loadEvents(INITIAL_DATE);
 
@@ -189,24 +188,25 @@ class EventsScreen extends Component {
   /********************* Render methods go down here *********************/
 
   _renderBottomToast = () => {
+    const { go, exploreEventsOnMap, filterEvents, filter } = this.props.locale.messages;
     return(
       <View style={styles.toastContainer}>
         <View style={styles.toastInnerContainer}>
-          <CustomText style={styles.toastText}>Esplora gli eventi sulla mappa</CustomText>
+          <CustomText style={styles.toastText}>{exploreEventsOnMap}</CustomText>
           <TouchableOpacity 
             style={styles.toastButton}
             activeOpacity={0.7}
             onPress={this._openMap}>
-            <CustomText style={styles.toastButtonText}>VAI</CustomText>
+            <CustomText style={styles.toastButtonText}>{go}</CustomText>
           </TouchableOpacity>
         </View>
         <View style={[styles.toastInnerContainer,{marginTop: 5}]}>
-          <CustomText style={styles.toastText}>Scegli quali eventi vedere</CustomText>
+          <CustomText style={styles.toastText}>{filterEvents}</CustomText>
           <TouchableOpacity 
             style={styles.toastButton}
             activeOpacity={0.7}
             onPress={this._openFilters}>
-            <CustomText style={styles.toastButtonText}>FILTRI</CustomText>
+            <CustomText style={styles.toastButtonText}>{filter}</CustomText>
           </TouchableOpacity>
         </View>
       </View>
@@ -285,12 +285,9 @@ class EventsScreen extends Component {
 
   render() {
     const { render } = this.state;
-    const { updateInProgressText, updateFinishedText } = this.props.locale.messages;
-    
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
         <ConnectedHeader iconTintColor={Colors.colorEventsScreen}/>
-        <UpdateHandler updateInProgressText={updateInProgressText} updateFinishedText={updateFinishedText} />
         {render && this._renderContent()}
       </View>
     )

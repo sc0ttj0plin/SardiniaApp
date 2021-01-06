@@ -106,7 +106,7 @@ class ItineraryStagesMapScreen extends Component {
       let isCordsInBound = coordsInBound(newCoords); 
       // Are coordinates within sardinia's area? fetch the updated pois list
       if (isCordsInBound) {
-        this.setState({ isCordsInBound, coords: newCoords, nearPoisRefreshing: true });
+        this.setState({ isCordsInBound, coords: newCoords, isNearEntitiesLoading: true });
       }
     }
   }

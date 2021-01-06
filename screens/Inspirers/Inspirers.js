@@ -8,8 +8,6 @@ import {
   EntityItem,
   AsyncOperationStatusIndicator,  
   ConnectedHeader, 
-  CustomText,
-  UpdateHandler
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -49,6 +47,7 @@ class InspirersScreen extends Component {
   componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
+    this.props.actions.checkForUpdates();
     this.props.actions.getCategories({ vid: Constants.VIDS.inspirersCategories });
 
     BackHandler.addEventListener('hardwareBackPress', this._onHardwareBackButtonClick);
@@ -251,8 +250,6 @@ class InspirersScreen extends Component {
 
   render() {
     const { render } = this.state;
-    const { updateInProgressText, updateFinishedText } = this.props.locale.messages;
-    
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
         <ConnectedHeader 
@@ -260,7 +257,6 @@ class InspirersScreen extends Component {
           iconTintColor={Colors.colorInspirersScreen}  
           backButtonVisible={this.props.others.inspirersTerms.length > 0}
         />
-        <UpdateHandler updateInProgressText={updateInProgressText} updateFinishedText={updateFinishedText} />
         {render && this._renderContent()}
       </View>
     )

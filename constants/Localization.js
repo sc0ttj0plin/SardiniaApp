@@ -5,6 +5,7 @@ const dict = {
     woman: "Donna",
     welcome: "Benvenuto",
     start: "Inizia",
+    go: "VAI",
     openNavigator: "Vai al navigatore",
     openMap: "Apri la mappa",
     time: "Sono le",
@@ -22,6 +23,7 @@ const dict = {
     loginText: "Registrandoti vedrai contenuti personalizzati in base alle tue preferenze",
     skip: "SALTA",
     exploreAccomodation: "Esplora le strutture ricettive",
+    nearAccomodations: "Strutture ricettive nelle vicinanze",
     logout: "Disconnetti",
     login: "Accedi",
     completeAccess: "Completa Profilo",
@@ -29,6 +31,9 @@ const dict = {
     whereToGo: "Esplora dove andare",
     exploreItineraries: "Esplora gli itinerari",
     exploreEvents: "Esplora gli eventi",
+    exploreEventsOnMap: "Esplora gli eventi sulla mappa",
+    filterEvents: "Flitra gli eventi",
+    filter: "FILTRA",
     explore: "Esplora",
     startTrip: "Inizia il tuo viaggio",
     chooseAccomodation: "Scegli dove alloggiare",
@@ -79,6 +84,7 @@ const dict = {
     phoneOnPressBtnTitle: "Chiama la struttura",
     websiteOnPressBtnTitle: "Vai",
     emailOnPressBtnTitle: "Scrivi",
+    retry: "Riprova",
     //NAVIGATION
     tabWhatToDo: "Cosa fare",
     tabWhereToGo: "Dove andare",
@@ -117,19 +123,27 @@ const dict = {
     logoutMsg: "Vuoi disconnettere il tuo account?",
     logoutBtn: "DISCONNETTI",
     fillInformation: "Inserisci qui i tuoi dati",
+    unsuccessfullLogin: "Siamo spiacenti ma il login è fallito",
+    successfullLogin: "Autenticazione riuscita!",
+    loggingIn: "Login in corso..",
+    loginError: "Errore di login:",
     //Parks
     nearParks: "Parcheggi nelle vicinanze!", 
     discoverParks: "Scopri i parcheggi liberi più vicini a te attraverso uno dei servizi convenzionati.",
     findParkBtn: "TROVA UN PARCHEGGIO",
     //Update
     updateInProgressText: "AGGIORNAMENTO IN CORSO", 
-    updateFinishedText: "AGGIORNAMENTO TERMINATO, RIAVVIO IN CORSO..."
+    updateFinishedText: "AGGIORNAMENTO TERMINATO, RIAVVIO IN CORSO...",
+    //Networking
+    disconnected: "Disconnesso...",
+    pleaseConnect: "Riattiva la connessione per utilizzare l'applicazione"
   },
   "en-gb": {
     //GENERIC
     man: "Man",
     woman: "Woman",
     welcome: "Hello",
+    go: "GO",
     start: "Start",
     openNavigator: "Open navigator",
     openMap: "Open map",
@@ -144,6 +158,7 @@ const dict = {
     nearToYou: "Near to you",
     nearTo: "Near to",
     exploreAccomodation: "Explore accomodations",
+    nearAccomodations: "Nearest accomodations",
     logout: "Logout",
     login: "Login",
     myPreferences: "My preferences",
@@ -153,6 +168,9 @@ const dict = {
     skip: "SKIP",
     exploreItineraries: "Explore itineraries",
     exploreEvents: "Explore events",
+    exploreEventsOnMap: "Explore events on map",
+    filterEvents: "Filter events",
+    filter: "FILTER",
     showMap: "SHOW MAP",
     whereToGo: "Explore where to go",
     explore: "Explore",
@@ -204,6 +222,7 @@ const dict = {
     phoneOnPressBtnTitle: "Call the host",
     websiteOnPressBtnTitle: "Open browser",
     emailOnPressBtnTitle: "Open email",
+    retry: "Retry",
     //NAVIGATION
     tabWhatToDo: "What to do",
     tabWhereToGo: "Where to go",
@@ -242,13 +261,20 @@ const dict = {
     logoutMsg: "Do you want to logout from your account?",
     logoutBtn: "LOGOUT",
     fillInformation: "Fill in the personal data form",
+    unsuccessfullLogin: "We are sorry but the login was unsuccessful",
+    successfullLogin: "Authentication successful!",
+    loggingIn: "Logging in..",
+    loginError: "Error loggin in:",
     //Parks
     nearParks: "Nearest parkings!", 
     discoverParks: "Discover the nearest free parkings provided by one of the affiliated services.",
     findParkBtn: "FIND A PARK",
     //Update
     updateInProgressText: "UPDATE IN PROGRESS", 
-    updateFinishedText: "UPDATE FINISHED, RESTARTING..."
+    updateFinishedText: "UPDATE FINISHED, RESTARTING...",
+    //Networking
+    disconnected: "Disconnected...",
+    pleaseConnect: "Please turn on internet connection to access the app contents"
   }
 }
 

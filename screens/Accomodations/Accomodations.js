@@ -7,28 +7,20 @@ import { FlatList, TouchableOpacity } from "react-native-gesture-handler"
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   CategoryListItem, 
-  AsyncOperationStatusIndicator,
   ConnectedHeader, 
-  EntityItem,
   AccomodationItem,
-  CustomText,
   SectionTitle,
-  UpdateHandler,
  } from "../../components";
 import ConnectedMapScrollable from "../../components/ConnectedMapScrollable"
 import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
-import { Ionicons } from '@expo/vector-icons';
-import { PROVIDER_GOOGLE } from 'react-native-maps';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 import Layout from '../../constants/Layout';
-import { greedyArrayFinder, getEntityInfo, getCoordinates, getSampleVideoIndex, getGalleryImages } from '../../helpers/utils';
 import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-import { LLHorizontalItemsFlatlist } from "../../components/loadingLayouts";
 
 const USE_DR = false;
 class AccomodationsScreen extends Component {
@@ -49,13 +41,17 @@ class AccomodationsScreen extends Component {
       render: USE_DR ? false : true,
       pois: [],
       nearPois: [],
-      nearPoisRefreshing: false,
+      isNearEntitiesLoading: false,
       coords: {},
       region: region || Constants.MAP.defaultRegion,
       sourceEntity,
       sourceEntityCoordinates,
       //
       snapPoints: null,
+      // loading
+      isEntitiesLoading: false, /* entities scrollable */
+      isNearEntitiesLoading: false, /* near entities in modal */
+      isCMVTLoading: false, /* clustered map view top loading  */
     };
   }
 
@@ -67,6 +63,7 @@ class AccomodationsScreen extends Component {
   componentDidMount() {
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
     //If it's the first mount gets pois categories ("art and archeology...")
+    this.props.actions.checkForUpdates();
     this.props.actions.getCategories({ vid: Constants.VIDS.accomodations });
     if ( this.props.others.geolocation.coords) {
       this._onUpdateCoords(this.props.others.geolocation.coords);
@@ -82,7 +79,7 @@ class AccomodationsScreen extends Component {
     if(prevProps.others.accomodationsTerms !== this.props.others.accomodationsTerms) {
       /* update also the header pois based on current cat */
       // this.setState({ nearPois: [] }, () => this._fetchNearestPois(this.state.coords)); 
-      this.setState({poisRefreshing: false});
+      this.setState({isEntitiesLoading: false});
       this._loadMorePois();
     }
 
@@ -95,6 +92,10 @@ class AccomodationsScreen extends Component {
 
   
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
+
+  _isSuccessData  = () => this.props.categories.success;
+  _isLoadingData  = () => this.props.categories.loading || this.state.isCMVTLoading || this.state.isEntitiesLoading || this.state.isNearEntitiesLoading;
+  _isErrorData    = () => this.props.categories.error;  
 
   /**
    * Get current term (category) and its child uuids, 
@@ -124,9 +125,9 @@ class AccomodationsScreen extends Component {
       let isCordsInBound = coordsInBound(newCoords); 
       // Are coordinates within sardinia's area? fetch the updated pois list
       if (isCordsInBound) {
-        this.setState({ isCordsInBound, coords: newCoords, nearPoisRefreshing: true });
+        this.setState({ isCordsInBound, coords: newCoords, isNearEntitiesLoading: true });
         this._fetchNearestPois(newCoords).then(() => {
-          this.setState({ nearPoisRefreshing: false });
+          this.setState({ isNearEntitiesLoading: false });
         });
       }
     }
@@ -170,14 +171,14 @@ class AccomodationsScreen extends Component {
    */
   _loadMorePois = () => {
     const { childUuids } = this._getCurrentTerm();
-    const { poisRefreshing, pois: statePois, coords, sourceEntity } = this.state;
+    const { isEntitiesLoading, pois: statePois, coords, sourceEntity } = this.state;
     let _coords = coords;
     if (sourceEntity)
       _coords = this.state.sourceEntityCoordinates;
 
-    if(_coords && this._isPoiList() && !poisRefreshing){
+    if(_coords && this._isPoiList() && !isEntitiesLoading){
       this.setState({
-        poisRefreshing: true
+        isEntitiesLoading: true
       }, () => {
         apolloQuery(actions.getNearestAccomodations({
           limit: Constants.PAGINATION.accomodationsLimit,
@@ -187,9 +188,11 @@ class AccomodationsScreen extends Component {
           uuids: childUuids
         })).then((pois) => {
           if (pois && pois.length > 0)
-            this.setState({ pois: [...statePois, ...pois], poisRefreshing: false });
+            this.setState({ pois: [...statePois, ...pois], isEntitiesLoading: false });
+          else 
+            this.setState({ isEntitiesLoading: false });
         }).catch(e => {
-          this.setState({ poisRefreshing: false });
+          this.setState({ isEntitiesLoading: false });
         });
       });
     }
@@ -249,16 +252,6 @@ class AccomodationsScreen extends Component {
     //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 24 (handle) - 36 (header text) - 160 (entityItem) - 10 (margin of entityItem) - 36 (whereToGo text)
   }; 
 
-  /**
-   * On scrollBottomSheet touch clear selection
-   * @param {*} e 
-   */
-  _onListHeaderPressIn = (e) => {
-    const entityType = Constants.ENTITY_TYPES.accomodations;
-    this.props.actions.setScrollablePressIn(entityType, !this.props.others.scrollablePressIn[entityType]); 
-    return true;
-  }
-
   /********************* Render methods go down here *********************/
 
   _renderHeaderText = () => {
@@ -317,8 +310,6 @@ _renderContent = () => {
   const { term, childUuids } = this._getCurrentTerm(true);
   const { nearToYou } = this.props.locale.messages;
   const { pois, snapIndex, coords, region, nearPois  } = this.state;
-  // const { scrollableSnapIndex } = this.props.others;
-  // const showExtraComponent = scrollableSnapIndex[Constants.ENTITY_TYPES.places];
   const isPoiList = this._isPoiList();
   let scrollableData = [];
   let renderScrollableListItem = null;
@@ -337,6 +328,7 @@ _renderContent = () => {
   const scrollableProps = {
     show: true,
     data: scrollableData,
+    // scrollableTopComponentIsLoading: this.state.isEntitiesLoading,
     onEndReached: this._loadMorePois,
     renderItem: renderScrollableListItem,
     keyExtractor: item => item.uuid,
@@ -419,12 +411,9 @@ _renderContent = () => {
 
 render() {
   const { render } = this.state;
-  const { updateInProgressText, updateFinishedText } = this.props.locale.messages;
-
   return (
     <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onPageLayout}>
       <ConnectedHeader onBackPress={this._backButtonPress} iconTintColor={Colors.colorAccomodationsScreen} />
-      <UpdateHandler updateInProgressText={updateInProgressText} updateFinishedText={updateFinishedText} />
       {render && this._renderContent()}
     </View>
   )

@@ -8,6 +8,7 @@ import MapView from 'react-native-maps';
 const windowHeight = Dimensions.get('window').height;
 import Layout from '../constants/Layout';
 import Colors from '../constants/Colors';
+import LoadingDots from './LoadingDots';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
@@ -104,7 +105,6 @@ class ScrollableContainer extends PureComponent {
       this._scrollable.snapTo(this.props.snapTo);
     }
         
-
     //console.log(prevSnap, currentSnap);
 
     if(prevProps.data !== this.props.data){
@@ -217,6 +217,19 @@ class ScrollableContainer extends PureComponent {
       </AsyncOperationStatusIndicator>);
   }
 
+  _renderTopComponentLoading = () => {
+    if (this.props.renderTopComponentLoading)
+      return this.props.renderTopComponentLoading();
+    else 
+      return (
+        <View style={styles.loadingDotsView1}>
+          <View style={styles.loadingDotsView2}>
+            <LoadingDots />
+          </View>
+        </View>
+      )
+  }
+
   render() {
     const { 
       numColumns, 
@@ -229,7 +242,6 @@ class ScrollableContainer extends PureComponent {
       ListHeaderComponent,
       data,
       onEndReached = ()=>{} } = this.props;
-
     if (snapPoints && snapPoints.length > 0)
       return (
           <View style={[styles.fill, {backgroundColor: "white", zIndex: -1,}]}>
@@ -241,6 +253,7 @@ class ScrollableContainer extends PureComponent {
                 {extraComponent()}
               </Animated.View>
             }
+            {this.props.topComponentIsLoading && this._renderTopComponentLoading()}
             <BottomSheet
               componentType="FlatList"
               key={numColumns} /* NOTE always set a key to refresh only this component and avoid unmounting */
@@ -342,6 +355,20 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     paddingBottom: 10
   },
+  loadingDotsView1: {
+    position: "absolute",
+    zIndex: 999,
+    backgroundColor: 'rgba(255,255,255,0.5)',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  loadingDotsView2: {
+    width: 100
+  }
 })
 
 

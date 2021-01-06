@@ -225,7 +225,7 @@ class MediaScreen extends PureComponent {
   _renderGalleryView = () => {
     const { lan } = this.props.locale;
     const { images, currentPage, initialPage } = this.state
-    console.log("images", images)
+    // console.log("images", images)
     const image = images[currentPage];
     const title = _.get(image, ['title_field', lan, 0, 'safe_value'], null);
 
@@ -299,7 +299,7 @@ class MediaScreen extends PureComponent {
 
   render() {
     const { render, type } = this.state;
-    console.log("type", type)
+    // console.log("type", type)
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
         {render && this._renderContent()}
