@@ -329,7 +329,6 @@ class ConnectedMapScrollable extends PureComponent {
    * Renders the top component over the scrollable
    */
   _renderTopComponent = () => {
-    console.log("top component type", this.props.topComponentType);
     if (this.props.topComponentType === "ClusteredMapViewTop") {
       const { term, coords, region, types, childUuids, isLoadingCb } = this.props.topComponentCMVTProps;
       const { entitiesType } = this.props;
