@@ -217,14 +217,14 @@ class ScrollableContainer extends PureComponent {
       </AsyncOperationStatusIndicator>);
   }
 
-  _renderTopComponentLoading = () => {
+  _renderTopComponentLoading = (state) => {
     if (this.props.renderTopComponentLoading)
-      return this.props.renderTopComponentLoading();
+      return this.props.renderTopComponentLoading(state);
     else 
       return (
         <View style={[styles.loadingDotsView1, {bottom: this.props.snapPoints[1] + 15}]}>
           <View style={styles.loadingDotsView2}>
-            <LoadingDots />
+            <LoadingDots isLoading={state}/>
           </View>
         </View>
       )
@@ -242,6 +242,7 @@ class ScrollableContainer extends PureComponent {
       ListHeaderComponent,
       data,
       onEndReached = ()=>{} } = this.props;
+
     if (snapPoints && snapPoints.length > 0)
       return (
           <View style={[styles.fill, {backgroundColor: "white", zIndex: -1,}]}>
@@ -253,7 +254,7 @@ class ScrollableContainer extends PureComponent {
                 {extraComponent()}
               </Animated.View>
             }
-            {this.props.topComponentIsLoading && this._renderTopComponentLoading()}
+            {this._renderTopComponentLoading(this.props.topComponentIsLoading)}
             <BottomSheet
               componentType="FlatList"
               key={numColumns} /* NOTE always set a key to refresh only this component and avoid unmounting */

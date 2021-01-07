@@ -1,6 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
-import { StyleSheet, Animated, Easing } from "react-native";
+import React, { PureComponent, useRef, useState, useEffect } from "react";
+import { StyleSheet } from "react-native";
 import Colors from '../constants/Colors';
+
+import Animated, { Easing, stopClock, withDelay} from 'react-native-reanimated';
 
 const defaultColors = [
   Colors.blue,
@@ -9,62 +11,119 @@ const defaultColors = [
   Colors.red
 ];
 
-function LoadingDots({ dots = 4, colors = defaultColors, size = 20, borderRadius }) {
-  const [animations, setAnimations] = useState([]);
-  const [reverse, setReverse] = useState(false);
+const {
+  Value,
+  Clock,
+  eq,
+  clockRunning,
+  not,
+  cond,
+  startClock,
+  timing,
+  interpolate,
+  and,
+  set,
+  block
+} = Animated;
 
-  const opacity = useRef(new Animated.Value(0)).current;
+function runTiming(clock, delay) {
+  const duration = 800;
+  const fromValue = 0;
+  const toValue = 1;
+
+  const state = {
+    finished: new Value(0),
+    position: new Value(fromValue),
+    time: new Value(0),
+    frameTime: new Value(0),
+  };
+
+  const config = {
+    duration: new Value(duration),
+    toValue: new Value(toValue),
+    easing: Easing.inOut(Easing.ease)
+  };
+
+  return [
+    cond(clockRunning(clock), 0, [
+      // If the clock isn't running we reset all the animation params and start the clock
+      startClock(clock),
+    ]),
+    // we run the step here that is going to update position
+    timing(clock, state, config),
+    // if the animation is over we stop the clock
+    cond(state.finished,
+      [
+        set(state.finished, 0),
+        set(state.time, 0),
+        set(state.frameTime, 0),
+        set(state.position, fromValue)
+      ]),
+    // we made the block return the updated position
+    state.position,
+  ];
+}
+
+
+function LoadingDots({ dots = 4, colors = defaultColors, size = 20, borderRadius, isLoading = false }) {
+  const [animations, setAnimations] = useState([]);
+  const [show, setShow] = useState(false);
+  const [showTimeout, setShowTimeout] = useState();
 
   useEffect(() => {
     const dotAnimations = [];
-    for (let i = 0; i < dots; i++) {
-      dotAnimations.push(new Animated.Value(0));
+    const fromValue = 0.8, toValue = 1;
+
+    for (var i = 0; i < dots; i++) {
+      var animation = new Value(0);
+      var scaleAnimation = new Value(0);
+      const clock = new Clock();
+      var timing = set(
+          animation,
+          runTiming(clock)
+      );
+      if(i == 0)
+        scaleAnimation = interpolate(timing, {
+          inputRange: [0, 0.125, 0.25, 1],
+          outputRange: [fromValue, toValue, fromValue, fromValue],
+        });
+      if(i == 1)
+        scaleAnimation = interpolate(timing, {
+          inputRange: [0, 0.25, 0.375, 0.5 ,1],
+          outputRange: [fromValue, fromValue, toValue, fromValue, fromValue],
+        });
+      if(i == 2)
+        scaleAnimation = interpolate(timing, {
+          inputRange: [0, 0.5, 0.625, 0.75, 1],
+          outputRange: [fromValue, fromValue, toValue, fromValue, fromValue],
+        });
+      if(i == 3)
+        scaleAnimation = interpolate(timing, {
+          inputRange: [0, 0.75, 0.875, 1],
+          outputRange: [fromValue, fromValue, toValue, fromValue],
+        });
+      dotAnimations.push({
+        animation,
+        scaleAnimation: scaleAnimation,
+        clock
+      });
     }
     setAnimations(dotAnimations);
-  }, []);
+  }, dots);
 
   useEffect(() => {
-    if (animations.length === 0) return;
-    loadingAnimation(animations, reverse);
-    appearAnimation();
-  }, [animations]);
+    clearTimeout(showTimeout);
+    if(!isLoading) {
+      var timeout = setTimeout(() => {setShow(false)}, 800);
+      setShowTimeout(timeout);
+    } else {
+      setShow(true);
+    }
+  }, [isLoading]);
 
-  function appearAnimation() {
-    Animated.timing(opacity, {
-      toValue: 1,
-      easing: Easing.ease,
-      useNativeDriver: true
-    }).start();
-  }
-
-  function floatAnimation(node, reverseY, delay, index) {
-    const floatSequence = Animated.sequence([
-      Animated.timing(node, {
-        toValue: reverseY ? 0.7 : 1,
-        easing: Easing.inOut(Easing.linear),
-        duration: 70,
-        delay: index * delay,
-        useNativeDriver: true
-      }),
-    ]);
-    return floatSequence;
-  }
-
-  function loadingAnimation(nodes, reverseY) {
-    Animated.parallel(
-      nodes.map((node, index) => floatAnimation(node, reverseY, 100, index))
-    ).start(() => {
-      setReverse(!reverse);
-    });
-  }
-
-  useEffect(() => {
-    if (animations.length === 0) return;
-    loadingAnimation(animations, reverse);
-  }, [reverse, animations]);
-
-  return (
-    <Animated.View style={[styles.loading, { opacity }]}>
+  
+  return show && (
+    <Animated.View style={[styles.loading]}>
       {animations.map((animation, index) => (
         <Animated.View
           // eslint-disable-next-line react/no-array-index-key
@@ -72,7 +131,7 @@ function LoadingDots({ dots = 4, colors = defaultColors, size = 20, borderRadius
           style={[
             { width: size, height: size, borderRadius: borderRadius || size / 2 },
             { backgroundColor: colors[index] || "#4dabf7" },
-            { transform: [{ scale: animation }] }
+            { transform: [{ scale: animation.scaleAnimation }] }
           ]}
         />
       ))}
