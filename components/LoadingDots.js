@@ -37,32 +37,22 @@ function LoadingDots({ dots = 4, colors = defaultColors, size = 20, borderRadius
     }).start();
   }
 
-  function floatAnimation(node, reverseY, delay) {
+  function floatAnimation(node, reverseY, delay, index) {
     const floatSequence = Animated.sequence([
       Animated.timing(node, {
-        toValue: reverseY ? 20 : -20,
-        easing: Easing.bezier(0.41, -0.15, 0.56, 1.21),
-        delay,
+        toValue: reverseY ? 0.7 : 1,
+        easing: Easing.inOut(Easing.linear),
+        duration: 70,
+        delay: index * delay,
         useNativeDriver: true
       }),
-      Animated.timing(node, {
-        toValue: reverseY ? -20 : 20,
-        easing: Easing.bezier(0.41, -0.15, 0.56, 1.21),
-        delay,
-        useNativeDriver: true
-      }),
-      Animated.timing(node, {
-        toValue: 0,
-        delay,
-        useNativeDriver: true
-      })
     ]);
     return floatSequence;
   }
 
   function loadingAnimation(nodes, reverseY) {
     Animated.parallel(
-      nodes.map((node, index) => floatAnimation(node, reverseY, index * 100))
+      nodes.map((node, index) => floatAnimation(node, reverseY, 100, index))
     ).start(() => {
       setReverse(!reverse);
     });
@@ -82,7 +72,7 @@ function LoadingDots({ dots = 4, colors = defaultColors, size = 20, borderRadius
           style={[
             { width: size, height: size, borderRadius: borderRadius || size / 2 },
             { backgroundColor: colors[index] || "#4dabf7" },
-            { transform: [{ translateY: animation }] }
+            { transform: [{ scale: animation }] }
           ]}
         />
       ))}

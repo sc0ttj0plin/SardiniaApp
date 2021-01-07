@@ -345,8 +345,10 @@ class ClusteredMapViewTop extends PureComponent {
 
   render() {
     var {initRegion, pois, clusters, selectedCluster} = this.state;
-    var {mapPaddingBottom = 65} = this.props;
-    // console.log("Render", this._region)
+    var {paddingBottom = 65} = this.props;
+
+    var bottom = paddingBottom - (this.props.fullscreen ? 30 : 0); 
+
     return (
       <>
         <MapView
@@ -354,7 +356,7 @@ class ClusteredMapViewTop extends PureComponent {
           mapPadding={{
             top: 0,
             right: 0,
-            bottom: mapPaddingBottom,
+            bottom: bottom,
             left: 0
           }}
           provider={ PROVIDER_GOOGLE }
@@ -374,7 +376,7 @@ class ClusteredMapViewTop extends PureComponent {
         {this.state.isCoordsInBound && 
           <Button
           type="clear"
-          containerStyle={[styles.buttonGoToMyLocationContainer, {bottom: 15 + (this.props.paddingBottom || 0) }]}
+          containerStyle={[styles.buttonGoToMyLocationContainer, {bottom: 15 + (paddingBottom || 0) }]}
           buttonStyle={[styles.buttonGoToMyLocation]}
           onPress={this._onGoToMyLocationPressed}
           icon={

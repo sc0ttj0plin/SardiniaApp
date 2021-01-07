@@ -51,7 +51,6 @@ class EventsMapScreen extends PureComponent {
     const hideScrollable = _.get(props.route, "params.hideScrollable", false);
     const headerTitle = _.get(props.route, "params.headerTitle");
 
-    console.log("events", events.length, hideScrollable)
     this.state = {
       render: USE_DR ? false : true,
       events: events,

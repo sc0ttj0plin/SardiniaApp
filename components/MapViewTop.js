@@ -198,7 +198,9 @@ class MapViewTop extends PureComponent {
   /* Renders the topmost component: a map in our use case */
   _renderMap = () => {
     const { coords, region } = this.state;
-    const {mapPaddingBottom = 65} = this.props;
+    const {paddingBottom = 65} = this.props;
+
+    var bottom = paddingBottom - (this.props.fullscreen ? 30 : 0); 
 
     return (
       <MapView
@@ -208,7 +210,7 @@ class MapViewTop extends PureComponent {
         mapPadding={{
           top: 0,
           right: 0,
-          bottom: mapPaddingBottom,
+          bottom: bottom,
           left: 0
         }}
         provider={ PROVIDER_GOOGLE }

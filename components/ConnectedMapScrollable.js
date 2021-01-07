@@ -349,6 +349,7 @@ class ConnectedMapScrollable extends PureComponent {
           showNearEntitiesOnPress={this._showExtraModal}
           paddingBottom={this.state.snapPoints[1]} /* set padding as the height of the first snap point */
           isLoadingCb={isLoadingCb} /* to know if is loading */
+          fullscreen={this.props.fullscreen}
         />
         </>
       )
@@ -369,6 +370,7 @@ class ConnectedMapScrollable extends PureComponent {
           onMarkerPressEvent={onMarkerPressEvent}
           onSelectedEntity={this._onSelectedEntity}
           paddingBottom={this.state.snapPoints[1]} /* set padding as the height of the first snap point */
+          fullscreen={this.props.fullscreen}
         />
       )
     } else {

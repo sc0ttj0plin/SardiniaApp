@@ -62,7 +62,7 @@ class PlacesScreen extends PureComponent {
       // loading
       isEntitiesLoading: false, /* entities scrollable */
       isNearEntitiesLoading: false, /* near entities in modal */
-      isCMVTLoading: false, /* clustered map view top loading  */
+      isCMVTLoading: true, /* clustered map view top loading  */
     };
 
     this._pageLayoutHeight = Layout.window.height;

@@ -51,7 +51,7 @@ class ItinerariesScreen extends PureComponent {
       snapPoints: [],
       tracksViewChanges: true,
       //loading
-      isEntitiesLoading: false, /* map view top loading */
+      isEntitiesLoading: true, /* map view top loading */
     };      
   }
 
