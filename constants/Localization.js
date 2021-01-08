@@ -128,7 +128,7 @@ const dict = {
     disconnected: "Disconnesso...",
     pleaseConnect: "Riattiva la connessione per utilizzare l'applicazione"
   },
-  "en-gb": {
+  "en": {
     //GENERIC
     man: "Man",
     woman: "Woman",

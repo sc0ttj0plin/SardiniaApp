@@ -1,6 +1,7 @@
 import Colors from './Colors';
 import { Platform } from "react-native"
 import * as Location from 'expo-location';
+import * as Localization from 'expo-localization';
 
 // Actions
 export const SET_URL = 'sardinia/others/SET_URL';
@@ -140,7 +141,7 @@ export const FETCH_NUM_MONTHS_FORWARD = 0;
 // Others
 /* probability that a main component checks for OTA updates on didMount: 0.5: 50%, 0.2: 20% */
 export const CHECK_FOR_UPDATES_WHILE_FOREGROUNDED_PROB = 0.1; 
-export const DEFAULT_LANGUAGE = 'it';
+export const DEFAULT_LANGUAGE = Localization.locale;
 export const DATE_SEP = '-';
 export const DATE_FORMAT = `YYYY${DATE_SEP}MM${DATE_SEP}DD`;
 export const DATE_FORMAT_RENDER = `DD / MM / YYYY`;
