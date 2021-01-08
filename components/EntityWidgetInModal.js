@@ -51,7 +51,7 @@ class EntityWidgetInModal extends PureComponent {
 
     if(entity) {
       if (this._isClusteredEntity) 
-        this._fetchEntity();
+        setTimeout(this._fetchEntity, 3000);
       else {
         if(this.props.getCoordsFun) {
           const coordinates = this.props.getCoordsFun(entity);
@@ -88,6 +88,7 @@ class EntityWidgetInModal extends PureComponent {
           let entity = data[0];
           entity.distance = this._computeDistance(this.props.entity, this.props.coords);
           entity.distanceStr = entity.distance ? distanceToString(entity.distance) : null
+          entity.loaded = true
           this.setState({ entity });
         }).catch(e => {
           console.error(e.message);
@@ -99,7 +100,7 @@ class EntityWidgetInModal extends PureComponent {
   _openEntity = (entity) => {
     switch(this.props.entityType) {
       case Constants.ENTITY_TYPES.places:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item: entity, mustFetch: false } );
+        this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item: entity, mustFetch: entity.loaded ? false : true } );
         break;
       case Constants.ENTITY_TYPES.events:
         this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item: entity });
@@ -108,7 +109,7 @@ class EntityWidgetInModal extends PureComponent {
         this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, { item: entity })
         break;
       case Constants.ENTITY_TYPES.accomodations:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavAccomodationScreen, { item: entity, mustFetch: false })
+        this.props.navigation.navigate(Constants.NAVIGATION.NavAccomodationScreen, { item: entity, mustFetch: entity.loaded ? false : true })
         break;
       default:
         break;

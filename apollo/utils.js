@@ -125,6 +125,7 @@ export const processEntity = function(entity, coords=null) {
       stages[el.language].push(el);
     });
     entity.stages = stages;
+    entity.loaded = true;
   }
 
 

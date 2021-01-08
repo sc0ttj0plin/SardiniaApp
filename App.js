@@ -24,6 +24,7 @@ import config from './config/config';
 import * as firebase from 'firebase';
 import * as Constants from './constants';
 import * as Location from 'expo-location';
+import LoadingDots from './components/LoadingDots';
 //import backgroundTasks from './helpers/backgroundTasks'; /* Loads background tasks even if not invoked */
 
 enableScreens();
@@ -33,30 +34,29 @@ export default class App extends Component {
 
   constructor(props){
     super(props);
-    this._skipVideo = true;  
     this.state = {
+      introTimeout: 2000,
       isSplashReady: false,
       isAppReady: false,
       isLoadingComplete: false,
-      isVideoEnded: false,
-      isVideoLoaded: false,
-      isVideoPlaying: false,
+      isIntroEnded: false,
+      isIntroPlaying: false,
     };
     //Ignores warning boxes
     LogBox.ignoreLogs(['Warning:']); //or: LogBox.ignoreAllLogs();
-    SplashScreen.preventAutoHideAsync();
-    if(this._skipVideo)
-      SplashScreen.hideAsync();
+    SplashScreen.preventAutoHideAsync(); 
   }
 
   async componentDidMount() {
     await this._initGeolocation();
+    this._initAppAsync();
   }
   
   _initAppAsync = async () => {
     await this._loadResourcesAsync();
     await this._initLinkingAsync();
     await this._initFirebaseAppAndLogin();
+    this._handleFinishLoading();
   }
 
   _initLinkingAsync = async () => {
@@ -117,6 +117,7 @@ export default class App extends Component {
         require('./assets/images/robot-dev.png'),
         require('./assets/images/robot-prod.png'),
         require('./assets/videos/splash_mare.gif'), 
+        require('./assets/images/splash_mare.png'), 
         require('./assets/icons/play.png'),
         require('./assets/icons/play_bg.png'),
         require('./assets/icons/ombra_video.png'),
@@ -153,106 +154,104 @@ export default class App extends Component {
   _handleFinishLoading() {
     this.setState({
       isLoadingComplete: true
+    }, () => {
+      setTimeout(() => SplashScreen.hideAsync(), 300);
     });
   }
 
-  _onSplashGifError = (e) => {
+  _onSplashIntroError = (e) => {
     console.log("error", e);
-  }
- 
-  _onSplashGifLoad = () => {
     setTimeout( () => {
       this.setState({
-        isVideoEnded: true
+        isIntroEnded: true
       })
-    }, 2000);
-    this.setState({isVideoLoaded: true})
+    }, this.state.introTimeout);
+  }
+ 
+  _onSplashIntroLoad = () => {
+    setTimeout( () => {
+      this.setState({
+        isIntroEnded: true
+      })
+    }, this.state.introTimeout);
   }
 
-  // _onPlaybackStatusUpdate(status) {
-  //   if(status.didJustFinish) {
-  //     this._onVideoEnd();
-  //   }
-  //   if(status.isPlaying && !this.state.isVideoPlaying) {
-  //     this.setState({
-  //       isVideoPlaying: true
-  //     }, () => SplashScreen.hide());
-  //   }
-  // }
 
-  _renderSplashGif = () => {
+  //<Image 
+  //source={require("./assets/videos/splash_mare.gif")}
+  //onLoad={this._onSplashIntroLoad}
+  //resizeMode="cover"
+  //style={[styles.backgroundGif]} />
+
+  _renderSplashIntro = () => {
     return (
       <View style={styles.loadingGif}>
         <Image 
           source={require("./assets/images/splash_mare.png")}
           resizeMode="cover"
+          onLoad={this._onSplashIntroLoad}
           style={[styles.backgroundGif]} />
-        <Image 
-          source={require("./assets/videos/splash_mare.gif")}
-          onLoad={this._onSplashGifLoad}
-          onError={this._onSplashGifError}
-          resizeMode="cover"
-          style={[styles.backgroundGif]} />
+        <View style={[styles.loadingDotsView1, {bottom: 30}]}>
+          <View style={styles.loadingDotsView2}>
+            <LoadingDots isLoading={true}/>
+          </View>
+        </View>
       </View>
     );
   }
 
   render() {
-    if(!this.state.isLoadingComplete)
-      return (
-        <AppLoading
-          startAsync={this._initAppAsync}
-          onError={this._handleLoadingError}
-          onFinish={() => this._handleFinishLoading()}
-        />
-      )
-    else
+    if(this.state.isLoadingComplete) {
       return (
         <Provider store={store}>
           <PersistGate loading={<View style={[styles.container]} />} persistor={persistor}>
             <ApolloProvider client={client}>
               <SafeAreaProvider style={{ flex: 1 }} forceInset={{ top: 'always', bottom:'always' }}>
-                <AppLoading
-                  startAsync={this._initAppAsync}
-                  onError={this._handleLoadingError}
-                  onFinish={() => this._handleFinishLoading()}
-                />
-                { this.state.isLoadingComplete && 
                   <View style={[styles.container]}>
                     {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
                     <AppNavigator ref={nav => { this._navigator = nav; }} />
                     <ConnectedUpdateHandler />
                     <ConnectedNetworkChecker />
                     {
-                      !this._skipVideo && !this.state.isVideoEnded && this._renderSplashGif()
+                      !this.state.isIntroEnded && this._renderSplashIntro()
                     }
                   </View>
-                  
-                }
               </SafeAreaProvider>
             </ApolloProvider>
           </PersistGate>
         </Provider>
       );
     }
+    else return null;
   }
+}
 
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   backgroundGif: {
     width: "100%",
-    height: "100%"
+    height: "100%",
+    position: "absolute"
   },
   loadingGif: {
     flex: 1,
     position: "absolute",
-    zIndex: 99999,
+    zIndex: 10000,
     width: "100%",
     height: "100%",
-    zIndex: 999
+  },
+  loadingDotsView1: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    width: '100%',
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  loadingDotsView2: {
+    width: 100
   }
 });

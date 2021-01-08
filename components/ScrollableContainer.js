@@ -358,7 +358,6 @@ const styles = StyleSheet.create({
   },
   loadingDotsView1: {
     position: "absolute",
-    zIndex: 999,
     bottom: 0,
     left: 0,
     width: '100%',

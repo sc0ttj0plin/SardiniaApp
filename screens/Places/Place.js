@@ -79,7 +79,7 @@ class PlaceScreen extends Component {
   /* NOTE: since this screen is not */
   componentDidUpdate(prevProps) {
     const { uuid } = this.state;
-    if (prevProps.pois.data !== this.props.pois.data) {
+    if (prevProps.pois.data !== this.props.pois.data || (this.props.pois.data[uuid] && this.props.pois.data[uuid].loaded)) {
       this._parseEntity(this.props.pois.data[uuid]);
     }
   }

@@ -72,7 +72,7 @@ function LoadingDots({ dots = 4, colors = defaultColors, size = 20, borderRadius
 
   useEffect(() => {
     const dotAnimations = [];
-    const fromValue = 0.8, toValue = 1;
+    const fromValue = 0.6, toValue = 1;
 
     for (var i = 0; i < dots; i++) {
       var animation = new Value(0);
