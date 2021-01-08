@@ -38,7 +38,7 @@ export default class App extends Component {
       isSplashReady: false,
       isAppReady: false,
       isLoadingComplete: false,
-      isVideoEnded: this._skipVideo,
+      isVideoEnded: false,
       isVideoLoaded: false,
       isVideoPlaying: false,
     };
@@ -165,7 +165,8 @@ export default class App extends Component {
       this.setState({
         isVideoEnded: true
       })
-    }, 2900); 
+    }, 2000);
+    this.setState({isVideoLoaded: true})
   }
 
   // _onPlaybackStatusUpdate(status) {
@@ -182,11 +183,10 @@ export default class App extends Component {
   _renderSplashGif = () => {
     return (
       <View style={styles.loadingGif}>
-        <AppLoading
-          startAsync={this._initAppAsync}
-          onError={this._handleLoadingError}
-          onFinish={() => this._handleFinishLoading()}
-        />
+        <Image 
+          source={require("./assets/images/splash_mare.png")}
+          resizeMode="cover"
+          style={[styles.backgroundGif]} />
         <Image 
           source={require("./assets/videos/splash_mare.gif")}
           onLoad={this._onSplashGifLoad}
@@ -198,9 +198,15 @@ export default class App extends Component {
   }
 
   render() {
-    if(!this._skipVideo && !this.state.isVideoEnded)
-      return this._renderSplashGif();
-    else{
+    if(!this.state.isLoadingComplete)
+      return (
+        <AppLoading
+          startAsync={this._initAppAsync}
+          onError={this._handleLoadingError}
+          onFinish={() => this._handleFinishLoading()}
+        />
+      )
+    else
       return (
         <Provider store={store}>
           <PersistGate loading={<View style={[styles.container]} />} persistor={persistor}>
@@ -217,7 +223,11 @@ export default class App extends Component {
                     <AppNavigator ref={nav => { this._navigator = nav; }} />
                     <ConnectedUpdateHandler />
                     <ConnectedNetworkChecker />
+                    {
+                      !this._skipVideo && !this.state.isVideoEnded && this._renderSplashGif()
+                    }
                   </View>
+                  
                 }
               </SafeAreaProvider>
             </ApolloProvider>
@@ -226,7 +236,6 @@ export default class App extends Component {
       );
     }
   }
-}
 
 
 const styles = StyleSheet.create({
@@ -236,14 +245,11 @@ const styles = StyleSheet.create({
   },
   backgroundGif: {
     width: "100%",
-    height: "100%",
-    backgroundColor: "black",
+    height: "100%"
   },
   loadingGif: {
     flex: 1,
     position: "absolute",
-    top: 0,
-    left: 0,
     zIndex: 99999,
     width: "100%",
     height: "100%",
