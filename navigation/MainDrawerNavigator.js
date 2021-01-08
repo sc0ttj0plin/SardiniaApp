@@ -70,9 +70,9 @@ const eventsNavigationOptions = {
   languageKey: "tabEvents",
   name: NavEventsScreen,
   backgroundActiveColor: Colors.colorEventsScreen, 
-  icon: Platform.OS === 'ios' ? 'calendar' : 'calendar',
-  iconSourceDefault: require("../assets/icons/events_default.png"),
-  iconSourceActive: require("../assets/icons/events_active.png"),
+  icon: 'icon-event',
+  //iconSourceDefault: require("../assets/icons/events_default.png"),
+  //iconSourceActive: require("../assets/icons/events_active.png"),
   tabBarLabel: ConnectedTextEvents,
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-calendar' : 'md-calendar'} />
@@ -83,9 +83,9 @@ const itinerariesNavigationOptions = {
   languageKey: "tabItineraries",
   name: NavItinerariesScreen, 
   backgroundActiveColor: Colors.colorItinerariesScreen,
-  icon: Platform.OS === 'ios' ? 'compass': 'compass',
-  iconSourceDefault: require("../assets/icons/itineraries_default.png"),
-  iconSourceActive: require("../assets/icons/itineraries_active.png"), 
+  icon: 'icon-itinerary',
+  //iconSourceDefault: require("../assets/icons/itineraries_default.png"),
+  //iconSourceActive: require("../assets/icons/itineraries_active.png"), 
   tabBarLabel: ConnectedTextItineraries,
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'md-analytics': 'md-analytics'} />
@@ -108,9 +108,9 @@ const inspirersNavigationOptions = {
   languageKey: "tabWhatToDo",
   name: NavInspirersScreen, 
   backgroundActiveColor: Colors.colorInspirersScreen, 
-  icon: Platform.OS === 'ios' ? 'flag' : 'flag',
-  iconSourceDefault: require("../assets/icons/whatToDo_default.png"),
-  iconSourceActive: require("../assets/icons/whatToDo_active.png"),
+  icon: 'icon-inspirer',
+  //iconSourceDefault: require("../assets/icons/whatToDo_default.png"),
+  //iconSourceActive: require("../assets/icons/whatToDo_active.png"),
   tabBarLabel: ConnectedTextExperiences,
   tabBarIcon: ({ focused }) => (
     <>
@@ -123,13 +123,13 @@ const placesNavigationOptions = {
   languageKey: "tabWhereToGo",
   name: NavPlacesScreen, 
   backgroundActiveColor: Colors.colorPlacesScreen, 
-  icon: Platform.OS === 'ios' ? 'map' : 'map',
-  iconSourceDefault: require("../assets/icons/whereToGo_default.png"),
-  iconSourceActive: require("../assets/icons/whereToGo_active.png"),
+  icon: 'icon-place',
+  //iconSourceDefault: require("../assets/icons/whereToGo_default.png"),
+  //iconSourceActive: require("../assets/icons/whereToGo_active.png"),
   tabBarLabel: ConnectedTextPlaces,
   tabBarIcon: ({ focused }) => (
     <>
-    <TabBarIcon focused={focused} name={ Platform.OS === 'ios' ? 'ios-map' : 'md-map' }  />
+    <TabBarIcon focused={focused} name={ 'icona-luoghi' }  />
     </>
   ),
 };

@@ -62,7 +62,7 @@ class PlacesScreen extends PureComponent {
       // loading
       isEntitiesLoading: false, /* entities scrollable */
       isNearEntitiesLoading: false, /* near entities in modal */
-      isCMVTLoading: false, /* clustered map view top loading  */
+      isCMVTLoading: true, /* clustered map view top loading  */
     };
 
     this._pageLayoutHeight = Layout.window.height;
@@ -380,10 +380,10 @@ class PlacesScreen extends PureComponent {
           onBackPress={this._backButtonPress}
           iconTintColor={Colors.colorPlacesScreen}  
           backButtonVisible={this.props.others.placesTerms.length > 0}
-        />
+        /> 
         <ConnectedAuthHandler loginOptional={true} />
         {render && this._renderContent()}
-      </View>
+      </View> 
     )
   }
   

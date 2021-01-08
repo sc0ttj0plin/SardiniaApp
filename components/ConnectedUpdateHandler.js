@@ -78,17 +78,16 @@ class UpdateHandler extends PureComponent {
           transparent={true}
           visible={showUpdate}
           onRequestClose={() => { }}>
-            <View style={[styles.fill]}>
-            <View style={styles.loadingDotsView1}>
-              <View style={styles.loadingDotsView2}>
-                <LoadingDots />
-              </View>
-            </View>
-            <View 
-              style={styles.modalView} 
-            >
+          <View style={[styles.fill]}>
+            <View style={styles.modalView}>
+              
               <TouchableWithoutFeedback>
                 <View style={styles.modalWindow}>
+                  <View style={styles.loadingDotsView1}>
+                    <View style={styles.loadingDotsView2}>
+                      <LoadingDots />
+                    </View>
+                  </View>
                   {showUpdate ? 
                     <Text style={styles.modalTitle}>{updateInProgressText}</Text> 
                     :
@@ -202,7 +201,8 @@ const styles = StyleSheet.create({
     width: 280, 
     height: 200,
     flexDirection: "column",
-    borderRadius: 4
+    borderRadius: 4,
+    position: "absolute"
   },
   modalTitle: {
     fontSize: 15,
@@ -248,11 +248,13 @@ const styles = StyleSheet.create({
   loadingDotsView1: {
     position: "absolute",
     zIndex: 999,
-    backgroundColor: 'rgba(255,255,255,0.5)',
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
     top: 0,
     left: 0,
-    width: '100%',
-    height: '100%',
+    // width: '100%',
+    // height: '100%',
+    width: 280, 
+    height: 200,
     alignItems: "center",
     justifyContent: "center"
   },

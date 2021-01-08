@@ -333,9 +333,9 @@ class ConnectedMapScrollable extends PureComponent {
       const { term, coords, region, types, childUuids, isLoadingCb } = this.props.topComponentCMVTProps;
       const { entitiesType } = this.props;
       return (
-        <> 
+        <>  
         <ClusteredMapViewTop
-          term={term}
+          term={term} 
           coords={coords}
           region={region}
           entityType={entitiesType}
@@ -348,6 +348,7 @@ class ConnectedMapScrollable extends PureComponent {
           showNearEntitiesOnPress={this._showExtraModal}
           paddingBottom={this.state.snapPoints[1]} /* set padding as the height of the first snap point */
           isLoadingCb={isLoadingCb} /* to know if is loading */
+          fullscreen={this.props.fullscreen}
         />
         </>
       )
@@ -368,6 +369,7 @@ class ConnectedMapScrollable extends PureComponent {
           onMarkerPressEvent={onMarkerPressEvent}
           onSelectedEntity={this._onSelectedEntity}
           paddingBottom={this.state.snapPoints[1]} /* set padding as the height of the first snap point */
+          fullscreen={this.props.fullscreen}
         />
       )
     } else {

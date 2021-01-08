@@ -3,7 +3,7 @@ import * as SplashScreen from 'expo-splash-screen'
 import { Asset } from 'expo-asset';
 import * as Font from 'expo-font';
 import React, { Component } from 'react';
-import { Platform, StatusBar, StyleSheet, View, LogBox, Linking } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View, LogBox, Linking, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -24,7 +24,8 @@ import config from './config/config';
 import * as firebase from 'firebase';
 import * as Constants from './constants';
 import * as Location from 'expo-location';
-import backgroundTasks from './helpers/backgroundTasks'; /* Loads background tasks even if not invoked */
+import LoadingDots from './components/LoadingDots';
+//import backgroundTasks from './helpers/backgroundTasks'; /* Loads background tasks even if not invoked */
 
 enableScreens();
 
@@ -34,14 +35,13 @@ export default class App extends Component {
   constructor(props){
     super(props);
     this.state = {
+      introTimeout: 2000,
       isSplashReady: false,
       isAppReady: false,
       isLoadingComplete: false,
-      isVideoEnded: false,
-      isVideoLoaded: false,
-      isVideoPlaying: false,
+      isIntroEnded: false,
+      isIntroPlaying: false,
     };
-    this._skipVideo = true;
     //Ignores warning boxes
     LogBox.ignoreLogs(['Warning:']); //or: LogBox.ignoreAllLogs();
     SplashScreen.preventAutoHideAsync();
@@ -50,12 +50,14 @@ export default class App extends Component {
 
   async componentDidMount() {
     await this._initGeolocation();
+    this._initAppAsync();
   }
   
   _initAppAsync = async () => {
     await this._loadResourcesAsync();
     await this._initLinkingAsync();
     await this._initFirebaseAppAndLogin();
+    this._handleFinishLoading();
   }
 
   _initLinkingAsync = async () => {
@@ -115,6 +117,8 @@ export default class App extends Component {
       Asset.loadAsync([
         require('./assets/images/robot-dev.png'),
         require('./assets/images/robot-prod.png'),
+        require('./assets/videos/splash_mare.gif'), 
+        require('./assets/images/splash_mare.png'), 
         require('./assets/icons/play.png'),
         require('./assets/icons/play_bg.png'),
         require('./assets/icons/ombra_video.png'),
@@ -139,6 +143,7 @@ export default class App extends Component {
         'montserrat-semiBold': require('./assets/fonts/Montserrat-SemiBold.ttf'),
         'montserrat-light': require('./assets/fonts/Montserrat-Light.ttf'),
         'montserrat-medium': require('./assets/fonts/Montserrat-Medium.ttf'),
+        'icomoon': require('./assets/fonts/custom/icomoon.ttf'),
       })
     ]);
   }
@@ -150,82 +155,75 @@ export default class App extends Component {
   _handleFinishLoading() {
     this.setState({
       isLoadingComplete: true
-    }, () => this._playVideo());
-  }
-
-  _onVideoEnd() {
-    this.setState({
-      isVideoEnded: true
+    }, () => {
+      setTimeout(() => SplashScreen.hideAsync(), 300);
     });
   }
 
-  _onVideoError(e) {
-    console.log(e);
-  }
-
-  _onVideoLoad() {
-    this.setState({
-      isVideoLoaded: true,
-    }, () => this._playVideo());
-  }
-
-  _playVideo() {
-    if(this.state.isLoadingComplete && this.state.isVideoLoaded && this.vPlayer) {
-      this.vPlayer.playAsync();
-    }
-  }
-
-  _onPlaybackStatusUpdate(status) {
-    if(status.didJustFinish) {
-      this._onVideoEnd();
-    }
-    if(status.isPlaying && !this.state.isVideoPlaying) {
+  _onSplashIntroError = (e) => {
+    console.log("error", e);
+    setTimeout( () => {
       this.setState({
-        isVideoPlaying: true
-      }, () => SplashScreen.hide());
-    }
+        isIntroEnded: true
+      })
+    }, this.state.introTimeout);
+  }
+ 
+  _onSplashIntroLoad = () => {
+    setTimeout( () => {
+      this.setState({
+        isIntroEnded: true
+      })
+    }, this.state.introTimeout);
+  }
+
+
+  //<Image 
+  //source={require("./assets/videos/splash_mare.gif")}
+  //onLoad={this._onSplashIntroLoad}
+  //resizeMode="cover"
+  //style={[styles.backgroundGif]} />
+
+  _renderSplashIntro = () => {
+    return (
+      <View style={styles.loadingGif}>
+        <Image 
+          source={require("./assets/images/splash_mare.png")}
+          resizeMode="cover"
+          onLoad={this._onSplashIntroLoad}
+          style={[styles.backgroundGif]} />
+        <View style={[styles.loadingDotsView1, {bottom: 30}]}>
+          <View style={styles.loadingDotsView2}>
+            <LoadingDots isLoading={true}/>
+          </View>
+        </View>
+      </View>
+    );
   }
 
   render() {
-    if ((!this.state.isLoadingComplete && !this.props.skipLoadingScreen) || (!this._skipVideo && !this.state.isVideoEnded)) {
+    if(this.state.isLoadingComplete) {
       return (
-        <View>
-          <AppLoading
-            startAsync={this._initAppAsync}
-            onError={this._handleLoadingError}
-            onFinish={() => this._handleFinishLoading()}
-          />
-          <Video
-            source={{uri: "https://interactive.crs4.it/splash_mare.mp4"}}
-            ref={(ref) => {
-              this.vPlayer = ref
-            }}
-            onLoad={this._onVideoLoad.bind(this)}
-            onError={this._onVideoError.bind(this)}
-            onPlaybackStatusUpdate={this._onPlaybackStatusUpdate.bind(this)}
-            resizeMode="cover"
-            style={[styles.backgroundVideo]} />
-        </View>
+        <Provider store={store}>
+          <PersistGate loading={<View style={[styles.container]} />} persistor={persistor}>
+            <ApolloProvider client={client}>
+              <SafeAreaProvider style={{ flex: 1 }} forceInset={{ top: 'always', bottom:'always' }}>
+                  <View style={[styles.container]}>
+                    {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+                    <AppNavigator ref={nav => { this._navigator = nav; }} />
+                    <ConnectedUpdateHandler />
+                    <ConnectedNetworkChecker />
+                    {
+                      !this.state.isIntroEnded && this._renderSplashIntro()
+                    }
+                  </View>
+              </SafeAreaProvider>
+            </ApolloProvider>
+          </PersistGate>
+        </Provider>
       );
     }
-    else {
-      return (
-      <Provider store={store}>
-        <PersistGate loading={<View style={[styles.container]} />} persistor={persistor}>
-          <ApolloProvider client={client}>
-            <SafeAreaProvider style={{ flex: 1 }} forceInset={{ top: 'always', bottom:'always' }}>
-              <View style={[styles.container]}>
-                {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-                <AppNavigator ref={nav => { this._navigator = nav; }} />
-                <ConnectedUpdateHandler />
-                <ConnectedNetworkChecker />
-              </View>
-            </SafeAreaProvider>
-          </ApolloProvider>
-        </PersistGate>
-      </Provider>
-      );
-    }
+    else return null;
   }
 }
 
@@ -233,11 +231,28 @@ export default class App extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
-  backgroundVideo: {
+  backgroundGif: {
     width: "100%",
     height: "100%",
-    backgroundColor: "black"
+    position: "absolute"
+  },
+  loadingGif: {
+    flex: 1,
+    position: "absolute",
+    zIndex: 10000,
+    width: "100%",
+    height: "100%",
+  },
+  loadingDotsView1: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    width: '100%',
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  loadingDotsView2: {
+    width: 100
   }
 });

@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
     height: Layout.statusbarHeight, 
     width: '100%', 
     marginTop: -Layout.statusbarHeight, 
-    backgroundColor: Colors.lightGray
+    backgroundColor: Colors.lightGray,
   },
   searchBarExternalContainer: {
     backgroundColor: 'transparent',

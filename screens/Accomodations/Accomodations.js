@@ -51,7 +51,7 @@ class AccomodationsScreen extends Component {
       // loading
       isEntitiesLoading: false, /* entities scrollable */
       isNearEntitiesLoading: false, /* near entities in modal */
-      isCMVTLoading: false, /* clustered map view top loading  */
+      isCMVTLoading: true, /* clustered map view top loading  */
     };
   }
 
@@ -328,7 +328,7 @@ _renderContent = () => {
   const scrollableProps = {
     show: true,
     data: scrollableData,
-    // scrollableTopComponentIsLoading: this.state.isEntitiesLoading,
+    scrollableTopComponentIsLoading: this._isLoadingData(),
     onEndReached: this._loadMorePois,
     renderItem: renderScrollableListItem,
     keyExtractor: item => item.uuid,
@@ -341,6 +341,7 @@ _renderContent = () => {
     region,
     types: [Constants.NODE_TYPES.accomodations],
     childUuids,
+    isLoadingCb: (isLoading) => this.setState({ isCMVTLoading: isLoading }),
   };
 
   const extraComponentProps = {

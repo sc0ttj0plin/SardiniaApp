@@ -34,6 +34,8 @@ class EventsScreen extends Component {
   constructor(props) {
     super(props);
 
+    moment.locale(Constants.DEFAULT_LANGUAGE);
+
     /* Get props from navigation */
     //let { someNavProps } = props.route.params; 
     for (let language in Constants.SCREENS.events.agendaLocale)
@@ -186,24 +188,25 @@ class EventsScreen extends Component {
   /********************* Render methods go down here *********************/
 
   _renderBottomToast = () => {
+    const { go, exploreEventsOnMap, filterEvents, filter } = this.props.locale.messages;
     return(
       <View style={styles.toastContainer}>
         <View style={styles.toastInnerContainer}>
-          <CustomText style={styles.toastText}>Esplora gli eventi sulla mappa</CustomText>
+          <CustomText style={styles.toastText}>{exploreEventsOnMap}</CustomText>
           <TouchableOpacity 
             style={styles.toastButton}
             activeOpacity={0.7}
             onPress={this._openMap}>
-            <CustomText style={styles.toastButtonText}>VAI</CustomText>
+            <CustomText style={styles.toastButtonText}>{go}</CustomText>
           </TouchableOpacity>
         </View>
         <View style={[styles.toastInnerContainer,{marginTop: 5}]}>
-          <CustomText style={styles.toastText}>Scegli quali eventi vedere</CustomText>
+          <CustomText style={styles.toastText}>{filterEvents}</CustomText>
           <TouchableOpacity 
             style={styles.toastButton}
             activeOpacity={0.7}
             onPress={this._openFilters}>
-            <CustomText style={styles.toastButtonText}>FILTRI</CustomText>
+            <CustomText style={styles.toastButtonText}>{filter}</CustomText>
           </TouchableOpacity>
         </View>
       </View>

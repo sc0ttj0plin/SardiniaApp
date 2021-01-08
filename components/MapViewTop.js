@@ -7,7 +7,7 @@ import { FlatList } from "react-native-gesture-handler"
 import { useNavigation, useRoute } from '@react-navigation/native';
 import CustomText from "./CustomText";
 import SectionTitle from "./SectionTitle";
-import { coordsInBound, distance, distanceToString, regionToPoligon, regionDiagonalKm } from '../helpers/maps';
+import { coordsInBound } from '../helpers/maps';
 import MapView from "react-native-maps";
 import { Button } from "react-native-elements";
 import { connect, useStore } from 'react-redux';
@@ -18,9 +18,10 @@ import actions from '../actions';
 import * as Constants from '../constants';
 import Colors from '../constants/Colors';
 import { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { Ionicons } from '@expo/vector-icons';
+import CustomIcon  from './CustomIcon';
 import { linkingOpenNavigator } from "../helpers/utils"
 import { FontAwesome5 } from '@expo/vector-icons'; 
+import { Ionicons } from '@expo/vector-icons';
 
 /**
  * Map:             Clusters + pois that update with user map's interaction
@@ -56,7 +57,8 @@ class MapViewTop extends PureComponent {
       region: Constants.MAP.defaultRegion,
       selectedEntity: null,
       tracksViewChanges: false,
-      title
+      title,
+      isCoordsInBound: false
     };
 
   }
@@ -110,11 +112,14 @@ class MapViewTop extends PureComponent {
   _onUpdateCoords = (position, source) => {
     //check geolocation source
     this._coords = position.coords;
+    let isCoordsInBound = coordsInBound(position.coords);
+    this.setState({
+      isCoordsInBound
+    })
   }
 
   _selectMarker = (entity) => {
     // console.log("enter en", entity)
-
     if(entity) {
       this._disableRegionChangeCallback = true;
 
@@ -193,7 +198,9 @@ class MapViewTop extends PureComponent {
   /* Renders the topmost component: a map in our use case */
   _renderMap = () => {
     const { coords, region } = this.state;
-    const {mapPaddingBottom = 65} = this.props;
+    const {paddingBottom = 65} = this.props;
+
+    var bottom = paddingBottom - (this.props.fullscreen ? 30 : 0); 
 
     return (
       <MapView
@@ -203,7 +210,7 @@ class MapViewTop extends PureComponent {
         mapPadding={{
           top: 0,
           right: 0,
-          bottom: mapPaddingBottom,
+          bottom: bottom,
           left: 0
         }}
         provider={ PROVIDER_GOOGLE }
@@ -305,7 +312,7 @@ class MapViewTop extends PureComponent {
         <View style={styles.topHeader}>
           {this._renderMapTitle()}
         </View>
-        {this.props.others.geolocation.coords && 
+        {this.state.isCoordsInBound && 
           <Button
           type="clear"
           containerStyle={[styles.buttonGoToMyLocationContainer, {bottom: 15 + (this.props.paddingBottom || 0) }]}

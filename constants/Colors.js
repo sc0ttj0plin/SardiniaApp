@@ -29,7 +29,7 @@ export default {
   cyan: '#1FCBD9',        //rgb(35,193,208)
   //Others
   tintColorTransparent: 'rgba(47,149,220, 0.8)',
-  tabIconDefault: '#A7A7A7', 
+  tabIconDefault: '#6f6f6f', 
   lightCyan: 'rgb(224,239,254)',
   tabIconSelected: "white",
   grayHandle: "#000000aa",

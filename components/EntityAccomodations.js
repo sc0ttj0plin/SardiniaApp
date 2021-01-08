@@ -59,9 +59,11 @@ class EntityAccomodations extends PureComponent {
           extraData,
           openMap,
         } = this.props; 
+        const { nearAccomodations } = this.props.locale.messages;
+
         return (
             <View style={[styles.fill, styles.mainView]}>
-                <CustomText style={styles.title}>Strutture ricettive nelle vicinanze</CustomText>
+                <CustomText style={styles.title}>{nearAccomodations}</CustomText>
                 <AsyncOperationStatusIndicator
                     loading={true}
                     success={data && data.length > 0}
