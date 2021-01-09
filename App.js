@@ -25,7 +25,7 @@ import * as firebase from 'firebase';
 import * as Constants from './constants';
 import * as Location from 'expo-location';
 import SplashLoading from './components/SplashLoading';
-//import backgroundTasks from './helpers/backgroundTasks'; /* Loads background tasks even if not invoked */
+import backgroundTasks from './helpers/backgroundTasks'; /* Loads background tasks even if not invoked */
 
 enableScreens();
 
@@ -35,7 +35,6 @@ export default class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      introTimeout: 3500,
       isSplashReady: false,
       isAppReady: false,
       isLoadingComplete: false,
@@ -99,8 +98,6 @@ export default class App extends Component {
   _initGeolocation = async () => {
     const { status } = await Location.requestPermissionsAsync();
     if (status === 'granted') {
-      //Background location
-      await Location.startLocationUpdatesAsync(Constants.GEOLOCATION.geolocationBackgroundTaskName, Constants.GEOLOCATION.startLocationUpdatesAsyncOpts);
       //Foreground location
       //  Initial position
       let location = await Location.getCurrentPositionAsync(Constants.GEOLOCATION.getCurrentPositionAsyncOpts);
@@ -155,8 +152,6 @@ export default class App extends Component {
   _handleFinishLoading() {
     this.setState({
       isLoadingComplete: true
-    }, () => {
-      setTimeout(() => SplashScreen.hideAsync(), 1000);
     });
   }
 

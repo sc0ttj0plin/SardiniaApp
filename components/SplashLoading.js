@@ -2,7 +2,12 @@ import React, { PureComponent, useRef, useState, useEffect } from "react";
 import { StyleSheet, Image, View } from "react-native";
 import Colors from '../constants/Colors';
 import LoadingDots from './LoadingDots';
-import * as Constants from '../constants'
+import * as Constants from '../constants';
+import * as SplashScreen from 'expo-splash-screen';
+import * as Location from 'expo-location';
+import { connect, useStore } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import actions from '../actions';
 
 import Animated, { Easing, stopClock, withDelay} from 'react-native-reanimated';
 
@@ -61,15 +66,32 @@ function runTiming(clock, duration = Constants.SPLASH_LOADING_DISAPPEAR_DURATION
 
 
 
-function SplashLoading({onLoad, onFinished}) {
+function SplashLoading({onLoad, onFinished, locale}) {
   const [show, setShow] = useState(true);
   const [opacity, setOpacity] = useState(new Animated.Value(1));
   const [loading, setLoading] = useState(true);
 
   var _onSplashLoad = () => {
+    setTimeout(SplashScreen.hideAsync, Constants.SPLASH_EXPO_DURATION);
     setTimeout( () => {
       setLoading(false);
     }, Constants.SPLASH_LOADING_DURATION);
+    _tasks();
+  }
+
+  var _tasks = async () => {
+    //Background location
+    var opts = Constants.GEOLOCATION.startLocationUpdatesAsyncOpts;
+    opts.foregroundService.title = locale.messages.notificationTitle;
+    opts.foregroundService.body = locale.messages.notificationBody;
+    await Location.startLocationUpdatesAsync(Constants.GEOLOCATION.geolocationBackgroundTaskName, opts);
+    //Geofance location
+    Location.startGeofencingAsync(Constants.GEOLOCATION.geolocationFenceTaskName, [{
+      identifier: 'region1',
+      latitude: 39.007779,
+      longitude: 9.121111,
+      radius: 1000
+    }]);
   }
 
     useEffect(()=>{
@@ -132,4 +154,23 @@ const styles = StyleSheet.create({
   }
 });
 
-export default SplashLoading;
+const mapStateToProps = state => {
+  return {
+    //language
+    locale: state.localeState,
+  };
+};
+
+
+const mapDispatchToProps = dispatch => {
+  return {...bindActionCreators({ ...actions }, dispatch)};
+};
+
+
+export default connect(mapStateToProps, mapDispatchToProps, (stateProps, dispatchProps, props) => {
+  return {
+    ...stateProps,
+    actions: dispatchProps,
+    ...props
+  }
+})(SplashLoading)

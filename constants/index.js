@@ -154,6 +154,7 @@ export const WEBSITE_URL = "https://www.sardegnaturismo.it/";
 
 export const FIREBASE_LINK_PROXY = 'https://wt-6e2a5f000b93f69e1b65cf98021e1945-0.sandbox.auth0-extend.com/firebase-authentication-link-redirect';
 
+export const SPLASH_EXPO_DURATION = 1000;
 export const SPLASH_LOADING_DURATION = 3000;
 export const SPLASH_LOADING_DISAPPEAR_DURATION = 600;
 
@@ -365,6 +366,7 @@ export const EMOTICONS = {
 
 export const GEOLOCATION = {
   //background geolocation
+  geolocationFenceTaskName: 'geofence-geolocation',
   geolocationBackgroundTaskName: 'background-geolocation',
   startLocationUpdatesAsyncOpts: {
     accuracy: Location.Accuracy.Balanced,
@@ -375,7 +377,8 @@ export const GEOLOCATION = {
       notificationTitle: "Sardinia App Location",
       notificationBody: "Sardinia App is tracking your location",
       notificationColor: "#ffffff"
-    }
+    },
+    showsBackgroundLocationIndicator: true
   },
   //foreground geolocation
   watchPositionAsyncOpts: {

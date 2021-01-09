@@ -36,8 +36,6 @@ const { Value, event, interpolate } = Animated;
  */
 
 const USE_DR = false;
-const MODAL_STATES = {EXPLORE: 'EXPLORE', NEARPOIS: 'NEARPOIS', SELECTEDENTITY: 'SELECTEDENTITY'}
-
 class PlacesScreen extends PureComponent {
 
   constructor(props) {
@@ -137,10 +135,12 @@ class PlacesScreen extends PureComponent {
       let isCordsInBound = coordsInBound(newCoords); 
       // Are coordinates within sardinia's area? fetch the updated pois list
       if (isCordsInBound) {
-        this.setState({ isCordsInBound, coords: newCoords, isNearEntitiesLoading: true });
-        this._fetchNearestPois(newCoords).then(() => {
-          this.setState({ isNearEntitiesLoading: false });
+        this.setState({ nearPois: [], isCordsInBound, coords: newCoords, isNearEntitiesLoading: true }, () => {
+          this._fetchNearestPois(newCoords).then(() => {
+            this.setState({ isNearEntitiesLoading: false });
+          });
         });
+        
       }
     }
     // Update list of pois if we are at the bottom of the category tree
@@ -154,7 +154,7 @@ class PlacesScreen extends PureComponent {
    * @param {*} coords: the coordinates for which to load new pois
    */
   _fetchNearestPois = (coords) => {
-    const { nearPois } = this.state;
+    const { nearPois } =this.state;
     return apolloQuery(actions.getNearestPois({
       limit: Constants.PAGINATION.poisLimit,
       x: coords.longitude,

@@ -136,7 +136,10 @@ const dict = {
     updateFinishedText: "AGGIORNAMENTO TERMINATO, RIAVVIO IN CORSO...",
     //Networking
     disconnected: "Disconnesso...",
-    pleaseConnect: "Riattiva la connessione per utilizzare l'applicazione"
+    pleaseConnect: "Riattiva la connessione per utilizzare l'applicazione",
+    //App Location Tracking background
+    notificationTitle: "L'app Sardinia ti avvisa",
+    notificationBody: "Sei vicino ad un punto di interesse!",
   },
   "en": {
     //GENERIC
@@ -274,7 +277,10 @@ const dict = {
     updateFinishedText: "UPDATE FINISHED, RESTARTING...",
     //Networking
     disconnected: "Disconnected...",
-    pleaseConnect: "Please turn on internet connection to access the app contents"
+    pleaseConnect: "Please turn on internet connection to access the app contents",
+    //App Location Tracking background
+    notificationTitle: "Sardinia App Location",
+    notificationBody: "Sardinia App is tracking your location",
   }
 }
 
