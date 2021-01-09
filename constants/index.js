@@ -154,6 +154,9 @@ export const WEBSITE_URL = "https://www.sardegnaturismo.it/";
 
 export const FIREBASE_LINK_PROXY = 'https://wt-6e2a5f000b93f69e1b65cf98021e1945-0.sandbox.auth0-extend.com/firebase-authentication-link-redirect';
 
+export const SPLASH_LOADING_DURATION = 3000;
+export const SPLASH_LOADING_DISAPPEAR_DURATION = 600;
+
 /* NAVIGATION */
 export const NAVIGATION = {
   NavDrawerNavigator: "MainDrawerNavigator",

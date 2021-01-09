@@ -51,7 +51,7 @@ class EntityWidgetInModal extends PureComponent {
 
     if(entity) {
       if (this._isClusteredEntity) 
-        setTimeout(this._fetchEntity, 3000);
+        this._fetchEntity();
       else {
         if(this.props.getCoordsFun) {
           const coordinates = this.props.getCoordsFun(entity);
@@ -59,6 +59,7 @@ class EntityWidgetInModal extends PureComponent {
             entity.distanceStr = distanceToString(distance(coords.latitude, coords.longitude, coordinates.latitude, coordinates.longitude));
           }
         }
+        entity.loaded = true;
         this.setState({...entity});
       }
     }
@@ -98,6 +99,8 @@ class EntityWidgetInModal extends PureComponent {
   }
 
   _openEntity = (entity) => {
+    if(!entity.loaded)
+      return;
     switch(this.props.entityType) {
       case Constants.ENTITY_TYPES.places:
         this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item: entity, mustFetch: entity.loaded ? false : true } );

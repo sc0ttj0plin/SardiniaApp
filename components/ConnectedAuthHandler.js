@@ -37,7 +37,7 @@ class ConnectedAuthHandler extends PureComponent {
 
   //////////////////////////////////////
   async componentDidMount() {
-    {(USE_DR && setTimeout(() => (this.setState({ render: true })), DR_TIMEOUT))};
+    {(USE_DR && setTimeout(() => (this.setState({ render: true })), Constants.SPLASH_LOADING_DURATION + 1500))};
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/

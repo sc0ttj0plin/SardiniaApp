@@ -24,7 +24,7 @@ import config from './config/config';
 import * as firebase from 'firebase';
 import * as Constants from './constants';
 import * as Location from 'expo-location';
-import LoadingDots from './components/LoadingDots';
+import SplashLoading from './components/SplashLoading';
 //import backgroundTasks from './helpers/backgroundTasks'; /* Loads background tasks even if not invoked */
 
 enableScreens();
@@ -35,7 +35,7 @@ export default class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      introTimeout: 2000,
+      introTimeout: 3500,
       isSplashReady: false,
       isAppReady: false,
       isLoadingComplete: false,
@@ -156,25 +156,12 @@ export default class App extends Component {
     this.setState({
       isLoadingComplete: true
     }, () => {
-      setTimeout(() => SplashScreen.hideAsync(), 300);
+      setTimeout(() => SplashScreen.hideAsync(), 1000);
     });
   }
 
-  _onSplashIntroError = (e) => {
-    console.log("error", e);
-    setTimeout( () => {
-      this.setState({
-        isIntroEnded: true
-      })
-    }, this.state.introTimeout);
-  }
- 
-  _onSplashIntroLoad = () => {
-    setTimeout( () => {
-      this.setState({
-        isIntroEnded: true
-      })
-    }, this.state.introTimeout);
+  _onSplashFinished = () => {
+
   }
 
 
@@ -183,23 +170,6 @@ export default class App extends Component {
   //onLoad={this._onSplashIntroLoad}
   //resizeMode="cover"
   //style={[styles.backgroundGif]} />
-
-  _renderSplashIntro = () => {
-    return (
-      <View style={styles.loadingGif}>
-        <Image 
-          source={require("./assets/images/splash_mare.png")}
-          resizeMode="cover"
-          onLoad={this._onSplashIntroLoad}
-          style={[styles.backgroundGif]} />
-        <View style={[styles.loadingDotsView1, {bottom: 30}]}>
-          <View style={styles.loadingDotsView2}>
-            <LoadingDots isLoading={true}/>
-          </View>
-        </View>
-      </View>
-    );
-  }
 
   render() {
     if(this.state.isLoadingComplete) {
@@ -213,9 +183,7 @@ export default class App extends Component {
                     <AppNavigator ref={nav => { this._navigator = nav; }} />
                     <ConnectedUpdateHandler />
                     <ConnectedNetworkChecker />
-                    {
-                      !this.state.isIntroEnded && this._renderSplashIntro()
-                    }
+                    <SplashLoading loading={!this.state.isIntroEnded} onFinish={this._onSplashFinished}/>
                   </View>
               </SafeAreaProvider>
             </ApolloProvider>
@@ -232,27 +200,4 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  backgroundGif: {
-    width: "100%",
-    height: "100%",
-    position: "absolute"
-  },
-  loadingGif: {
-    flex: 1,
-    position: "absolute",
-    zIndex: 10000,
-    width: "100%",
-    height: "100%",
-  },
-  loadingDotsView1: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    width: '100%',
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  loadingDotsView2: {
-    width: 100
-  }
 });
