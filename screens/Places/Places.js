@@ -65,6 +65,8 @@ class PlacesScreen extends PureComponent {
       isCMVTLoading: true, /* clustered map view top loading  */
     };
 
+    console.log(Constants.DEFAULT_LANGUAGE);
+
     this._pageLayoutHeight = Layout.window.height;
     this._filterList = null;
   }
