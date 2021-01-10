@@ -419,58 +419,58 @@ export const VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS = {
   [VIDS.pois]: {
     backgroundTopRightCorner: Colors.colorPlacesScreen,
     iconColor: Colors.colorPlacesScreen,
-    iconName: Platform.OS === 'ios' ? 'ios-map' : 'md-map'
+    iconName: 'icon-place-map'
   },
   [VIDS.poisCategories]: {
     backgroundTopRightCorner: Colors.colorPlacesScreen,
     iconColor: Colors.colorPlacesScreen,
-    iconName: Platform.OS === 'ios' ? 'ios-map' : 'md-map'
+    iconName: 'icon-place-map'
   },
   [VIDS.inspirersCategories]: {
     backgroundTopRightCorner: Colors.colorInspirersScreen,
     iconColor: Colors.colorInspirersScreen,
-    iconName: Platform.OS === 'ios' ? 'ios-flag' : 'md-flag'
+    iconName: 'icon-ispirer-map'
   }, 
   [VIDS.events]: {
     backgroundTopRightCorner: Colors.colorEventsScreen,
     iconColor: Colors.colorEventsScreen,
-    iconName: Platform.OS === 'ios' ? 'ios-calendar' : "md-calendar"
+    iconName: 'icon-event-map'
   },
   [VIDS.accomodations]: {
     backgroundTopRightCorner: Colors.colorAccomodationsScreen,
     iconColor: Colors.colorAccomodationsScreen, 
-    iconName: Platform.OS === 'ios' ? 'ios-home' : 'md-home'
+    iconName: 'icon-accomodation-map'
   },
   // Node types
   [NODE_TYPES.places]: {
     backgroundTopRightCorner: Colors.colorPlacesScreen,
     iconColor: Colors.colorPlacesScreen, 
-    iconName: Platform.OS === 'ios' ? 'ios-map' : 'md-map'
+    iconName: 'icon-place-map'
   },
   [NODE_TYPES.inspirers]: {
     backgroundTopRightCorner: Colors.colorInspirersScreen,
     iconColor: Colors.colorInspirersScreen,
-    iconName: Platform.OS === 'ios' ? 'ios-flag' : 'md-flag'
+    iconName: 'icon-ispirer-map'
   }, 
   [NODE_TYPES.itineraries]: {
     backgroundTopRightCorner: Colors.colorItinerariesScreen,
     iconColor: Colors.colorItinerariesScreen,
-    iconName: Platform.OS === 'ios' ? 'ios-analytics' : 'md-analytics'
+    iconName: 'icon-itinerary-map'
   },
   [NODE_TYPES.events]: {
     backgroundTopRightCorner: Colors.colorEventsScreen,
     iconColor: Colors.colorEventsScreen,
-    iconName: Platform.OS === 'ios' ? 'ios-calendar' : "md-calendar"
+    iconName: 'icon-event-map'
   },
   [NODE_TYPES.turisticLocation]: {
     backgroundTopRightCorner: Colors.colorPlacesScreen,
     iconColor: Colors.colorPlacesScreen, 
-    iconName: Platform.OS === 'ios' ? 'ios-map' : 'md-map'
+    iconName: 'icon-place-map'
   },
   [NODE_TYPES.accomodations]: {
     backgroundTopRightCorner: Colors.colorAccomodationsScreen,
     iconColor: "white", 
-    iconName: Platform.OS === 'ios' ? 'ios-home' : 'md-home'
+    iconName: 'icon-accomodation-map'
   },
   //Entity types
   [ENTITY_TYPES.places]: {
@@ -478,35 +478,35 @@ export const VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS = {
     iconColor: "white",
     backgroundColor: Colors.colorPlacesScreen,
     backgroundTransparent: Colors.colorPlacesScreenTransparent,
-    iconName: Platform.OS === 'ios' ? 'ios-map' : 'md-map'
+    iconName: 'icon-place-map'
   },
   [ENTITY_TYPES.inspirers]: {
     backgroundTopRightCorner: Colors.colorInspirersScreen,
     iconColor: "white",
     backgroundColor: Colors.colorInspirersScreen,
     backgroundTransparent: Colors.colorInspirersScreen,
-    iconName: Platform.OS === 'ios' ? 'ios-flag' : 'md-flag'
+    iconName: 'icon-ispirer-map'
   }, 
   [ENTITY_TYPES.itineraries]: {
     backgroundTopRightCorner: Colors.colorItinerariesScreen,
     iconColor: "white",
     backgroundColor: Colors.colorItinerariesScreen,
     backgroundTransparent: Colors.colorItinerariesScreenTransparent,
-    iconName: Platform.OS === 'ios' ? 'ios-analytics' : 'md-analytics'
+    iconName: 'icon-itinerary-map'
   },
   [ENTITY_TYPES.events]: {
     backgroundTopRightCorner: Colors.colorEventsScreen,
     iconColor: "white",
     backgroundColor: Colors.colorEventsScreen,
     backgroundTransparent: Colors.colorEventsScreenTransparent,
-    iconName: Platform.OS === 'ios' ? 'ios-calendar' : "md-calendar"
+    iconName: "icon-event-map"
   },
   [ENTITY_TYPES.accomodations]: {
     backgroundTopRightCorner: Colors.colorAccomodationsScreen,
     iconColor: "white", 
     backgroundColor: Colors.colorAccomodationsScreen,
     backgroundTransparent: Colors.colorAccomodationsScreenTransparent,
-    iconName: Platform.OS === 'ios' ? 'ios-home' : 'md-home'
+    iconName: 'icon-accomodation-map'
   },
 }
 

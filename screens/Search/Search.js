@@ -19,7 +19,8 @@ import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
 import * as utils from '../../helpers/utils';
-import { Ionicons } from '@expo/vector-icons';
+import CustomIcon from '../../components/CustomIcon';
+import LoadingDots from '../../components/LoadingDots';
 
 /**
  * Search working mechanism
@@ -132,7 +133,7 @@ class SearchScreen extends Component {
         <View style={[styles.icon, {
           backgroundColor: entityIconOpts.iconColor,
         }]}>
-          <Ionicons
+          <CustomIcon
             name={entityIconOpts.iconName}
             size={13}
             color={"white"}
@@ -141,6 +142,10 @@ class SearchScreen extends Component {
         <CustomText style={this._isNavigableItem(el) ? styles.normalText : styles.boldText}>{title}</CustomText>
       </TouchableOpacity>
     );
+  }
+
+  _renderLoading = () => {
+    <LoadingDots loading={true} />
   }
 
 
@@ -153,7 +158,7 @@ class SearchScreen extends Component {
         success={this._isSuccessData()}
         error={this._isErrorData()}
         retryFun={() => {}} 
-        loadingLayout={<ActivityIndicator animating={true} size={"large"} color={"grey"} />}
+        loadingLayout={this._renderLoading()}
         >
         <FlatList
           key={1}

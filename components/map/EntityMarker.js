@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Marker } from 'react-native-maps';
 import * as Constants from "../../constants"
 import CustomText from "../CustomText";
+import CustomIcon from "../CustomIcon";
 
 /**
  * EntityMarker is the component that renders typed marker
@@ -67,9 +68,9 @@ export default class EntityMarker extends PureComponent {
                 style={[styles.marker, {
                   backgroundColor
                 }]}>
-                <Ionicons
+                <CustomIcon
                   name={iconName}
-                  size={19}
+                  size={17}
                   color={"#ffffff"}
                   style={{
                     paddingTop: Platform.OS === 'ios' ? 0 : 0

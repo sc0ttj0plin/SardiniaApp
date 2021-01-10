@@ -16,6 +16,7 @@ import * as Constants from '../constants';
 import { Ionicons } from '@expo/vector-icons';
 import CustomText from "./CustomText";
 import Colors from '../constants/Colors';
+import CustomIcon from './CustomIcon';
 import { FontAwesome5 } from '@expo/vector-icons'; 
 /**
  * Definitions:
@@ -380,7 +381,7 @@ class ClusteredMapViewTop extends PureComponent {
           buttonStyle={[styles.buttonGoToMyLocation]}
           onPress={this._onGoToMyLocationPressed}
           icon={
-            <FontAwesome5 name={"street-view"} size={25} color={Colors.colorPlacesScreen} />
+            <CustomIcon name={"icon-location"} size={25} color={Colors.colorPlacesScreen} />
             }
         />
           }

@@ -20,8 +20,7 @@ import Colors from '../constants/Colors';
 import { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import CustomIcon  from './CustomIcon';
 import { linkingOpenNavigator } from "../helpers/utils"
-import { FontAwesome5 } from '@expo/vector-icons'; 
-import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 /**
  * Map:             Clusters + pois that update with user map's interaction
@@ -278,9 +277,9 @@ class MapViewTop extends PureComponent {
                 style={[styles.marker, {
                   backgroundColor
                 }]}>
-                <Ionicons
+                <CustomIcon
                   name={iconName}
-                  size={19}
+                  size={17}
                   color={Colors.white}
                   style={styles.markerIcon}
                 />

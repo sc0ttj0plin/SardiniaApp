@@ -22,7 +22,7 @@ import * as Constants from '../constants';
 import Colors from '../constants/Colors';
 import { LLHorizontalItemsFlatlist } from "../components/loadingLayouts";
 import { Button } from "react-native-paper";
-import { Ionicons } from '@expo/vector-icons';
+import CustomIcon from './CustomIcon';
 const { Value, event, interpolate } = Animated;
 import {Modalize} from 'react-native-modalize';
 import BottomSheet from 'reanimated-bottom-sheet';
@@ -263,7 +263,7 @@ class ConnectedMapScrollable extends PureComponent {
     return (
       <TouchableOpacity style={styles.categorySelectorBtn} onPress={() => onPress(item)} activeOpacity={0.7}>
         <View style={[styles.icon, { backgroundColor }]}>
-            <Ionicons
+            <CustomIcon
               size={13}
               style={styles.cornerIcon}
               {...iconProps}

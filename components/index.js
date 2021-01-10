@@ -21,8 +21,6 @@ export HeaderFullscreen from './HeaderFullscreen';
 export ConnectedLanguageList from './ConnectedLanguageList';
 // export BoxWithText from './BoxWithText';
 export ConnectedFab from './ConnectedFab';
-// export PoiItem from './PoiItem';
-// export PoiItemsList from './PoiItemsList';
 // export ExtrasListItem from './ExtrasListItem';
 export CustomDrawer from './CustomDrawer';
 export CategoryListItem from './CategoryListItem';

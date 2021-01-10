@@ -4,6 +4,7 @@ import { TouchableOpacity } from "react-native-gesture-handler"
 import ScrollableContainerTouchableOpacity from "./ScrollableContainerTouchableOpacity";
 import { Image } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
+import CustomIcon from './CustomIcon';
 import Colors from '../constants/Colors';
 import Layout from '../constants/Layout';
 import * as Constants from '../constants';
@@ -51,9 +52,9 @@ export default class AccomodationItem extends PureComponent {
           extraStyle, /*Constants.styles.shadow*/]} activeOpacity={0.8}>
           <View style={styles.content}>
             <View style={[styles.corner]}>
-              <Ionicons
+              <CustomIcon
                   name={this.entityIconOpts.iconName}
-                  size={13}
+                  size={12}
                   style={styles.cornerIcon}
                   color={this.entityIconOpts.iconColor}
               />
