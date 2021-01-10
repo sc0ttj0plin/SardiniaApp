@@ -164,12 +164,10 @@ class PreferencesScreen extends Component {
     )
   }
 
-  _renderBottomSteps = () => {
+  _renderStepsBar = () => {
     return(
-      <View style={styles.bottomView}>
-        <View style={styles.stepsView}>
-          {this._renderSteps()}
-        </View>
+      <View style={styles.stepsView}>
+        {this._renderSteps()}
       </View>
     )
   }
@@ -295,8 +293,8 @@ class PreferencesScreen extends Component {
             {this._renderIcon("laugh-squint", Colors.lightGray, true)}
             {this._renderIcon("grin-hearts", Colors.lightGray, true)}
           </View>
+          {this._renderStepsBar()}
         </View>
-        {this._renderBottomSteps()}
       </>
     )
   }
@@ -351,20 +349,21 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     color: "#000000E6",
     backgroundColor: "#F2F2F2",
-    height: 40,
     fontSize: 15,
     fontFamily: "montserrat-bold",
     textTransform: "uppercase"
   },
   firstView: {
     flex: 1,
-    paddingTop: 50,
     paddingHorizontal: 55,
-    paddingBottom: 0
+    flexDirection: "column",
+    justifyContent: "space-around"
   },
   secondView: {
     flex: 1,
     paddingHorizontal: 55,
+    flexDirection: "column",
+    justifyContent: "space-around"
   },
   icons: {
     flexDirection: "row",
@@ -391,7 +390,6 @@ const styles = StyleSheet.create({
   startButtonView: {
     width: "100%",
     alignItems: "center",
-    marginTop: 63
   },
   startButton: {
     width: 203,
@@ -410,29 +408,24 @@ const styles = StyleSheet.create({
   startedContent: {
     paddingHorizontal: 15,
     flex: 1,
-    paddingTop: 50
+    flexDirection: "column",
+    justifyContent: "space-around"
   },
   startedContentText: {
     fontSize: 15,
     fontFamily: "montserrat-bold",
     color: "black",
-    textAlign: "center"
-  },
-  bottomView: {
-    position: "absolute",
-    bottom: 50,
-    left: 0,
-    width: "100%",
-    height: 8,
-    paddingHorizontal: 15
+    textAlign: "center",
   },
   stepsView: {
+    maxHeight: 8,
+    width: "100%",
     flex: 1,
     flexDirection: "row",
     justifyContent: "space-between"
   },
   step: {
-    width: "10%",
+    width: "8%",
     height: 8
   },
   entityImage: {
@@ -451,12 +444,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 20,
     fontFamily: "montserrat-bold",
-    marginTop: 32
   },
   entityView: {
     width: "100%",
     height: 160,
-    marginBottom: 73
   }
 });
 

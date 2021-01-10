@@ -129,6 +129,7 @@ const TabBar = props => {
                   <TextScaler
                     style={[Styles.scaler, {
                       height: isRouteActive ? 22 : 0,
+                      display: isRouteActive ? 'flex' : 'none'
                     }]}
                     pose={isRouteActive ? 'active' : 'inactive'}>
                     <Animated.View style={{

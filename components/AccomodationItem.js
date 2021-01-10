@@ -60,7 +60,7 @@ export default class AccomodationItem extends PureComponent {
               />
             </View>
             <View style={styles.innerContent}>
-              <CustomText style={styles.termText}>{term}</CustomText>
+              <CustomText style={styles.termText} numberOfLines={1} ellipsizeMode='tail'>{term}</CustomText>
               <CustomText style={styles.titleText} numberOfLines={1} ellipsizeMode='tail'>{title}</CustomText>
               <View style={styles.starsView}>
                 {this._renderStars(stars)}

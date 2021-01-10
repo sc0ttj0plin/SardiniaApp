@@ -383,7 +383,7 @@ class PlacesScreen extends PureComponent {
           iconTintColor={Colors.colorPlacesScreen}  
           backButtonVisible={this.props.others.placesTerms.length > 0}
         /> 
-        <ConnectedAuthHandler loginOptional={true} />
+        <ConnectedAuthHandler loginOptional={true} timeout={Constants.SPLASH_LOADING_DURATION + 1500} />
         {render && this._renderContent()}
       </View> 
     )
