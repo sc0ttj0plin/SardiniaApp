@@ -179,7 +179,10 @@ class Login extends Component {
     if(this.state.loginStep === AUTH_STATES.PROFILE_REMOVE)
       this.setState({loginStep: AUTH_STATES.PROFILE_SHOW})
     else if(this.state.loginStep === AUTH_STATES.PROFILE_EDIT)
-      this.setState({loginStep: AUTH_STATES.PROFILE_SHOW})
+      if(this.props.auth.user.info)
+        this.setState({loginStep: AUTH_STATES.PROFILE_SHOW})
+      else
+        this.props.navigation.goBack();
     else if(this.state.loginStep === AUTH_STATES.LOGOUT)
       this.setState({loginStep: AUTH_STATES.PROFILE_SHOW})
     else
@@ -252,7 +255,7 @@ class Login extends Component {
   }
 
   _renderProfileShow = () => {
-    if(!this.props.auth.user && this.props.auth.user.info) 
+    if(!this.props.auth.user || !this.props.auth.user.info) 
       return;
 
     const { editProfileBtn, logoutBtn, removeProfileBtn } = this.props.locale.messages;
