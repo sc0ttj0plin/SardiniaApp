@@ -260,7 +260,7 @@ class AccomodationsScreen extends Component {
 
       const categoryTitle = term ? `${explore} ${term.name}` : exploreAccomodation;
       return (
-        <SectionTitle text={categoryTitle} numberOfLines={1} textStyle={{ fontSize: 20 }} style={{ marginBottom: 15, paddingLeft: 40, paddingRight: 40 }} />
+        <SectionTitle text={categoryTitle} numberOfLines={1} textStyle={{ fontSize: 20 }} style={{ marginBottom: 15 }} />
       )
   }
 

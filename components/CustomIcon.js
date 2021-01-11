@@ -16,7 +16,7 @@ export default function CustomIcon(props) {
     <Icon
         name={props.name}
         size={size}
-        style={{ backgroundColor: "transparent" }}
+        style={[{ backgroundColor: "transparent" }, props.style]}
         color={color}
       />
   );

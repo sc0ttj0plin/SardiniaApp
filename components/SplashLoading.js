@@ -76,7 +76,7 @@ function SplashLoading({onLoad, onFinished, locale}) {
     setTimeout( () => {
       setLoading(false);
     }, Constants.SPLASH_LOADING_DURATION);
-    _tasks();
+    //_tasks();
   }
 
   var _tasks = async () => {

@@ -34,7 +34,6 @@ export default (state = INITIAL_STATE, action) => {
         success: true
       };
     case Constants.USER_EDIT_SUCCESS:
-      console.log("Constants.USER_EDIT_SUCCESS:");
       var state = {...state};
       state.user.info = action.payload.userInfo;
       return state;

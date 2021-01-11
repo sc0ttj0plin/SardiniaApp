@@ -311,7 +311,8 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 0,
     borderTopLeftRadius: 0,
-    borderTopRightRadius: 32
+    borderTopRightRadius: 32,
+    paddingHorizontal: 40
   },
   panelHandle: {
     width: 32,

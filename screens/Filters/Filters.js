@@ -17,7 +17,7 @@ import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
 import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
-import { Ionicons } from '@expo/vector-icons';
+import CustomIcon from '../../components/CustomIcon';
 
 /* Deferred rendering to speedup page inital load: 
    deferred rendering delays the rendering reducing the initial 
@@ -153,7 +153,7 @@ class FiltersScreen extends Component {
             onPress={() => this._onFilterPress(item)} 
             activeOpacity={0.7}>
             <View style={styles.icon}>
-                <Ionicons
+                <CustomIcon
                     name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS["events"].iconName}
                     size={13}
                     style={styles.cornerIcon}

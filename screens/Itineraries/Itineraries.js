@@ -130,7 +130,7 @@ class ItinerariesScreen extends PureComponent {
     const { whereToGo, explore, itineraries } = this.props.locale.messages;
     const categoryTitle = `${explore} ${itineraries}`;
     return (
-      <SectionTitle text={categoryTitle} numberOfLines={1} textStyle={{ fontSize: 20 }} style={{ marginBottom: 15, paddingLeft: 40, paddingRight: 40 }}/>
+      <SectionTitle text={categoryTitle} numberOfLines={1} textStyle={{ fontSize: 20 }} style={{ marginBottom: 15 }}/>
     );
   }
 

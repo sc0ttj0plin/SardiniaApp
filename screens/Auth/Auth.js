@@ -12,26 +12,35 @@ import Layout from '../../constants/Layout';
 import Colors from '../../constants/Colors';
 import * as Constants from '../../constants';
 import itCountries from "world_countries_lists/data/it/countries.json";
+import * as Validate from '../../helpers/validate';
+import moment from "moment";
+
 // import enCountries from "world_countries_lists/data/en/countries.json";
 
 
 // console.log("itcountries", itCountries)
-const INITIAL_AUTH_FSM_STATE = "emailInput"; /* Possible states: emailInput, emailSent, selectedEntity, loginError, logout */
+var AUTH_STATES = {
+  INIT: "INIT",
+  LINK_SENT: "LINK_SENT",
+  PROFILE_REMOVE: "PROFILE_REMOVE",
+  PROFILE_EDIT: "PROFILE_EDIT",
+  PROFILE_SHOW: "PROFILE_SHOW",
+  COMPLETED: "COMPLETED",
+  ERROR: "ERROR"
+}
 class Login extends Component {
 
   constructor(props) {
 
+    moment.locale(Constants.DEFAULT_LANGUAGE);
+
     super(props);
     this.state = {
       email: "",
-      authFSM: "selectedEntity", 
+      loginStep: AUTH_STATES.INIT, 
       isVerifyingEmail: false,
       username: "",
       usernameError: false,
-      name: "",
-      nameError: false,
-      surname: "",
-      surnameError: false,
       birth: "",
       birthError: false,
       country: "",
@@ -43,22 +52,50 @@ class Login extends Component {
   }
 
   componentDidMount() {
+    this._setCountries();
+    
     if (this.props.auth.user)
     {
       if(this.props.auth.user.info) {
-        this.setState({ authFSM: "logout" });
+        const {info} = this.props.auth.user;
+        this.setState({
+          loginStep: AUTH_STATES.PROFILE_SHOW,
+          username: info.username,
+          birth: new Date(info.birth),
+          country: info.country,
+          sex: info.sex
+        })
       } else {
         this._setCountries();
-        this.setState({ authFSM: "selectedEntity" });
+        this.setState({ loginStep: AUTH_STATES.PROFILE_EDIT });
       }
     }
     else
-      this.setState({ authFSM: "emailInput" });
+      this.setState({ loginStep: AUTH_STATES.INIT });
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.auth !== prevProps.auth)
-      this._verifyLoginState();
+      this._loginStateChanged();
+  }
+  
+  _loginStateChanged = async () => {
+    if (this.props.auth.user && this.props.auth.user.info) {
+      const {info} = this.props.auth.user;
+      this.setState({
+        loginStep: AUTH_STATES.PROFILE_SHOW,
+        username: info.username,
+        birth: new Date(info.birth),
+        country: info.country,
+        sex: info.sex
+      })
+    }
+    else if (this.props.auth.success) {
+      this.setState({ loginStep: AUTH_STATES.PROFILE_EDIT });
+    }
+    else if (this.props.auth.error) {
+      this.setState({ loginStep: AUTH_STATES.ERROR });
+    }
   }
 
   _setCountries = () => {
@@ -79,66 +116,45 @@ class Login extends Component {
     }
     this.setState({ countries: countries});
   }
-  
-  _verifyLoginState = async () => {
-    if (this.props.auth.success) {
-      this._setCountries();
-      this.setState({ authFSM: "selectedEntity" });
-    }
-    else if (this.props.auth.error) {
-      this.setState({ authFSM: "loginError" });
-    }
-  }
 
   _validateForm = async () => {
     const { email } = this.state;
-    if (!Constants.VALIDATORS.email.test(email)) {
+    if (!Validate.email(email)) {
       alert('Invalid email');
     } else {
       this.props.actions.passwordLessSignup(email);
-      this.setState({ authFSM: "emailSent" });
+      this.setState({ loginStep: AUTH_STATES.LINK_SENT });
     }
   }
 
   _setUserData = () => {
-    const { username, name, surname, birth, country, sex, } = this.state;
+    const { username, birth, country, sex, } = this.state;
     const { country: countryText, sex: sexText, birth: birthText } = this.props.locale.messages;
-    let nameError = false 
-    let surnameError = false 
     let usernameError = false
     let birthError = false 
     let countryError = false 
     let sexError = false
 
-    /*if(!this._validateName(name)){
-      nameError = true;
-    }
-    if(!this._validateName(surname)){
-      surnameError = true;
-    }*/
-
-    if(!this._validateUserName(username)){
+    if(!Validate.username(username)){
       usernameError = true;
     }
-    if(birth == "" || birth == birthText){
+    if(!birth || birth == birthText){
       birthError = true;
     }
-    if(country == "" || country == countryText){
+    if(!country || country == countryText){
       countryError = true;
     }
-    if(sex == "" || sex == sexText){
+    if(!sex || sex == sexText){
       sexError = true;
     }
 
-    if(!usernameError && /*!nameError && !surnameError &&*/ !birthError && !countryError && !sexError){
-      const userData = { username, /*name, surname,*/ birth, country, sex, };
+    if(!usernameError && !birthError && !countryError && !sexError){
+      const userData = { username, birth: birth.getTime(), country, sex, };
       this.props.actions.editUser(userData);
-      this.props.navigation.goBack();
+      this.setState({ loginStep: AUTH_STATES.PROFILE_SHOW });
     }
     else{
       this.setState({
-        nameError,  
-        surnameError, 
         birthError, 
         countryError, 
         sexError,
@@ -149,56 +165,42 @@ class Login extends Component {
 
   }
 
-  _onLogoutPress = () => {
+  _removeProfile = () => {
+    this.props.actions.removeUser();
+    this.props.navigation.goBack();
+  }
+
+  _logout = () => {
     this.props.actions.logout();
     this.props.navigation.goBack();
   }
 
   _onBackPress = () => {
-    const { authFSM } = this.state;
-    if (authFSM === "emailInput" || authFSM === "logout" || authFSM === "selectedEntity") 
+    if(this.state.loginStep === AUTH_STATES.PROFILE_REMOVE)
+      this.setState({loginStep: AUTH_STATES.PROFILE_SHOW})
+    else if(this.state.loginStep === AUTH_STATES.PROFILE_EDIT)
+      this.setState({loginStep: AUTH_STATES.PROFILE_SHOW})
+    else if(this.state.loginStep === AUTH_STATES.LOGOUT)
+      this.setState({loginStep: AUTH_STATES.PROFILE_SHOW})
+    else
       this.props.navigation.goBack();
-    else 
-      this.setState({ authFSM: "emailInput" });
-  }
-
-  _validateName = (value) => {
-    let pattern = null;
-    if(value && value.length <= 1)
-      pattern = new RegExp("^[A-Z, a-z]{0,30}$");
-    else
-      pattern = new RegExp("^[A-Z, a-z]{2,30}$");
-    let validation = pattern.exec(value);
-    if(validation !== null){
-      return true;
-    }
-    else
-      return false
-  }
-
-  _validateUserName = (value) => {
-    let pattern = null;
-    pattern = new RegExp("^(?=[a-zA-Z0-9._]{3,20}$)(?!.*[_.]{2})[^_.].*[^_.]$");
-    let validation = pattern.exec(value);
-    if(validation !== null){
-      return true;
-    }
-    else
-      return false
   }
 
 
-  _setNameField = (stateField, stateFieldError, value) => {
-    if(this._validateName(value) || value == ""){
-      this.setState({
-        [stateField]: value,
-        [stateFieldError]: false
-      })
-    }
+  _onProfileEditPress = () => {
+    this.setState({loginStep: AUTH_STATES.PROFILE_EDIT})
+  }
+
+  _onProfileRemovePress = () => {
+    this.setState({loginStep: AUTH_STATES.PROFILE_REMOVE});
+  }
+
+  _onLogoutPress = () => {
+    this.setState({loginStep: AUTH_STATES.LOGOUT});
   }
 
   _setUsernameField = (stateField, stateFieldError, value) => {
-    if(this._validateUsername(value)){
+    if(Validate.username(value) || value.length < 4){
       this.setState({
         [stateField]: value,
         [stateFieldError]: false
@@ -206,7 +208,7 @@ class Login extends Component {
     }
   }
 
-  renderAuthOutcome = () => {
+  _renderAuthOutcome = () => {
     const { successfullLogin, loggingIn, loginError } = this.props.locale.messages;
     if (this.props.auth.loading) return (<CustomText style={styles.errorBox}>{loggingIn}</CustomText>);
     if (this.props.auth.error) return (<CustomText style={styles.errorBox}>{loginError} {this.props.auth.error}</CustomText>);
@@ -221,8 +223,8 @@ class Login extends Component {
           <View style={styles.view1}>
             <CustomText style={styles.text0}>{logoutMsg}</CustomText> 
             <View>
-              <TouchableOpacity style={styles.signInButton} onPress={this._onLogoutPress}>
-                <CustomText style={styles.registerTxt}>{logoutBtn}</CustomText>
+              <TouchableOpacity style={styles.button} onPress={this._logout}>
+                <CustomText style={styles.buttonText}>{logoutBtn}</CustomText>
               </TouchableOpacity>
             </View>
           </View>
@@ -230,10 +232,59 @@ class Login extends Component {
       </View>
     );
   }
+
+  _renderProfileRemove = () => {
+    const { removeProfileMsg, removeProfileBtn} = this.props.locale.messages;
+    return (
+      <View style={styles.screen}>
+        <View style={styles.view0}>
+          <View style={styles.view1}>
+            <CustomText style={styles.text0}>{removeProfileMsg}</CustomText> 
+            <View>
+              <TouchableOpacity style={styles.button} onPress={this._removeProfile}>
+                <CustomText style={styles.buttonText}>{removeProfileBtn}</CustomText>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
+  _renderProfileShow = () => {
+    if(!this.props.auth.user && this.props.auth.user.info) 
+      return;
+
+    const { editProfileBtn, logoutBtn, removeProfileBtn } = this.props.locale.messages;
+    const { user } = this.props.auth;
+    
+    return (
+      <View style={styles.mainView}>
+        <View style={styles.view0}>
+          <View style={styles.view1s}>
+          <CustomText style={[styles.userInfo, {fontSize: 20, marginBottom: 20, fontFamily: "montserrat-bold"}]}>{user.info.username}</CustomText>
+            <CustomText style={styles.userInfo}>{user.email}</CustomText> 
+            <CustomText style={styles.userInfo}>{moment(user.info.birth).format('DD-MM-YYYY')}</CustomText>
+            <CustomText style={styles.userInfo}>{user.info.country}</CustomText>
+            <CustomText style={styles.userInfo}>{user.info.sex}</CustomText>
+          </View>
+          <TouchableOpacity style={[styles.button]} onPress={this._onProfileEditPress}>
+              <CustomText style={styles.buttonText}>{editProfileBtn}</CustomText>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, {marginTop: 10}]} onPress={this._onProfileRemovePress}>
+              <CustomText style={styles.buttonText}>{removeProfileBtn}</CustomText>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, {marginTop: 10}]} onPress={this._onLogoutPress}>
+              <CustomText style={styles.buttonText}>{logoutBtn}</CustomText>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
   
-  _renderSelectedEntity = () => {
-    const { username, name, surname, birth, country, sex, confirm, fillInformation, man, woman } = this.props.locale.messages;
-    const {nameError, surnameError, usernameError, birthError, countryError, sexError} = this.state;
+  _renderProfileEdit = () => {
+    var { username, birth, country, sex, confirm, fillInformation, man, woman } = this.props.locale.messages;
+    const {usernameError, birthError, countryError, sexError} = this.state;
 
       return (
       <View style={styles.mainView}>
@@ -242,7 +293,7 @@ class Login extends Component {
           <CustomText style={styles.text0}>{fillInformation}</CustomText> 
           <Form>
             <Item style={[styles.item1, usernameError ? styles.itemError : {}]} regular>
-              <Input placeholder={username}  style={{fontFamily: "montserrat-regular"}} value={this.state.username} onChangeText={(text) => this._setNameField("username", "usernameError",text)} />
+              <Input placeholder={username}  style={{fontFamily: "montserrat-regular"}} value={this.state.username} onChangeText={(text) => this._setUsernameField("username", "usernameError",text)} />
             </Item>
             <Item style={[styles.item1, birthError ? styles.itemError : {}]} regular>
               {/* <Input placeholder={birth} onChangeText={(text) => this.setState({birth: text})} /> */}
@@ -254,14 +305,13 @@ class Login extends Component {
                 modalTransparent={false}
                 animationType={"fade"}
                 androidMode={"default"}
-                placeHolderText={birth}
+                placeHolderText={!this.state.birth && birth}
                 placeHolderTextStyle={{width: "100%", fontFamily: "montserrat-regular"}}
                 textStyle={{ color: "black", width: "100%", fontFamily: "montserrat-bold"}}
                 onDateChange={(date) => this.setState({birth: date, birthError: false})}
                 disabled={false}
-                style={{width: "100%"}}/>
-                
-                
+                style={{width: "100%"}}
+                defaultDate={this.state.birth}/>
             </Item>
             <Item style={[styles.item1, countryError ? styles.itemError : {}]} regular>
               <Picker
@@ -297,15 +347,15 @@ class Login extends Component {
             </Item>
           </Form>
           </View>
-          <TouchableOpacity style={styles.signInButton} onPress={this._setUserData}>
-              <CustomText style={styles.registerTxt}>{confirm}</CustomText>
+          <TouchableOpacity style={styles.button} onPress={this._setUserData}>
+              <CustomText style={styles.buttonText}>{confirm}</CustomText>
           </TouchableOpacity>
         </View>
       </View>
     )
   }
 
-  _renderMailInput = () => {
+  _renderInit = () => {
     const { isVerifyingEmail } = this.state;
     const { next } = this.props.locale.messages;
     return (
@@ -319,11 +369,11 @@ class Login extends Component {
                 <Input autoCapitalize={'none'} placeholder="Email" onChangeText={(email) => this.setState({email: email.toLowerCase()})} />
               </Item>
             </Form>
-            <TouchableOpacity style={styles.signInButton} onPress={this._validateForm}>
+            <TouchableOpacity style={styles.button} onPress={this._validateForm}>
               {isVerifyingEmail ? 
               <ActivityIndicator animating={isVerifyingEmail} size={"small"} color={Colors.tintColor}/>
               :
-              <CustomText style={styles.registerTxt}>{next}</CustomText>
+              <CustomText style={styles.buttonText}>{next}</CustomText>
               }
             </TouchableOpacity>
           </View>
@@ -332,7 +382,7 @@ class Login extends Component {
     )
   }
 
-  _renderMailSent = () => {
+  _renderLinkSent = () => {
     const { sentLink, checkInbox } = this.props.locale.messages;
     return (
       <View style={styles.screen}>
@@ -350,7 +400,7 @@ class Login extends Component {
     );
   }
 
-  _renderLoginError = () => {
+  _renderError = () => {
     const { unsuccessfulLogin, retry } = this.props.locale.messages;
     return (
       <View style={styles.mainView}>
@@ -359,8 +409,8 @@ class Login extends Component {
               <CustomText style={styles.text0}>
                 {unsuccessfulLogin}
               </CustomText>
-              <TouchableOpacity style={styles.signInButton} onPress={() => this.setState({ authFSM: "emailInput" })}>
-                <CustomText style={styles.registerTxt}>{retry}</CustomText>
+              <TouchableOpacity style={styles.button} onPress={() => this.setState({ authFSM: "emailInput" })}>
+                <CustomText style={styles.buttonText}>{retry}</CustomText>
               </TouchableOpacity>
           </View>
         </View>
@@ -369,8 +419,7 @@ class Login extends Component {
   }
 
   render() {
-    ///contain, cover, stretch, center, repeat.
-    const { authFSM } = this.state;
+    const { loginStep } = this.state;
     if (!this.props.auth.success) {
       // Not yet authenticated (input -> sent -> error)
       const { register } = this.props.locale.messages;
@@ -378,24 +427,20 @@ class Login extends Component {
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
           <ConnectedHeader onBackPress={this._onBackPress} />
           <CustomText style={styles.title}>{register}</CustomText>
-          {authFSM === "emailInput" && this._renderMailInput()}
-          {authFSM === "emailSent" && this._renderMailSent()}
-          {authFSM === "loginError" && this._renderLoginError()}
+          {loginStep === AUTH_STATES.INIT && this._renderInit()}
+          {loginStep === AUTH_STATES.LINK_SENT && this._renderLinkSent()}
+          {loginStep === AUTH_STATES.ERROR && this._renderError()}
+          {/*this._renderAuthOutcome()*/}
         </View>
       )
-    } else if (this.props.auth.success && authFSM === "selectedEntity") {
+    } else if (this.props.auth.success) {
       return (
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
           <ConnectedHeader onBackPress={this._onBackPress} />
-          {this._renderSelectedEntity()}
-        </View>
-      );
-    } else if (this.props.auth.user) {
-      // Authenticated but yet in emailInput (initial state) logout
-      return (
-        <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-          <ConnectedHeader onBackPress={this._onBackPress} />
-          {this._renderLogout()}
+          {loginStep === AUTH_STATES.PROFILE_REMOVE && this._renderProfileRemove()}
+          {loginStep === AUTH_STATES.PROFILE_EDIT && this._renderProfileEdit()}
+          {loginStep === AUTH_STATES.PROFILE_SHOW && this._renderProfileShow()}
+          {loginStep === AUTH_STATES.LOGOUT && this._renderLogout()}
         </View>
       );
     } else {
@@ -497,34 +542,21 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontWeight: "300"
   },
-  registerTxt: {
+  buttonText: {
     color: "white",
-    fontFamily: "montserrat-bold"
+    fontFamily: "montserrat-bold",
+    fontSize: 16,
   },
-  reporterText: {
-    textAlign: 'center',
-    fontSize: 15,
-    color: '#fff'
-  },
-  socialButton: {
-    width: 46,
-    height: 46,
-    marginTop: 15,
-    justifyContent: 'center',
-    borderRadius: 23,
-  },
-  socialIcon: {
-    color: '#fff'
-  },
-  signInButton: {
+  button: {
     marginTop: 40,
-    minWidth: 203,
-    height: 36,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
     borderRadius: 4,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "black",
     display: "flex",
+    minWidth: "50%"
   },
   bottomText: { 
     fontSize: 14,
@@ -608,6 +640,10 @@ const styles = StyleSheet.create({
     borderTopWidth: 2,
     borderLeftWidth: 2,
     borderRightWidth: 2
+  },
+  userInfo: {
+    fontSize: 16,
+    marginBottom: 5
   }
 });
 

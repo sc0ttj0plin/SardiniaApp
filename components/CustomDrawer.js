@@ -104,11 +104,11 @@ CustomDrawer.Item = class Item extends Component {
       <View style={{ marginHorizontal: 10, backgroundColor: active ? Colors.lightGray : 'white', borderRadius: 4}}>
         <DrawerItem
         icon={() => (
-          <FontAwesome
-            name={name}
-            size={size}
-            color={color}
-          />
+            <FontAwesome
+              name={name}
+              size={size}
+              color={color}
+            />
         )}
         label={label}
         onPress={() => navigation.navigate(screenName) }

@@ -38,7 +38,7 @@ class ExtraItem extends PureComponent{
           />
         <View style={styles.imageOverlay}>
           <CustomText style={styles.itemTitle}>
-            {title || "text"}
+            {title}
           </CustomText>
             <ScrollableContainerTouchableOpacity
                 activeOpacity={0.7}
@@ -79,13 +79,13 @@ const styles = StyleSheet.create({
       fontSize: 28,
       lineHeight: 28,
       alignSelf: "center",
-      width: 200,
       textAlign: "center",
       marginBottom: 30,
       textShadowColor: 'rgba(0, 0, 0, 0.75)',
       textShadowOffset: {width: 1, height: 1},
       textShadowRadius: 1,
-      marginBottom: 100
+      marginBottom: 100,
+      padding: 5
     },
     itemButton: {
       justifyContent: "center",
@@ -102,21 +102,6 @@ const styles = StyleSheet.create({
     },
     spinner: {
       marginTop: 40
-    },
-    titlePrefix: {
-      fontSize: 15,
-      color: "#ffffff",
-      textShadowOffset: {width: -1, height: 1},
-      textShadowRadius: 10,
-      textAlign: "center",
-    },
-    title: {
-      fontSize: 20,
-      color: "#ffffff",
-      textShadowOffset: {width: -1, height: 1},
-      textShadowRadius: 10,
-      padding: 10,
-      textAlign: "center"
     },
     image: {
       position: "absolute",

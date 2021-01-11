@@ -24,7 +24,7 @@ export default {
   black: '#000000',
   darkGrey: '#333333',    //rgb(51,51,51)
   mediumGray: '#666666',  //rgb(102,102,102)
-  lightGray: '#F2F2F2',   //rgb(242,242,242)
+  lightGray: '#E2E2E2',   //rgb(242,242,242)
   white: '#FFFFFF',
   cyan: '#1FCBD9',        //rgb(35,193,208)
   //Others

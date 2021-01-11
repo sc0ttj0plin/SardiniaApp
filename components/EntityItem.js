@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import GeoRefHListItem from "./GeoRefHListItem";
 import ScrollableContainerTouchableOpacity from "./ScrollableContainerTouchableOpacity";
-import { Ionicons } from '@expo/vector-icons';
+import CustomIcon from './CustomIcon';
 import * as Constants from '../constants';
 import Layout from "../constants/Layout";
 
@@ -40,7 +40,7 @@ export default class EntityItem extends PureComponent {
             <View style={[styles.corner, {
               borderTopColor: this.entityIconOpts.backgroundTopRightCorner,
             }]}>
-              <Ionicons
+              <CustomIcon
                   name={this.entityIconOpts.iconName}
                   size={15}
                   style={styles.cornerIcon}
