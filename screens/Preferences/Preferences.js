@@ -388,7 +388,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   startButton: {
-    paddingVertical: 5,
+    paddingVertical: 10,
     paddingHorizontal: 40,
     justifyContent: "center",
     alignItems: "center",
