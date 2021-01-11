@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { 
-  View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
-  StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
+  View, StyleSheet, ScrollView } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   ConnectedHeader, 
@@ -15,16 +14,17 @@ import {
   TopMedia,
   ConnectedFab, 
  } from "../../components";
+import Toast from 'react-native-easy-toast';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { greedyArrayFinder, getEntityInfo, getCoordinates, getSampleVideoIndex, getGalleryImages } from '../../helpers/utils';
+import { openRelatedEntity } from '../../helpers/screenUtils';
 import _ from 'lodash';
 import Layout from '../../constants/Layout';
 import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
 
 
 const USE_DR = false;
@@ -34,12 +34,13 @@ class InspirerScreen extends Component {
     super(props);
 
     const { uuid } = props.route.params.item;
-    const { mustFetch } = props.route.params;
+    const { mustFetch, nestingCounter = 1 } = props.route.params;
 
     this.state = {
       render: USE_DR ? false : true,
       //
       mustFetch,
+      nestingCounter,
       uuid,
       entity: { term: {} },
       abstract: null, 
@@ -53,6 +54,7 @@ class InspirerScreen extends Component {
       relatedEntities: [],
     };
       
+    this._toast = null;
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
@@ -97,27 +99,16 @@ class InspirerScreen extends Component {
     const socialUrl = `${Constants.WEBSITE_URL}${greedyArrayFinder(entity.url_alias, "language", lan, "alias", "")}`;
     const sampleVideoUrl = getSampleVideoIndex(entity.nid);
     const gallery = getGalleryImages(entity);
+    if (title === null || description === null)
+      this._toast.show(this.props.locale.messages.entityIsNotTranslated, 5000);
     this.setState({ entity, abstract,  title,  description,  whyVisit,  coordinates,  socialUrl, sampleVideoUrl, gallery });
   }
 
-  _openRelatedEntity = (item) => {
-    var type = item.type;
-    switch(type) {
-      case Constants.NODE_TYPES.places:
-        this.props.navigation.push(Constants.NAVIGATION.NavInspirerScreen, { item, mustFetch: true });
-        break;
-      case Constants.NODE_TYPES.events:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item, mustFetch: true });
-        break;
-      case Constants.NODE_TYPES.itineraries:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, { item, mustFetch: true })
-        break;
-      case Constants.NODE_TYPES.inspirers:
-        this.props.navigation.push(Constants.NAVIGATION.NavInspirerScreen, { item, mustFetch: true })
-        break;
-      default:
-        break;
-    }
+  _isLanguageAvailable = (textToCheck) => {
+    const { lan } = this.props.locale.lan;
+    const { entityIsNotTranslated } = this.props.locale.messages;
+    if (!textToCheck || !textToCheck[lan])
+      this._toast.show(entityIsNotTranslated, 2000);
   }
 
   /********************* Render methods go down here *********************/
@@ -133,7 +124,9 @@ class InspirerScreen extends Component {
         contentContainerStyle={styles.listContainerHeader}
         showsHorizontalScrollIndicator={false}
         locale={this.props.locale}
-        onPressItem={this._openRelatedEntity}
+        onPressItem={(item) => 
+          openRelatedEntity(item.type, this.props.navigation, { item, mustFetch: true, nestingCounter: this.state.nestingCounter + 1 })
+        }
         listType={listType}
         listTitle={title}
         listTitleStyle={styles.sectionTitle}
@@ -160,22 +153,18 @@ class InspirerScreen extends Component {
 
   _renderContent = () => {
     const { uuid, entity, abstract, title, description, whyVisit, coordinates, socialUrl, sampleVideoUrl, gallery, relatedEntities } = this.state;
-    const { locale, pois, favourites, } = this.props;
-    const { lan } = locale;
+    const { locale, favourites, } = this.props;
     const { 
       whyVisit: whyVisitTitle, 
-      discoverMore, 
       gallery: galleryTitle, 
       description: descriptionTitle,
       canBeOfInterest,
-      showMap,
     } = locale.messages;
     
-    const { orientation } = this.state;
-    const isFavourite = favourites.places[uuid];
 
      return (
        <View style={styles.fill}>
+         <Toast ref={(toast) => this._toast = toast} positionValue={220} opacity={0.7} />
          <ScrollView style={styles.fill}>
           <TopMedia urlVideo={sampleVideoUrl} urlImage={entity.image} />
           {this._renderFab(entity.uuid, title, coordinates, socialUrl)}   
@@ -189,7 +178,8 @@ class InspirerScreen extends Component {
             <EntityGallery images={gallery} title={galleryTitle}/>
             <EntityDescription title={descriptionTitle} text={description} color={Colors.colorInspirersScreen}/>
             <View style={styles.separator}/>
-            {this._renderRelatedList(canBeOfInterest, relatedEntities, Constants.ENTITY_TYPES.inspirers)}
+            {this.state.nestingCounter < Constants.SCREENS.maxRelatedNestingNavigation 
+              && this._renderRelatedList(canBeOfInterest, relatedEntities, Constants.ENTITY_TYPES.inspirers)}
           </View>
          </ScrollView>
        </View>

@@ -25,10 +25,8 @@ import * as firebase from 'firebase';
 import * as Constants from './constants';
 import * as Location from 'expo-location';
 import SplashLoading from './components/SplashLoading';
-import backgroundTasks from './helpers/backgroundTasks'; /* Loads background tasks even if not invoked */
 
 enableScreens();
-
 
 export default class App extends Component {
 
@@ -54,8 +52,8 @@ export default class App extends Component {
   
   _initAppAsync = async () => {
     await this._loadResourcesAsync();
-    await this._initLinkingAsync();
     await this._initFirebaseAppAndLogin();
+    await this._initLinkingAsync();
     this._handleFinishLoading();
   }
 
