@@ -17,12 +17,12 @@ class ConnectedAuthText extends PureComponent {
   render() {
     const { textStyle, auth } = this.props;
     const loginLabel = this.props.locale.messages.login;
-    const logoutLabel = this.props.locale.messages.logout;
+    const profileLabel = this.props.locale.messages.profile;
     const completeAccess = this.props.locale.messages.completeAccess;
 
     var label = loginLabel;
     if(auth.user && auth.user.info && auth.user.info.username)
-      label = logoutLabel;
+      label = profileLabel;
     else if(auth.user)
      label = completeAccess;
 

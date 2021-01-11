@@ -209,13 +209,6 @@ export const NAVIGATION = {
   NavBoilerPlate: "Boilerplate",
 }
 
-/* Regex for validation */
-export const VALIDATORS = {
-  email: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-  password: /^.{5,}$/,
-  username: /^.{1,}$/,
-}
-
 /**
  * (backend) Categories of Nodes: 
  * Vocabulary ids used for queries

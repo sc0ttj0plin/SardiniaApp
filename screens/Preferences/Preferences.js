@@ -222,8 +222,6 @@ class PreferencesScreen extends Component {
         <View style={styles.firstView}>
           <CustomText style={styles.text1}>{preferencesText1}</CustomText>
           <CustomText style={styles.text2}>{preferencesText2}</CustomText>
-        </View>
-        <View style={styles.secondView}>
           <View style={styles.icons}>
             {this._renderIcon("dizzy", Colors.colorEventsScreen, false)}
             {this._renderIcon("meh", Colors.colorInspirersScreen, false)}
@@ -251,8 +249,6 @@ class PreferencesScreen extends Component {
         <View style={styles.firstView}>
           <CustomText style={styles.text1}>{thanks}</CustomText>
           <CustomText style={styles.text2}>{preferencesText3}</CustomText>
-        </View>
-        <View style={styles.secondView}>
           <View style={styles.icons}>
             {this._renderIcon("dizzy", Colors.colorEventsScreen, false)}
             {this._renderIcon("meh", Colors.colorInspirersScreen, false)}
@@ -392,8 +388,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   startButton: {
-    width: 203,
-    height: 36,
+    paddingVertical: 5,
+    paddingHorizontal: 40,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "black",
@@ -403,7 +399,8 @@ const styles = StyleSheet.create({
     color: "white",
     textTransform: "uppercase",
     fontFamily: "montserrat-bold",
-    fontSize: 14
+    fontSize: 14,
+    textAlign: "center"
   },
   startedContent: {
     paddingHorizontal: 15,

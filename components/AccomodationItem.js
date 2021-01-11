@@ -147,5 +147,6 @@ const styles = StyleSheet.create({
   termText: {
     fontSize: 10,
     minHeight: 20,
+    paddingRight: 8
   }
 })

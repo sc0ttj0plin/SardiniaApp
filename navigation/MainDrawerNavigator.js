@@ -328,15 +328,15 @@ function CustomDrawerContent(props) {
       {/* <DrawerItemList state={newState} {...rest}/> */}
       <CustomDrawer.Header />
       <CustomDrawer.Line />
-      <CustomDrawer.Item {...props} routeIndex={0} label={ConnectedTextTabName} screenName={Constants.NAVIGATION.NavMainStackScreen} iconOpts={{name: 'home', size: 20, color: Colors.mediumGray}} />
+      <CustomDrawer.Item {...props} routeIndex={0} label={ConnectedTextTabName} screenName={Constants.NAVIGATION.NavMainStackScreen} iconOpts={{name: 'map-marker', size: 20, color: Colors.mediumGray}} />
       <CustomDrawer.Item {...props} routeIndex={1} label={ConnectedTextSearch} screenName={Constants.NAVIGATION.NavSearchStackScreen} iconOpts={{name: 'search', size: 20, color: Colors.mediumGray}} />
-      <CustomDrawer.Item {...props} routeIndex={2} label={ConnectedTextAccomodations} screenName={Constants.NAVIGATION.NavAccomodationsStackScreen} iconOpts={{name: 'suitcase', size: 20, color: Colors.mediumGray}} />
-      <CustomDrawer.Item {...props} routeIndex={3} label={ConnectedTextPreferences} screenName={Constants.NAVIGATION.NavPreferencesScreen} iconOpts={{name: 'user', size: 20, color: Colors.mediumGray}} />
+      <CustomDrawer.Item {...props} routeIndex={2} label={ConnectedTextAccomodations} screenName={Constants.NAVIGATION.NavAccomodationsStackScreen} iconOpts={{name: 'home', size: 20, color: Colors.mediumGray}} />
+      <CustomDrawer.Item {...props} routeIndex={3} label={ConnectedTextPreferences} screenName={Constants.NAVIGATION.NavPreferencesScreen} iconOpts={{name: 'thumbs-up', size: 20, color: Colors.mediumGray}} />
       <CustomDrawer.Separator />
       <CustomDrawer.Item {...props} routeIndex={4} label={ConnectedTextFavourites} screenName={Constants.NAVIGATION.NavFavouritesStackScreen} iconOpts={{name: 'heart', size: 20, color: Colors.mediumGray}} />
       <CustomDrawer.Item {...props} routeIndex={5} label={ConnectedTextGallery} screenName={Constants.NAVIGATION.NavGalleryStackScreen} iconOpts={{name: 'image', size: 20, color: Colors.mediumGray}} />
       <CustomDrawer.Separator />
-      <CustomDrawer.Item {...props} routeIndex={6} label={ConnectedTextLoginLogout} screenName={Constants.NAVIGATION.NavAuthScreen} iconOpts={{name: 'key', size: 20, color: Colors.mediumGray}} />
+      <CustomDrawer.Item {...props} routeIndex={6} label={ConnectedTextLoginLogout} screenName={Constants.NAVIGATION.NavAuthScreen} iconOpts={{name: 'user', size: 20, color: Colors.mediumGray}} />
       <ConnectedLanguageList />
     </DrawerContentScrollView>
   );

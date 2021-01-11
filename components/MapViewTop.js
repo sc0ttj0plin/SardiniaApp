@@ -19,8 +19,7 @@ import * as Constants from '../constants';
 import Colors from '../constants/Colors';
 import { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import CustomIcon  from './CustomIcon';
-import { linkingOpenNavigator } from "../helpers/utils"
-import { FontAwesome5 } from '@expo/vector-icons';
+import { linkingOpenNavigator } from "../helpers/utils";
 
 /**
  * Map:             Clusters + pois that update with user map's interaction
@@ -318,7 +317,7 @@ class MapViewTop extends PureComponent {
           buttonStyle={[styles.buttonGoToMyLocation]}
           onPress={this._onGoToMyLocationPressed}
           icon={
-            <FontAwesome5 name={"street-view"} size={25} color={Colors.colorPlacesScreen} />
+            <CustomIcon name={"icon-location"} size={25} color={Colors.colorPlacesScreen} />
             }
         />
           }

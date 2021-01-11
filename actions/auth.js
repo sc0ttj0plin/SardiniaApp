@@ -40,8 +40,12 @@ async (dispatch, getState) => {
       const result = await firebase.auth().signInWithEmailLink(email, url);
       const storeUserData = await firebase.auth()
       const token = await firebase.auth().currentUser.getIdToken(/* forceRefresh */true);
-      if (result.user)
-        dispatch({ type: Constants.AUTH_SUCCESS, payload: { user: result.user, token } });
+      if (result.user) {
+        let user = result.user;
+        let userInfo = await firebase.database().ref(`users/${user.uid}/info`).once('value');
+        user.info = userInfo.val();
+        dispatch({ type: Constants.AUTH_SUCCESS, payload: { user: user, token } });
+      }
       else
         dispatch({ type: Constants.AUTH_FAIL, payload: { message: 'Errore nel login!' } });
     } catch (error) {
@@ -105,7 +109,24 @@ export const logout = () =>
       console.log('Logout..');
       await AsyncStorage.removeItem('email');
       const user = firebase.auth().currentUser;
+      //await firebase.database().ref(`users/${user.uid}/info`).remove();
+      await firebase.auth().signOut();
+    } catch(e) {
+      console.log("Logout error", e.message);
+    }
+    //ignoring the logout outcome, since we remove the token there's no need to validate it
+    dispatch({ type: Constants.LOGOUT_SUCCESS });
+  }
+
+
+export const removeUser = () => 
+  async (dispatch) => {
+    try  {
+      console.log('Remove User..');
+      await AsyncStorage.removeItem('email');
+      const user = firebase.auth().currentUser;
       await firebase.database().ref(`users/${user.uid}/info`).remove();
+      await firebase.auth().currentUser.delete();
       await firebase.auth().signOut();
     } catch(e) {
       console.log("Logout error", e.message);

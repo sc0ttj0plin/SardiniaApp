@@ -166,7 +166,7 @@ class EventsMapScreen extends PureComponent {
     const { exploreEvents } = this.props.locale.messages;
       return (
         //onStartShouldSetResponder={this._onListHeaderPressIn}
-        <SectionTitle text={exploreEvents} numberOfLines={1} textStyle={{ fontSize: 20 }} style={{ marginBottom: 15, paddingLeft: 40, paddingRight: 40 }} />
+        <SectionTitle text={exploreEvents} numberOfLines={1} textStyle={{ fontSize: 20 }} style={{ marginBottom: 15 }} />
       )
   }
 
