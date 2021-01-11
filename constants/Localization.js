@@ -1,5 +1,13 @@
+import  { normalizeLanguage } from '../helpers/utils';
+
+const itKey = normalizeLanguage("it");
+const enKey = normalizeLanguage("en-*");
+const zhKey = normalizeLanguage("zh-*");
+const frKey = normalizeLanguage("fr");
+const deKey = normalizeLanguage("de");
+
 const dict = {
-  it: {
+  [itKey]: {
     //GENERIC
     man: "Uomo",
     woman: "Donna",
@@ -84,6 +92,7 @@ const dict = {
     phoneOnPressBtnTitle: "Chiama la struttura",
     websiteOnPressBtnTitle: "Vai",
     emailOnPressBtnTitle: "Scrivi",
+    entityIsNotTranslated: "Questa entità non ha una traduzione per la lingua corrente",
     retry: "Riprova",
     //NAVIGATION
     tabWhatToDo: "Cosa fare",
@@ -141,7 +150,7 @@ const dict = {
     notificationTitle: "L'app Sardinia ti avvisa",
     notificationBody: "Sei vicino ad un punto di interesse!",
   },
-  "en": {
+  [enKey]: {
     //GENERIC
     man: "Man",
     woman: "Woman",
@@ -225,6 +234,7 @@ const dict = {
     phoneOnPressBtnTitle: "Call the host",
     websiteOnPressBtnTitle: "Open browser",
     emailOnPressBtnTitle: "Open email",
+    entityIsNotTranslated: "This entity hasn't got a translation for the current language",
     retry: "Retry",
     //NAVIGATION
     tabWhatToDo: "What to do",
@@ -281,7 +291,10 @@ const dict = {
     //App Location Tracking background
     notificationTitle: "Sardinia App Location",
     notificationBody: "Sardinia App is tracking your location",
-  }
+  },
+  zhKey: {},
+  frKey: {},
+  deKey: {},
 }
 
 export default dict;

@@ -203,8 +203,6 @@ class ExtraScreen extends Component {
       outputRange: ['0deg', '360deg']
     });
 
-    console.log(entity.uuid);
-
     return (
       <View style={styles.fill}>
         <Animated.ScrollView style={styles.fill}

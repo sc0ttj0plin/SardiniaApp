@@ -24,7 +24,7 @@ export const passwordLessSignup = (email) =>
       await firebase.auth().sendSignInLinkToEmail(email, actionCodeSettings);
       AsyncStorage.setItem('email', email); //Store email to finish auth later
     } catch(error) {
-      console.log("Error", e.message);
+      console.log("Error", error.message);
       dispatch({ type: Constants.AUTH_FAIL, payload: { message: error.message } });
     }
 }
@@ -79,8 +79,8 @@ async (dispatch, getState) => {
     const token = await firebase.auth().currentUser.getIdToken(/* forceRefresh */ true);
     dispatch({ type: Constants.AUTH_SUCCESS, payload: { user, token } });
  } catch(e) {
-    console.log("Error", e.message);
-    dispatch({ type: Constants.AUTH_FAIL, payload: { message: e.message } });
+    console.log("Error", error.message);
+    dispatch({ type: Constants.AUTH_FAIL, payload: { message: error.message } });
   }
 }
 
@@ -108,7 +108,7 @@ export const logout = () =>
       await firebase.database().ref(`users/${user.uid}/info`).remove();
       await firebase.auth().signOut();
     } catch(e) {
-      console.log("Logout error", e.message);
+      console.log("Logout error", error.message);
     }
     //ignoring the logout outcome, since we remove the token there's no need to validate it
     dispatch({ type: Constants.LOGOUT_SUCCESS });

@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { 
-  View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
-  StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
+  View, StyleSheet, ScrollView } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { 
@@ -15,16 +14,17 @@ import {
   TopMedia,
   ConnectedFab, 
  } from "../../components";
+import Toast from 'react-native-easy-toast';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
-import { greedyArrayFinder, getEntityInfo, getGalleryImages } from '../../helpers/utils';
+import { greedyArrayFinder, getEntityInfo } from '../../helpers/utils';
+import { openRelatedEntity } from '../../helpers/screenUtils';
 import Layout from '../../constants/Layout';
 import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
 
 /* Deferred rendering to speedup page inital load: 
    deferred rendering delays the rendering reducing the initial 
@@ -37,12 +37,13 @@ class ItineraryScreen extends Component {
     super(props);
 
     const { uuid } = props.route.params.item;
-    const { mustFetch } = props.route.params;
+    const { mustFetch, nestingCounter = 1 } = props.route.params;
 
     this.state = {
       render: USE_DR ? false : true,
       //
       mustFetch,
+      nestingCounter,
       uuid,
       entity: { term: {} },
       abstract: null, 
@@ -55,6 +56,7 @@ class ItineraryScreen extends Component {
       relatedEntities: [],
     };
       
+    this._toast = null;
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
@@ -107,7 +109,16 @@ class ItineraryScreen extends Component {
     //Get the first stage coordinates to show on map
     const coordinates = _.get(entity, ["stages", lan, 0, "poi", "georef", "coordinates"], null);
     const term = entity.term.name;
+    if (title === null || description === null)
+      this._toast.show(this.props.locale.messages.entityIsNotTranslated, 5000);
     this.setState({ entity, abstract, term, title,  description, coordinates, socialUrl, stages: entity.stages[lan], stagesMarkers });
+  }
+
+  _isLanguageAvailable = (textToCheck) => {
+    const { lan } = this.props.locale.lan;
+    const { entityIsNotTranslated } = this.props.locale.messages;
+    if (!textToCheck || !textToCheck[lan])
+      this._toast.show(entityIsNotTranslated, 2000);
   }
 
   _getItineraryStagesMarkers = (stages) => {
@@ -132,25 +143,6 @@ class ItineraryScreen extends Component {
     return stagesMarkers;
   }
 
-  _openRelatedEntity = (item, listType) => {
-    let type = item.type;
-    switch(type) {
-      case Constants.NODE_TYPES.places:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item, mustFetch: true });
-        break;
-      case Constants.NODE_TYPES.events:
-        this.props.navigation.navigate(Constants.NAVIGATION.ItineraryScreen, { item, mustFetch: true });
-        break;
-      case Constants.NODE_TYPES.itineraries:
-        this.props.navigation.push(Constants.NAVIGATION.NavItineraryScreen, { item, mustFetch: true })
-        break;
-      case Constants.NODE_TYPES.inspirers:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavInspirerScreen, { item, mustFetch: true })
-        break;
-      default:
-        break;
-    }
-  }
 
   /********************* Render methods go down here *********************/
 
@@ -185,7 +177,9 @@ class ItineraryScreen extends Component {
           ItemSeparatorComponent={this._renderHorizontalSeparator}
           showsHorizontalScrollIndicator={false}
           locale={this.props.locale}
-          onPressItem={this._openRelatedEntity}
+          onPressItem={(item) => 
+            openRelatedEntity(item.type, this.props.navigation, { item, mustFetch: true, nestingCounter: this.state.nestingCounter + 1 })
+          }
           listType={listType}
           listTitle={title}
           listTitleStyle={styles.sectionTitle}
@@ -194,19 +188,16 @@ class ItineraryScreen extends Component {
   }
 
   _renderContent = () => {
-    const { uuid, entity, stages, stagesMarkers, coordinates, socialUrl, abstract, title, description, whyVisit, relatedEntities } = this.state;
-    const { locale, pois, favourites, } = this.props;
-    const { lan } = locale;
+    const { uuid, entity, stages, stagesMarkers, coordinates, socialUrl, abstract, title, description, relatedEntities } = this.state;
+    const { locale, } = this.props;
     const { 
-      whyVisit: whyVisitTitle, 
-      discoverMore, 
-      gallery: galleryTitle, 
       description: descriptionTitle,
       canBeOfInterest,
     } = locale.messages;
 
     return (
       <View style={styles.fill}>
+        <Toast ref={(toast) => this._toast = toast} positionValue={220} opacity={0.7} />
         <ScrollView style={styles.fill}>
           <TopMedia urlImage={entity.image} />
           {this._renderFab(entity.uuid, title, coordinates, socialUrl)}   
@@ -219,7 +210,8 @@ class ItineraryScreen extends Component {
             <EntityDescription title={descriptionTitle} text={description} color={Colors.colorItinerariesScreen}/>
             <EntityStages type="itinerary" stages={stages} locale={locale} />
             <View style={styles.separator}/>
-            {this._renderRelatedList(canBeOfInterest, relatedEntities, Constants.ENTITY_TYPES.itineraries)}
+            {this.state.nestingCounter < Constants.SCREENS.maxRelatedNestingNavigation 
+              && this._renderRelatedList(canBeOfInterest, relatedEntities, Constants.ENTITY_TYPES.itineraries)}
             <View style={{marginBottom: 30}}></View>
           </View>
         </ScrollView>

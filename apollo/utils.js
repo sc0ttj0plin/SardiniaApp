@@ -1,6 +1,7 @@
 import moment from 'moment';
 import * as Constants from '../constants';
 import {distance, distanceToString} from '../helpers/maps'
+import  { normalizeLanguage } from '../helpers/utils';
 import samplePois from '../constants/_samplePois';
 import sampleMarkers from '../constants/_sampleMarkers';
 import sampleImages from '../constants/_sampleImages';
@@ -74,11 +75,20 @@ export const processEventTypes = function(eventTypes) {
 }
 
 /**
- * Process a generic entity replacing image urls and computing distance
+ * Process a generic entity retrieved from a query normalizing it, replacing image urls, computing distances etc..
  * @param {*} entity: a generic entity
  * @param {*} coords: coordinates for that entity
  */
 export const processEntity = function(entity, coords=null) {
+
+  // Normalize languages
+  if (entity.title) 
+    normalizeLanguage(entity.title);
+  if (entity.abstract) 
+    normalizeLanguage(entity.abstract);
+  if (entity.description) 
+    normalizeLanguage(entity.description);
+
   if (entity.image)
       // entity.image = entity.image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST_621x);
       entity.image = entity.image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST_621x);
@@ -107,6 +117,7 @@ export const processEntity = function(entity, coords=null) {
     entity.distance = distanceToString(distance(coords[0], coords[1], entity.georef.coordinates[0], entity.georef.coordinates[1]));
   }
 
+  // Related pois array
   if (entity.nodes_linked) {
     entity.nodes_linked = entity.nodes_linked.reduce((acc, el, index) => {
       el.node.image = el.node.image.replace("public://", "https://www.sardegnaturismo.it/sites/default/files/");
