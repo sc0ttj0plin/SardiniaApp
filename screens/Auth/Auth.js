@@ -548,7 +548,8 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     fontFamily: "montserrat-bold",
-    fontSize: 16,
+    fontSize: 14,
+    textTransform: "uppercase",
   },
   button: {
     marginTop: 40,
@@ -559,7 +560,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "black",
     display: "flex",
-    minWidth: "50%"
+    minWidth: "50%",
   },
   bottomText: { 
     fontSize: 14,
