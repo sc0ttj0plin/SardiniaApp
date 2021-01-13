@@ -176,7 +176,10 @@ class Login extends Component {
     else if(this.state.loginStep === AUTH_STATES.PROFILE_EDIT && !this.props.auth.user.info) /* user has pressed back without completing profile */
       this.props.navigation.goBack();
     else if(this.state.loginStep === AUTH_STATES.PROFILE_EDIT)
-      this.setState({loginStep: AUTH_STATES.PROFILE_SHOW})
+      if(this.props.auth.user.info)
+        this.setState({loginStep: AUTH_STATES.PROFILE_SHOW})
+      else
+        this.props.navigation.goBack();
     else if(this.state.loginStep === AUTH_STATES.LOGOUT)
       this.setState({loginStep: AUTH_STATES.PROFILE_SHOW})
     else
@@ -565,7 +568,8 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     fontFamily: "montserrat-bold",
-    fontSize: 16,
+    fontSize: 14,
+    textTransform: "uppercase",
   },
   button: {
     marginTop: 40,
@@ -576,7 +580,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "black",
     display: "flex",
-    minWidth: "50%"
+    minWidth: "50%",
   },
   bottomText: { 
     fontSize: 14,
