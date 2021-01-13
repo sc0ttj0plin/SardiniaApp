@@ -23,23 +23,24 @@ export const passwordLessSignup = (email) =>
     try {
       await firebase.auth().sendSignInLinkToEmail(email, actionCodeSettings);
       AsyncStorage.setItem('email', email); //Store email to finish auth later
-    } catch(error) {
-      console.log("Error", error.message);
-      dispatch({ type: Constants.AUTH_FAIL, payload: { message: error.message } });
+    } catch(e) {
+      console.log("Error", e.message);
+      dispatch({ type: Constants.AUTH_FAIL, payload: { message: e.message } });
     }
 }
 
 //@passwordless
 export const passwordLessLinkHandler = (url) =>
 async (dispatch, getState) => {
+  // const auth = getState().authState;
   //Auth Storage is persisted (see store.js)
   const isSignInWithEmailLink = firebase.auth().isSignInWithEmailLink(url);
   if (isSignInWithEmailLink) {
     try {
       const email = await AsyncStorage.getItem('email');
       const result = await firebase.auth().signInWithEmailLink(email, url);
-      const storeUserData = await firebase.auth()
       const token = await firebase.auth().currentUser.getIdToken(/* forceRefresh */true);
+      // Get user information if any, the discriminant for a complete profile is a populated user.info object
       if (result.user) {
         let user = result.user;
         let userInfo = await firebase.database().ref(`users/${user.uid}/info`).once('value');
@@ -48,9 +49,9 @@ async (dispatch, getState) => {
       }
       else
         dispatch({ type: Constants.AUTH_FAIL, payload: { message: 'Errore nel login!' } });
-    } catch (error) {
-      console.log(error.message);
-      dispatch({ type: Constants.AUTH_FAIL, payload: { message: error.message } });
+    } catch (e) {
+      console.log(e.message);
+      dispatch({ type: Constants.AUTH_FAIL, payload: { message: e.message } });
     }
   }
 }
@@ -83,8 +84,8 @@ async (dispatch, getState) => {
     const token = await firebase.auth().currentUser.getIdToken(/* forceRefresh */ true);
     dispatch({ type: Constants.AUTH_SUCCESS, payload: { user, token } });
  } catch(e) {
-    console.log("Error", error.message);
-    dispatch({ type: Constants.AUTH_FAIL, payload: { message: error.message } });
+    console.log("Error", e.message);
+    dispatch({ type: Constants.AUTH_FAIL, payload: { message: e.message } });
   }
 }
 
@@ -97,9 +98,9 @@ export const editUser = (el) =>
       let ref = firebase.database().ref(`users/${user.uid}/info`);
       ref.set({...el});
       dispatch({ type: Constants.USER_EDIT_SUCCESS, payload: {userInfo: {...el}}});
-    } catch(error) { 
+    } catch(e) { 
       dispatch({ type: Constants.USER_EDIT_FAIL });
-      console.log(error); 
+      console.log(e.message); 
     }
   }  
 
@@ -112,7 +113,7 @@ export const logout = () =>
       //await firebase.database().ref(`users/${user.uid}/info`).remove();
       await firebase.auth().signOut();
     } catch(e) {
-      console.log("Logout error", error.message);
+      console.log("Logout error", e.message);
     }
     //ignoring the logout outcome, since we remove the token there's no need to validate it
     dispatch({ type: Constants.LOGOUT_SUCCESS });
