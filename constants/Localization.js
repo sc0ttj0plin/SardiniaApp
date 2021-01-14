@@ -1,4 +1,4 @@
-import  { normalizeLanguage } from '../helpers/utils';
+import  { normalizeLanguage } from '../helpers/language';
 
 const itKey = normalizeLanguage("it");
 const enKey = normalizeLanguage("en-*");
@@ -273,7 +273,7 @@ const dict = {
     sex: "Sex",
     confirm: "Confirm",
     register: "Register",
-    next: "Nest",
+    next: "Next",
     sentLink: "We've sent you a link", 
     checkInbox: "Check your inbox",
     logoutMsg: "Do you want to logout from your account?",

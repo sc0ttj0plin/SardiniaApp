@@ -94,6 +94,7 @@ class Login extends Component {
       this.setState({ loginStep: AUTH_STATES.PROFILE_EDIT });
     }
     else if (this.props.auth.error) {
+      console.log("AUTH_STATES.ERROR");
       this.setState({ loginStep: AUTH_STATES.ERROR });
     }
   }

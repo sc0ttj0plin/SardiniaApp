@@ -82,7 +82,7 @@ async (dispatch, getState) => {
     user.info = userInfo.val();
     const token = await firebase.auth().currentUser.getIdToken(/* forceRefresh */ true);
     dispatch({ type: Constants.AUTH_SUCCESS, payload: { user, token } });
- } catch(e) {
+ } catch(error) {
     console.log("Error", error.message);
     dispatch({ type: Constants.AUTH_FAIL, payload: { message: error.message } });
   }
@@ -127,7 +127,6 @@ export const removeUser = () =>
       const user = firebase.auth().currentUser;
       await firebase.database().ref(`users/${user.uid}/info`).remove();
       await firebase.auth().currentUser.delete();
-      await firebase.auth().signOut();
     } catch(e) {
       console.log("Logout error", e.message);
     }
