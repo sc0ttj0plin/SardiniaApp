@@ -1,7 +1,7 @@
 import moment from 'moment';
 import * as Constants from '../constants';
 import {distance, distanceToString} from '../helpers/maps'
-import  { normalizeLanguage } from '../helpers/utils';
+import  { normalizeLanguage } from '../helpers/language';
 import samplePois from '../constants/_samplePois';
 import sampleMarkers from '../constants/_sampleMarkers';
 import sampleImages from '../constants/_sampleImages';

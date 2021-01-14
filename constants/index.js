@@ -2,7 +2,7 @@ import Colors from './Colors';
 import { Platform } from "react-native"
 import * as Location from 'expo-location';
 import * as Localization from 'expo-localization';
-import { normalizeLanguage } from '../helpers/utils';
+import  { normalizeLanguage } from '../helpers/language';
 
 // Actions
 export const SET_URL = 'sardinia/others/SET_URL';
@@ -422,7 +422,7 @@ export const VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS = {
   [VIDS.inspirersCategories]: {
     backgroundTopRightCorner: Colors.colorInspirersScreen,
     iconColor: Colors.colorInspirersScreen,
-    iconName: 'icon-ispirer-map'
+    iconName: 'icon-inspirer-map'
   }, 
   [VIDS.events]: {
     backgroundTopRightCorner: Colors.colorEventsScreen,
@@ -443,7 +443,7 @@ export const VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS = {
   [NODE_TYPES.inspirers]: {
     backgroundTopRightCorner: Colors.colorInspirersScreen,
     iconColor: Colors.colorInspirersScreen,
-    iconName: 'icon-ispirer-map'
+    iconName: 'icon-inspirer-map'
   }, 
   [NODE_TYPES.itineraries]: {
     backgroundTopRightCorner: Colors.colorItinerariesScreen,
@@ -478,7 +478,7 @@ export const VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS = {
     iconColor: "white",
     backgroundColor: Colors.colorInspirersScreen,
     backgroundTransparent: Colors.colorInspirersScreen,
-    iconName: 'icon-ispirer-map'
+    iconName: 'icon-inspirer-map'
   }, 
   [ENTITY_TYPES.itineraries]: {
     backgroundTopRightCorner: Colors.colorItinerariesScreen,

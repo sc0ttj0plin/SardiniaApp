@@ -66,6 +66,7 @@ export default class App extends Component {
     }
     //or app is opened 
     Linking.addEventListener('url', ({ url }) => {
+      console.log("Linking.addEventListener");
       store.dispatch(actions.setUrl(url));
       this._parseLinkingUrl(url);
     });

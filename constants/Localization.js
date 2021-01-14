@@ -1,4 +1,4 @@
-import  { normalizeLanguage } from '../helpers/utils';
+import  { normalizeLanguage } from '../helpers/language';
 
 const itKey = normalizeLanguage("it");
 const enKey = normalizeLanguage("en-*");
