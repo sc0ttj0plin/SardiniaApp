@@ -3,6 +3,7 @@ import * as Constants from '../constants';
 const INITIAL_STATE = {
   searchOrAutocomplete: "autocomplete",
   searchStr: "",
+  url: null,
   placesTerms: [],
   inspirersTerms: [],
   accomodationsTerms: [],
