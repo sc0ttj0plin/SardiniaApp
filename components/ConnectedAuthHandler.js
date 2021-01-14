@@ -39,16 +39,23 @@ class ConnectedAuthHandler extends PureComponent {
   async componentDidMount() {
     var timeout = this.props.timeout ? this.props.timeout : 150;
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), timeout))};
+    const isProfileComplete = this.props.auth.user && this.props.auth.user.info && this.props.auth.user.info.username;
+    console.log("Auth success! is profile complete?", isProfileComplete);
+    if (!isProfileComplete)
+      this.props.navigation.navigate(Constants.NAVIGATION.NavAuthScreen); 
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
 
   async componentDidUpdate(prevProps) {
     //auth is updated by passwordLessLogin action
-    if (this.props.auth !== prevProps.auth)
-      if (this.props.auth.success) {
-        console.log("AUTH SUCCESS")
-      }
+    if (prevProps.auth !== this.props.auth && this.props.auth.success) {
+      /* If success navigate to Auth.js */
+      const isProfileComplete = this.props.auth.user && this.props.auth.user.info && this.props.auth.user.info.username;
+      console.log("Auth success! is profile complete?", isProfileComplete);
+      if (!isProfileComplete)
+        this.props.navigation.navigate(Constants.NAVIGATION.NavAuthScreen); 
+    }
   }
 
   componentWillUnmount() {

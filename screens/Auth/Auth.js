@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import {  Platform, KeyboardAvoidingView, StyleSheet, Text, ActivityIndicator, TouchableOpacity, Alert, TextInput } from 'react-native';
-import { NavigationEvents, useNavigation, useRoute } from '@react-navigation/native';
+import {  Platform, KeyboardAvoidingView, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { ConnectedHeader, CustomText } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import actions from '../../actions';
 import { View, Form, Item, Input, Picker, DatePicker } from 'native-base';
-import { validateFields } from '../../helpers/utils';
 import _ from 'lodash';
 import Layout from '../../constants/Layout';
 import Colors from '../../constants/Colors';
@@ -15,11 +14,7 @@ import itCountries from "world_countries_lists/data/it/countries.json";
 import * as Validate from '../../helpers/validate';
 import moment from "moment";
 
-// import enCountries from "world_countries_lists/data/en/countries.json";
-
-
-// console.log("itcountries", itCountries)
-var AUTH_STATES = {
+const AUTH_STATES = {
   INIT: "INIT",
   LINK_SENT: "LINK_SENT",
   PROFILE_REMOVE: "PROFILE_REMOVE",
@@ -179,6 +174,8 @@ class Login extends Component {
   _onBackPress = () => {
     if(this.state.loginStep === AUTH_STATES.PROFILE_REMOVE)
       this.setState({loginStep: AUTH_STATES.PROFILE_SHOW})
+    else if(this.state.loginStep === AUTH_STATES.PROFILE_EDIT && !this.props.auth.user.info) /* user has pressed back without completing profile */
+      this.props.navigation.goBack();
     else if(this.state.loginStep === AUTH_STATES.PROFILE_EDIT)
       if(this.props.auth.user.info)
         this.setState({loginStep: AUTH_STATES.PROFILE_SHOW})
@@ -256,12 +253,13 @@ class Login extends Component {
   }
 
   _renderProfileShow = () => {
-    if(!this.props.auth.user || !this.props.auth.user.info) 
+    if(!this.props.auth.user.info) 
       return;
 
+      
     const { editProfileBtn, logoutBtn, removeProfileBtn } = this.props.locale.messages;
     const { user } = this.props.auth;
-    
+
     return (
       <View style={styles.mainView}>
         <View style={styles.view0}>
@@ -405,7 +403,7 @@ class Login extends Component {
   }
 
   _renderError = () => {
-    const { unsuccessfulLogin, retry } = this.props.locale.messages;
+    const { unsuccessfulLogin, retry, possibleCauses, reusedOldLink, alreadyLoggedIn, connectionIssues } = this.props.locale.messages;
     return (
       <View style={styles.mainView}>
         <View style={styles.view0}>
@@ -413,7 +411,21 @@ class Login extends Component {
               <CustomText style={styles.text0}>
                 {unsuccessfulLogin}
               </CustomText>
-              <TouchableOpacity style={styles.button} onPress={() => this.setState({ authFSM: "emailInput" })}>
+              <View style={styles.view2}>
+                <CustomText style={styles.text0}>
+                  {possibleCauses}
+                </CustomText>
+                <CustomText style={styles.text0}>
+                  {reusedOldLink}
+                </CustomText>
+                <CustomText style={styles.text0}>
+                  {alreadyLoggedIn}
+                </CustomText>
+                <CustomText style={styles.text0}>
+                  {connectionIssues}
+                </CustomText>
+              </View>
+              <TouchableOpacity style={styles.button} onPress={() => this.setState({ loginStep: AUTH_STATES.INIT })}>
                 <CustomText style={styles.buttonText}>{retry}</CustomText>
               </TouchableOpacity>
           </View>
@@ -501,6 +513,9 @@ const styles = StyleSheet.create({
     marginTop: 50, 
     justifyContent: 'center' 
   },
+  view2: {
+    marginTop: 20
+  },
   text0: { 
     textAlign: 'center', 
     fontSize: 17, 
@@ -512,6 +527,11 @@ const styles = StyleSheet.create({
     fontSize: 15, 
     color: "#3E3E3D",
     marginBottom: 40
+  },
+  text2: { 
+    fontSize: 17, 
+    color: "#3E3E3D",
+    marginBottom: 20
   },
   logoView: {
     alignItems: "center", 

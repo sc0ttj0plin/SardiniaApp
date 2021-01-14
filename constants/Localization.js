@@ -94,6 +94,12 @@ const dict = {
     emailOnPressBtnTitle: "Scrivi",
     entityIsNotTranslated: "Questa entità non ha una traduzione per la lingua corrente",
     retry: "Riprova",
+    //LOGIN
+    possibleCauses: "Possibili cause:",
+    reusedOldLink: "• È stato usato un link di login scaduto o già utilizzato",
+    alreadyLoggedIn: "• Il login è stato già effettuato precedentemente",
+    connectionIssues: "• La connessione ad internet è inattiva o intermittente",
+    unsuccessfulLogin: "Il login non è andato a buon fine, si prega di riprovare.",
     //NAVIGATION
     tabWhatToDo: "Cosa fare",
     tabWhereToGo: "Dove andare",
@@ -240,6 +246,12 @@ const dict = {
     emailOnPressBtnTitle: "Open email",
     entityIsNotTranslated: "This entity hasn't got a translation for the current language",
     retry: "Retry",
+    //LOGIN
+    possibleCauses: "Possible causes:",
+    reusedOldLink: "• The login link has already been used or is expired",
+    alreadyLoggedIn: "• Login was already performed",
+    connectionIssues: "• Internet connection is inactive or poor",
+    unsuccessfulLogin: "Login unsuccessful. Please retry",
     //NAVIGATION
     tabWhatToDo: "What to do",
     tabWhereToGo: "Where to go",
