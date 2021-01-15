@@ -84,7 +84,6 @@ class ConnectedAuthHandler extends PureComponent {
           animationType="fade"
           transparent={true}
           visible={modalVisible}>
-            <View style={[styles.fill]}>
             <View 
               style={styles.modalView} 
             >
@@ -93,7 +92,7 @@ class ConnectedAuthHandler extends PureComponent {
                   <CustomText style={styles.modalDescription}>{loginText}</CustomText>
                   <View style={styles.modalButtons}>
                     <TouchableOpacity activeOpacity={0.7} style={[styles.modalBtn, styles.loginButton, Constants.styles.shadow]} onPress={this._onRegister}>
-                      <CustomText style={[styles.modalBtnText, styles.loginButtonText]}>{access}</CustomText>
+                      <CustomText style={[styles.modalBtnText]}>{access}</CustomText>
                     </TouchableOpacity>
                     <View style={styles.buttonsSeparator} />
                     <TouchableOpacity activeOpacity={0.7} style={[styles.modalBtn, styles.skipButton, Constants.styles.shadow]} onPress={this._onSkip}>
@@ -101,7 +100,6 @@ class ConnectedAuthHandler extends PureComponent {
                     </TouchableOpacity>
                   </View>
                 </View>
-            </View>
             </View>
         </Modal>
       )
@@ -124,18 +122,6 @@ ConnectedAuthHandler.navigationOptions = {
 
 
 const styles = StyleSheet.create({
-  fill: {
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-    backgroundColor: "rgba(0,0,0, 0.5)",
-    zIndex: 11,
-  },
-  container: {
-    marginTop: 20,
-    marginBottom: 30,
-    marginHorizontal: 20,
-  },
   itemStyle: {
     backgroundColor: "white",
     borderWidth: 1,
@@ -147,14 +133,13 @@ const styles = StyleSheet.create({
     width: '100%', 
     height: '100%', 
     zIndex: 1, 
-    backgroundColor: "rgba(0,0,0, 0.5)",
+    backgroundColor: "rgba(0,0,0, 0.7)",
     position: 'absolute',
-    left: 0, 
     alignItems: "center",
     justifyContent: "center",
+    paddingHorizontal: "10%"
   },
   modalWindow: {
-    margin: 30,
     padding: 28.5,
     backgroundColor: "white", 
     zIndex: 2,
@@ -165,27 +150,35 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: "montserrat-bold",
     marginBottom: 14,
+    textTransform: "uppercase"
   },
   modalDescription: {
     fontSize: 12,
-    color: "#333333"
+    fontFamily: "montserrat-regular",
+    textAlign: "justify",
+    marginBottom: 30,
   },
   modalButtons: {
     flexDirection: "row",
     width: "100%",
-    height: 36,
-    marginTop: 21,
     justifyContent: "center",
   },
   modalBtn: {
     minWidth: 106,
-    height: 36,
     borderRadius: 4,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "black",
     display: "flex",
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
+    paddingVertical: 5
+  },
+  modalBtnText: {
+    color: "white",
+    fontFamily: "montserrat-bold",
+    width: "100%",
+    textAlign: "center",
+    textTransform: "uppercase"
   },
   loginButton: {
     alignSelf: "flex-start"
@@ -196,12 +189,6 @@ const styles = StyleSheet.create({
   },
   skipButtonText: {
     color: "black"
-  },
-  modalBtnText: {
-    color: "white",
-    fontFamily: "montserrat-bold",
-    width: "100%",
-    textAlign: "center"
   },
   buttonsSeparator: {
     width: 11

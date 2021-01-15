@@ -151,11 +151,12 @@ const dict = {
     discoverParks: "Scopri i parcheggi liberi più vicini a te attraverso uno dei servizi convenzionati.",
     findParkBtn: "TROVA UN PARCHEGGIO",
     //Update
-    updateInProgressText: "AGGIORNAMENTO IN CORSO", 
-    updateFinishedText: "AGGIORNAMENTO TERMINATO, RIAVVIO IN CORSO...",
+    updateInProgressTitle: "Aggiornamento in corso", 
+    updateInProgressDescription: "Attendere il riavvio dell'applicazione",
     //Networking
-    disconnected: "Disconnesso...",
-    pleaseConnect: "Riattiva la connessione per utilizzare l'applicazione",
+    disconnected: "Verificare la connessione",
+    pleaseConnect: "Sembra che tu non abbia accesso ad internet. Verifica la connessione e riprova.",
+    retry: "Riprova",
     //App Location Tracking background
     notificationTitle: "L'app Sardinia ti avvisa",
     notificationBody: "Sei vicino ad un punto di interesse!",
@@ -303,11 +304,12 @@ const dict = {
     discoverParks: "Discover the nearest free parkings provided by one of the affiliated services.",
     findParkBtn: "FIND A PARK",
     //Update
-    updateInProgressText: "UPDATE IN PROGRESS", 
-    updateFinishedText: "UPDATE FINISHED, RESTARTING...",
+    updateInProgressTitle: "Update in progress",
+    updateInProgressDescription: "Please wait, Sardinia app is restarting",
     //Networking
     disconnected: "Disconnected...",
     pleaseConnect: "Please turn on internet connection to access the app contents",
+    retry: "Refresh",
     //App Location Tracking background
     notificationTitle: "Sardinia App Location",
     notificationBody: "Sardinia App is tracking your location",

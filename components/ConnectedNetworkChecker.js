@@ -11,6 +11,8 @@ import actions from '../actions';
 import Layout from '../constants/Layout';
 import * as Constants from '../constants';
 import Colors from '../constants/Colors';
+import LoadingDots from './LoadingDots';
+import CustomText from './CustomText';
 
 const USE_DR = true;
 const DR_TIMEOUT = 1000;
@@ -53,12 +55,19 @@ class ConnectedNetworkChecker extends PureComponent {
     this._unsubscribeNetInfo();
   }
 
+  _onPressed = () => {
+    NetInfo.fetch().then(state => {
+      this.setState({ isConnected: state.isConnected });
+      this.props.actions.setNetworkStatus(state);
+    });
+  }
+
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
 
   /********************* Render methods go down here *********************/
   _renderContent = () => {
     const { isConnected } = this.state;
-    const { disconnected, pleaseConnect } = this.props.locale.messages;
+    const { disconnected, pleaseConnect, retry } = this.props.locale.messages;
     if (!isConnected) 
       return (
         <Modal
@@ -66,17 +75,17 @@ class ConnectedNetworkChecker extends PureComponent {
           transparent={true}
           visible={!isConnected}
           onRequestClose={() => { }}>
-            <View style={[styles.fill]}>
             <View 
-              style={styles.modalView} 
-            >
+              style={styles.modalView} >
               <TouchableWithoutFeedback>
                 <View style={styles.modalWindow}>
-                  <Text style={styles.modalTitle}>{disconnected}</Text> 
-                  <Text style={styles.modalTitle}>{pleaseConnect}</Text> 
+                  <Text style={styles.modalTitle}>{disconnected}</Text>
+                  <Text style={styles.modalDescription}>{pleaseConnect}</Text>
+                  <TouchableOpacity activeOpacity={0.7} style={[styles.modalBtn, Constants.styles.shadow]} onPress={this._onPressed}>
+                    <CustomText style={[styles.modalBtnText]}>{retry}</CustomText>
+                  </TouchableOpacity>
                 </View>
               </TouchableWithoutFeedback>
-            </View>
             </View>
         </Modal>
       )
@@ -99,132 +108,67 @@ ConnectedNetworkChecker.navigationOptions = {
 
 
 const styles = StyleSheet.create({
-  fill: {
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-    backgroundColor: "rgba(0,0,0, 0.5)",
-    zIndex: 10,
-  },
-  fab: {
-    position: "absolute",
-    zIndex: 1,
-    top: 25,
-    right: 20,
-    height: 50,
-    width: 50
-  },
-  header: {
-    backgroundColor: "white"
-  },
-  container: {
-    marginTop: 20,
-    marginBottom: 30,
-    marginHorizontal: 20,
-  },
-  headerContainer: {
-    padding: 10,
-    backgroundColor: "white",
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 30, 
-    marginTop: -30,
-    borderTopColor: "#f2f2f2",
-    borderTopWidth: 2,
-    borderRightColor: "#f2f2f2",
-    borderRightWidth: 2
-  },
-  sectionTitle: {
-    flex: 1,
-    textAlign: "center",
-    paddingTop: 10,
-    paddingBottom: 10,
-    color: "#000000E6",
-  },
-  listContainerHeader: {
-    paddingLeft: 10,
-  },
-  separator: {
-    width: "100%",
-    height: 8,
-    backgroundColor: "#F2F2F2",
-    marginVertical: 32
-  },
-  itemStyle: {
-    backgroundColor: "white",
-    borderWidth: 1,
-    borderColor: "#f2f2f2",
-    borderRadius: 10
-  },
-  starsView: {
-    marginTop: -5,
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center"
-  },
   modalView: {
     flex: 1, 
     width: '100%', 
     height: '100%', 
     zIndex: 1, 
-    position: 'absolute', 
-    top: Layout.statusbarHeight, 
+    position: 'absolute',
     left: 0, 
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: "rgba(0,0,0,0.7)",
     alignItems: "center",
     justifyContent: "center",
+    paddingHorizontal: "10%"
   },
   modalWindow: { 
-    paddingHorizontal: 28.5,
-    paddingTop: 20,
+    padding: 28.5,
     backgroundColor: "white", 
-    zIndex: 2, 
-    width: 280, 
-    height: 200,
+    zIndex: 2,
     flexDirection: "column",
-    borderRadius: 4
+    borderRadius: 4,
+    position: "absolute",
+    alignItems: "center",
+    justifyContent: "center",
   },
   modalTitle: {
     fontSize: 15,
     marginBottom: 14,
+    fontFamily: "montserrat-bold",
+    textTransform: "uppercase"
   },
   modalDescription: {
     fontSize: 12,
-    color: "#333333"
+    fontFamily: "montserrat-regular",
+    textAlign: "justify",
+    marginBottom: 30,
   },
-  modalButtons: {
-    flexDirection: "row",
+  loadingDotsView1: {
     width: "100%",
-    height: 36,
-    marginTop: 21
+    alignItems: "center",
+    justifyContent: "center",
+    height: 100,
+  },
+  loadingDotsView2: {
+    width: 100,
+    height: 30
   },
   modalBtn: {
     minWidth: 106,
-    height: 36,
     borderRadius: 4,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "black",
     display: "flex",
-  },
-  loginButton: {
-    alignSelf: "flex-start"
-  },
-  skipButton: {
-    alignSelf: "flex-end",
-    backgroundColor: Colors.lightGray
-  },
-  skipButtonText: {
-    color: "black"
+    paddingHorizontal: 10,
+    paddingVertical: 5
   },
   modalBtnText: {
     color: "white",
+    fontFamily: "montserrat-bold",
     width: "100%",
-    textAlign: "center"
+    textAlign: "center",
+    textTransform: "uppercase"
   },
-  buttonsSeparator: {
-    width: 11
-  }
 });
 
 
