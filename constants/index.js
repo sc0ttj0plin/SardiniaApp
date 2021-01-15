@@ -313,8 +313,8 @@ export const SCREENS = {
 /* COMPONENTS CONFIGURATIONS */
 export const COMPONENTS = {
   header: {
-    height: 60,
-    bottomLineHeight: 6
+    height: 55,
+    bottomLineHeight: 3
   }
 }
 

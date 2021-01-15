@@ -54,6 +54,7 @@ import { Video } from 'expo-av';
 import Gallery from 'react-native-gallery-swiper';
 import {WebView} from 'react-native-webview';
 const { OrientationLock } = ScreenOrientation;
+import HTML from 'react-native-render-html';
 
 /* Deferred rendering to speedup page inital load: 
    deferred rendering delays the rendering reducing the initial 
@@ -245,7 +246,7 @@ class MediaScreen extends PureComponent {
         </HeaderFullscreen>
         {title && (
             <View style={[styles.footer]}>
-                <CustomText style={styles.footerText}>{title}</CustomText>
+                <HTML baseFontStyle={styles.footerText} html={title} />
             </View>
         )}
       </View>
@@ -371,6 +372,7 @@ const styles = StyleSheet.create({
       color: 'white',
       fontSize: 14,
       textAlign: 'center',
+      fontFamily: "montserrat-regular"
   },
 });
 

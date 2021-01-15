@@ -47,7 +47,6 @@ export default class EntityHeader extends PureComponent {
               </View>
             )}
             <CustomText style={[styles.title]}>{title}</CustomText>
-
           </AsyncOperationStatusIndicator>
         </>
     );

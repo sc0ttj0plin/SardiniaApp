@@ -39,7 +39,6 @@ class ConnectedAuthHandler extends PureComponent {
   async componentDidMount() {
     var timeout = this.props.timeout ? this.props.timeout : 150;
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), timeout))};
-    console.log(this.props.auth)
     const isProfileComplete = this.props.auth.user && this.props.auth.user.info && this.props.auth.user.info.username;
     // If the profile is incomplete and we received a sign in url navigate
     if (!isProfileComplete && this.props.others.url.indexOf("apiKey") >=0) 

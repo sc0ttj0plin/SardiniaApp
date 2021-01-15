@@ -21,6 +21,7 @@ import Colors from '../../constants/Colors';
 import * as utils from '../../helpers/utils';
 import CustomIcon from '../../components/CustomIcon';
 import LoadingDots from '../../components/LoadingDots';
+import HTML from 'react-native-render-html';
 
 /**
  * Search working mechanism
@@ -139,13 +140,19 @@ class SearchScreen extends Component {
             color={"white"}
           />
         </View>
-        <CustomText style={this._isNavigableItem(el) ? styles.normalText : styles.boldText}>{title}</CustomText>
+        <HTML baseFontStyle={this._isNavigableItem(el) ? styles.normalText : styles.boldText} html={title}></HTML>
       </TouchableOpacity>
     );
   }
 
   _renderLoading = () => {
-    <LoadingDots loading={true} />
+    return (
+      <View style={styles.loadingDotsView1}>
+        <View style={styles.loadingDotsView2}>
+          <LoadingDots isLoading={true}/>
+        </View>
+      </View>
+    )
   }
 
 
@@ -165,7 +172,7 @@ class SearchScreen extends Component {
           keyExtractor={(item, index) => index.toString()}
           data={data}
           renderItem={({item, index}) => this._renderItem(item, index)}
-          style={styles.scrollView}
+          style={{}}
         />
       </AsyncOperationStatusIndicator>
      )
@@ -200,9 +207,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center"
   },
-  header: {
-    backgroundColor: "white"
-  },
   container: {
     padding: 10,
   },
@@ -230,10 +234,20 @@ const styles = StyleSheet.create({
   },
   normalText: {
     fontSize: 15,
+    fontFamily: "montserrat-regular"
   },
   boldText: {
     fontSize: 15,
     fontFamily: "montserrat-bold",
+  },
+  loadingDotsView1: {
+    width: '100%',
+    alignItems: "center",
+    justifyContent: "center",
+    height: '90%'
+  },
+  loadingDotsView2: {
+    width: 100
   }
 });
 

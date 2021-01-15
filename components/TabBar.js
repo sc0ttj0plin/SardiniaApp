@@ -174,7 +174,7 @@ const Styles = StyleSheet.create({
   },
   bottomLine: {
     width: Layout.window.width,
-    height: 3,
+    height: 2,
   },
   mixedBottomLineItem: {
     flex: 1
