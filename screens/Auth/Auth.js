@@ -85,7 +85,6 @@ class Login extends Component {
   }
 
   _onHardwareBackButtonClick = () => {
-    console.log("_onHardwareBackButtonClick");
     if (this.props.isFocused) {
       this._onBackPress();
       return true;
