@@ -80,18 +80,12 @@ class Login extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if(prevProps.isFocused !== this.props.isFocused){
-      if(this.props.isFocused)
-        BackHandler.addEventListener('hardwareBackPress', this._onHardwareBackButtonClick);
-      else
-        BackHandler.removeEventListener('hardwareBackPress', this._onHardwareBackButtonClick);
-    }
-
     if (this.props.auth !== prevProps.auth)
       this._loginStateChanged();
   }
 
   _onHardwareBackButtonClick = () => {
+    console.log("_onHardwareBackButtonClick");
     if (this.props.isFocused) {
       this._onBackPress();
       return true;
@@ -189,11 +183,16 @@ class Login extends Component {
 
   _removeProfile = () => {
     this.props.actions.removeUser();
-    this.props.navigation.goBack();
+    this._goBackScreen();
   }
 
   _logout = () => {
     this.props.actions.logout();
+    this._goBackScreen();
+  }
+
+  _goBackScreen = () => {
+    BackHandler.removeEventListener('hardwareBackPress', this._onHardwareBackButtonClick);
     this.props.navigation.goBack();
   }
 
@@ -201,16 +200,16 @@ class Login extends Component {
     if(this.state.loginStep === AUTH_STATES.PROFILE_REMOVE)
       this.setState({loginStep: AUTH_STATES.PROFILE_SHOW})
     else if(this.state.loginStep === AUTH_STATES.PROFILE_EDIT && !this.props.auth.user.info) /* user has pressed back without completing profile */
-      this.props.navigation.goBack();
+      this._goBackScreen();
     else if(this.state.loginStep === AUTH_STATES.PROFILE_EDIT)
       if(this.props.auth.user.info)
         this.setState({loginStep: AUTH_STATES.PROFILE_SHOW})
       else
-        this.props.navigation.goBack();
+        this._goBackScreen();
     else if(this.state.loginStep === AUTH_STATES.LOGOUT)
       this.setState({loginStep: AUTH_STATES.PROFILE_SHOW})
     else
-      this.props.navigation.goBack();
+      this._goBackScreen();
   }
 
 
