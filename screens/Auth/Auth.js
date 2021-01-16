@@ -476,9 +476,11 @@ class Login extends Component {
         </View>
       )
     } else if (this.props.auth.success) {
+      const { profile } = this.props.locale.messages;
       return (
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
           <ConnectedHeader onBackPress={this._onBackPress} />
+          <CustomText style={styles.title}>{profile}</CustomText>
           {loginStep === AUTH_STATES.PROFILE_REMOVE && this._renderProfileRemove()}
           {loginStep === AUTH_STATES.PROFILE_EDIT && this._renderProfileEdit()}
           {loginStep === AUTH_STATES.PROFILE_SHOW && this._renderProfileShow()}
