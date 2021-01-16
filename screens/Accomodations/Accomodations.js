@@ -52,6 +52,7 @@ class AccomodationsScreen extends Component {
       isEntitiesLoading: false, /* entities scrollable */
       isNearEntitiesLoading: false, /* near entities in modal */
       isCMVTLoading: true, /* clustered map view top loading  */
+      animateToMyLocation: sourceEntityCoordinates ? false : true
     };
   }
 
@@ -342,6 +343,7 @@ _renderContent = () => {
     types: [Constants.NODE_TYPES.accomodations],
     childUuids,
     isLoadingCb: (isLoading) => this.setState({ isCMVTLoading: isLoading }),
+    animateToMyLocation: this.state.animateToMyLocation
   };
 
   const extraComponentProps = {

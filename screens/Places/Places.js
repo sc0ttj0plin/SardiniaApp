@@ -318,6 +318,7 @@ class PlacesScreen extends PureComponent {
       types: [Constants.NODE_TYPES.places],
       childUuids,
       isLoadingCb: (isLoading) => this.setState({ isCMVTLoading: isLoading }),
+      animateToMyLocation: true
     };
 
     const extraComponentProps = {

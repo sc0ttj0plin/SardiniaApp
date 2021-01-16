@@ -330,7 +330,7 @@ class ConnectedMapScrollable extends PureComponent {
    */
   _renderTopComponent = () => {
     if (this.props.topComponentType === "ClusteredMapViewTop") {
-      const { term, coords, region, types, childUuids, isLoadingCb } = this.props.topComponentCMVTProps;
+      const { term, coords, region, types, childUuids, isLoadingCb, animateToMyLocation } = this.props.topComponentCMVTProps;
       const { entitiesType } = this.props;
       return (
         <>  
@@ -349,6 +349,7 @@ class ConnectedMapScrollable extends PureComponent {
           paddingBottom={this.state.snapPoints[1]} /* set padding as the height of the first snap point */
           isLoadingCb={isLoadingCb} /* to know if is loading */
           fullscreen={this.props.fullscreen}
+          animateToMyLocation={animateToMyLocation}
         />
         </>
       )

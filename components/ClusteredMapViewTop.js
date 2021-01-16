@@ -26,7 +26,7 @@ class ClusteredMapViewTop extends PureComponent {
 
   constructor(props) {
     super(props);
-    var { region, coords, types = [], nearPois, } = props; /* cluster type is like an array of Constants.NODE_TYPES */
+    var { region, coords, types = [], nearPois} = props; /* cluster type is like an array of Constants.NODE_TYPES */
 
     this._watchID = null; /* navigation watch hook */
     this._refs = [];
@@ -57,7 +57,7 @@ class ClusteredMapViewTop extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    if ( prevProps.others.geolocation !== this.props.others.geolocation && this.props.others.geolocation.coords) {
+    if ( prevProps.others.geolocation !== this.props.others.geolocation) {
       this._onUpdateCoords(this.props.others.geolocation, this.props.others.geolocationSource);
     }
 
@@ -77,7 +77,7 @@ class ClusteredMapViewTop extends PureComponent {
 
   _onUpdateCoords = (position, source) => {
     //check geolocation source
-    if (source === Constants.GEOLOCATION.sources.foregroundGetOnce){
+    if (source === Constants.GEOLOCATION.sources.foregroundGetOnce && this.props.animateToMyLocation){
       this._computeNearestPoisEnclosingPolygon(position);
       this._animateMapToRegion(this._coords, 10, 1000, 500);
     }
