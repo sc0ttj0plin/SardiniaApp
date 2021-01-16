@@ -122,7 +122,15 @@ class SearchScreen extends Component {
   _renderItem = (el, index) => {
     const { searchOrAutocomplete } = this.props.others;
     const { lan } = this.props.locale;
-    const title = searchOrAutocomplete === "autocomplete" ? el.keywords : _.get(el.node.title, [lan, 0, "value"], "?");
+    //const title = searchOrAutocomplete === "autocomplete" ? el.keywords : _.get(el.node.title, [lan, 0, "value"], null);
+    var title = null;
+    if(el.node && el.node.title){
+      var title = _.get(el.node.title, [lan, 0, "value"], null);
+      if(lan == "en" && !title)
+        title = _.get(el.node.title, ["en-gb", 0, "value"], null);
+    }
+    if(!title)
+      return;
     const isNode = el.term === null && el.node !== null; /* is node or category? */
     const elType = isNode ? el.node.type : el.term.vid;
     let entityIconOpts = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[elType] || {};

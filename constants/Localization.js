@@ -309,7 +309,7 @@ const dict = {
     //Networking
     disconnected: "Disconnected...",
     pleaseConnect: "Please turn on internet connection to access the app contents",
-    retry: "Refresh",
+    retry: "Retry",
     //App Location Tracking background
     notificationTitle: "Sardinia App Location",
     notificationBody: "Sardinia App is tracking your location",

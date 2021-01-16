@@ -46,7 +46,6 @@ export default class App extends Component {
   }
 
   async componentDidMount() {
-    await this._initGeolocation();
     this._initAppAsync();
   }
   
@@ -76,7 +75,9 @@ export default class App extends Component {
   _parseLinkingUrl = async (url) => {
     //Login url type
     if (url.indexOf("apiKey") >=0) {
-      store.dispatch(actions.passwordLessLinkHandler(url));
+      if(!store.getState().authState.success) {
+        store.dispatch(actions.passwordLessLinkHandler(url));
+      }
     }
   }
 
@@ -92,20 +93,6 @@ export default class App extends Component {
     const email = await AsyncStorage.getItem('email');
     if (email)
       store.dispatch(actions.passwordLessLogin());
-  }
-
-  _initGeolocation = async () => {
-    const { status } = await Location.requestPermissionsAsync();
-    if (status === 'granted') {
-      //Foreground location
-      //  Initial position
-      let location = await Location.getCurrentPositionAsync(Constants.GEOLOCATION.getCurrentPositionAsyncOpts);
-      store.dispatch(actions.setGeolocation(location, Constants.GEOLOCATION.sources.foregroundGetOnce));
-      //  Watch
-      Location.watchPositionAsync(Constants.GEOLOCATION.watchPositionAsyncOpts, location => {
-       store.dispatch(actions.setGeolocation(location, Constants.GEOLOCATION.sources.foregroundWatch));
-      });
-    }
   }
 
   _loadResourcesAsync = async () => {

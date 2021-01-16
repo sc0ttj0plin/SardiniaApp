@@ -461,7 +461,10 @@ const styles = StyleSheet.create({
     height: 50,
     padding: 0,
     overflow: "hidden",
-    paddingTop: 5
+  },
+  buttonGoToMyLocation: {
+    width: "100%",
+    height: "100%"
   }
 });
 

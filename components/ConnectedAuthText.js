@@ -21,11 +21,12 @@ class ConnectedAuthText extends PureComponent {
     const completeAccess = this.props.locale.messages.completeAccess;
 
     var label = loginLabel;
-    if (auth.user && auth.user.info && auth.user.info.username)
-      label = profileLabel;
-    else if (auth.user)
-      label = completeAccess;
-
+    if (auth.success) {
+      if (auth.user && auth.user.info && auth.user.info.username)
+        label = profileLabel;
+      else if (auth.user)
+        label = completeAccess;
+    }
     return <CustomText style={[textStyle]}>{label}</CustomText>;
   }
 }

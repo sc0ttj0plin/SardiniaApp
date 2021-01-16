@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {  Platform, KeyboardAvoidingView, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native';
 import { ConnectedHeader, CustomText } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -10,7 +10,8 @@ import _ from 'lodash';
 import Layout from '../../constants/Layout';
 import Colors from '../../constants/Colors';
 import * as Constants from '../../constants';
-import itCountries from "world_countries_lists/data/it/countries.json";
+import itDbCountries from "world_countries_lists/data/it/countries.json";
+import enDbCountries from "world_countries_lists/data/en/countries.json";
 import * as Validate from '../../helpers/validate';
 import moment from "moment";
 
@@ -49,7 +50,11 @@ class Login extends Component {
   componentDidMount() {
     this._setCountries();
     
-    if (this.props.auth.user)
+    if (this.props.auth.error) {
+      console.log("AUTH_STATES.ERROR");
+      this.setState({ loginStep: AUTH_STATES.ERROR });
+    }
+    else if (this.props.auth.success && this.props.auth.user)
     {
       if(this.props.auth.user.info) {
         const {info} = this.props.auth.user;
@@ -65,13 +70,29 @@ class Login extends Component {
         this.setState({ loginStep: AUTH_STATES.PROFILE_EDIT });
       }
     }
-    else
+    else {
       this.setState({ loginStep: AUTH_STATES.INIT });
+    }
   }
 
   componentDidUpdate(prevProps) {
+    if(prevProps.isFocused !== this.props.isFocused){
+      if(this.props.isFocused)
+        BackHandler.addEventListener('hardwareBackPress', this._onHardwareBackButtonClick);
+      else
+        BackHandler.removeEventListener('hardwareBackPress', this._onHardwareBackButtonClick);
+    }
+
     if (this.props.auth !== prevProps.auth)
       this._loginStateChanged();
+  }
+
+  _onHardwareBackButtonClick = () => {
+    if (this.props.isFocused) {
+      this._onBackPress();
+      return true;
+    }
+    return false;
   }
   
   _loginStateChanged = async () => {
@@ -99,7 +120,8 @@ class Login extends Component {
     countries.push({});
     var italy = null;
     var italyKey = null;
-    itCountries.map((country, key) => {
+    const dbCountries = this.props.locale.lan == "it" ? itDbCountries : enDbCountries;
+    dbCountries.map((country, key) => {
       if(country.alpha2 == "it") {
         italy = {...country};
         italyKey = key;
@@ -456,6 +478,7 @@ class Login extends Component {
           {loginStep === AUTH_STATES.PROFILE_REMOVE && this._renderProfileRemove()}
           {loginStep === AUTH_STATES.PROFILE_EDIT && this._renderProfileEdit()}
           {loginStep === AUTH_STATES.PROFILE_SHOW && this._renderProfileShow()}
+          {loginStep === AUTH_STATES.ERROR && this._renderError()}
           {loginStep === AUTH_STATES.LOGOUT && this._renderLogout()}
         </View>
       );
@@ -677,12 +700,14 @@ function LoginContainer(props) {
   const navigation = useNavigation();
   const route = useRoute();
   const store = useStore();
+  const isFocused = useIsFocused();
 
   return <Login 
     {...props}
     navigation={navigation}
     route={route}
-    store={store} />;
+    store={store}
+    isFocused={isFocused} />;
 }
 
 

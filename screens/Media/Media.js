@@ -68,7 +68,6 @@ class MediaScreen extends PureComponent {
 
     /* Get props from navigation */ 
     const { source, type, images, initialPage } = this.props.route.params;
-    this._vPlayer = null;
     this._refs = {};
     this.state = {
       render: USE_DR ? false : true,
@@ -135,18 +134,19 @@ class MediaScreen extends PureComponent {
 
   _onOrientationChange = async ({ orientationInfo: { orientation } }) => {
     this.setState({ orientation });
-
-    // console.log(orientation, this._isOrientationPortrait(orientation), this._isOrientationLandscape(orientation));
-    console.log("orientation", orientation);
     //Note: using player embedded fullscreen capabilities
-    if (this._vPlayer && this._isOrientationLandscape(orientation)){
-      await this._vPlayer.presentFullscreenPlayer();
-      console.log("go to landscape");
+    if(this._refs["vplayer"]){
+      if (this._isOrientationLandscape(orientation)){
+        await this._refs["vplayer"].presentFullscreenPlayer();
+      }
+      else if(this._isOrientationPortrait(orientation)){
+        await this._refs["vplayer"].dismissFullscreenPlayer();
+      }
     }
-    else if(this._vPlayer && this._isOrientationPortrait(orientation)){
-      await this._vPlayer.dismissFullscreenPlayer();
-      console.log("go to portrait");
-    }
+    //Note: gallery reset
+    if(this._refs["gallery"])
+      this._refs["gallery"].flingToPage({index: 0, velocityX: 0.5});
+   
   }
 
   _onVideoEnd = () => {
@@ -167,7 +167,7 @@ class MediaScreen extends PureComponent {
 
   _playVideo = () => {
     if(this.state.isVideoLoaded) 
-      this._vPlayer.playAsync();
+      this._refs["vplayer"].playAsync();
   }
 
   _onPlaybackStatusUpdate = (status) => {
@@ -233,6 +233,7 @@ class MediaScreen extends PureComponent {
     return (
       <View style={styles.fill}>
         <Gallery
+            ref={(ref) => {this._refs["gallery"] = ref}}
             style={styles.gallery}
             images={images}
             initialPage={initialPage}
@@ -269,7 +270,7 @@ class MediaScreen extends PureComponent {
     return (
       <Video
         source={{ uri: url }}
-        ref={(ref) => { this._vPlayer = ref }}
+        ref={(ref) => { this._refs["vplayer"] = ref }}
         onLoad={this._onVideoLoad}
         onError={this._onVideoError}
         useNativeControls

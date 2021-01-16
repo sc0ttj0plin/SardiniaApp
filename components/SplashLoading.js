@@ -7,7 +7,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import * as Location from 'expo-location';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import actions from '../actions';
+import stateActions from '../actions';
 
 import Animated, { Easing, stopClock, withDelay} from 'react-native-reanimated';
 
@@ -66,17 +66,18 @@ function runTiming(clock, duration = Constants.SPLASH_LOADING_DISAPPEAR_DURATION
 
 
 
-function SplashLoading({onLoad, onFinished, locale}) {
+function SplashLoading({onLoad, onFinished, locale, actions}) {
   const [show, setShow] = useState(true);
   const [opacity, setOpacity] = useState(new Animated.Value(1));
   const [loading, setLoading] = useState(true);
 
-  var _onSplashLoad = () => {
+  var _onSplashLoad = async () => {
     setTimeout(SplashScreen.hideAsync, Constants.SPLASH_EXPO_DURATION);
     setTimeout( () => {
       setLoading(false);
     }, Constants.SPLASH_LOADING_DURATION);
     //_tasks();
+    await _initGeolocation();
   }
 
   var _tasks = async () => {
@@ -92,6 +93,20 @@ function SplashLoading({onLoad, onFinished, locale}) {
       longitude: 9.121111,
       radius: 1000
     }]);
+  }
+
+  var _initGeolocation = async () => {
+    const { status } = await Location.requestPermissionsAsync();
+    if (status === 'granted') {
+      //Foreground location
+      //  Initial position
+      let location = await Location.getCurrentPositionAsync(Constants.GEOLOCATION.getCurrentPositionAsyncOpts);
+      setTimeout(() => {actions.setGeolocation(location, Constants.GEOLOCATION.sources.foregroundGetOnce)}, Constants.SPLASH_LOADING_DURATION + 500);
+      //  Watch
+      Location.watchPositionAsync(Constants.GEOLOCATION.watchPositionAsyncOpts, location => {
+       actions.setGeolocation(location, Constants.GEOLOCATION.sources.foregroundWatch);
+      });
+    }
   }
 
     useEffect(()=>{
@@ -163,7 +178,7 @@ const mapStateToProps = state => {
 
 
 const mapDispatchToProps = dispatch => {
-  return {...bindActionCreators({ ...actions }, dispatch)};
+  return {...bindActionCreators({ ...stateActions }, dispatch)};
 };
 
 
