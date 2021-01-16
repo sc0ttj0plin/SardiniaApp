@@ -129,6 +129,9 @@ class SearchScreen extends Component {
       if(lan == "en" && !title)
         title = _.get(el.node.title, ["en-gb", 0, "value"], null);
     }
+    if(!title && searchOrAutocomplete === "autocomplete") {
+      title = el.keywords
+    }
     if(!title)
       return;
     const isNode = el.term === null && el.node !== null; /* is node or category? */

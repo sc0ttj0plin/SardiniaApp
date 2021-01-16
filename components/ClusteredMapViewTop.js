@@ -77,7 +77,6 @@ class ClusteredMapViewTop extends PureComponent {
 
   _onUpdateCoords = (position, source) => {
     //check geolocation source
-    console.log("_onUpdateCoords", source, Constants.GEOLOCATION.sources.foregroundWatch);
     if (source === Constants.GEOLOCATION.sources.foregroundGetOnce){
       this._computeNearestPoisEnclosingPolygon(position);
       this._animateMapToRegion(this._coords, 10, 1000, 500);
