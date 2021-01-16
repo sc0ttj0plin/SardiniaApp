@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {  Platform, KeyboardAvoidingView, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
+import {  Platform, KeyboardAvoidingView, StyleSheet, ActivityIndicator, BackHandler, TouchableOpacity } from 'react-native';
 import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native';
 import { ConnectedHeader, CustomText } from "../../components";
 import { connect, useStore } from 'react-redux';
@@ -45,9 +45,13 @@ class Login extends Component {
       sexError: false,
       countries: []
     };
+
+    this._onHardwareBackButtonClick = this._onHardwareBackButtonClick.bind(this);
   }
 
   componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this._onHardwareBackButtonClick);
+
     this._setCountries();
     
     if (this.props.auth.error) {
