@@ -509,6 +509,12 @@ export const AnimationConfig = {
   imageAnimationDuration: 20000
 }
 
+/* PROFILE */
+export const PROFILE = {
+  MIN_AGE: 7,
+  MAX_AGE: 101,
+}
+
 export const ACCOMODATIONS_DATA_DEFAULT = [
   {term: "categoria 1", title: "titolo 1", stars: 1, distance: 2, location: "città"},
   {term: "categoria 2", title: "titolo 2", stars: 2, distance: 3, location: "città"},

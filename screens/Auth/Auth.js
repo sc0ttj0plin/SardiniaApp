@@ -5,7 +5,7 @@ import { ConnectedHeader, CustomText } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import actions from '../../actions';
-import { View, Form, Item, Input, Picker, DatePicker } from 'native-base';
+import { View, Form, Item, Input, Picker } from 'native-base';
 import _ from 'lodash';
 import Layout from '../../constants/Layout';
 import Colors from '../../constants/Colors';
@@ -13,7 +13,8 @@ import * as Constants from '../../constants';
 import itDbCountries from "world_countries_lists/data/it/countries.json";
 import enDbCountries from "world_countries_lists/data/en/countries.json";
 import * as Validate from '../../helpers/validate';
-import moment from "moment";
+import * as profile from "../../helpers/profile";
+import * as Font from 'expo-font';
 
 const AUTH_STATES = {
   INIT: "INIT",
@@ -24,11 +25,11 @@ const AUTH_STATES = {
   COMPLETED: "COMPLETED",
   ERROR: "ERROR"
 }
+
+
 class Login extends Component {
 
   constructor(props) {
-
-    moment.locale(Constants.DEFAULT_LANGUAGE);
 
     super(props);
     this.state = {
@@ -37,8 +38,8 @@ class Login extends Component {
       isVerifyingEmail: false,
       username: "",
       usernameError: false,
-      birth: "",
-      birthError: false,
+      age: "",
+      ageError: false,
       country: "",
       countryError: false,
       sex: "",
@@ -50,9 +51,15 @@ class Login extends Component {
   }
 
   componentDidMount() {
+
     BackHandler.addEventListener('hardwareBackPress', this._onHardwareBackButtonClick);
 
-    this._setCountries();
+    this.setState({
+      countries: this._generateCountries(),
+      ages: profile.populateAges(Constants.PROFILE.MIN_AGE, Constants.PROFILE.MAX_AGE),
+      sexs: this._generateSex()
+    });
+
     
     if (this.props.auth.error) {
       console.log("AUTH_STATES.ERROR");
@@ -65,13 +72,14 @@ class Login extends Component {
         this.setState({
           loginStep: AUTH_STATES.PROFILE_SHOW,
           username: info.username,
-          birth: new Date(info.birth),
+          age: info.age,
           country: info.country,
           sex: info.sex
         })
       } else {
-        this._setCountries();
-        this.setState({ loginStep: AUTH_STATES.PROFILE_EDIT });
+        this.setState({ 
+          loginStep: AUTH_STATES.PROFILE_EDIT,
+        });
       }
     }
     else {
@@ -95,10 +103,11 @@ class Login extends Component {
   _loginStateChanged = async () => {
     if (this.props.auth.user && this.props.auth.user.info) {
       const {info} = this.props.auth.user;
+      console.log(info.updateDate);
       this.setState({
         loginStep: AUTH_STATES.PROFILE_SHOW,
         username: info.username,
-        birth: new Date(info.birth),
+        age: info.age,
         country: info.country,
         sex: info.sex
       })
@@ -112,7 +121,24 @@ class Login extends Component {
     }
   }
 
-  _setCountries = () => {
+  _sexToString = (sex) => {
+    var {  man, woman, sexNotDefined } = this.props.locale.messages;
+    if(sex == profile.SEX.MAN) return man;
+    else if (sex == profile.SEX.WOMAN) return woman;
+    else if (sex == profile.SEX.NOT_DEFINED) return sexNotDefined;
+    return "";
+  }
+
+  _generateSex = () => {
+    var sex = [];
+    var {  man, woman, sexNotDefined } = this.props.locale.messages;
+    sex.push({value: profile.SEX.MAN, label: man});
+    sex.push({value: profile.SEX.WOMAN, label: woman});
+    sex.push({value: profile.SEX.NOT_DEFINED, label: sexNotDefined});
+    return sex;
+  }
+
+  _generateCountries = () => {
     var countries = [];
     countries.push({});
     var italy = null;
@@ -129,7 +155,7 @@ class Login extends Component {
     if(italy) {
       countries[0] = italy;
     }
-    this.setState({ countries: countries});
+    return countries;
   }
 
   _validateForm = async () => {
@@ -143,18 +169,18 @@ class Login extends Component {
   }
 
   _setUserData = () => {
-    const { username, birth, country, sex, } = this.state;
-    const { country: countryText, sex: sexText, birth: birthText } = this.props.locale.messages;
+    const { username, age, country, sex, } = this.state;
+    const { country: countryText, sex: sexText, age: ageText } = this.props.locale.messages;
     let usernameError = false
-    let birthError = false 
+    let ageError = false 
     let countryError = false 
     let sexError = false
 
     if(!Validate.username(username)){
       usernameError = true;
     }
-    if(!birth || birth == birthText){
-      birthError = true;
+    if(!age || age == ageText){
+      ageError = true;
     }
     if(!country || country == countryText){
       countryError = true;
@@ -163,14 +189,14 @@ class Login extends Component {
       sexError = true;
     }
 
-    if(!usernameError && !birthError && !countryError && !sexError){
-      const userData = { username, birth: birth.getTime(), country, sex, };
+    if(!usernameError && !ageError && !countryError && !sexError){
+      const userData = { username, age: age, country, sex, updateDate: (new Date()).getTime() };
       this.props.actions.editUser(userData);
       this.setState({ loginStep: AUTH_STATES.PROFILE_SHOW });
     }
     else{
       this.setState({
-        birthError, 
+        ageError, 
         countryError, 
         sexError,
         usernameError
@@ -213,7 +239,14 @@ class Login extends Component {
 
 
   _onProfileEditPress = () => {
-    this.setState({loginStep: AUTH_STATES.PROFILE_EDIT})
+    const {info} = this.props.auth.user;
+    this.setState({
+      loginStep: AUTH_STATES.PROFILE_EDIT,
+      username: info.username,
+      age: info.age,
+      country: info.country,
+      sex: info.sex
+    })
   }
 
   _onProfileRemovePress = () => {
@@ -290,9 +323,9 @@ class Login extends Component {
           <View style={styles.view1s}>
           <CustomText style={[styles.userInfo, {fontSize: 20, marginBottom: 20, fontFamily: "montserrat-bold"}]}>{user.info.username}</CustomText>
             <CustomText style={styles.userInfo}>{user.email}</CustomText> 
-            <CustomText style={styles.userInfo}>{moment(user.info.birth).format('DD-MM-YYYY')}</CustomText>
+            <CustomText style={styles.userInfo}>{profile.ageToString(user.info.age)}</CustomText>
             <CustomText style={styles.userInfo}>{user.info.country}</CustomText>
-            <CustomText style={styles.userInfo}>{user.info.sex}</CustomText>
+            <CustomText style={styles.userInfo}>{this._sexToString(user.info.sex)}</CustomText>
           </View>
           <TouchableOpacity style={[styles.button]} onPress={this._onProfileEditPress}>
               <CustomText style={styles.buttonText}>{editProfileBtn}</CustomText>
@@ -309,8 +342,8 @@ class Login extends Component {
   }
   
   _renderProfileEdit = () => {
-    var { username, birth, country, sex, confirm, fillInformation, man, woman } = this.props.locale.messages;
-    const {usernameError, birthError, countryError, sexError} = this.state;
+    var { username, age, country, sex, confirm, fillInformation } = this.props.locale.messages;
+    const {usernameError, ageError, countryError, sexError} = this.state;
 
       return (
       <View style={styles.mainView}>
@@ -321,28 +354,28 @@ class Login extends Component {
             <Item style={[styles.item1, usernameError ? styles.itemError : {}]} regular>
               <Input placeholder={username}  style={{fontFamily: "montserrat-regular"}} value={this.state.username} onChangeText={(text) => this._setUsernameField("username", "usernameError",text)} />
             </Item>
-            <Item style={[styles.item1, birthError ? styles.itemError : {}]} regular>
+            <Item style={[styles.item1, ageError ? styles.itemError : {}]} regular>
               {/* <Input placeholder={birth} onChangeText={(text) => this.setState({birth: text})} /> */}
-              <DatePicker
-                minimumDate={new Date(1900, 1, 1)}
-                maximumDate={new Date()}
-                locale={"it"}
-                timeZoneOffsetInMinutes={undefined}
-                modalTransparent={false}
-                animationType={"fade"}
-                androidMode={"default"}
-                placeHolderText={!this.state.birth && birth}
-                placeHolderTextStyle={{width: "100%", fontFamily: "montserrat-regular"}}
-                textStyle={{ color: "black", width: "100%", fontFamily: "montserrat-bold"}}
-                onDateChange={(date) => this.setState({birth: date, birthError: false})}
-                disabled={false}
-                style={{width: "100%"}}
-                defaultDate={this.state.birth}/>
+              <Picker
+                  mode="dialog"
+                  style={{ width: "100%", fontFamily: "montserrat-regular" }}
+                  placeholder={age}
+                  textStyle={{fontFamily: "montserrat-regular"}}
+                  placeholderStyle={{ color: "#bfc6ea", fontFamily: "montserrat-regular" }}
+                  selectedValue={this.state.age}
+                  onValueChange={(value) => this.setState({age: value, ageError: false})}>
+                  <Picker.Item label={age} value={age} />
+                  {
+                      this.state.ages.map( age => {
+                       return <Picker.Item label={age.label} value={age.value} />
+                      })
+                  }
+                </Picker>
             </Item>
             <Item style={[styles.item1, countryError ? styles.itemError : {}]} regular>
               <Picker
-                  mode="dropdown"
-                  style={{ width: undefined, fontFamily: "montserrat-regular" }}
+                  mode={"dialog"}
+                  style={{ width: "100%", fontFamily: "montserrat-regular" }}
                   placeholder={country}
                   textStyle={{fontFamily: "montserrat-regular"}}
                   placeholderStyle={{ color: "#bfc6ea", fontFamily: "montserrat-regular" }}
@@ -359,16 +392,19 @@ class Login extends Component {
             <Item style={[styles.item1, sexError ? styles.itemError : {}]} regular>
               {/* <Input placeholder={sex} onChangeText={(text) => this.setState({sex: text})} /> */}
               <Picker
-                  mode="dropdown"
-                  style={{ width: undefined, fontFamily: "montserrat-regular" }}
+                  mode={"dialog"}
+                  style={{ width: "100%", fontFamily: "montserrat-regular" }}
                   placeholder={sex}
                   textStyle={{fontFamily: "montserrat-regular"}}
                   placeholderStyle={{ color: "#bfc6ea", fontFamily: "montserrat-regular" }}
                   selectedValue={this.state.sex}
                   onValueChange={(value) => this.setState({sex: value, sexError: false})}>
-                    <Picker.Item label={sex} value={sex} />
-                    <Picker.Item label={woman} value={woman} />
-                    <Picker.Item label={man} value={man} />
+                  <Picker.Item label={sex} value={sex} />
+                  {
+                      this.state.sexs.map( sex => {
+                       return <Picker.Item label={sex.label} value={sex.value} />
+                      })
+                  }
               </Picker>
             </Item>
           </Form>

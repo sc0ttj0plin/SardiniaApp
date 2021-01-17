@@ -11,6 +11,7 @@ const dict = {
     //GENERIC
     man: "Uomo",
     woman: "Donna",
+    sexNotDefined: "Preferisco non specificare",
     welcome: "Benvenuto",
     start: "Inizia",
     go: "VAI",
@@ -131,6 +132,7 @@ const dict = {
     birth: "Data di nascita", 
     country: "Paese", 
     sex: "Sesso",
+    age: "Età",
     confirm: "Conferma",
     register: "Registrati",
     next: "Avanti",
@@ -165,6 +167,7 @@ const dict = {
     //GENERIC
     man: "Man",
     woman: "Woman",
+    sexNotDefined: "I prefer not say",
     welcome: "Hello",
     go: "GO",
     start: "Start",
@@ -284,6 +287,7 @@ const dict = {
     birth: "Birth date", 
     country: "Country", 
     sex: "Sex",
+    age: "Age",
     confirm: "Confirm",
     register: "Register",
     next: "Next",

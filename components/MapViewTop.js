@@ -20,6 +20,7 @@ import Colors from '../constants/Colors';
 import { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import CustomIcon  from './CustomIcon';
 import { linkingOpenNavigator } from "../helpers/utils";
+import { Ionicons } from '@expo/vector-icons';
 
 /**
  * Map:             Clusters + pois that update with user map's interaction
@@ -317,7 +318,7 @@ class MapViewTop extends PureComponent {
           buttonStyle={[styles.buttonGoToMyLocation]}
           onPress={this._onGoToMyLocationPressed}
           icon={
-            <CustomIcon name={"icon-location"} size={25} color={Colors.colorPlacesScreen} />
+            <Ionicons name={"md-locate"} size={25} color={Colors.colorPlacesScreen} />
             }
         />
           }

@@ -17,7 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 import CustomText from "./CustomText";
 import Colors from '../constants/Colors';
 import CustomIcon from './CustomIcon';
-import { FontAwesome5 } from '@expo/vector-icons'; 
+
 /**
  * Definitions:
  *  cluster = poi inside > 1 ? then is just a number of inner pois, else is a poi
@@ -381,7 +381,7 @@ class ClusteredMapViewTop extends PureComponent {
           buttonStyle={[styles.buttonGoToMyLocation]}
           onPress={this._onGoToMyLocationPressed}
           icon={
-            <CustomIcon name={"icon-location"} size={25} color={Colors.colorPlacesScreen} />
+            <Ionicons name={"md-locate"} size={25} color={Colors.colorPlacesScreen} />
             }
         />
           }

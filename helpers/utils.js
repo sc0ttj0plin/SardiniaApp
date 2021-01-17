@@ -124,5 +124,3 @@ export const getGalleryImages = (entity) => {
   }
   else return []
 }
-
-

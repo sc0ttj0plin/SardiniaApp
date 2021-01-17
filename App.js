@@ -25,6 +25,7 @@ import * as firebase from 'firebase';
 import * as Constants from './constants';
 import * as Location from 'expo-location';
 import SplashLoading from './components/SplashLoading';
+import { registerRootComponent } from 'expo';
 
 enableScreens();
 
@@ -115,7 +116,8 @@ export default class App extends Component {
         require('./assets/icons/events_active.png'),
         require('./assets/icons/central_icon.png'),
       ]),
-      Font.loadAsync({
+      await Font.loadAsync({
+        'Ionicons': require('native-base/Fonts/Ionicons.ttf'),
         ...Ionicons.font,
         ...FontAwesome.font,
         ...FontAwesome5.font,
@@ -182,3 +184,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+
+
+registerRootComponent(App);
