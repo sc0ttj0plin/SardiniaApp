@@ -128,12 +128,12 @@ class ExtraScreen extends Component {
   _openVRContent = () => {
     if(this.state.entity.uuid  == "eae5bf1e-1358-49a4-8681-a82b824a031c")
       this.props.navigation.navigate(Constants.NAVIGATION.NavMediaScreen, {
-          source: "https://my.matterport.com/show/?m=Sbi2Lko9jqf",
+          source: "https://my.matterport.com/show/?m=Sbi2Lko9jqf&brand=0&hr=0&mls=2&mt=0&pin=0&portal=0&help=0",
           type: "virtualTour"
       });
     else
       this.props.navigation.navigate(Constants.NAVIGATION.NavMediaScreen, {
-        source: "https://sketchfab.com/models/de403c380d9a4de4a303c47854763b86/embed?preload=1&amp;ui_controls=1&amp;ui_infos=1&amp;ui_inspector=1&amp;ui_stop=1&amp;ui_watermark=1&amp;ui_watermark_link=1",
+        source: "https://sketchfab.com/models/670dd8dcc69e4168a597afc13d19875d/embed?autostart=1&preload=1&ui_controls=0&ui_inspector=0&ui_stop=0&ui_watermark=0&ui_watermark_link=0?ui_infos=0&ui_stop=0",
         //source: "https://sketchfab.com/models/0569f020894644b18d0c20eae09bd54c/embed?preload=1&amp;ui_controls=1&amp;ui_infos=1&amp;ui_inspector=1&amp;ui_stop=1&amp;ui_watermark=1&amp;ui_watermark_link=1",
         type: "virtualTour"
     });

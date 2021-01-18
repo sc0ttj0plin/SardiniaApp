@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { 
   View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
-  StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
+  StyleSheet, BackHandler, Platform, ScrollView, StatusBar } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   // CategoryListItem, 
@@ -55,6 +55,7 @@ import Gallery from 'react-native-gallery-swiper';
 import {WebView} from 'react-native-webview';
 const { OrientationLock } = ScreenOrientation;
 import HTML from 'react-native-render-html';
+import { useSafeArea } from 'react-native-safe-area-context';
 
 /* Deferred rendering to speedup page inital load: 
    deferred rendering delays the rendering reducing the initial 
@@ -83,7 +84,6 @@ class MediaScreen extends PureComponent {
       isVideoLandscape: false,
       orientation: null,
     };
-      
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
@@ -95,7 +95,7 @@ class MediaScreen extends PureComponent {
   async componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
-    const { orientation } = await ScreenOrientation.getOrientationAsync();
+    const orientation  = await ScreenOrientation.getOrientationAsync();
     this.setState({ orientation });
     await ScreenOrientation.unlockAsync();
     ScreenOrientation.addOrientationChangeListener(this._onOrientationChange);
@@ -134,6 +134,8 @@ class MediaScreen extends PureComponent {
 
   _onOrientationChange = async ({ orientationInfo: { orientation } }) => {
     this.setState({ orientation });
+
+    console.log("_onOrientationChange", orientation);
     //Note: using player embedded fullscreen capabilities
     if(this._refs["vplayer"]){
       if (this._isOrientationLandscape(orientation)){
@@ -143,9 +145,11 @@ class MediaScreen extends PureComponent {
         await this._refs["vplayer"].dismissFullscreenPlayer();
       }
     }
+
     //Note: gallery reset
-    if(this._refs["gallery"])
+    if(this._refs["gallery"]) {
       this._refs["gallery"].flingToPage({index: 0, velocityX: 0.5});
+    }
    
   }
 
@@ -231,7 +235,7 @@ class MediaScreen extends PureComponent {
     const title = _.get(image, ['title_field', lan, 0, 'safe_value'], null);
 
     return (
-      <View style={styles.fill}>
+      <View style={[styles.fill]}>
         <Gallery
             ref={(ref) => {this._refs["gallery"] = ref}}
             style={styles.gallery}
@@ -243,10 +247,10 @@ class MediaScreen extends PureComponent {
         <HeaderFullscreen
           text={(this.state.currentPage+1) + '/' + this.state.images.length}
           goBackPressed={() => {this.props.navigation.goBack()}}
-          >
-        </HeaderFullscreen>
+          paddingTop={this.props.insets.top}
+          />
         {title && (
-            <View style={[styles.footer]}>
+            <View style={[styles.footer, {paddingBottom: this.props.insets.bottom}]}>
                 <HTML baseFontStyle={styles.footerText} html={title} />
             </View>
         )}
@@ -255,14 +259,20 @@ class MediaScreen extends PureComponent {
   }
 
   _renderVideoView = () => {
+    const isPortrait = this._isOrientationPortrait(this.state.orientation);
+    const paddingBottom = isPortrait ? Math.max(this.props.insets.bottom, Constants.COMPONENTS.header.height) : 0;
     return (
-      <View style={styles.mainView}>
-        <HeaderFullscreen goBackPressed={() => {this.props.navigation.goBack()}}/>
+      <View style={[styles.mainView, {paddingTop: this.props.insets.top + Constants.COMPONENTS.header.height, paddingBottom: paddingBottom}]}>
+        <HeaderFullscreen goBackPressed={() => {this.props.navigation.goBack()}} paddingTop={this.props.insets.top}/>
         {this.state.source && 
           this._renderVideo(this.state.source)
         }
       </View>
     );
+  }
+
+  _onShouldStartLoadWithRequest = () => {
+    return false;
   }
 
   _renderVideo = (url) => {
@@ -285,14 +295,17 @@ class MediaScreen extends PureComponent {
     const {source} = this.state
     return (
       <View style={[styles.fill]}>
-        <WebView style={[styles.fill, {opacity: 0.99, overflow: "hidden"}]}
+        <WebView style={[styles.fill, {opacity: 0.99, overflow: "hidden", marginTop: this.props.insets.top}]}
             source={{uri: source }}
             scalesPageToFit={true}
             originWhitelist={['*']}
             ignoreSslError={true}
             scrollEnabled={false}
-            viewportContent={'width=device-width, user-scalable=no'} />
-        <HeaderFullscreen goBackPressed={() => {this.props.navigation.goBack()}}/>
+            viewportContent={'width=device-width, user-scalable=no'}
+            onShouldStartLoadWithRequest={this._onShouldStartLoadWithRequest} //for iOS
+            onNavigationStateChange ={this._onShouldStartLoadWithRequest} //for Android
+         />
+        <HeaderFullscreen goBackPressed={() => {this.props.navigation.goBack()}} paddingTop={this.props.insets.top} hideBar={true}/>
       </View>
       
 
@@ -303,7 +316,7 @@ class MediaScreen extends PureComponent {
     const { render, type } = this.state;
     // console.log("type", type)
     return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
+      <View style={[styles.fill]}>
         {render && this._renderContent()}
       </View>
     )
@@ -328,31 +341,14 @@ const styles = StyleSheet.create({
   portraitVideo: {
     width: "100%",
     height: "100%",
-    marginBottom: 10,
-    backgroundColor: "black"
+    backgroundColor: "black",
+    paddingTop: 40
   },
   mainView: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    position: "relative"
-  },
-  backButton: {
-    position: "absolute",
-    width: 50,
-    height: 40,
-    top: Layout.statusbarHeight,
-    right: 0
-  },
-  buttonContainer: {
-    backgroundColor: "transparent",
-    position: "absolute",
-    top: Layout.statusbarHeight,
-    right: 0
-  },
-  button: {
-    height: "100%",
-    width: 50
+    position: "relative",
   },
   gallery: { 
     flex: 1, 
@@ -362,11 +358,9 @@ const styles = StyleSheet.create({
       position: 'absolute',
       bottom: 0,
       width: "100%",
-      height: 60,
       textAlign: 'center',
       justifyContent: 'center',
-      paddingLeft: 10,
-      paddingRight: 10,
+      padding: 10,
       backgroundColor: "rgba(0,0,0,0.5)",
   },
   footerText: {
@@ -382,12 +376,14 @@ function MediaScreenContainer(props) {
   const navigation = useNavigation();
   const route = useRoute();
   const store = useStore();
+  const insets = useSafeArea();
 
   return <MediaScreen 
     {...props}
     navigation={navigation}
     route={route}
-    store={store} />;
+    store={store}
+    insets={insets} />;
 }
 
 

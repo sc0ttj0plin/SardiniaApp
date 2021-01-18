@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { View, Image, StyleSheet, Platform, NativeModules } from "react-native";
+import { View, Image, StyleSheet, Platform, NativeModules, StatusBar } from "react-native";
 const { StatusBarManager } = NativeModules;
 import { SearchBar, Button, Icon } from "react-native-elements";
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -76,6 +76,8 @@ class ConnectedHeader extends PureComponent {
       searchStr: "",
     };
     this._searchBarRef = null;
+
+    StatusBar.setBarStyle("dark-content");
   }
 
   componentDidUpdate(prevProps){

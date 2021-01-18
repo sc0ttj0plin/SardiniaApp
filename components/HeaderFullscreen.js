@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import {Text, View, FlatList, ScrollView, StyleSheet, Dimensions} from 'react-native';
+import {Text, View, FlatList, StatusBar, StyleSheet, Dimensions} from 'react-native';
 import { Button } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 import { Platform } from 'react-native';
@@ -8,6 +8,7 @@ import Colors from '../constants/Colors';
 import * as Constants from "../constants"
 import _ from 'lodash';
 import CustomText from "./CustomText";
+import { LinearGradient } from 'expo-linear-gradient';
 
 /**
  * Header used in full screen components (video, virtual tour, gallery) that only shows a back button controller
@@ -18,31 +19,73 @@ class HeaderFullscreen extends PureComponent {
     super(props);
   }
 
-  render() {
-    const text = this.props.text;
+  componentDidMount() {
+    StatusBar.setBarStyle("light-content");
+  }
+
+  componentWillUnmount() {
+    StatusBar.setBarStyle("dark-content");
+  }
+
+  _renderFullscreen() {
+    const {text, paddingTop} = this.props;
 
     return (
-        <View style={[styles.buttonTopHeader]}>
-            {text && 
-            <View style={[styles.centerButtonContainer]}>
-                <CustomText style={styles.pageIndex}>{text}</CustomText>
-            </View>
-            }
-            <View style={[styles.leftButtonContainer]}>
-                <Button
-                    type="clear"
-                    containerStyle={[styles.buttonContainer]}
-                    buttonStyle={styles.button}
-                    onPress={this.props.goBackPressed}
-                    icon={
-                    <Ionicons
-                        name={Platform.OS === 'ios' ? 'ios-arrow-back' : 'md-arrow-back'}
-                        size={30}
-                        color={Colors.tintColor}
+        <View style={[styles.header, {marginTop: paddingTop, alignItems: "flex-start", justifyContent: "flex-start", width: 50}]}>
+            <View style={[styles.container]}>
+                <View style={[styles.leftButtonContainer]}>
+                    <Button
+                        type="clear"
+                        containerStyle={[styles.buttonContainer, {backgroundColor: "rgba(0,0,0,0.8)"}]}
+                        buttonStyle={styles.button}
+                        onPress={this.props.goBackPressed}
+                        icon={
+                        <Ionicons
+                            name={Platform.OS === 'ios' ? 'ios-arrow-back' : 'md-arrow-back'}
+                            size={30}
+                            color={Colors.tintColor}
+                        />
+                        }
                     />
-                    }
-                />
+                </View>
             </View>
+        </View>
+
+    );
+  }
+
+  render() {
+    if(this.props.hideBar)
+        return this._renderFullscreen();
+
+    const {text, paddingTop} = this.props;
+
+    return (
+        <View style={[styles.header]}>
+            <LinearGradient style={[styles.lineargradient, {paddingTop: paddingTop}]}
+                    colors={['rgba(0,0,0,0.9)', 'rgba(0,0,0,0.4)']}>
+                <View style={[styles.container]}>
+                    
+                    {text && 
+                    <CustomText style={styles.pageIndex}>{text}</CustomText>
+                    }
+                    <View style={[styles.leftButtonContainer]}>
+                        <Button
+                            type="clear"
+                            containerStyle={[styles.buttonContainer]}
+                            buttonStyle={styles.button}
+                            onPress={this.props.goBackPressed}
+                            icon={
+                            <Ionicons
+                                name={Platform.OS === 'ios' ? 'ios-arrow-back' : 'md-arrow-back'}
+                                size={30}
+                                color={Colors.tintColor}
+                            />
+                            }
+                        />
+                    </View>
+                </View>
+            </LinearGradient>
         </View>
 
     );
@@ -50,27 +93,29 @@ class HeaderFullscreen extends PureComponent {
 }
 
 const styles = StyleSheet.create({
-    buttonTopHeader: {
+    header: {
         zIndex: 999,
         position: "absolute",
         top: 0,
         left: 0,
         flexDirection: "row",
         width: "100%",
-        height: Layout.header.height,
         backgroundColor: 'transparent',
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    lineargradient: {
+        width: "100%"
+    },
+    container: {
+        flexDirection: "row",
+        width: "100%",
+        height: "100%",
+        alignItems: "center",
+        justifyContent: "center",
         height: Constants.COMPONENTS.header.height,
         maxHeight: Constants.COMPONENTS.header.height,
         minHeight: Constants.COMPONENTS.header.height,
-        alignItems: "center",
-        justifyContent: "center"
-    },
-    centerButtonContainer: {
-        // position: 'absolute',
-        justifyContent: 'center',
-        alignItems: 'center',
-        // top: 0,
-        height: '100%',
     },
     leftButtonContainer: {
         position: 'absolute',
@@ -90,14 +135,12 @@ const styles = StyleSheet.create({
     },
     pageIndex: {
         color: 'white',
-        backgroundColor: "rgba(0,0,0,0.5)",
         fontSize: 14,
         textAlign: 'center',
         padding: 10,
         borderRadius: 20
     },
     buttonContainer: {
-        backgroundColor: "rgba(0,0,0,0.5)",
         borderRadius: 50,
         height: 50,
     },
