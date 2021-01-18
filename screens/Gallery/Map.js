@@ -53,7 +53,7 @@ class GalleryMapScreen extends PureComponent {
       tid: -1,
       coords: {},
       poisLimit: Constants.PAGINATION.poisLimit,
-      region: Constants.MAP.defaultRegionZoomed,
+      region: Constants.MAP.defaultRegion,
       selectedEvent: null,
       snapPoints: [],
       tracksViewChanges: false,
@@ -75,13 +75,23 @@ class GalleryMapScreen extends PureComponent {
    */
   componentDidMount() {
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
-    setTimeout(() => (this._regionOnCompleteEnabled = true ), 500);
+    setTimeout(() => {
+      var region = Constants.MAP.defaultRegionZoomed;
+      this._mapRef.animateCamera({
+          center: { latitude: region.latitude, longitude: region.longitude },
+          zoom: region.zoom
+        },
+        {duration: 500}
+      )
+      this._regionOnCompleteEnabled = true 
+      }, 500);
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.others.geolocation !== this.props.others.geolocation && this.props.others.geolocation.coords) {
       // { coords: { latitude, longitude }, altitude, accuracy, altitudeAccuracy, heading, speed, timestamp (ms since epoch) }
     }
+    
   }
 
     /**
@@ -91,6 +101,7 @@ class GalleryMapScreen extends PureComponent {
   _onPageLayout = (event) => {
     const { width, height } = event.nativeEvent.layout;
     //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 24 (handle) - 36 (header text) - 160 (entityItem) - 10 (margin of entityItem) - 36 (whereToGo text)
+    
     this._generateGrid(width, height);
   }; 
 
@@ -198,7 +209,7 @@ class GalleryMapScreen extends PureComponent {
     }
 
     this.setState({cells: cells, cellW: dX, cellH: dY}, () => {
-      this._getPois(this.state.region);
+
     });
     
   }
@@ -419,7 +430,6 @@ class GalleryMapScreen extends PureComponent {
                 borderWidth: 0.5,
               }}
             source={{uri: poi.image350x}}
-            PlaceholderContent={<ActivityIndicator />}
               />
           }})}
         </View>}
@@ -434,6 +444,7 @@ class GalleryMapScreen extends PureComponent {
               width: cell.rect.w,
               height: cell.rect.h,
               borderColor: Colors.colorPlacesScreen,
+              opacity: 0.3,
               borderWidth: 0.5,
 
             }}
