@@ -56,6 +56,12 @@ import {WebView} from 'react-native-webview';
 const { OrientationLock } = ScreenOrientation;
 import HTML from 'react-native-render-html';
 import { useSafeArea } from 'react-native-safe-area-context';
+import LoadingDots from '../../components/LoadingDots';
+
+const injectedJavaScript = `
+window.ReactNativeWebView.postMessage('pageLoaded');
+true;
+`;
 
 /* Deferred rendering to speedup page inital load: 
    deferred rendering delays the rendering reducing the initial 
@@ -83,6 +89,7 @@ class MediaScreen extends PureComponent {
       isVideoPlaying: false,
       isVideoLandscape: false,
       orientation: null,
+      loaded: type == "virtualTour" ? false : true
     };
   }
 
@@ -271,7 +278,10 @@ class MediaScreen extends PureComponent {
     );
   }
 
-  _onShouldStartLoadWithRequest = () => {
+  _onShouldStartLoadWithRequest = (event) => {
+    if(event.url == this.state.source)
+      return true;
+    
     return false;
   }
 
@@ -291,11 +301,21 @@ class MediaScreen extends PureComponent {
     );
   }
 
+  _webViewMessageHandler = (event) => {
+    if (event.nativeEvent.data === 'pageLoaded') {
+      setTimeout(() => {
+        this.setState({
+          loaded: true
+        })
+      }, 650);
+    }
+  }
+
   _renderVirtualTourView = () => {
-    const {source} = this.state
+    const {source, loaded} = this.state
     return (
       <View style={[styles.fill]}>
-        <WebView style={[styles.fill, {opacity: 0.99, overflow: "hidden", marginTop: this.props.insets.top}]}
+        <WebView style={[styles.fill, {opacity: loaded ? 0.99 : 0, overflow: "hidden", marginTop: this.props.insets.top}]}
             source={{uri: source }}
             scalesPageToFit={true}
             originWhitelist={['*']}
@@ -304,6 +324,8 @@ class MediaScreen extends PureComponent {
             viewportContent={'width=device-width, user-scalable=no'}
             onShouldStartLoadWithRequest={this._onShouldStartLoadWithRequest} //for iOS
             onNavigationStateChange ={this._onShouldStartLoadWithRequest} //for Android
+            injectedJavaScript={injectedJavaScript}
+            onMessage={this._webViewMessageHandler}
          />
         <HeaderFullscreen goBackPressed={() => {this.props.navigation.goBack()}} paddingTop={this.props.insets.top} hideBar={true}/>
       </View>
@@ -313,11 +335,19 @@ class MediaScreen extends PureComponent {
   }
 
   render() {
-    const { render, type } = this.state;
+    const { render, loaded } = this.state;
     // console.log("type", type)
     return (
       <View style={[styles.fill]}>
         {render && this._renderContent()}
+        {!loaded && 
+        <View pointerEvents="none" 
+          style={[styles.loadingDotsView1, {marginTop: this.props.insets.top}]}>
+          <View style={styles.loadingDotsView2}>
+            <LoadingDots isLoading={true}/>
+          </View>
+        </View>
+        }
       </View>
     )
   }
@@ -369,6 +399,19 @@ const styles = StyleSheet.create({
       textAlign: 'center',
       fontFamily: "montserrat-regular"
   },
+  loadingDotsView1: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  loadingDotsView2: {
+    paddingTop: 50,
+    width: 100
+  }
 });
 
 
