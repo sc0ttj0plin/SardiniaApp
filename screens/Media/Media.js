@@ -63,6 +63,12 @@ window.ReactNativeWebView.postMessage('pageLoaded');
 true;
 `;
 
+export var MEDIA_TYPES = {
+  VIRTUAL_TOUR: "virtualTour",
+  GALLERY: "gallery",
+  VIDEO: "video"
+}
+
 /* Deferred rendering to speedup page inital load: 
    deferred rendering delays the rendering reducing the initial 
    number of components loaded when the page initially mounts.
@@ -76,6 +82,7 @@ class MediaScreen extends PureComponent {
     /* Get props from navigation */ 
     const { source, type, images, initialPage } = this.props.route.params;
     this._refs = {};
+    
     this.state = {
       render: USE_DR ? false : true,
       //
@@ -85,8 +92,10 @@ class MediaScreen extends PureComponent {
       currentPage: initialPage || 0,
       initialPage: initialPage || 0,
       orientation: null,
-      loaded: (type == "virtualTour" || type ==  "video") ? false : true
+      loaded: false
     };
+
+    this._imagesLoaded = [];
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
@@ -169,6 +178,7 @@ class MediaScreen extends PureComponent {
   }
 
   _onPlaybackStatusUpdate = (status) => {
+
     var isBuffering = !this.state.loaded;
     
     if(isBuffering != status.isBuffering){
@@ -195,8 +205,19 @@ class MediaScreen extends PureComponent {
 
   _onPageSelected = (p) => {
     this.setState({
-        currentPage: p
+        currentPage: p,
+        loaded: this._imagesLoaded[p] == true
     })
+  }
+
+  _onImageLoad = (i) => {
+    this._imagesLoaded[i] = true;
+    if(this.state.currentPage == i) {
+      this.setState({
+        loaded: true
+      });
+      console.log(this._imagesLoaded);
+    }
   }
 
   /****** WebView Handling ********/
@@ -224,13 +245,13 @@ class MediaScreen extends PureComponent {
   _renderContent = () => {
     const {type} = this.state;
     switch(type){
-      case "video":
+      case MEDIA_TYPES.VIDEO:
         return this._renderVideoView()
         break;
-      case "gallery":
+      case MEDIA_TYPES.GALLERY:
         return this._renderGalleryView()
         break;
-      case "virtualTour":
+      case MEDIA_TYPES.VIRTUAL_TOUR:
         return this._renderVirtualTourView()
       default:
         break
@@ -239,7 +260,7 @@ class MediaScreen extends PureComponent {
 
   _renderGalleryView = () => {
     const { lan } = this.props.locale;
-    const { images, currentPage, initialPage } = this.state
+    const { images, currentPage, initialPage, loaded } = this.state
     // console.log("images", images)
     const image = images[currentPage];
     const title = _.get(image, ['title_field', lan, 0, 'safe_value'], null);
@@ -252,7 +273,9 @@ class MediaScreen extends PureComponent {
             images={images}
             initialPage={initialPage}
             useNativeDriver={true}
-            onPageSelected={this._onPageSelected}>
+            onPageSelected={this._onPageSelected}
+            onLoad = {this._onImageLoad}
+            initialNumToRender = {images.length}>
         </Gallery>
         <HeaderFullscreen
           text={(this.state.currentPage+1) + '/' + this.state.images.length}
@@ -264,6 +287,14 @@ class MediaScreen extends PureComponent {
                 <HTML baseFontStyle={styles.footerText} html={title} />
             </View>
         )}
+        {!loaded && 
+          <View pointerEvents="none" 
+            style={[styles.loadingDotsView1, {backgroundColor: "rgba(0,0,0,0.7)"}]}>
+            <View style={[styles.loadingDotsView2, {paddingTop: 0}]}>
+              <LoadingDots isLoading={true}/>
+            </View>
+          </View>
+        }
       </View>
     );
   }

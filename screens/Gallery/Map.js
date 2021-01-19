@@ -427,7 +427,6 @@ class GalleryMapScreen extends PureComponent {
                 top: cell.rect.bl.y,
                 width: cell.rect.w,
                 height: cell.rect.h,
-                borderWidth: 0.5,
               }}
             source={{uri: poi.image350x}}
               />
