@@ -290,7 +290,7 @@ class MediaScreen extends PureComponent {
         {!loaded && 
           <View pointerEvents="none" 
             style={[styles.loadingDotsView1, {backgroundColor: "rgba(0,0,0,0.7)"}]}>
-            <View style={[styles.loadingDotsView2, {paddingTop: 0}]}>
+            <View style={[styles.loadingDotsView2]}>
               <LoadingDots isLoading={true}/>
             </View>
           </View>
@@ -312,7 +312,7 @@ class MediaScreen extends PureComponent {
         {!loaded && 
           <View pointerEvents="none" 
             style={[styles.loadingDotsView1, {backgroundColor: "rgba(0,0,0,0.7)", top: paddingTop}]}>
-            <View style={[styles.loadingDotsView2, {paddingTop: 0}]}>
+            <View style={[styles.loadingDotsView2]}>
               <LoadingDots isLoading={true}/>
             </View>
           </View>
@@ -435,7 +435,6 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   loadingDotsView2: {
-    paddingTop: 50,
     width: 100
   }
 });
