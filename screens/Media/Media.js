@@ -51,7 +51,7 @@ import Colors from '../../constants/Colors';
 import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
 import * as ScreenOrientation from 'expo-screen-orientation'
 import { Video } from 'expo-av';
-import Gallery from 'react-native-gallery-swiper';
+import Gallery from 'react-native-gallery-swiper-loader';
 import {WebView} from 'react-native-webview';
 const { OrientationLock } = ScreenOrientation;
 import HTML from 'react-native-render-html';
