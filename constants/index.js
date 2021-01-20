@@ -331,15 +331,16 @@ export const MAP = {
   //Sardinia
   defaultRegion: {
     longitude: 9.053451,
-    latitude: 40.0711,
-    latitudeDelta: 3,
-    longitudeDelta: 3
+    latitude: 40,
+    latitudeDelta: 2.5,
+    longitudeDelta: 2.5
   },
   defaultRegionZoomed: {
-    longitude: 9.053451,
-    latitude: 40.0711,
+    longitude: 8.97983092814684,
+    latitude: 40.07828365560724,
     latitudeDelta: 2,
-    longitudeDelta: 2
+    longitudeDelta: 2,
+    zoom: 8.3
   },
 }
 
