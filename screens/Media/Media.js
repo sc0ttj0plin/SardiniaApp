@@ -82,6 +82,8 @@ class MediaScreen extends PureComponent {
     /* Get props from navigation */ 
     const { source, type, images, initialPage } = this.props.route.params;
     this._refs = {};
+
+    console.log("MediaScreen");
     
     this.state = {
       render: USE_DR ? false : true,
@@ -172,31 +174,34 @@ class MediaScreen extends PureComponent {
   }
 
   _onVideoLoad = () => {
-    this.setState({
-      loaded: true,
-    }, () => this._refs["vplayer"].playAsync());
+    setTimeout(() => this._refs["vplayer"].playAsync(), 1);
   }
 
   _onPlaybackStatusUpdate = (status) => {
 
     var isBuffering = !this.state.loaded;
     
-    if(isBuffering != status.isBuffering){
-      if(!this.videoTimer && (!status.isBuffering || status.isPlaying && status.positionMillis > 0)) {
-        this.videoTimer = setTimeout(() => {
-          this.videoTimer = null;
-          this.setState({
-            loaded: true
-          });
-        }, 350);
-      }
-      else if (status.isBuffering){
-        clearTimeout(this.videoTimer);
-        this.videoTimer = null;
+    if(this.videoLoadingTimer || status.isLoaded && status.shouldPlay && !this.videoLoadingTimer && (isBuffering != status.isBuffering && !status.isBuffering || isBuffering && status.isPlaying && status.positionMillis > 0)) {
+      clearTimeout(this.videoLoadingTimer);
+      this.videoLoadingTimer = null;
+      this.videoLoadedTimer = setTimeout(() => {
+        console.log("NOT LOADING")
+        this.videoLoadedTimer = null;
+        this.setState({
+          loaded: true
+        });
+      }, 350);
+    }
+    else if (this.videoLoadedTimer || status.shouldPlay && !status.hasJustBeenInterrupted && !status.isPlaying && isBuffering != status.isBuffering && status.isBuffering){
+      clearTimeout(this.videoLoadedTimer);
+      this.videoLoadedTimer = null;
+      this.videoLoadingTimer = setTimeout(() => {
+        console.log("LOADING")
+        this.videoLoadingTimer = null;
         this.setState({
           loaded: false
         });
-      }
+      }, 350);
     }
     
   }
@@ -261,7 +266,6 @@ class MediaScreen extends PureComponent {
   _renderGalleryView = () => {
     const { lan } = this.props.locale;
     const { images, currentPage, initialPage, loaded } = this.state
-    // console.log("images", images)
     const image = images[currentPage];
     const title = _.get(image, ['title_field', lan, 0, 'safe_value'], null);
 
@@ -304,6 +308,7 @@ class MediaScreen extends PureComponent {
     const isPortrait = this._isOrientationPortrait(this.state.orientation);
     const paddingBottom = isPortrait ? Math.max(this.props.insets.bottom, Constants.COMPONENTS.header.height) : 0;
     const paddingTop = this.props.insets.top + Constants.COMPONENTS.header.height;
+
     return (
       <View style={[styles.mainView, {paddingTop: paddingTop, paddingBottom: paddingBottom}]}>
         {this.state.source && 
