@@ -290,6 +290,7 @@ class PreferencesScreen extends Component {
             {this._renderIcon("grin-hearts", Colors.lightGray, true)}
           </View>
           {this._renderStepsBar()}
+          
         </View>
       </>
     )

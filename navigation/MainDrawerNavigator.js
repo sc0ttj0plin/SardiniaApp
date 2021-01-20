@@ -31,6 +31,7 @@ import FavouritesScreen from '../screens/Favourites/Favourites';
 import FavouritesListScreen from '../screens/Favourites/FavouritesList';
 import AuthScreen from '../screens/Auth/Auth';
 import PreferencesScreen from "../screens/Preferences/Preferences"
+import TutorialScreen from "../screens/Tutorial/Tutorial"
 import FiltersScreen from '../screens/Filters/Filters';
 import GalleryScreen from '../screens/Gallery/Map';
 
@@ -44,7 +45,7 @@ const {
   NavPlacesScreen, NavInspirersScreen ,NavMapScreen, NavLoadingScreen, NavLoginScreen, NavLogoutScreen, NavAuthScreen,
   NavItinerariesScreen, NavAccomodationsScreen, NavAccomodationScreen, NavAccomodationsStackScreen, NavGalleryStackScreen, NavGalleryScreen,
   NavItineraryScreen, NavEventsScreen, NavEventScreen, NavItineraryStagesMapScreen,NavEventsMapScreen, NavEventsSubset, NavExploreScreen, 
-  NavVirtualTourScreen, NavPlaceScreen, NavInspirerScreen, NavPreferencesScreen,
+  NavVirtualTourScreen, NavPlaceScreen, NavInspirerScreen, NavPreferencesScreen, NavTutorialScreen,
   NavExtrasScreen, NavExtraScreen, NavTabNavigator, NavSearchScreen, NavSearchStackScreen, 
   NavMainStackScreen, NavMediaScreen, NavFavouritesScreen, NavFavouritesListScreen, NavFavouritesStackScreen, NavFiltersScreen 
 } = Constants.NAVIGATION;
@@ -309,6 +310,7 @@ let ConnectedTextSearch = () => <ConnectedText languageKey="drawerSearch" textSt
 let ConnectedTextFavourites = () => <ConnectedText languageKey="favourites" textStyle={{ color: "black" }} />;
 let ConnectedTextAccomodations = () => <ConnectedText languageKey="accomodations" textStyle={{ color: "black" }} />;
 let ConnectedTextPreferences = () => <ConnectedText languageKey="preferences" textStyle={{ color: "black" }} />;
+let ConnectedTextTutorial = () => <ConnectedText languageKey="tutorial" textStyle={{ color: "black" }} />;
 let ConnectedTextGallery = () => <ConnectedText languageKey="gallery" textStyle={{ color: "black" }} />;
 let ConnectedTextLoginLogout = () => <ConnectedAuthText textStyle={{ color: "black" }} />;
 
@@ -332,6 +334,7 @@ function CustomDrawerContent(props) {
       <CustomDrawer.Item {...props} routeIndex={1} label={ConnectedTextSearch} screenName={Constants.NAVIGATION.NavSearchStackScreen} iconOpts={{name: 'search', size: 20, color: Colors.mediumGray}} />
       <CustomDrawer.Item {...props} routeIndex={2} label={ConnectedTextAccomodations} screenName={Constants.NAVIGATION.NavAccomodationsStackScreen} iconOpts={{name: 'home', size: 20, color: Colors.mediumGray}} />
       <CustomDrawer.Item {...props} routeIndex={3} label={ConnectedTextPreferences} screenName={Constants.NAVIGATION.NavPreferencesScreen} iconOpts={{name: 'thumbs-up', size: 20, color: Colors.mediumGray}} />
+      <CustomDrawer.Item {...props} routeIndex={3} label={ConnectedTextTutorial} screenName={Constants.NAVIGATION.NavTutorialScreen} iconOpts={{name: 'book', size: 20, color: Colors.mediumGray}} />
       <CustomDrawer.Separator />
       <CustomDrawer.Item {...props} routeIndex={4} label={ConnectedTextFavourites} screenName={Constants.NAVIGATION.NavFavouritesStackScreen} iconOpts={{name: 'heart', size: 20, color: Colors.mediumGray}} />
       <CustomDrawer.Item {...props} routeIndex={5} label={ConnectedTextGallery} screenName={Constants.NAVIGATION.NavGalleryStackScreen} iconOpts={{name: 'image', size: 20, color: Colors.mediumGray}} />
@@ -371,6 +374,7 @@ function DrawerNavigator() {
       <Drawer.Screen name={NavFavouritesStackScreen} component={FavouritesStackScreen} options={{unmountOnBlur:true}} />
       <Drawer.Screen name={NavGalleryStackScreen} component={GalleryStackScreen} options={{unmountOnBlur:true}} />
       <Drawer.Screen name={NavPreferencesScreen} component={PreferencesScreen} options={{unmountOnBlur:true}} />
+      <Drawer.Screen name={NavTutorialScreen} component={TutorialScreen} options={{unmountOnBlur:true}} />
       {/* The login screen is not shown in the navigation */}
       <Drawer.Screen name={NavAuthScreen} component={AuthScreen} options={{unmountOnBlur:true}} />
     </Drawer.Navigator>

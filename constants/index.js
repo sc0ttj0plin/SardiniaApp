@@ -182,6 +182,7 @@ export const NAVIGATION = {
   NavInspirers: "Inspirers",
   NavPreferencesStack: "PreferencesStackScreen",
   NavPreferencesScreen: "PreferencesScreen",
+  NavTutorialScreen: "TutorialScreen",
   NavLoginScreen: "LoginScreen",
   NavLogoutScreen: "LogoutScreen",
   NavAuthScreen: "AuthScreen",
@@ -565,7 +566,9 @@ export const styles = {
     monthTextColor: "black",
     color: "black",
     textSectionTitleColor: "black",
-    textMonthfontFamily: "montserrat-bold",
+    textDayFontFamily: 'montserrat-regular',
+    textMonthfontFamily: "montserrat-regular",
+    textDayHeaderFontFamily: 'montserrat-bold',
     textDisabledColor: Colors.mediumGray,
     todayTextColor: "white",
     dotColor: Colors.lightGray,
@@ -576,13 +579,17 @@ export const styles = {
     selectedDotColor: '#ffffff',
     disabledArrowColor: '#d9e1e8',
     indicatorColor: 'blue',
-    textDayFontWeight: 'bold',
-    textMonthFontWeight: 'bold',
-    textDayHeaderFontWeight: '300',
     textDayFontSize: 16,
     textMonthFontSize: 18,
     textDayHeaderFontSize: 16,
     // textDayStyle: {marginTop: Platform.OS === 'android' ? 2 : 4},
+    'stylesheet.calendar.header': {
+      monthText: {
+        fontSize: 16,
+        color: "black",
+        fontFamily: 'montserrat-bold',
+      }
+    }
   }
 }
 
