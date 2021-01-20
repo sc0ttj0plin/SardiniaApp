@@ -1,16 +1,18 @@
 import * as Constants from '../constants';
 
-export function autocomplete(query) {
+export function autocomplete(query, lan) {
   return {
     type: Constants.AUTOCOMPLETE,
-    query: query
+    query: query,
+    lan: lan
   };
 }
 
-export function search(query) {
+export function search(query, lan) {
   return {
     type: Constants.SEARCH,
-    query: query
+    query: query,
+    lan: lan
   };
 }
 
