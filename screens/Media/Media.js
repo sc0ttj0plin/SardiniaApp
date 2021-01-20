@@ -180,28 +180,24 @@ class MediaScreen extends PureComponent {
   _onPlaybackStatusUpdate = (status) => {
 
     var isBuffering = !this.state.loaded;
-    
-    if(this.videoLoadingTimer || status.isLoaded && status.shouldPlay && !this.videoLoadingTimer && (isBuffering != status.isBuffering && !status.isBuffering || isBuffering && status.isPlaying && status.positionMillis > 0)) {
+
+    if(status.isLoaded && (Platform.OS == "android" || status.positionMillis > 0) && (isBuffering != status.isBuffering && !status.isBuffering || status.shouldPlay && isBuffering && status.isPlaying || !status.isBuffering && this.videoLoadingTimer )) {
       clearTimeout(this.videoLoadingTimer);
-      this.videoLoadingTimer = null;
-      this.videoLoadedTimer = setTimeout(() => {
-        console.log("NOT LOADING")
-        this.videoLoadedTimer = null;
+      this.videoLoadingTimer = setTimeout(() => {
+        this.videoLoadingTimer = null;
         this.setState({
           loaded: true
         });
       }, 350);
     }
-    else if (this.videoLoadedTimer || status.shouldPlay && !status.hasJustBeenInterrupted && !status.isPlaying && isBuffering != status.isBuffering && status.isBuffering){
-      clearTimeout(this.videoLoadedTimer);
-      this.videoLoadedTimer = null;
+    else if (!status.isLoaded || isBuffering != status.isBuffering && status.isBuffering){
+      clearTimeout(this.videoLoadingTimer);
       this.videoLoadingTimer = setTimeout(() => {
-        console.log("LOADING")
         this.videoLoadingTimer = null;
         this.setState({
           loaded: false
         });
-      }, 350);
+      }, 500);
     }
     
   }
