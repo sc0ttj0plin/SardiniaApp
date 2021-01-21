@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { 
-  View, StyleSheet, ScrollView } from "react-native";
+  View, StyleSheet, Animated } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   AsyncOperationStatusIndicator, 
@@ -15,11 +15,12 @@ import {
   EntityAccomodations,
   TopMedia,
   ConnectedFab, 
+  EntityVirtualTour
  } from "../../components";
 import Toast from 'react-native-easy-toast';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { greedyArrayFinder, getEntityInfo, getCoordinates, getSampleVideoIndex, getGalleryImages } from '../../helpers/utils';
+import { greedyArrayFinder, getEntityInfo, getCoordinates, getSampleVideoIndex, getSampleVrModelIndex, getGalleryImages } from '../../helpers/utils';
 import { openRelatedEntity } from '../../helpers/screenUtils';
 import _ from 'lodash';
 import Layout from '../../constants/Layout';
@@ -59,7 +60,8 @@ class PlaceScreen extends Component {
       relatedEntities: [],
       nearAccomodations: [],
       nearAccomodationsRegion: null,
-      loaded: false
+      loaded: false,
+      scrollY: new Animated.Value(0)
     };
 
     this._toast = null;
@@ -131,18 +133,19 @@ class PlaceScreen extends Component {
   }
   
   _parseEntity = (entity) => {
-    if(!entity)
+    if(!entity || !entity.uuid)
       return;
     const { locale } = this.props;
     const { lan } = locale;
     const { abstract, title, description, whyVisit } = getEntityInfo(entity, ["abstract", "title", "description", "whyVisit"], [lan, 0, "value"], null, {"description": {s: /\. /g, d: ".<br/>"}, "whyVisit": {s: /<\/?[^>]+(>|$)/g, d: ""}});
     const coordinates = getCoordinates(entity);
     const socialUrl = `${Constants.WEBSITE_URL}${greedyArrayFinder(entity.url_alias, "language", lan, "alias", "")}`;
-    const sampleVideoUrl = entity.nid ? getSampleVideoIndex(entity.nid) : null;
+    const sampleVideoUrl = getSampleVideoIndex(entity.uuid);
+    const sampleVrUrl = getSampleVrModelIndex(entity.uuid);
     const gallery = getGalleryImages(entity);
     if (title === null || description === null)
       this._toast.show(this.props.locale.messages.entityIsNotTranslated, 5000);
-    this.setState({ entity, abstract,  title,  description,  whyVisit,  coordinates,  socialUrl, sampleVideoUrl, gallery, loaded: true }, () => {
+    this.setState({ entity, abstract,  title,  description,  whyVisit,  coordinates,  socialUrl, sampleVideoUrl, sampleVrUrl, gallery, loaded: true }, () => {
       this._fetchNearNodes();
       this._fetchNearAccomodations();
     });
@@ -162,6 +165,16 @@ class PlaceScreen extends Component {
         latitude: this.state.entity.georef.coordinates[1] 
       },
     });
+  }
+
+  _openVRContent = () => {
+    const {sampleVrUrl} = this.state;
+    if(sampleVrUrl) {
+      this.props.navigation.navigate(Constants.NAVIGATION.NavMediaScreen, {
+          source: sampleVrUrl,
+          type: "virtualTour"
+      });
+    }
   }
 
   /********************* Render methods go down here *********************/
@@ -216,6 +229,7 @@ class PlaceScreen extends Component {
       coordinates, 
       socialUrl, 
       sampleVideoUrl, 
+      sampleVrUrl,
       gallery, 
       relatedEntities, 
       nearAccomodations } = this.state;
@@ -227,12 +241,18 @@ class PlaceScreen extends Component {
       canBeOfInterest,
       showMap,
     } = locale.messages;
+
+    const iconRotation = this.state.scrollY.interpolate({
+      inputRange: [0, 600],
+      outputRange: ['0deg', '360deg']
+    });
     
 
      return (
        <View style={styles.fill}>
          <Toast ref={(toast) => this._toast = toast} positionValue={220} opacity={0.7} />
-         <ScrollView style={styles.fill}>
+         <Animated.ScrollView style={styles.fill}
+          onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }],{useNativeDriver: true})}>
           <TopMedia urlVideo={sampleVideoUrl} urlImage={entity.image} />
           {this._renderFab(entity.uuid, title, coordinates, socialUrl)}   
           <View style={[styles.headerContainer]}> 
@@ -248,6 +268,9 @@ class PlaceScreen extends Component {
               <EntityAbstract abstract={abstract}/>
               <EntityWhyVisit title={whyVisitTitle} text={whyVisit}/>
               <EntityMap coordinates={coordinates}/>
+              { sampleVrUrl &&
+              <EntityVirtualTour rotation={iconRotation} onPress={this._openVRContent}/>
+              }
               <EntityGallery images={gallery} title={galleryTitle}/>
               <EntityDescription title={descriptionTitle} text={description} color={Colors.colorPlacesScreen}/>
 
@@ -262,7 +285,7 @@ class PlaceScreen extends Component {
               openMap={this._openAccomodationsMap}
               horizontal/>
           </View>
-         </ScrollView>
+         </Animated.ScrollView>
        </View>
      );
   }

@@ -33,7 +33,8 @@ import AuthScreen from '../screens/Auth/Auth';
 import PreferencesScreen from "../screens/Preferences/Preferences"
 import TutorialScreen from "../screens/Tutorial/Tutorial"
 import FiltersScreen from '../screens/Filters/Filters';
-import GalleryScreen from '../screens/Gallery/Map';
+import GalleryScreen from '../screens/Gallery/Gallery';
+import GalleryMapScreen from '../screens/Gallery/Map';
 
 import Boilerplate from '../screens/Boilerplates/Boilerplate';
 import { ConnectedText, ConnectedLanguageList, TabBar, CustomDrawer, ConnectedAuthText } from '../components';
@@ -43,7 +44,7 @@ import Colors from '../constants/Colors';
 import * as Constants from '../constants';
 const {
   NavPlacesScreen, NavInspirersScreen ,NavMapScreen, NavLoadingScreen, NavLoginScreen, NavLogoutScreen, NavAuthScreen,
-  NavItinerariesScreen, NavAccomodationsScreen, NavAccomodationScreen, NavAccomodationsStackScreen, NavGalleryStackScreen, NavGalleryScreen,
+  NavItinerariesScreen, NavAccomodationsScreen, NavAccomodationScreen, NavAccomodationsStackScreen, NavGalleryStackScreen, NavGalleryScreen, NavGalleryMapScreen,
   NavItineraryScreen, NavEventsScreen, NavEventScreen, NavItineraryStagesMapScreen,NavEventsMapScreen, NavEventsSubset, NavExploreScreen, 
   NavVirtualTourScreen, NavPlaceScreen, NavInspirerScreen, NavPreferencesScreen, NavTutorialScreen,
   NavExtrasScreen, NavExtraScreen, NavTabNavigator, NavSearchScreen, NavSearchStackScreen, 
@@ -292,6 +293,7 @@ var GalleryStack = createStackNavigator();
 function GalleryStackScreen() {
   return (
     <GalleryStack.Navigator headerMode="none" initialRouteName={NavGalleryScreen}>
+      <GalleryStack.Screen name={NavGalleryMapScreen} component={GalleryMapScreen} />
       <GalleryStack.Screen name={NavGalleryScreen} component={GalleryScreen} />
       {/* Places */}
       <GalleryStack.Screen name={NavPlaceScreen} component={PlaceScreen}/>
@@ -311,7 +313,8 @@ let ConnectedTextFavourites = () => <ConnectedText languageKey="favourites" text
 let ConnectedTextAccomodations = () => <ConnectedText languageKey="accomodations" textStyle={{ color: "black" }} />;
 let ConnectedTextPreferences = () => <ConnectedText languageKey="preferences" textStyle={{ color: "black" }} />;
 let ConnectedTextTutorial = () => <ConnectedText languageKey="tutorial" textStyle={{ color: "black" }} />;
-let ConnectedTextGallery = () => <ConnectedText languageKey="gallery" textStyle={{ color: "black" }} />;
+let ConnectedTextGalleryMap = () => <ConnectedText languageKey="galleryMap" textStyle={{ color: "black" }} />;
+let ConnectedTextVideoGallery = () => <ConnectedText languageKey="videoAnd3D" textStyle={{ color: "black" }} />;
 let ConnectedTextLoginLogout = () => <ConnectedAuthText textStyle={{ color: "black" }} />;
 
 /**
@@ -337,7 +340,8 @@ function CustomDrawerContent(props) {
       <CustomDrawer.Item {...props} routeIndex={3} label={ConnectedTextTutorial} screenName={Constants.NAVIGATION.NavTutorialScreen} iconOpts={{name: 'book', size: 20, color: Colors.mediumGray}} />
       <CustomDrawer.Separator />
       <CustomDrawer.Item {...props} routeIndex={4} label={ConnectedTextFavourites} screenName={Constants.NAVIGATION.NavFavouritesStackScreen} iconOpts={{name: 'heart', size: 20, color: Colors.mediumGray}} />
-      <CustomDrawer.Item {...props} routeIndex={5} label={ConnectedTextGallery} screenName={Constants.NAVIGATION.NavGalleryStackScreen} iconOpts={{name: 'image', size: 20, color: Colors.mediumGray}} />
+      <CustomDrawer.Item {...props} routeIndex={5} label={ConnectedTextGalleryMap} screenName={Constants.NAVIGATION.NavGalleryStackScreen} iconOpts={{name: 'image', size: 20, color: Colors.mediumGray}} />
+      <CustomDrawer.Item {...props} routeIndex={5} label={ConnectedTextVideoGallery} screenName={Constants.NAVIGATION.NavGalleryStackScreen} iconOpts={{name: 'film', size: 20, color: Colors.mediumGray}} />
       <CustomDrawer.Separator />
       <CustomDrawer.Item {...props} routeIndex={6} label={ConnectedTextLoginLogout} screenName={Constants.NAVIGATION.NavAuthScreen} iconOpts={{name: 'user', size: 20, color: Colors.mediumGray}} />
       <ConnectedLanguageList />

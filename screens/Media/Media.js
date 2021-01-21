@@ -57,6 +57,7 @@ const { OrientationLock } = ScreenOrientation;
 import HTML from 'react-native-render-html';
 import { useSafeArea } from 'react-native-safe-area-context';
 import LoadingDots from '../../components/LoadingDots';
+import ScrollableContainerTouchableOpacity from "../../components/ScrollableContainerTouchableOpacity";
 
 const injectedJavaScript = `
 window.ReactNativeWebView.postMessage('pageLoaded');
@@ -80,10 +81,8 @@ class MediaScreen extends PureComponent {
     super(props);
 
     /* Get props from navigation */ 
-    const { source, type, images, initialPage } = this.props.route.params;
+    const { source, type, images, initialPage, item } = this.props.route.params;
     this._refs = {};
-
-    console.log("MediaScreen");
     
     this.state = {
       render: USE_DR ? false : true,
@@ -94,7 +93,8 @@ class MediaScreen extends PureComponent {
       currentPage: initialPage || 0,
       initialPage: initialPage || 0,
       orientation: null,
-      loaded: false
+      loaded: false,
+      item: item
     };
 
     this._imagesLoaded = [];
@@ -240,6 +240,12 @@ class MediaScreen extends PureComponent {
     }
   }
 
+  _onOpenEntityPressed = () => {
+    if(this._refs["vplayer"])
+      this._refs["vplayer"].stopAsync();
+    this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item: this.state.item });
+  }
+
 
   /********************* Render methods go down here *********************/
 
@@ -300,13 +306,13 @@ class MediaScreen extends PureComponent {
   }
 
   _renderVideoView = () => {
-    const {loaded} = this.state;
+    const {loaded, item} = this.state;
     const isPortrait = this._isOrientationPortrait(this.state.orientation);
     const paddingBottom = isPortrait ? Math.max(this.props.insets.bottom, Constants.COMPONENTS.header.height) : 0;
     const paddingTop = this.props.insets.top + Constants.COMPONENTS.header.height;
 
     return (
-      <View style={[styles.mainView, {paddingTop: paddingTop, paddingBottom: paddingBottom}]}>
+      <View style={[styles.mainView, {paddingTop: paddingTop, paddingBottom: item ? 0 : paddingBottom}]}>
         {this.state.source && 
           this._renderVideo(this.state.source)
         }
@@ -319,7 +325,6 @@ class MediaScreen extends PureComponent {
           </View>
         }
         <HeaderFullscreen goBackPressed={() => {this.props.navigation.goBack()}} paddingTop={this.props.insets.top}/>
-
       </View>
     );
   }
@@ -342,7 +347,8 @@ class MediaScreen extends PureComponent {
 
 
   _renderVirtualTourView = () => {
-    const {source, loaded} = this.state
+    const {source, loaded} = this.state;
+
     return (
       <View style={[styles.fill]}>
         <WebView style={[styles.fill, {opacity: loaded ? 0.99 : 0, overflow: "hidden", marginTop: this.props.insets.top}]}
@@ -373,10 +379,22 @@ class MediaScreen extends PureComponent {
   }
 
   render() {
-    const { render, loaded } = this.state;
+    const { render, loaded, item } = this.state;
+    const {explore} = this.props.locale.messages;
+
     return (
       <View style={[styles.fill]}>
         {render && this._renderContent()}
+        {item &&
+          <View style={[styles.bottomContainer, {paddingBottom: Math.max(this.props.insets.bottom, 10)}]}>
+            <ScrollableContainerTouchableOpacity
+                activeOpacity={0.7}
+                onPress={this._onOpenEntityPressed}
+                style={styles.openEntityButton}>
+                    <CustomText style={styles.openEntityButtonText}>{explore}</CustomText>
+            </ScrollableContainerTouchableOpacity>
+          </View>
+        }
       </View>
     )
   }
@@ -399,7 +417,7 @@ const styles = StyleSheet.create({
   },
   portraitVideo: {
     width: "100%",
-    height: "100%",
+    flex: 1, 
     backgroundColor: "black",
     paddingTop: 40
   },
@@ -437,7 +455,26 @@ const styles = StyleSheet.create({
   },
   loadingDotsView2: {
     width: 100
-  }
+  },
+  bottomContainer: {
+    backgroundColor: "black",
+    padding: 10,
+    alignContent: "center",
+    alignItems: "center"
+  },
+  openEntityButton: {
+    paddingVertical: 5,
+    paddingHorizontal: 30,
+    borderRadius: 2,
+    borderWidth: 2,
+    borderColor: "white",
+    backgroundColor: "transparent"
+  },
+  openEntityButtonText: {
+    color: "white",
+    fontFamily: "montserrat-bold",
+    textTransform: "uppercase",
+  },
 });
 
 

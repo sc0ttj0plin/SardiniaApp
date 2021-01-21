@@ -269,7 +269,6 @@ class FavouritesScreen extends Component {
           listTitleStyle={styles.sectionTitle}
           style={styles.list}
           sideMargins={10}
-          disableSeparator
           renderListItem={renderItemFun}
         />
         {list.length > 6 && 
@@ -279,25 +278,6 @@ class FavouritesScreen extends Component {
     )
   }
 
-  _renderAccomodationListItem = (item, index, size) => {
-    const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
-    const termName = _.get(item, "term.name", "")
-    return (
-      <AccomodationItem 
-        index={index}
-        keyItem={item.nid}
-        horizontal={false}
-        sideMargins={10}
-        title={title}
-        term={termName}
-        stars={item.stars}
-        onPress={() => this._openItem(item, Constants.ENTITY_TYPES.accomodations)}
-        location={item.location}
-        distance={item.distanceStr}
-        extraStyle={styles.accomodationListItem}
-        size={size}
-      />
-  )}
 
   _renderNoFavourites = () => {
     const { noFavourites } = this.props.locale.messages;
@@ -392,6 +372,7 @@ const styles = StyleSheet.create({
     width: "100%"
   },
   listContainerHeader: {
+    
   },
   list: {
     paddingTop: 20, 
@@ -399,12 +380,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     height: "100%",
     paddingBottom: 20,
-  },
-  listStyle: {
-    paddingTop: 10, 
-    backgroundColor: "transparent",
-    marginHorizontal: 10,
-    height: "100%",
   },
   listView: {
     flex: 1,
@@ -436,9 +411,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     fontSize: 20,
   },
-  accomodationListItem: {
-    backgroundColor: "rgb(250,250,250)"
-  }
 });
 
 

@@ -10,15 +10,14 @@ export default class LLEntitiesFlatlist extends PureComponent{
         super(props);
     }
 
+    _renderHorizontalSeparator = () => {
+        return (
+          <View style={{width: 10}}></View>
+        )
+    }
+
     _renderItem = ({ item, index }) => {
-        const { size, horizontal, vertical } = this.props;
-
-        var itemSize = null;
-
-        if(size){
-            itemSize = {...this.props.size};
-            itemSize.marginLeft = (horizontal==false && index%2 != 0) ? itemSize.space : 0;
-        }
+        const { size, horizontal, vertical, disableSeparator } = this.props;
 
         return(
             <>
@@ -27,17 +26,18 @@ export default class LLEntitiesFlatlist extends PureComponent{
                     style={[styles.item]} 
                     shimmerStyle={[styles.item, this.props.itemStyle,  
                         size && {
-                        marginRight: itemSize.marginRight,
-                        marginLeft: itemSize.marginLeft,
-                        marginBottom: itemSize.marginBottom, 
-                        width: itemSize.width,
-                        height: itemSize.height }]}/>
+                        marginRight: size.marginRight,
+                        marginLeft: size.marginLeft,
+                        marginBottom: size.marginBottom, 
+                        width: size.width,
+                        height: size.height }]}/>
             }
             { horizontal || vertical &&
                 <ShimmerWrapper 
                     style={[styles.item, this.props.itemStyle]} 
                     shimmerStyle={[styles.item, this.props.itemStyle]}/>
             }
+            {!disableSeparator && this._renderHorizontalSeparator()}
             </>
         )
     }
@@ -56,11 +56,14 @@ export default class LLEntitiesFlatlist extends PureComponent{
                         data={Array.from({ length: 5 }).map((_, i) => String(i))}
                         keyExtractor={i => i}
                         numColumns={this.props.numColumns ? this.props.numColumns : 1}
-                        bodyContainerStyle={this.props.bodyContainerStyle ? this.props.bodyContainerStyle : 1}
+                        bodyContainerStyle={this.props.bodyContainerStyle}
                         renderItem={this._renderItem}
                         showsHorizontalScrollIndicator={false}
                         style={this.props.style}
-                        contentContainerStyle={[styles.container]}>
+                        contentContainerStyle={[styles.container, this.props.contentContainerStyle]}
+                        ItemSeparatorComponent={this.props.ItemSeparatorComponent}
+                        >
+                        
                     </FlatList>
                 }
             </>
