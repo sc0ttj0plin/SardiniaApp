@@ -580,16 +580,16 @@ export const styles = {
     selectedDotColor: '#ffffff',
     disabledArrowColor: '#d9e1e8',
     indicatorColor: 'blue',
-    textDayFontSize: 16,
-    textMonthFontSize: 18,
-    textDayHeaderFontSize: 16,
+    textDayFontSize: 14,
+    textMonthFontSize: 16,
+    textDayHeaderFontSize: 12,
     // textDayStyle: {marginTop: Platform.OS === 'android' ? 2 : 4},
     'stylesheet.calendar.header': {
       monthText: {
         fontSize: 16,
         color: "black",
         fontFamily: 'montserrat-bold',
-      }
+      },
     }
   }
 }
