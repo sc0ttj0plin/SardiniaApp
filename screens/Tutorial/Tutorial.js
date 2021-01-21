@@ -22,7 +22,7 @@ import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
 import { FontAwesome5 } from '@expo/vector-icons';
 
 const USE_DR = false;
-class PreferencesScreen extends Component {
+class TutorialScreen extends Component {
 
   constructor(props) {
     super(props);
@@ -149,6 +149,7 @@ class PreferencesScreen extends Component {
   _renderIcon = (name, iconColor, clickable) => {
     const { selectedIconName } = this.state;
     const color = selectedIconName == name ? Constants.EMOTICONS[name].color : iconColor;
+    console.log("color", color);
     return(
       <TouchableOpacity
         style={styles.iconButton}
@@ -179,7 +180,7 @@ class PreferencesScreen extends Component {
       ...this.state[inspirersCategories].slice(0,4)
     ]
     return entities.map( (entity, index) => {
-      console.log("entity", index, entity)
+      // console.log("entity", index, entity)
       return this._renderStep(entity, index);
     })
   }
@@ -215,19 +216,13 @@ class PreferencesScreen extends Component {
   }
 
   _renderNotStartedContent = () => {
-    const { preferencesText1, preferencesText2, start } = this.props.locale.messages;
+    const { tutorialText1, tutorialText2, start } = this.props.locale.messages;
 
     return(
       <>
         <View style={styles.firstView}>
-          <CustomText style={styles.text1}>{preferencesText1}</CustomText>
-          <CustomText style={styles.text2}>{preferencesText2}</CustomText>
-          <View style={styles.icons}>
-            {this._renderIcon("dizzy", Colors.colorEventsScreen, false)}
-            {this._renderIcon("meh", Colors.colorInspirersScreen, false)}
-            {this._renderIcon("laugh-squint", Colors.colorPlacesScreen, false)}
-            {this._renderIcon("grin-hearts", Colors.colorItinerariesScreen, false)}
-          </View>
+          <CustomText style={styles.text1}>{tutorialText1}</CustomText>
+          <CustomText style={styles.text2}>{tutorialText2}</CustomText>
           <View style={styles.startButtonView}>
             <TouchableOpacity
               style={styles.startButton}
@@ -290,7 +285,6 @@ class PreferencesScreen extends Component {
             {this._renderIcon("grin-hearts", Colors.lightGray, true)}
           </View>
           {this._renderStepsBar()}
-          
         </View>
       </>
     )
@@ -298,10 +292,10 @@ class PreferencesScreen extends Component {
 
   _renderContent = () => {
       const { started, finished } = this.state;
-      const { preferences } = this.props.locale.messages;
+      const { tutorial } = this.props.locale.messages;
       return (
         <View style={styles.fill}>
-          <CustomText style={styles.title}>{preferences}</CustomText>
+          <CustomText style={styles.title}>{tutorial}</CustomText>
           {!started && this._renderNotStartedContent()}
           {started && !finished && this._renderStartedContent()}
           {finished && this._renderFinishedContent()}
@@ -315,7 +309,6 @@ class PreferencesScreen extends Component {
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
         <ConnectedHeader />
-        <ConnectedAuthHandler loginOptional={false} />
         {render && this._renderContent()}
       </View>
     )
@@ -324,7 +317,7 @@ class PreferencesScreen extends Component {
 }
 
 
-PreferencesScreen.navigationOptions = {
+TutorialScreen.navigationOptions = {
   title: 'Boilerplate',
 };
 
@@ -450,12 +443,12 @@ const styles = StyleSheet.create({
 });
 
 
-function PreferencesScreenContainer(props) {
+function TutorialScreenContainer(props) {
   const navigation = useNavigation();
   const route = useRoute();
   const store = useStore();
 
-  return <PreferencesScreen 
+  return <TutorialScreen 
     {...props}
     navigation={navigation}
     route={route}
@@ -484,4 +477,4 @@ export default connect(mapStateToProps, mapDispatchToProps, (stateProps, dispatc
     actions: dispatchProps,
     ...props
   }
-})(PreferencesScreenContainer)
+})(TutorialScreenContainer)
