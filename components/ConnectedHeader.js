@@ -106,10 +106,10 @@ class ConnectedHeader extends PureComponent {
       if (this.props.others.searchOrAutocomplete !== "search")
         this.props.actions.switchSearchOrAutocomplete("search");
       let queryStr = utils.searchParser(this.props.others.searchStr);
-      this.props.actions.search({ 
+      this.props.actions.search({
         queryStr, 
         nodeTypes: [Constants.NODE_TYPES.places, Constants.NODE_TYPES.events, Constants.NODE_TYPES.inspirers, Constants.NODE_TYPES.itineraries] 
-      });
+      }, this.props.locale.lan);
     } else {
       this.props.actions.resetSearchAndAutocompleteStr();
       this.props.navigation.navigate(Constants.NAVIGATION.NavSearchStackScreen, { screen: Constants.NAVIGATION.NavSearchScreen });
@@ -128,11 +128,11 @@ class ConnectedHeader extends PureComponent {
     if (this.props.others.searchOrAutocomplete !== "autocomplete")
       this.props.actions.switchSearchOrAutocomplete("autocomplete");
       //Returns: Nodes OR Categories (terms)
-      this.props.actions.autocomplete({ 
+      this.props.actions.autocomplete({
         queryStr: search, 
         vidsInclude: [Constants.VIDS.poisCategories, Constants.VIDS.pois, Constants.VIDS.inspirersCategories, Constants.VIDS.events],
         typesExclude: [Constants.NODE_TYPES.events]
-      });
+      }, this.props.locale.lan);
     this.setState({ searchStr: search });
     this.props.actions.setSearchOrAutocomplete(search);
   };

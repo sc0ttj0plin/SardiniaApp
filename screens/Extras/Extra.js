@@ -16,7 +16,7 @@ import {
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
-import { greedyArrayFinder, getEntityInfo, getCoordinates, getSampleVideoIndex, getGalleryImages } from '../../helpers/utils';
+import { greedyArrayFinder, getEntityInfo, getCoordinates, getSampleVideoIndex, getSampleVrModelIndex, getGalleryImages } from '../../helpers/utils';
 import Layout from '../../constants/Layout';
 import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';
@@ -100,9 +100,10 @@ class ExtraScreen extends Component {
     const { lan } = locale;
     const { abstract, title, description, whyVisit } = getEntityInfo(entity, ["abstract", "title", "description", "whyVisit"], [lan, 0, "value"], null, {"description": {s: /\. /g, d: ".<br/>"}});
     const socialUrl = `${Constants.WEBSITE_URL}${greedyArrayFinder(entity.url_alias, "language", lan, "alias", "")}`;
-    const sampleVideoUrl = getSampleVideoIndex(entity.nid);
+    const sampleVideoUrl = getSampleVideoIndex(entity.uuid);
+    const sampleVrUrl = getSampleVrModelIndex(entity.uuid);
     const gallery = getGalleryImages(entity);
-    this.setState({ entity, abstract,  title,  description,  whyVisit,  socialUrl, sampleVideoUrl, gallery });
+    this.setState({ entity, abstract,  title,  description,  whyVisit,  socialUrl, sampleVideoUrl, sampleVrUrl, gallery });
   }
 
   _openRelatedEntity = (item) => {
@@ -126,19 +127,13 @@ class ExtraScreen extends Component {
   }
 
   _openVRContent = () => {
-    if(this.state.entity.uuid  == "eae5bf1e-1358-49a4-8681-a82b824a031c")
+    const {sampleVrUrl} = this.state;
+    if(sampleVrUrl) {
       this.props.navigation.navigate(Constants.NAVIGATION.NavMediaScreen, {
-          source: "https://my.matterport.com/show/?m=Sbi2Lko9jqf&brand=0&hr=0&mls=2&mt=0&pin=0&portal=0&help=0",
+          source: sampleVrUrl,
           type: "virtualTour"
       });
-    else
-      this.props.navigation.navigate(Constants.NAVIGATION.NavMediaScreen, {
-        source: "https://sketchfab.com/models/670dd8dcc69e4168a597afc13d19875d/embed?autostart=1&preload=1&ui_controls=0&ui_inspector=0&ui_stop=0&ui_watermark=0&ui_watermark_link=0?ui_infos=0&ui_stop=0",
-        //source: "https://sketchfab.com/models/0569f020894644b18d0c20eae09bd54c/embed?preload=1&amp;ui_controls=1&amp;ui_infos=1&amp;ui_inspector=1&amp;ui_stop=1&amp;ui_watermark=1&amp;ui_watermark_link=1",
-        type: "virtualTour"
-    });
-
-    
+    }
   }
 
   _isSuccessData  = () => false;    /* e.g. this.props.pois.success; */
@@ -186,7 +181,7 @@ class ExtraScreen extends Component {
   }
 
   _renderContent = () => {
-    const { uuid, entity, abstract, title, description, whyVisit, coordinates, socialUrl, sampleVideoUrl, gallery } = this.state;
+    const { uuid, entity, abstract, title, description, whyVisit, coordinates, socialUrl, sampleVideoUrl, sampleVrUrl, gallery } = this.state;
     const { relatedPlaces, relatedItineraries, relatedEvents } = this.state;
     const { locale, pois, favourites, } = this.props;
     const { lan } = locale;
@@ -216,9 +211,7 @@ class ExtraScreen extends Component {
             
             <EntityAbstract abstract={abstract}/>
             <View style={styles.separator} />
-            {
-              (entity.uuid  == "eae5bf1e-1358-49a4-8681-a82b824a031c" || 
-              entity.uuid  == "60910491-48ce-480d-9f3c-9ce08c086070") &&
+            { sampleVrUrl &&
             <EntityVirtualTour rotation={iconRotation} onPress={this._openVRContent}/>
             }
             <EntityGallery images={gallery} title={galleryTitle}/>

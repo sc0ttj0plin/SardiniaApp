@@ -186,6 +186,7 @@ export const NAVIGATION = {
   NavLoginScreen: "LoginScreen",
   NavLogoutScreen: "LogoutScreen",
   NavAuthScreen: "AuthScreen",
+  NavGalleryMapScreen: "GalleryMapScreen",
   NavGalleryScreen: "GalleryScreen",
   NavGalleryStackScreen: "GalleryStackScreen",
   NavExplore: "Explore",

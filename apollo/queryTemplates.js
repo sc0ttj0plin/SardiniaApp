@@ -2,6 +2,57 @@ import { gql } from 'apollo-boost';
 import * as Constants from '../constants';
 
 
+export const autocompleteEnQuery = gql`
+query ($queryStr: String, $vidsInclude: [Int!], $typesExclude: [String!]) {
+  autocomplete_en(args: {search: $queryStr},
+    order_by: {rank: desc},
+    limit: 20,
+    where: { _or: [{ _and: [ {nid: {_is_null: true}}, {term: {vid: {_in: $vidsInclude}}}]},
+          {_and: [{nid: {_is_null: false}}, {node: {type: {_nin: $typesExclude}}} ]}]}){
+    keywords
+    rank
+    nid
+    tid
+    term {
+      uuid
+      vid
+      vocabulary {
+        name
+      }
+    }
+    node {
+      type
+      nid
+      uuid
+      title: legacy(path: "title_field")
+    }
+  }
+}
+`
+
+export const searchEnQuery = gql`
+query ($queryStr: String, $nodeTypes: [String!]) {
+  search_en(args: {search: $queryStr}, order_by: {rank: desc}, where: {tid: {_is_null: true}, node: {type: {_in: $nodeTypes}}}) {
+    headline
+    rank
+    nid
+    term {
+      uuid
+      vid
+      vocabulary {
+        name
+      }
+    }
+    node {
+      type
+      nid
+      uuid
+      title: legacy(path: "title_field")
+    }
+  }
+}
+`
+
 export const autocompleteQuery = gql`
 query ($queryStr: String, $vidsInclude: [Int!], $typesExclude: [String!]) {
   autocomplete(args: {search: $queryStr},

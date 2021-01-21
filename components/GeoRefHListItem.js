@@ -7,6 +7,7 @@ import {distanceToString} from '../helpers/maps'
 import CustomText from "./CustomText";
 import ShimmerWrapper from "./ShimmerWrapper";
 import AnimatedImage from "./AnimatedImage";
+import { Fontisto } from '@expo/vector-icons';
 
 /**
  * Similar to PoiItemsList but with geographical information 
@@ -22,11 +23,18 @@ class GeoRefHListItem extends PureComponent{
 
 
   render() {
-    const { distance = "", title = "", subtitle = "", animated } = this.props;
+    const { distance = "", title = "", subtitle = "", animated, mediaType} = this.props;
     return (
       <View style={[styles.container, this.props.style]}>
         <ShimmerWrapper shimmerStyle={styles.shimmer} />
-        <AnimatedImage animated={animated} image={this.props.image} style={[styles.image]} />
+        <View style={[styles.image]}>
+          <AnimatedImage animated={animated} image={this.props.image} style={[styles.image]} />
+          {mediaType === "virtualTour" && 
+          (<View style={styles.mediaOverlay}>
+            <CustomText style={styles.mediaOverlayText}>3D</CustomText>
+          </View>)
+          }
+        </View>
         <LinearGradient
           style={styles.textContainer}
           colors={['rgba(255,255,255,0.8)', 'rgba(240,240,240,1)']}
@@ -87,6 +95,21 @@ const styles = StyleSheet.create({
       padding: 5,
       width: "100%",
       flex: 1
+    },
+    mediaOverlay: {
+      position: "absolute",
+      alignItems: "center",
+      alignContent: "center",
+      backgroundColor: "rgba(0,0,0,0.8)",
+      width: "100%",
+      height: "100%",
+      paddingBottom: 30,
+      justifyContent: 'center'
+    },
+    mediaOverlayText: {
+      fontSize: 40,
+      fontFamily: "montserrat-bold",
+      color: "white"
     }
 });
 
