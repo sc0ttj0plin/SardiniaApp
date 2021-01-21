@@ -117,6 +117,9 @@ class TutorialScreen extends Component {
               stepIndex: this.state.stepIndex + 1,
               animatedStepWidth: 0
             }, () => {
+              if(this._refs["gallery"]) {
+                this._refs["gallery"].flingToPage({index: this.state.stepIndex, velocityX: 0.5});
+              }
               this._startStepAnimation();
             })
           }
@@ -130,13 +133,15 @@ class TutorialScreen extends Component {
   }
 
   _onPageChange = (page) => {
-    if(this.state.stepIndex !== page)
+    if(this.state.stepIndex !== page){
       this._startStepAnimation();
-      
+
+    }
     this.setState({
         stepIndex: page,
         loaded: this._imagesLoaded[page] == true
     })
+
   }
 
   _skipTutorial = () => {
@@ -159,7 +164,7 @@ class TutorialScreen extends Component {
               ref={(ref) => {this._refs["gallery"] = ref}}
               style={styles.gallery}
               images={images}
-              initialPage={0}
+              initialPage={stepIndex}
               resizeMode="contain"
               useNativeDriver={true}
               onPageSelected={this._onPageChange}
