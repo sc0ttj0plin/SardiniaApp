@@ -170,7 +170,7 @@ class PlaceScreen extends Component {
   _openVRContent = () => {
     const {sampleVrUrl} = this.state;
     if(sampleVrUrl) {
-      this.props.navigation.navigate(Constants.NAVIGATION.NavMediaScreen, {
+      this.props.navigation.push(Constants.NAVIGATION.NavMediaScreen, {
           source: sampleVrUrl,
           type: "virtualTour"
       });
