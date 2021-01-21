@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { 
   View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
-  StyleSheet, BackHandler, Platform, ScrollView, TouchableOpacityComponent, Image } from "react-native";
+  StyleSheet, Animated } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   AsyncOperationStatusIndicator, 
@@ -19,7 +19,10 @@ import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
 import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
+import LoadingDots from "../../components/LoadingDots";
 import { FontAwesome5 } from '@expo/vector-icons';
+import tutorialSteps from "../../config/tutorial";
+import Gallery from 'react-native-gallery-swiper-loader';
 
 const USE_DR = false;
 class TutorialScreen extends Component {
@@ -29,20 +32,20 @@ class TutorialScreen extends Component {
 
     /* Get props from navigation */
     //let { someNavProps } = props.route.params; 
+    this._refs = {};
 
     this.state = {
       render: USE_DR ? false : true,
-      entities: [],
-      entityIndex: 0,
-      selectedIconName: null,
-      started: false,
+      steps: tutorialSteps,
+      stepIndex: 0,
+      images: [],
+      started: true,
       finished: false,
-      selectedColors: [],
-      //categories parsed [{ name, image, uuid }]
-      [Constants.VIDS.poisCategories]: [],
-      [Constants.VIDS.inspirersCategories]: [],
+      animatedStepWidth: 0
     };
-      
+   
+    this._imagesLoaded = [];
+    this._stepInterval = 0;
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
@@ -54,16 +57,7 @@ class TutorialScreen extends Component {
   componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
-    const { poisCategories, inspirersCategories } = Constants.VIDS;
-    this.props.actions.checkForUpdates();
-    if (!this.props.categories.data[poisCategories])
-      this.props.actions.getCategories({ vid: poisCategories });
-    else 
-      this._parseCategories(poisCategories);
-    if (!this.props.categories.data[inspirersCategories])
-      this.props.actions.getCategories({ vid: inspirersCategories });
-    else
-      this._parseCategories(inspirersCategories);
+    this._parseSteps();
   }
 
   /**
@@ -71,11 +65,7 @@ class TutorialScreen extends Component {
    * or to post-process data once it changes
    */
   componentDidUpdate(prevProps) {
-    const { poisCategories, inspirersCategories } = Constants.VIDS;
-    if(prevProps.categories.data[poisCategories] !== this.props.categories.data[poisCategories])
-      this._parseCategories(poisCategories)
-    if(prevProps.categories.data[inspirersCategories] !== this.props.categories.data[inspirersCategories])
-      this._parseCategories(inspirersCategories)
+
   }
 
   /**
@@ -86,57 +76,55 @@ class TutorialScreen extends Component {
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
 
-  /**
-   * Parses categories returning a simplified array of [{name, uuid, image}]
-   */
-  _parseCategories = (vid) => {
-      this.setState({ 
-        [vid]: this.props.categories.data[vid].map(el => ({
-          name: el.name,
-          image: el.image,
-          uuid: el.uuid,
-        })),
-      }, () => {
-        this.setState({
-          entities: [
-            ...this.state.entities,
-            ...this.state[vid]
-          ]
-        })
-      });
+  _parseSteps = () => {
+    const {steps} = this.state;
+    let images = [];
+    steps.map( step => {
+      let image = {
+        source: step.image
+      }
+      images.push(image);
+    })
+    this.setState({images}, () => {
+      console.log("enter here ahaahh")
+      // Animated.timing(this._animatedStepWidth , {
+      //   toValue: 100,
+      //   duration: 20
+      // });
+      this._startStepAnimation();
+    })
   }
 
-
-  _selectActiveIcon = (iconName) => {
+  _startStepAnimation = () => {
+    const duration = 3000;
+    const time = duration / 100;
+    clearInterval(this._stepInterval);
     this.setState({
-      selectedIconName: iconName
+      animatedStepWidth: 0
     }, () => {
-      const { entityIndex, selectedColors } = this.state;
-      const color = Constants.EMOTICONS[iconName].color;
-      const newColors = [...selectedColors, color];
-      const { poisCategories, inspirersCategories } = Constants.VIDS;
-      let entities = [
-        ...this.state[poisCategories].slice(0,4),
-        ...this.state[inspirersCategories].slice(0,4)
-      ]
-      let length = entities.length
-      if(entityIndex < length){
-        let timeout = setTimeout(() => {
-          const finished = (entityIndex + 1) < length ? false : true;
+      this._stepInterval = setInterval( () => {
+        // this._animatedStepWidth++;
+        if(this.state.animatedStepWidth < 100){
           this.setState({
-            entityIndex: entityIndex + 1,
-            selectedColors: newColors,
-            selectedIconName: null,
-            finished
+          animatedStepWidth: this.state.animatedStepWidth + 1
           })
-        }, 300)
-      }
-      else{
-        this.setState({
-          finished: true,
-          selectedIconName: null
-        })
-      }
+        }
+        else{
+          clearInterval(this._stepInterval);
+          if(this.state.stepIndex < (this.state.steps.length - 1)){
+            console.log("step index", this.state.stepIndex)
+            this.setState({
+              stepIndex: this.state.stepIndex + 1,
+              animatedStepWidth: 0
+            }, () => {
+              if(this._refs["gallery"]) {
+                this._refs["gallery"].flingToPage({index: this.state.stepIndex, velocityX: 0.5});
+              }
+              this._startStepAnimation();
+            })
+          }
+        }
+      }, time)
     })
   }
 
@@ -144,26 +132,66 @@ class TutorialScreen extends Component {
     this.props.navigation.goBack();
   }
 
+  _onPageChange = (page) => {
+    if(this.state.stepIndex !== page){
+      this._startStepAnimation();
+
+    }
+    this.setState({
+        stepIndex: page,
+        loaded: this._imagesLoaded[page] == true
+    })
+
+  }
+
+  _skipTutorial = () => {
+
+  }
+
   /********************* Render methods go down here *********************/
 
-  _renderIcon = (name, iconColor, clickable) => {
-    const { selectedIconName } = this.state;
-    const color = selectedIconName == name ? Constants.EMOTICONS[name].color : iconColor;
-    console.log("color", color);
-    return(
-      <TouchableOpacity
-        style={styles.iconButton}
-        activeOpacity={clickable ? 0.7 : 1}
-        onPress={clickable ? () => this._selectActiveIcon(name) : null}>
-          <FontAwesome5 
-            name={name}
-            color={color}
-            size={42}
-            style={styles.icon}
-          />
-      </TouchableOpacity>
-    )
+  _renderGalleryView = () => {
+    const { skip } = this.props.locale.messages;
+    const { images, steps, stepIndex, initialPage, loaded } = this.state
+    const image = steps[stepIndex];
+    const title = image.title;
+    const description = image.description;
+
+    return (
+      <View style={[styles.fill]}>
+        <View style={[styles.fill, {position: "relative"}]}>
+          <Gallery
+              ref={(ref) => {this._refs["gallery"] = ref}}
+              style={styles.gallery}
+              images={images}
+              initialPage={stepIndex}
+              resizeMode="contain"
+              useNativeDriver={true}
+              onPageSelected={this._onPageChange}
+              onLoad = {this._onImageLoad}
+              initialNumToRender = {images.length}>
+          </Gallery>
+          {!loaded && 
+            <View pointerEvents="none" 
+              style={[styles.loadingDotsView1, {backgroundColor: "rgba(0,0,0,0.7)"}]}>
+              <View style={[styles.loadingDotsView2]}>
+                <LoadingDots isLoading={true}/>
+              </View>
+            </View>
+          }
+        </View>
+        <CustomText style={styles.entityTitle}>{title}</CustomText>
+        <CustomText style={styles.entityDescription}>{description}</CustomText>
+        <View style={styles.skipBtnContainer}>
+          <TouchableOpacity activeOpacity={0.7} style={[styles.skipBtn]} onPress={this._skipTutorial}>
+            <CustomText style={[styles.skipBtnText]}>{skip}</CustomText>
+          </TouchableOpacity>
+
+        </View>
+      </View>
+    );
   }
+
 
   _renderStepsBar = () => {
     return(
@@ -174,46 +202,57 @@ class TutorialScreen extends Component {
   }
 
   _renderSteps = () => {
-    const { poisCategories, inspirersCategories } = Constants.VIDS;
-    let entities = [
-      ...this.state[poisCategories].slice(0,4),
-      ...this.state[inspirersCategories].slice(0,4)
-    ]
-    return entities.map( (entity, index) => {
+    const { steps } = this.state;
+
+    return steps.map( (entity, index) => {
       // console.log("entity", index, entity)
       return this._renderStep(entity, index);
     })
   }
 
   _renderStep = (entity, index) => {
-    const { entityIndex, selectedColors } = this.state;
+    const { stepIndex, steps } = this.state;
     let backgroundColor = Colors.lightGray;
-    if(entityIndex == index)
+    if(index < stepIndex)
       backgroundColor = Colors.mediumGray;
-    else if(selectedColors[index])
-      backgroundColor = selectedColors[index]
-    return(
-      <View style={[styles.step, {
-        backgroundColor: backgroundColor
-      }]}/>
-    )
-  }
 
-  _renderEntity = (entity) => {
-    const { lan } = this.props.locale;
-    const term = entity.name;
-    const image = entity.image;
-    // console.log("entity", entity)
+    // console.log("step index", stepIndex, index)
     return(
-      <View style={styles.entityView}>
-        <CustomText style={styles.entityTerm}>{term}</CustomText>
-        <Image
-          PlaceholderContent={<ActivityIndicator color="black"/>}
-          source={{ uri: image }}
-          style={styles.entityImage}/>
+      <View style={{position: "relative"}}>
+        <View style={[styles.step, {
+          backgroundColor: backgroundColor,
+          width: (Layout.window.width - 30 - 30) / steps.length
+        }]}/>
+        {stepIndex == index && 
+          <Animated.View style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            height: "100%",
+            backgroundColor: Colors.mediumGray,
+            width: `${this.state.animatedStepWidth}%`
+          }}>
+          </Animated.View>
+        }
       </View>
     )
   }
+
+  // _renderEntity = (entity) => {
+  //   const { lan } = this.props.locale;
+  //   const title = entity.title;
+  //   const image = entity.image;
+  //   // console.log("entity", entity)
+  //   return(
+  //     <View style={styles.entityView}>
+  //       <CustomText style={styles.entityTerm}>{title}</CustomText>
+  //       <Image
+  //         PlaceholderContent={<ActivityIndicator color="black"/>}
+  //         source={{ uri: image }}
+  //         style={styles.entityImage}/>
+  //     </View>
+  //   )
+  // }
 
   _renderNotStartedContent = () => {
     const { tutorialText1, tutorialText2, start } = this.props.locale.messages;
@@ -244,46 +283,18 @@ class TutorialScreen extends Component {
         <View style={styles.firstView}>
           <CustomText style={styles.text1}>{thanks}</CustomText>
           <CustomText style={styles.text2}>{preferencesText3}</CustomText>
-          <View style={styles.icons}>
-            {this._renderIcon("dizzy", Colors.colorEventsScreen, false)}
-            {this._renderIcon("meh", Colors.colorInspirersScreen, false)}
-            {this._renderIcon("laugh-squint", Colors.colorPlacesScreen, false)}
-            {this._renderIcon("grin-hearts", Colors.colorItinerariesScreen, false)}
-          </View>
-          <View style={styles.startButtonView}>
-            <TouchableOpacity
-              style={styles.startButton}
-              activeOpacity={0.7}
-              onPress={this._onFinished}>
-                <CustomText style={styles.startButtonText}>{okDoneSurvey}</CustomText>
-            </TouchableOpacity>
-          </View>
+          
         </View>
       </>
     )
   }
 
   _renderStartedContent = () => { 
-    const { doYouLikeIt } = this.props.locale.messages;
-    const { entityIndex } = this.state;
-    const { poisCategories, inspirersCategories } = Constants.VIDS;
-    let entities = [
-      ...this.state[poisCategories].slice(0,4),
-      ...this.state[inspirersCategories].slice(0,4)
-    ]
-    // console.log("entities", entities)
-    const entity = entities[entityIndex] || null;
+
     return(
       <>
         <View style={styles.startedContent}>
-          <CustomText style={styles.startedContentText}>{doYouLikeIt}</CustomText>
-          {entity && this._renderEntity(entity)}
-          <View style={[styles.icons, {marginTop: 70, paddingHorizontal: 50}]}>
-            {this._renderIcon("dizzy", Colors.lightGray, true)}
-            {this._renderIcon("meh", Colors.lightGray, true)}
-            {this._renderIcon("laugh-squint", Colors.lightGray, true)}
-            {this._renderIcon("grin-hearts", Colors.lightGray, true)}
-          </View>
+          {this._renderGalleryView()}
           {this._renderStepsBar()}
         </View>
       </>
@@ -341,7 +352,22 @@ const styles = StyleSheet.create({
     backgroundColor: "#F2F2F2",
     fontSize: 15,
     fontFamily: "montserrat-bold",
-    textTransform: "uppercase"
+    textTransform: "uppercase",
+    marginBottom: 20
+  },
+  gallery: { 
+    flex: 1, 
+    backgroundColor: Colors.lightGray 
+  },
+  loadingDotsView1: {
+    position: "absolute",
+    width: '100%',
+    height: '100%',
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  loadingDotsView2: {
+    width: 100
   },
   firstView: {
     flex: 1,
@@ -397,7 +423,7 @@ const styles = StyleSheet.create({
     textAlign: "center"
   },
   startedContent: {
-    paddingHorizontal: 15,
+    marginHorizontal: 15,
     flex: 1,
     flexDirection: "column",
     justifyContent: "space-around"
@@ -413,7 +439,8 @@ const styles = StyleSheet.create({
     width: "100%",
     flex: 1,
     flexDirection: "row",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    marginBottom: 20
   },
   step: {
     width: "8%",
@@ -439,6 +466,41 @@ const styles = StyleSheet.create({
   entityView: {
     width: "100%",
     height: 160,
+  },
+  entityTitle: {
+    fontFamily: "montserrat-bold",
+    textAlign: "center",
+    marginTop: 52,
+    fontSize: 20,
+    textTransform: "uppercase",
+    marginBottom: 8
+  },
+  entityDescription: {
+    fontSize: 15,
+    marginBottom: 6.5,
+    textAlign: "center"
+  },
+  skipBtn: {
+    borderRadius: 4,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "white",
+    display: "flex",
+    paddingHorizontal: 27,
+    paddingVertical: 9,
+    marginBottom: 26.5,
+    borderColor: "#F2F2F2",
+    borderWidth: 2
+  },
+  skipBtnText: {
+    color: Colors.mediumGray,
+    fontFamily: "montserrat-bold",
+    textAlign: "center",
+    textTransform: "uppercase"
+  },
+  skipBtnContainer: {
+    flexDirection: "row",
+    justifyContent: "center"
   }
 });
 
