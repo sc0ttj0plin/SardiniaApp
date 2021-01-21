@@ -44,7 +44,7 @@ import Colors from '../constants/Colors';
 import * as Constants from '../constants';
 const {
   NavPlacesScreen, NavInspirersScreen ,NavMapScreen, NavLoadingScreen, NavLoginScreen, NavLogoutScreen, NavAuthScreen,
-  NavItinerariesScreen, NavAccomodationsScreen, NavAccomodationScreen, NavAccomodationsStackScreen, NavGalleryStackScreen, NavGalleryScreen, NavGalleryMapScreen,
+  NavItinerariesScreen, NavAccomodationsScreen, NavAccomodationScreen, NavAccomodationsStackScreen, NavGalleryStackScreen, NavGalleryScreen, NavGalleryMapScreen, NavGalleryMapStackScreen,
   NavItineraryScreen, NavEventsScreen, NavEventScreen, NavItineraryStagesMapScreen,NavEventsMapScreen, NavEventsSubset, NavExploreScreen, 
   NavVirtualTourScreen, NavPlaceScreen, NavInspirerScreen, NavPreferencesScreen, NavTutorialScreen,
   NavExtrasScreen, NavExtraScreen, NavTabNavigator, NavSearchScreen, NavSearchStackScreen, 
@@ -288,12 +288,31 @@ function AccomodationStackScreen() {
 /**
  * Accomodation Stack (level: 1, parent DrawerNavigator)
  */
+var GalleryMapStack = createStackNavigator();
+
+function GalleryMapStackScreen() {
+  return (
+    <GalleryStack.Navigator headerMode="none" initialRouteName={NavGalleryMapScreen}>
+      <GalleryStack.Screen name={NavGalleryMapScreen} component={GalleryMapScreen} />
+      {/* Places */}
+      <GalleryStack.Screen name={NavPlaceScreen} component={PlaceScreen}/>
+      {/* Media */}
+      <GalleryStack.Screen name={NavMediaScreen} component={MediaScreen}/>
+      {/* Accomodation */}
+      <GalleryStack.Screen name={NavAccomodationsScreen} component={AccomodationsScreen}/>
+      <GalleryStack.Screen name={NavAccomodationScreen} component={AccomodationScreen}/>
+    </GalleryStack.Navigator>
+  );
+}
+
+/**
+ * Accomodation Stack (level: 1, parent DrawerNavigator)
+ */
 var GalleryStack = createStackNavigator();
 
 function GalleryStackScreen() {
   return (
     <GalleryStack.Navigator headerMode="none" initialRouteName={NavGalleryScreen}>
-      <GalleryStack.Screen name={NavGalleryMapScreen} component={GalleryMapScreen} />
       <GalleryStack.Screen name={NavGalleryScreen} component={GalleryScreen} />
       {/* Places */}
       <GalleryStack.Screen name={NavPlaceScreen} component={PlaceScreen}/>
@@ -340,7 +359,7 @@ function CustomDrawerContent(props) {
       <CustomDrawer.Item {...props} routeIndex={3} label={ConnectedTextTutorial} screenName={Constants.NAVIGATION.NavTutorialScreen} iconOpts={{name: 'book', size: 20, color: Colors.mediumGray}} />
       <CustomDrawer.Separator />
       <CustomDrawer.Item {...props} routeIndex={4} label={ConnectedTextFavourites} screenName={Constants.NAVIGATION.NavFavouritesStackScreen} iconOpts={{name: 'heart', size: 20, color: Colors.mediumGray}} />
-      <CustomDrawer.Item {...props} routeIndex={5} label={ConnectedTextGalleryMap} screenName={Constants.NAVIGATION.NavGalleryStackScreen} iconOpts={{name: 'image', size: 20, color: Colors.mediumGray}} />
+      <CustomDrawer.Item {...props} routeIndex={5} label={ConnectedTextGalleryMap} screenName={Constants.NAVIGATION.NavGalleryMapStackScreen} iconOpts={{name: 'image', size: 20, color: Colors.mediumGray}} />
       <CustomDrawer.Item {...props} routeIndex={5} label={ConnectedTextVideoGallery} screenName={Constants.NAVIGATION.NavGalleryStackScreen} iconOpts={{name: 'film', size: 20, color: Colors.mediumGray}} />
       <CustomDrawer.Separator />
       <CustomDrawer.Item {...props} routeIndex={6} label={ConnectedTextLoginLogout} screenName={Constants.NAVIGATION.NavAuthScreen} iconOpts={{name: 'user', size: 20, color: Colors.mediumGray}} />
@@ -376,6 +395,7 @@ function DrawerNavigator() {
       <Drawer.Screen name={NavAccomodationsStackScreen} component={AccomodationStackScreen} options={{unmountOnBlur:true}} />
       <Drawer.Screen name={NavSearchStackScreen} component={SearchStackScreen} />
       <Drawer.Screen name={NavFavouritesStackScreen} component={FavouritesStackScreen} options={{unmountOnBlur:true}} />
+      <Drawer.Screen name={NavGalleryMapStackScreen} component={GalleryMapStackScreen} options={{unmountOnBlur:true}} />
       <Drawer.Screen name={NavGalleryStackScreen} component={GalleryStackScreen} options={{unmountOnBlur:true}} />
       <Drawer.Screen name={NavPreferencesScreen} component={PreferencesScreen} options={{unmountOnBlur:true}} />
       <Drawer.Screen name={NavTutorialScreen} component={TutorialScreen} options={{unmountOnBlur:true}} />

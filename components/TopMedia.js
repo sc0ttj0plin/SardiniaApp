@@ -30,7 +30,7 @@ class TopMedia extends PureComponent {
         <TouchableOpacity
           style={styles.playButton}
           activeOpacity={0.7}
-          onPress={ () => this.props.navigation.navigate(Constants.NAVIGATION.NavMediaScreen, { source: urlVideo, type: "video" })}>
+          onPress={ () => this.props.navigation.push(Constants.NAVIGATION.NavMediaScreen, { source: urlVideo, type: "video" })}>
             <ImageBackground source={require("../assets/icons/play_bg.png")} style={styles.backgroundPlayImage}>
               <Image 
                 source={require("../assets/icons/play.png")} style={styles.playImage}>  

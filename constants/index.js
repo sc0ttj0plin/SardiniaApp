@@ -189,6 +189,7 @@ export const NAVIGATION = {
   NavGalleryMapScreen: "GalleryMapScreen",
   NavGalleryScreen: "GalleryScreen",
   NavGalleryStackScreen: "GalleryStackScreen",
+  NavGalleryMapStackScreen: "NavGalleryMapStackScreen",
   NavExplore: "Explore",
   NavEvents: "Events",
   NavExtrasScreen: "Extras",
