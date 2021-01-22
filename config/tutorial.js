@@ -1,7 +1,7 @@
 export default [
     {
         title: "Sardinia App - Guida",
-        description: "<b>\"Bene bennios in Sardegna!\"</b> <br/>In questa breve guida potrai trovare informazioni utili sull'utilizzo dell'app. <br/>Scorri col dito per andare avanti o tornare indietro!",
+        description: "<b><i>\"Bene bennios in Sardegna!\"</i></b><br/>In questa breve guida potrai trovare informazioni utili sull'utilizzo dell'app.<br/>Scorri col dito per andare avanti o tornare indietro!",
         image: require("../assets/images/tutorial/tutorial_app.png")
     },
     {
@@ -16,7 +16,7 @@ export default [
     },    
     {
         title: "Filtri mappa",
-        description: "Premendo sui filtri in alto potrai selezionare i contenuti che ti interessano maggiornmente. Premendo il pulsante 'indietro' in alto a sinistra potrai annullare la selezoine del filtro.",
+        description: "Premendo sui filtri in alto potrai selezionare i contenuti che ti interessano maggiormente. Premendo il pulsante 'indietro' in alto a sinistra potrai annullare la selezione del filtro.",
         image: require("../assets/images/tutorial/dove_andare_filtri.png")
     },
     {
