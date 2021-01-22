@@ -1,7 +1,7 @@
 
 export default [{
     title: "Musei Civici",
-    vr_url: "https://my.matterport.com/show/?m=Sbi2Lko9jqf&brand=0&hr=0&mls=2&mt=0&pin=0&portal=0&help=0",
+    vr_url: "https://my.matterport.com/show/?m=Sbi2Lko9jqf&brand=0&hr=0&mls=2&pin=0&portal=0&help=0",
     uuid: "eae5bf1e-1358-49a4-8681-a82b824a031c"
   },
   {

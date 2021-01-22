@@ -303,12 +303,12 @@ export const SCREENS = {
   },
   extras: {
     defaultUuids: [
-      "83650f2a-ccab-44bc-a938-2cdb5bb2f1e3", 
-      "a149c57b-9973-4a2a-a5e9-2a9d95c3f676",
-      "deba536c-a275-4c54-8848-25fa3244593d",
-      "60910491-48ce-480d-9f3c-9ce08c086070",
-      "fdabb67f-fc45-40fc-83da-ac3ab6f4672e",
-      "eae5bf1e-1358-49a4-8681-a82b824a031c",
+      "83650f2a-ccab-44bc-a938-2cdb5bb2f1e3", //Alghero
+      "a149c57b-9973-4a2a-a5e9-2a9d95c3f676", //Porto Giunco
+      "054cb368-6ddc-417f-bbda-bd5bd35b8f2e", //Supramonte
+      "60910491-48ce-480d-9f3c-9ce08c086070", //Nuraghe Losa
+      "fdabb67f-fc45-40fc-83da-ac3ab6f4672e", //Mamoiada
+      "eae5bf1e-1358-49a4-8681-a82b824a031c", //Cittadella Dei Musei
     ]
   }
 }

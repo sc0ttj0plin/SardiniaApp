@@ -149,6 +149,7 @@ class PlaceScreen extends Component {
       this._fetchNearNodes();
       this._fetchNearAccomodations();
     });
+    console.log(entity.uuid, title);
   }
 
 
