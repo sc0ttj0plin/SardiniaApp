@@ -535,6 +535,7 @@ export const styles = {
     shortTextSecondary: "textAlign: center; color: #333333; font-family: montserrat-regular; font-size: 15; padding-left: 16px; padding-right: 16px;",
     longText: "textAlign: justify; opacity: 1; font-family: montserrat-regular; font-size: 15; padding-left: 5px; padding-right: 5px;",
     longTextLeft: "textAlign: left; opacity: 1; font-family: montserrat-regular; font-size: 15;",
+    longTextCenter: "textAlign: center; opacity: 1; font-family: montserrat-regular; font-size: 15;",
   },
   innerText: {
     paddingLeft: 10,

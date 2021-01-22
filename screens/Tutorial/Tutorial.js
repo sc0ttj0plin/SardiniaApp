@@ -23,6 +23,8 @@ import LoadingDots from "../../components/LoadingDots";
 import { FontAwesome5 } from '@expo/vector-icons';
 import tutorialSteps from "../../config/tutorial";
 import Gallery from 'react-native-gallery-swiper-loader';
+import { useSafeArea } from 'react-native-safe-area-context';
+import HTML from 'react-native-render-html';
 
 const USE_DR = false;
 class TutorialScreen extends Component {
@@ -41,10 +43,8 @@ class TutorialScreen extends Component {
       images: [],
       started: true,
       finished: false,
-      animatedStepWidth: 0
     };
    
-    this._imagesLoaded = [];
     this._stepInterval = 0;
   }
 
@@ -81,50 +81,13 @@ class TutorialScreen extends Component {
     let images = [];
     steps.map( step => {
       let image = {
-        source: step.image
+        source: step.image,
+        dimensions: { width: 1080, height: 1920 }
       }
       images.push(image);
     })
     this.setState({images}, () => {
-      console.log("enter here ahaahh")
-      // Animated.timing(this._animatedStepWidth , {
-      //   toValue: 100,
-      //   duration: 20
-      // });
-      this._startStepAnimation();
-    })
-  }
 
-  _startStepAnimation = () => {
-    const duration = 3000;
-    const time = duration / 100;
-    clearInterval(this._stepInterval);
-    this.setState({
-      animatedStepWidth: 0
-    }, () => {
-      this._stepInterval = setInterval( () => {
-        // this._animatedStepWidth++;
-        if(this.state.animatedStepWidth < 100){
-          this.setState({
-          animatedStepWidth: this.state.animatedStepWidth + 1
-          })
-        }
-        else{
-          clearInterval(this._stepInterval);
-          if(this.state.stepIndex < (this.state.steps.length - 1)){
-            console.log("step index", this.state.stepIndex)
-            this.setState({
-              stepIndex: this.state.stepIndex + 1,
-              animatedStepWidth: 0
-            }, () => {
-              if(this._refs["gallery"]) {
-                this._refs["gallery"].flingToPage({index: this.state.stepIndex, velocityX: 0.5});
-              }
-              this._startStepAnimation();
-            })
-          }
-        }
-      }, time)
     })
   }
 
@@ -134,12 +97,10 @@ class TutorialScreen extends Component {
 
   _onPageChange = (page) => {
     if(this.state.stepIndex !== page){
-      this._startStepAnimation();
 
     }
     this.setState({
         stepIndex: page,
-        loaded: this._imagesLoaded[page] == true
     })
 
   }
@@ -151,10 +112,8 @@ class TutorialScreen extends Component {
   /********************* Render methods go down here *********************/
 
   _renderGalleryView = () => {
-    const { skip } = this.props.locale.messages;
-    const { images, steps, stepIndex, initialPage, loaded } = this.state
+    const { images, steps, stepIndex, initialPage } = this.state
     const image = steps[stepIndex];
-    const title = image.title;
     const description = image.description;
 
     return (
@@ -168,26 +127,16 @@ class TutorialScreen extends Component {
               resizeMode="contain"
               useNativeDriver={true}
               onPageSelected={this._onPageChange}
-              onLoad = {this._onImageLoad}
-              initialNumToRender = {images.length}>
+              enableScale={false}
+              enableTranslate={false}
+              initialNumToRender = {images.length}
+              flatListProps={{
+                showsVerticalScrollIndicator: false,
+                showsHorizontalScrollIndicator: false
+              }}>
           </Gallery>
-          {!loaded && 
-            <View pointerEvents="none" 
-              style={[styles.loadingDotsView1, {backgroundColor: "rgba(0,0,0,0.7)"}]}>
-              <View style={[styles.loadingDotsView2]}>
-                <LoadingDots isLoading={true}/>
-              </View>
-            </View>
-          }
         </View>
-        <CustomText style={styles.entityTitle}>{title}</CustomText>
-        <CustomText style={styles.entityDescription}>{description}</CustomText>
-        <View style={styles.skipBtnContainer}>
-          <TouchableOpacity activeOpacity={0.7} style={[styles.skipBtn]} onPress={this._skipTutorial}>
-            <CustomText style={[styles.skipBtnText]}>{skip}</CustomText>
-          </TouchableOpacity>
-
-        </View>
+        <HTML containerStyle={styles.entityDescription} html={"<font style=\"" + Constants.styles.html.longTextCenter + "\">" + description + "</font>"} />
       </View>
     );
   }
@@ -195,7 +144,7 @@ class TutorialScreen extends Component {
 
   _renderStepsBar = () => {
     return(
-      <View style={styles.stepsView}>
+      <View style={[styles.stepsView, {marginBottom: Math.max(this.props.insets.bottom, 10)}]}>
         {this._renderSteps()}
       </View>
     )
@@ -229,30 +178,14 @@ class TutorialScreen extends Component {
             top: 0,
             left: 0,
             height: "100%",
-            backgroundColor: Colors.mediumGray,
-            width: `${this.state.animatedStepWidth}%`
+            backgroundColor: Colors.colorInspirersScreen,
+            width: "100%",
           }}>
           </Animated.View>
         }
       </View>
     )
   }
-
-  // _renderEntity = (entity) => {
-  //   const { lan } = this.props.locale;
-  //   const title = entity.title;
-  //   const image = entity.image;
-  //   // console.log("entity", entity)
-  //   return(
-  //     <View style={styles.entityView}>
-  //       <CustomText style={styles.entityTerm}>{title}</CustomText>
-  //       <Image
-  //         PlaceholderContent={<ActivityIndicator color="black"/>}
-  //         source={{ uri: image }}
-  //         style={styles.entityImage}/>
-  //     </View>
-  //   )
-  // }
 
   _renderNotStartedContent = () => {
     const { tutorialText1, tutorialText2, start } = this.props.locale.messages;
@@ -302,11 +235,13 @@ class TutorialScreen extends Component {
   }
 
   _renderContent = () => {
-      const { started, finished } = this.state;
+      const { started, finished, steps, stepIndex } = this.state;
+      const image = steps[stepIndex];
+      const title = image.title;
       const { tutorial } = this.props.locale.messages;
       return (
         <View style={styles.fill}>
-          <CustomText style={styles.title}>{tutorial}</CustomText>
+          <CustomText style={styles.title}>{title}</CustomText>
           {!started && this._renderNotStartedContent()}
           {started && !finished && this._renderStartedContent()}
           {finished && this._renderFinishedContent()}
@@ -319,7 +254,7 @@ class TutorialScreen extends Component {
     const { render } = this.state;
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader />
+        <ConnectedHeader/>
         {render && this._renderContent()}
       </View>
     )
@@ -329,7 +264,7 @@ class TutorialScreen extends Component {
 
 
 TutorialScreen.navigationOptions = {
-  title: 'Boilerplate',
+  title: 'TutorialScreen',
 };
 
 
@@ -341,9 +276,6 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: "white"
   },
-  container: {
-    padding: 10,
-  },
   title: {
     textAlign: "center",
     paddingTop: 10,
@@ -353,21 +285,9 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: "montserrat-bold",
     textTransform: "uppercase",
-    marginBottom: 20
   },
   gallery: { 
-    flex: 1, 
-    backgroundColor: Colors.lightGray 
-  },
-  loadingDotsView1: {
-    position: "absolute",
-    width: '100%',
-    height: '100%',
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  loadingDotsView2: {
-    width: 100
+    flex: 1
   },
   firstView: {
     flex: 1,
@@ -423,7 +343,6 @@ const styles = StyleSheet.create({
     textAlign: "center"
   },
   startedContent: {
-    marginHorizontal: 15,
     flex: 1,
     flexDirection: "column",
     justifyContent: "space-around"
@@ -440,7 +359,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 20
+    paddingHorizontal: 10,
+    marginTop: 15
   },
   step: {
     width: "8%",
@@ -477,31 +397,9 @@ const styles = StyleSheet.create({
   },
   entityDescription: {
     fontSize: 15,
-    marginBottom: 6.5,
+    padding: 15,
     textAlign: "center"
   },
-  skipBtn: {
-    borderRadius: 4,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "white",
-    display: "flex",
-    paddingHorizontal: 27,
-    paddingVertical: 9,
-    marginBottom: 26.5,
-    borderColor: "#F2F2F2",
-    borderWidth: 2
-  },
-  skipBtnText: {
-    color: Colors.mediumGray,
-    fontFamily: "montserrat-bold",
-    textAlign: "center",
-    textTransform: "uppercase"
-  },
-  skipBtnContainer: {
-    flexDirection: "row",
-    justifyContent: "center"
-  }
 });
 
 
@@ -509,12 +407,14 @@ function TutorialScreenContainer(props) {
   const navigation = useNavigation();
   const route = useRoute();
   const store = useStore();
+  const insets = useSafeArea();
 
   return <TutorialScreen 
     {...props}
     navigation={navigation}
     route={route}
-    store={store} />;
+    store={store}
+    insets={insets} />;
 }
 
 

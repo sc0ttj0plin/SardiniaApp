@@ -217,7 +217,6 @@ class MediaScreen extends PureComponent {
       this.setState({
         loaded: true
       });
-      console.log(this._imagesLoaded);
     }
   }
 

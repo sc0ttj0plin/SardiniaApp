@@ -49,7 +49,7 @@ const HEADER_BUTTONS_PER_SCREEN = {
   [Constants.NAVIGATION.NavGalleryMapScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
   [Constants.NAVIGATION.NavGalleryScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
   [Constants.NAVIGATION.NavPreferencesScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
-  [Constants.NAVIGATION.NavTutorialScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
+  [Constants.NAVIGATION.NavTutorialScreen]: {backButtonVisible: true, searchButtonVisible: false, filterButtonVisible: false, closeButtonVisible: false},
   [Constants.NAVIGATION.NavAuthScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
   [Constants.NAVIGATION.NavFiltersScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
   [Constants.NAVIGATION.NavBoilerPlate]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
@@ -74,6 +74,7 @@ class ConnectedHeader extends PureComponent {
       backButtonVisible: props.backButtonVisible ? props.backButtonVisible : HEADER_BUTTONS_PER_SCREEN[routeName].backButtonVisible,
       searchButtonVisible: props.searchButtonVisible ? props.searchButtonVisible : HEADER_BUTTONS_PER_SCREEN[routeName].searchButtonVisible,
       filterButtonVisible: props.filterButtonVisible ? props.filterButtonVisible : HEADER_BUTTONS_PER_SCREEN[routeName].filterButtonVisible,
+      closeButtonVisible: props.closeButtonVisible ? props.closeButtonVisible : HEADER_BUTTONS_PER_SCREEN[routeName].closeButtonVisible,
       //
       searchStr: "",
     };
@@ -125,6 +126,14 @@ class ConnectedHeader extends PureComponent {
     }
   }
 
+  _closeButtonPressed = () => {
+    if (this.props.onClosePress) 
+      this.props.onClosePress()
+    else {
+      this.props.navigation.goBack();
+    }
+  }
+
   _updateSearch = search => {
     if (this.props.others.searchOrAutocomplete !== "autocomplete")
       this.props.actions.switchSearchOrAutocomplete("autocomplete");
@@ -144,9 +153,7 @@ class ConnectedHeader extends PureComponent {
       <Button
         type="clear"
         containerStyle={[styles.buttonContainer, this.props.buttonContainer]}
-        buttonStyle={[styles.button, {
-          marginLeft: 5
-        }]}
+        buttonStyle={[styles.button]}
         onPress={() => this.props.navigation.toggleDrawer()}
         icon={
           <Ionicons
@@ -164,9 +171,7 @@ class ConnectedHeader extends PureComponent {
       <Button
         type="clear"
         containerStyle={[styles.buttonContainer]}
-        buttonStyle={[styles.button, this.props.searchButton, {
-          marginLeft: 5
-        }]}
+        buttonStyle={[styles.button]}
         onPress={this._backButtonPressed}
         icon={
           <Ionicons
@@ -194,9 +199,7 @@ class ConnectedHeader extends PureComponent {
       <Button
         type="clear"
         containerStyle={[styles.buttonContainer]}
-        buttonStyle={[styles.button, this.props.searchButton, {
-          marginRight: 0
-        }]}
+        buttonStyle={[styles.button]}
         onPress={this._onFilterButtonPress}
         icon={
           <FontAwesome
@@ -232,13 +235,10 @@ class ConnectedHeader extends PureComponent {
   }
 
   _renderLogoImage = () => {
-    let marginLeft = (this.state.filterButtonVisible ? 50 : 0) + (!this.state.searchButtonVisible ? -50 : 0);
 
     return (
       <Image
-        style={[styles.logo, {
-          marginLeft
-        }]} 
+        style={[styles.logo]} 
         source={require('../assets/images/header-logo.png')}
         />
     )
@@ -249,13 +249,29 @@ class ConnectedHeader extends PureComponent {
       <Button
         type="clear"
         containerStyle={[styles.buttonContainer, this.props.buttonContainer]}
-        buttonStyle={[styles.button, {
-          marginRight: 5
-        }]}
+        buttonStyle={[styles.button]}
         onPress={this._searchButtonPressed}
         icon={
           <Ionicons
             name={Platform.OS === 'ios' ? 'ios-search' : 'md-search'}
+            size={35}
+            color={Colors.headerIconColor}
+          />
+        }
+      />
+    )
+  }
+
+  _renderCloseButton = () => {
+    return (
+      <Button
+        type="clear"
+        containerStyle={[styles.buttonContainer, this.props.buttonContainer]}
+        buttonStyle={[styles.button]}
+        onPress={this._closeButtonPressed}
+        icon={
+          <Ionicons
+            name={'md-close'}
             size={35}
             color={Colors.headerIconColor}
           />
@@ -286,14 +302,19 @@ class ConnectedHeader extends PureComponent {
       <>
       <View style={styles.statusBar}></View>
       <View style={[styles.container,this.props.containerStyle, {height: Layout.header.height}]}>
-        {this.state.backButtonVisible && this._renderBackButton()}
-        {!this.state.backButtonVisible && this._renderDrawerButton()}
+        <View style={{width: 50, height: "100%", marginLeft: 5}}>
+          {this.state.backButtonVisible && this._renderBackButton()}
+          {!this.state.backButtonVisible && this._renderDrawerButton()}
+        </View>
         <View
           style={[styles.searchBarContainer, this.props.style]}>
           {this.state.searchbarVisible ? this._renderSearchBar() : this._renderLogoImage()}
         </View>
-        {this.state.filterButtonVisible && this._renderFilterButton()}
-        {this.state.searchButtonVisible && this._renderSearchButton()}
+        <View style={{width: 50, height: "100%", marginRight: 5}}>
+          {this.state.filterButtonVisible && this._renderFilterButton()}
+          {this.state.searchButtonVisible && this._renderSearchButton()}
+          {this.state.closeButtonVisible && this._renderCloseButton()}
+        </View>
       </View>
       { this.props.iconTintColor && this._renderBottomLine()}
       { !this.props.iconTintColor && this._renderMixedBottomLine()}
@@ -318,7 +339,6 @@ const styles = StyleSheet.create({
     height: Constants.COMPONENTS.header.height,
     maxHeight: Constants.COMPONENTS.header.height,
     minHeight: Constants.COMPONENTS.header.height,
-    alignItems: "center",
   },
   statusBar: {
     height: Layout.statusbarHeight, 
@@ -339,7 +359,7 @@ const styles = StyleSheet.create({
   searchBarContainer: {
     flex: 1,
     alignItems:'center',
-    height: Constants.COMPONENTS.header.height,
+    height: Constants.COMPONENTS.header.height
   },
   buttonContainer: {
     backgroundColor: "transparent"
