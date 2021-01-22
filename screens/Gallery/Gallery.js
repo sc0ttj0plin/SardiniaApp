@@ -168,7 +168,7 @@ class GalleryScreen extends Component {
             locale={this.props.locale}
             numColumns={numColumns}
             onPressItem={this._openItem}
-            contentContainerStyle={[styles.contentContainerStyle, {paddingBottom: this.props.insets.bottom}]}
+            contentContainerStyle={[styles.contentContainerStyle, {paddingBottom: Math.max(this.props.insets.bottom, 10)}]}
             listType={Constants.ENTITY_TYPES.places}
             listTitle={videoAnd3D}
             listTitleStyle={styles.sectionTitle}
