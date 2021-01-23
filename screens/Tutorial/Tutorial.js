@@ -41,8 +41,6 @@ class TutorialScreen extends Component {
       steps: tutorialSteps,
       stepIndex: 0,
       images: [],
-      started: true,
-      finished: false,
     };
    
     this._stepInterval = 0;
@@ -114,7 +112,7 @@ class TutorialScreen extends Component {
     const { images, steps, stepIndex, initialPage } = this.state
     const image = steps[stepIndex];
     const description = image.description;
-
+    const title = image.title;
     return (
       <View style={[styles.fill]}>
         <View style={[styles.fill, {position: "relative"}]}>
@@ -135,6 +133,7 @@ class TutorialScreen extends Component {
               }}>
           </Gallery>
         </View>
+        <CustomText style={styles.entityTitle}>{title}</CustomText>
         <HTML containerStyle={styles.entityDescription} html={"<font style=\"" + Constants.styles.html.longTextCenter + "\">" + description + "</font>"} />
       </View>
     );
@@ -186,68 +185,17 @@ class TutorialScreen extends Component {
     )
   }
 
-  _renderNotStartedContent = () => {
-    const { tutorialText1, tutorialText2, start } = this.props.locale.messages;
+  _renderContent = () => { 
 
     return(
       <>
-        <View style={styles.firstView}>
-          <CustomText style={styles.text1}>{tutorialText1}</CustomText>
-          <CustomText style={styles.text2}>{tutorialText2}</CustomText>
-          <View style={styles.startButtonView}>
-            <TouchableOpacity
-              style={styles.startButton}
-              activeOpacity={0.7}
-              onPress={() => this.setState({started: true})}>
-                <CustomText style={styles.startButtonText}>{start}</CustomText>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </>
-    )
-  }
-
-  _renderFinishedContent = () => {
-    const { preferencesText3, thanks, okDoneSurvey } = this.props.locale.messages;
-
-    return(
-      <>
-        <View style={styles.firstView}>
-          <CustomText style={styles.text1}>{thanks}</CustomText>
-          <CustomText style={styles.text2}>{preferencesText3}</CustomText>
-          
-        </View>
-      </>
-    )
-  }
-
-  _renderStartedContent = () => { 
-
-    return(
-      <>
-        <View style={styles.startedContent}>
+        <View style={styles.content}>
           {this._renderGalleryView()}
           {this._renderStepsBar()}
         </View>
       </>
     )
   }
-
-  _renderContent = () => {
-      const { started, finished, steps, stepIndex } = this.state;
-      const image = steps[stepIndex];
-      const title = image.title;
-      const { tutorial } = this.props.locale.messages;
-      return (
-        <View style={styles.fill}>
-          <CustomText style={styles.title}>{title}</CustomText>
-          {!started && this._renderNotStartedContent()}
-          {started && !finished && this._renderStartedContent()}
-          {finished && this._renderFinishedContent()}
-        </View>
-      )
-  }
-
 
   render() {
     const { render } = this.state;
@@ -275,18 +223,8 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: "white"
   },
-  title: {
-    textAlign: "center",
-    paddingTop: 10,
-    paddingBottom: 10,
-    color: "#000000E6",
-    backgroundColor: "#F2F2F2",
-    fontSize: 15,
-    fontFamily: "montserrat-bold",
-    textTransform: "uppercase",
-  },
   gallery: { 
-    flex: 1
+    flex: 1,
   },
   firstView: {
     flex: 1,
@@ -322,35 +260,10 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42
   },
-  startButtonView: {
-    width: "100%",
-    alignItems: "center",
-  },
-  startButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 40,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "black",
-    borderRadius: 4
-  },
-  startButtonText: {
-    color: "white",
-    textTransform: "uppercase",
-    fontFamily: "montserrat-bold",
-    fontSize: 14,
-    textAlign: "center"
-  },
-  startedContent: {
+  content: {
     flex: 1,
     flexDirection: "column",
     justifyContent: "space-around"
-  },
-  startedContentText: {
-    fontSize: 15,
-    fontFamily: "montserrat-bold",
-    color: "black",
-    textAlign: "center",
   },
   stepsView: {
     maxHeight: 8,
@@ -389,10 +302,9 @@ const styles = StyleSheet.create({
   entityTitle: {
     fontFamily: "montserrat-bold",
     textAlign: "center",
-    marginTop: 52,
-    fontSize: 20,
+    marginTop: 10,
+    fontSize: 19,
     textTransform: "uppercase",
-    marginBottom: 8
   },
   entityDescription: {
     fontSize: 15,
