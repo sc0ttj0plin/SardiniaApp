@@ -766,7 +766,8 @@ const styles = StyleSheet.create({
   },
   userInformations: {
     alignItems: "flex-start",
-    marginTop: 20
+    marginTop: 50,
+    alignItems: 'center', 
   },  
   userInformationsText: {
     fontSize: 12,
@@ -776,11 +777,10 @@ const styles = StyleSheet.create({
   },
   informationsRow: {
     flexDirection: "row",
-    paddingLeft: 16
   },
   informationsRowText: {
     fontSize: 15,
-    fontFamily: "montserrat-bold",
+    fontFamily: "montserrat-regular",
     color: "black"
   },
   userEmail: {
