@@ -87,7 +87,6 @@ class TutorialScreen extends Component {
       images.push(image);
     })
     this.setState({images}, () => {
-
     })
   }
 
