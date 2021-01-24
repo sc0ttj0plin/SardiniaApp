@@ -199,11 +199,14 @@ export const NAVIGATION = {
   NavInspirers: "Inspirers",
   NavPreferencesStack: "PreferencesStackScreen",
   NavPreferencesScreen: "PreferencesScreen",
+  NavTutorialScreen: "TutorialScreen",
   NavLoginScreen: "LoginScreen",
   NavLogoutScreen: "LogoutScreen",
   NavAuthScreen: "AuthScreen",
+  NavGalleryMapScreen: "GalleryMapScreen",
   NavGalleryScreen: "GalleryScreen",
   NavGalleryStackScreen: "GalleryStackScreen",
+  NavGalleryMapStackScreen: "NavGalleryMapStackScreen",
   NavExplore: "Explore",
   NavEvents: "Events",
   NavExtrasScreen: "Extras",
@@ -317,12 +320,12 @@ export const SCREENS = {
   },
   extras: {
     defaultUuids: [
-      "83650f2a-ccab-44bc-a938-2cdb5bb2f1e3", 
-      "a149c57b-9973-4a2a-a5e9-2a9d95c3f676",
-      "deba536c-a275-4c54-8848-25fa3244593d",
-      "60910491-48ce-480d-9f3c-9ce08c086070",
-      "fdabb67f-fc45-40fc-83da-ac3ab6f4672e",
-      "eae5bf1e-1358-49a4-8681-a82b824a031c",
+      "83650f2a-ccab-44bc-a938-2cdb5bb2f1e3", //Alghero
+      "a149c57b-9973-4a2a-a5e9-2a9d95c3f676", //Porto Giunco
+      "054cb368-6ddc-417f-bbda-bd5bd35b8f2e", //Supramonte
+      "60910491-48ce-480d-9f3c-9ce08c086070", //Nuraghe Losa
+      "fdabb67f-fc45-40fc-83da-ac3ab6f4672e", //Mamoiada
+      "eae5bf1e-1358-49a4-8681-a82b824a031c", //Cittadella Dei Musei
     ]
   }
 }
@@ -347,15 +350,16 @@ export const MAP = {
   //Sardinia
   defaultRegion: {
     longitude: 9.053451,
-    latitude: 40.0711,
-    latitudeDelta: 3,
-    longitudeDelta: 3
+    latitude: 40,
+    latitudeDelta: 2.5,
+    longitudeDelta: 2.5
   },
   defaultRegionZoomed: {
-    longitude: 9.053451,
-    latitude: 40.0711,
+    longitude: 8.97983092814684,
+    latitude: 40.07828365560724,
     latitudeDelta: 2,
-    longitudeDelta: 2
+    longitudeDelta: 2,
+    zoom: 8.3
   },
 }
 
@@ -564,6 +568,7 @@ export const styles = {
     shortTextSecondary: "textAlign: center; color: #333333; font-family: montserrat-regular; font-size: 15; padding-left: 16px; padding-right: 16px;",
     longText: "textAlign: justify; opacity: 1; font-family: montserrat-regular; font-size: 15; padding-left: 5px; padding-right: 5px;",
     longTextLeft: "textAlign: left; opacity: 1; font-family: montserrat-regular; font-size: 15;",
+    longTextCenter: "textAlign: center; opacity: 1; font-family: montserrat-regular; font-size: 15;",
   },
   innerText: {
     paddingLeft: 10,
@@ -598,7 +603,9 @@ export const styles = {
     monthTextColor: "black",
     color: "black",
     textSectionTitleColor: "black",
-    textMonthfontFamily: "montserrat-bold",
+    textDayFontFamily: 'montserrat-regular',
+    textMonthfontFamily: "montserrat-regular",
+    textDayHeaderFontFamily: 'montserrat-bold',
     textDisabledColor: Colors.mediumGray,
     todayTextColor: "white",
     dotColor: Colors.lightGray,
@@ -609,13 +616,17 @@ export const styles = {
     selectedDotColor: '#ffffff',
     disabledArrowColor: '#d9e1e8',
     indicatorColor: 'blue',
-    textDayFontWeight: 'bold',
-    textMonthFontWeight: 'bold',
-    textDayHeaderFontWeight: '300',
-    textDayFontSize: 16,
-    textMonthFontSize: 18,
-    textDayHeaderFontSize: 16,
+    textDayFontSize: 14,
+    textMonthFontSize: 16,
+    textDayHeaderFontSize: 12,
     // textDayStyle: {marginTop: Platform.OS === 'android' ? 2 : 4},
+    'stylesheet.calendar.header': {
+      monthText: {
+        fontSize: 16,
+        color: "black",
+        fontFamily: 'montserrat-bold',
+      },
+    }
   }
 }
 

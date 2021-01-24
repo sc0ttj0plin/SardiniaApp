@@ -265,13 +265,19 @@ const apolloMiddleware = client => {
           });
         }
         else if (action.type === Constants.AUTOCOMPLETE) {
+          var query = Queries.autocompleteQuery;
+          var resultParam = "autocomplete";
+          if(action.lan == "en"){
+            query = Queries.autocompleteEnQuery;
+            resultParam = "autocomplete_en";
+          }
           client.query({
-            query: Queries.autocompleteQuery,
+            query: query,
             variables: action.query
           }).then((resp) => {
             let dispatch = { type: Constants.AUTOCOMPLETE_SUCCESS, payload: { autocomplete: [] } };
-            if (resp.data && resp.data.autocomplete.length > 0) {
-              dispatch.payload.autocomplete = resp.data.autocomplete;
+            if (resp.data && resp.data[resultParam] && resp.data[resultParam].length > 0) {
+              dispatch.payload.autocomplete = resp.data[resultParam];
             }
             store.dispatch(dispatch);
           }).catch((e) => {
@@ -283,14 +289,20 @@ const apolloMiddleware = client => {
           });
         }
         else if (action.type === Constants.SEARCH) {
+          var query = Queries.searchQuery;
+          var resultParam = "search";
+          if(action.lan == "en"){
+            query = Queries.searchEnQuery;
+            resultParam = "search_en";
+          }
           client.query({
-            query: Queries.searchQuery,
+            query: query,
             variables: action.query
           }).then((resp) => {
             let dispatch = { type: Constants.SEARCH_SUCCESS, payload: { search: [] } };
-            if (resp.data && resp.data.search.length > 0) {
-              resp.data.search.forEach((e) => processEntity(e.node));
-              dispatch.payload.search = resp.data.search;
+            if (resp.data && resp.data[resultParam] && resp.data[resultParam].length > 0) {
+              resp.data[resultParam].forEach((e) => processEntity(e.node));
+              dispatch.payload.search = resp.data[resultParam];
             }
             store.dispatch(dispatch);
           }).catch((e) => {

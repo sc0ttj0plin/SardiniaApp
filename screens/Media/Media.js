@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { 
   View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
-  StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
+  StyleSheet, BackHandler, Platform, ScrollView, StatusBar } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   // CategoryListItem, 
@@ -51,10 +51,24 @@ import Colors from '../../constants/Colors';
 import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
 import * as ScreenOrientation from 'expo-screen-orientation'
 import { Video } from 'expo-av';
-import Gallery from 'react-native-gallery-swiper';
+import Gallery from 'react-native-gallery-swiper-loader';
 import {WebView} from 'react-native-webview';
 const { OrientationLock } = ScreenOrientation;
 import HTML from 'react-native-render-html';
+import { useSafeArea } from 'react-native-safe-area-context';
+import LoadingDots from '../../components/LoadingDots';
+import ScrollableContainerTouchableOpacity from "../../components/ScrollableContainerTouchableOpacity";
+
+const injectedJavaScript = `
+window.ReactNativeWebView.postMessage('pageLoaded');
+true;
+`;
+
+export var MEDIA_TYPES = {
+  VIRTUAL_TOUR: "virtualTour",
+  GALLERY: "gallery",
+  VIDEO: "video"
+}
 
 /* Deferred rendering to speedup page inital load: 
    deferred rendering delays the rendering reducing the initial 
@@ -67,8 +81,9 @@ class MediaScreen extends PureComponent {
     super(props);
 
     /* Get props from navigation */ 
-    const { source, type, images, initialPage } = this.props.route.params;
+    const { source, type, images, initialPage, item } = this.props.route.params;
     this._refs = {};
+    
     this.state = {
       render: USE_DR ? false : true,
       //
@@ -77,13 +92,12 @@ class MediaScreen extends PureComponent {
       images: images || [],
       currentPage: initialPage || 0,
       initialPage: initialPage || 0,
-      isVideoEnded: false,
-      isVideoLoaded: false,
-      isVideoPlaying: false,
-      isVideoLandscape: false,
       orientation: null,
+      loaded: false,
+      item: item
     };
-      
+
+    this._imagesLoaded = [];
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
@@ -95,7 +109,7 @@ class MediaScreen extends PureComponent {
   async componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
-    const { orientation } = await ScreenOrientation.getOrientationAsync();
+    const orientation  = await ScreenOrientation.getOrientationAsync();
     this.setState({ orientation });
     await ScreenOrientation.unlockAsync();
     ScreenOrientation.addOrientationChangeListener(this._onOrientationChange);
@@ -134,6 +148,7 @@ class MediaScreen extends PureComponent {
 
   _onOrientationChange = async ({ orientationInfo: { orientation } }) => {
     this.setState({ orientation });
+
     //Note: using player embedded fullscreen capabilities
     if(this._refs["vplayer"]){
       if (this._isOrientationLandscape(orientation)){
@@ -143,66 +158,92 @@ class MediaScreen extends PureComponent {
         await this._refs["vplayer"].dismissFullscreenPlayer();
       }
     }
+
     //Note: gallery reset
-    if(this._refs["gallery"])
+    if(this._refs["gallery"]) {
       this._refs["gallery"].flingToPage({index: 0, velocityX: 0.5});
+    }
    
   }
 
-  _onVideoEnd = () => {
-    this.setState({
-      isVideoEnded: true
-    });
-  }
+
+  /****** Video Handling ********/
 
   _onVideoError = (e) => {
-    console.log(e);
+    
   }
 
   _onVideoLoad = () => {
-    this.setState({
-      isVideoLoaded: true,
-    }, () => this._playVideo());
-  }
-
-  _playVideo = () => {
-    if(this.state.isVideoLoaded) 
-      this._refs["vplayer"].playAsync();
+    setTimeout(() => this._refs["vplayer"].playAsync(), 1);
   }
 
   _onPlaybackStatusUpdate = (status) => {
-    if(status.didJustFinish) {
-      this._onVideoEnd();
+
+    var isBuffering = !this.state.loaded;
+
+    if(status.isLoaded && (Platform.OS == "android" || status.positionMillis > 0) && (isBuffering != status.isBuffering && !status.isBuffering || status.shouldPlay && isBuffering && status.isPlaying || !status.isBuffering && this.videoLoadingTimer )) {
+      clearTimeout(this.videoLoadingTimer);
+      this.videoLoadingTimer = setTimeout(() => {
+        this.videoLoadingTimer = null;
+        this.setState({
+          loaded: true
+        });
+      }, 350);
     }
-    if(status.isPlaying && !this.state.isVideoPlaying) {
+    else if (!status.isLoaded || isBuffering != status.isBuffering && status.isBuffering){
+      clearTimeout(this.videoLoadingTimer);
+      this.videoLoadingTimer = setTimeout(() => {
+        this.videoLoadingTimer = null;
+        this.setState({
+          loaded: false
+        });
+      }, 500);
+    }
+    
+  }
+
+  /****** Image Gallery Handling ********/
+
+  _onPageSelected = (p) => {
+    this.setState({
+        currentPage: p,
+        loaded: this._imagesLoaded[p] == true
+    })
+  }
+
+  _onImageLoad = (i) => {
+    this._imagesLoaded[i] = true;
+    if(this.state.currentPage == i) {
       this.setState({
-        isVideoPlaying: true
+        loaded: true
       });
     }
   }
 
-  _onPageSelected = (p) => {
-    this.setState({
-        currentPage: p
-    })
+  /****** WebView Handling ********/
+
+  _onShouldStartLoadWithRequest = (event) => {
+    if(event.url == this.state.source)
+      return true;
+    
+    return false;
   }
 
-  /**
-   * If the reducer embeds a single data type then e.g. only pois:
-   *    Data is stored in this.props.pois.data
-   *    Success state is stored in this.props.pois.success
-   *    Loading state is stored in this.props.pois.loading
-   *    Error state is stored in this.props.pois.error
-   * If the reducer embeds multiple data types then (e.g. search + autocomplete):
-   *    Data is stored in this.props.searchAutocomplete.search
-   *    Success state is stored in this.props.searchAutocomplete.searchSuccess
-   *    Loading state is stored in this.props.searchAutocomplete.searchLoading
-   *    Error state is stored in this.props.searchAutocomplete.searchError
-   */
-  _isSuccessData  = () => false;    /* e.g. this.props.pois.success; */
-  _isLoadingData  = () => true;   /* e.g. this.props.pois.loading; */
-  _isErrorData    = () => null;    /* e.g. this.props.pois.error; */
+  _webViewMessageHandler = (event) => {
+    if (event.nativeEvent.data === 'pageLoaded') {
+      setTimeout(() => {
+        this.setState({
+          loaded: true
+        })
+      }, 650);
+    }
+  }
 
+  _onOpenEntityPressed = () => {
+    if(this._refs["vplayer"])
+      this._refs["vplayer"].stopAsync();
+    this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item: this.state.item });
+  }
 
 
   /********************* Render methods go down here *********************/
@@ -210,13 +251,13 @@ class MediaScreen extends PureComponent {
   _renderContent = () => {
     const {type} = this.state;
     switch(type){
-      case "video":
+      case MEDIA_TYPES.VIDEO:
         return this._renderVideoView()
         break;
-      case "gallery":
+      case MEDIA_TYPES.GALLERY:
         return this._renderGalleryView()
         break;
-      case "virtualTour":
+      case MEDIA_TYPES.VIRTUAL_TOUR:
         return this._renderVirtualTourView()
       default:
         break
@@ -225,48 +266,70 @@ class MediaScreen extends PureComponent {
 
   _renderGalleryView = () => {
     const { lan } = this.props.locale;
-    const { images, currentPage, initialPage } = this.state
-    // console.log("images", images)
+    const { images, currentPage, initialPage, loaded } = this.state
     const image = images[currentPage];
     const title = _.get(image, ['title_field', lan, 0, 'safe_value'], null);
 
     return (
-      <View style={styles.fill}>
+      <View style={[styles.fill]}>
         <Gallery
             ref={(ref) => {this._refs["gallery"] = ref}}
             style={styles.gallery}
             images={images}
             initialPage={initialPage}
             useNativeDriver={true}
-            onPageSelected={this._onPageSelected}>
+            onPageSelected={this._onPageSelected}
+            onLoad = {this._onImageLoad}
+            initialNumToRender = {images.length}>
         </Gallery>
         <HeaderFullscreen
           text={(this.state.currentPage+1) + '/' + this.state.images.length}
           goBackPressed={() => {this.props.navigation.goBack()}}
-          >
-        </HeaderFullscreen>
+          paddingTop={this.props.insets.top}
+          />
         {title && (
-            <View style={[styles.footer]}>
+            <View style={[styles.footer, {paddingBottom: this.props.insets.bottom}]}>
                 <HTML baseFontStyle={styles.footerText} html={title} />
             </View>
         )}
-      </View>
-    );
-  }
-
-  _renderVideoView = () => {
-    return (
-      <View style={styles.mainView}>
-        <HeaderFullscreen goBackPressed={() => {this.props.navigation.goBack()}}/>
-        {this.state.source && 
-          this._renderVideo(this.state.source)
+        {!loaded && 
+          <View pointerEvents="none" 
+            style={[styles.loadingDotsView1, {backgroundColor: "rgba(0,0,0,0.7)"}]}>
+            <View style={[styles.loadingDotsView2]}>
+              <LoadingDots isLoading={true}/>
+            </View>
+          </View>
         }
       </View>
     );
   }
 
+  _renderVideoView = () => {
+    const {loaded, item} = this.state;
+    const isPortrait = this._isOrientationPortrait(this.state.orientation);
+    const paddingBottom = isPortrait ? Math.max(this.props.insets.bottom, Constants.COMPONENTS.header.height) : 0;
+    const paddingTop = this.props.insets.top + Constants.COMPONENTS.header.height;
+
+    return (
+      <View style={[styles.mainView, {paddingTop: paddingTop, paddingBottom: item ? 0 : paddingBottom}]}>
+        {this.state.source && 
+          this._renderVideo(this.state.source)
+        }
+        {!loaded && 
+          <View pointerEvents="none" 
+            style={[styles.loadingDotsView1, {backgroundColor: "rgba(0,0,0,0.7)", top: paddingTop}]}>
+            <View style={[styles.loadingDotsView2]}>
+              <LoadingDots isLoading={true}/>
+            </View>
+          </View>
+        }
+        <HeaderFullscreen goBackPressed={() => {this.props.navigation.goBack()}} paddingTop={this.props.insets.top}/>
+      </View>
+    );
+  }
+
+
   _renderVideo = (url) => {
-    
     return (
       <Video
         source={{ uri: url }}
@@ -281,18 +344,33 @@ class MediaScreen extends PureComponent {
     );
   }
 
+
   _renderVirtualTourView = () => {
-    const {source} = this.state
+    const {source, loaded} = this.state;
+
     return (
       <View style={[styles.fill]}>
-        <WebView style={[styles.fill, {opacity: 0.99, overflow: "hidden"}]}
+        <WebView style={[styles.fill, {opacity: loaded ? 0.99 : 0, overflow: "hidden", marginTop: this.props.insets.top}]}
             source={{uri: source }}
             scalesPageToFit={true}
             originWhitelist={['*']}
             ignoreSslError={true}
             scrollEnabled={false}
-            viewportContent={'width=device-width, user-scalable=no'} />
-        <HeaderFullscreen goBackPressed={() => {this.props.navigation.goBack()}}/>
+            viewportContent={'width=device-width, user-scalable=no'}
+            onShouldStartLoadWithRequest={this._onShouldStartLoadWithRequest} //for iOS
+            onNavigationStateChange ={this._onShouldStartLoadWithRequest} //for Android
+            injectedJavaScript={injectedJavaScript}
+            onMessage={this._webViewMessageHandler}
+         />
+         {!loaded && 
+          <View pointerEvents="none" 
+            style={[styles.loadingDotsView1, {marginTop: this.props.insets.top}]}>
+            <View style={styles.loadingDotsView2}>
+              <LoadingDots isLoading={true}/>
+            </View>
+          </View>
+         }
+        <HeaderFullscreen goBackPressed={() => {this.props.navigation.goBack()}} paddingTop={this.props.insets.top} hideBar={true}/>
       </View>
       
 
@@ -300,11 +378,22 @@ class MediaScreen extends PureComponent {
   }
 
   render() {
-    const { render, type } = this.state;
-    // console.log("type", type)
+    const { render, loaded, item } = this.state;
+    const {explore} = this.props.locale.messages;
+
     return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
+      <View style={[styles.fill]}>
         {render && this._renderContent()}
+        {item &&
+          <View style={[styles.bottomContainer, {paddingBottom: Math.max(this.props.insets.bottom, 10)}]}>
+            <ScrollableContainerTouchableOpacity
+                activeOpacity={0.7}
+                onPress={this._onOpenEntityPressed}
+                style={styles.openEntityButton}>
+                    <CustomText style={styles.openEntityButtonText}>{explore}</CustomText>
+            </ScrollableContainerTouchableOpacity>
+          </View>
+        }
       </View>
     )
   }
@@ -313,7 +402,7 @@ class MediaScreen extends PureComponent {
 
 
 MediaScreen.navigationOptions = {
-  title: 'Boilerplate',
+  title: 'MediaScreen',
 };
 
 
@@ -327,32 +416,15 @@ const styles = StyleSheet.create({
   },
   portraitVideo: {
     width: "100%",
-    height: "100%",
-    marginBottom: 10,
-    backgroundColor: "black"
+    flex: 1, 
+    backgroundColor: "black",
+    paddingTop: 40
   },
   mainView: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    position: "relative"
-  },
-  backButton: {
-    position: "absolute",
-    width: 50,
-    height: 40,
-    top: Layout.statusbarHeight,
-    right: 0
-  },
-  buttonContainer: {
-    backgroundColor: "transparent",
-    position: "absolute",
-    top: Layout.statusbarHeight,
-    right: 0
-  },
-  button: {
-    height: "100%",
-    width: 50
+    position: "relative",
   },
   gallery: { 
     flex: 1, 
@@ -362,11 +434,9 @@ const styles = StyleSheet.create({
       position: 'absolute',
       bottom: 0,
       width: "100%",
-      height: 60,
       textAlign: 'center',
       justifyContent: 'center',
-      paddingLeft: 10,
-      paddingRight: 10,
+      padding: 10,
       backgroundColor: "rgba(0,0,0,0.5)",
   },
   footerText: {
@@ -375,6 +445,35 @@ const styles = StyleSheet.create({
       textAlign: 'center',
       fontFamily: "montserrat-regular"
   },
+  loadingDotsView1: {
+    position: "absolute",
+    width: '100%',
+    height: '100%',
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  loadingDotsView2: {
+    width: 100
+  },
+  bottomContainer: {
+    backgroundColor: "black",
+    padding: 10,
+    alignContent: "center",
+    alignItems: "center"
+  },
+  openEntityButton: {
+    paddingVertical: 5,
+    paddingHorizontal: 30,
+    borderRadius: 2,
+    borderWidth: 2,
+    borderColor: "white",
+    backgroundColor: "transparent"
+  },
+  openEntityButtonText: {
+    color: "white",
+    fontFamily: "montserrat-bold",
+    textTransform: "uppercase",
+  },
 });
 
 
@@ -382,12 +481,14 @@ function MediaScreenContainer(props) {
   const navigation = useNavigation();
   const route = useRoute();
   const store = useStore();
+  const insets = useSafeArea();
 
   return <MediaScreen 
     {...props}
     navigation={navigation}
     route={route}
-    store={store} />;
+    store={store}
+    insets={insets} />;
 }
 
 

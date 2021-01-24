@@ -3,7 +3,7 @@ import { connect, useStore } from 'react-redux';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItems, DrawerItem } from '@react-navigation/drawer';
 import { Avatar, Icon, Overlay, Divider } from 'react-native-elements';
 import { View, Text, ScrollView, StyleSheet, TouchableNativeFeedback, TouchableOpacity } from 'react-native';
-import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import actions from '../actions';
 import Colors from '../constants/Colors';
 import * as Constants from '../constants';
@@ -104,7 +104,7 @@ CustomDrawer.Item = class Item extends Component {
       <View style={{ marginHorizontal: 10, backgroundColor: active ? Colors.lightGray : 'white', borderRadius: 4}}>
         <DrawerItem
         icon={() => (
-            <FontAwesome
+            <FontAwesome5
               name={name}
               size={size}
               color={color}

@@ -1,6 +1,7 @@
 
 import _, { replace } from 'lodash';
 import videos from '../constants/_sampleVideos';
+import virtualTours from '../constants/_sampleVrModels';
 import { Linking, Alert } from 'react-native';
 import * as Constants from "../constants";
 import Url from 'url-parse';
@@ -111,12 +112,20 @@ export const getEntityInfo = (entity, fields=[], path=[Constants.DEFAULT_LANGUAG
   else return {}
 }
 
+
+export const getSampleVrModelIndex = (uuid) => {
+  for(let i = 0; i < virtualTours.length; i++ ){
+   if(virtualTours[i].uuid == uuid)
+    return virtualTours[i]["vr_url"];
+  }
+  return null;
+}
 /**
  * Returns a sample videos for that entity if its nid matches the current one
  */
-export const getSampleVideoIndex = (nid) => {
+export const getSampleVideoIndex = (uuid) => {
   for(let i = 0; i < videos.length; i++ ){
-   if(videos[i].nid == nid)
+   if(videos[i].uuid == uuid)
     return videos[i]["video_url"];
   }
   return null;
@@ -142,4 +151,12 @@ export const getGalleryImages = (entity) => {
     })
   }
   else return []
+}
+
+
+export const shuffleArray = (array) => {
+  for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+  }
 }

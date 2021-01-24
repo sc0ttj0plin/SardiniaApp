@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {  Platform, KeyboardAvoidingView, StyleSheet, ActivityIndicator, BackHandler, TouchableOpacity } from 'react-native';
+import {  Platform, KeyboardAvoidingView, StyleSheet, ActivityIndicator, BackHandler, TouchableOpacity, PixelRatio } from 'react-native';
 import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native';
 import { ConnectedHeader, CustomText } from "../../components";
 import { connect, useStore } from 'react-redux';
@@ -46,6 +46,9 @@ class Login extends Component {
       sexError: false,
       countries: []
     };
+    this._fontScale = PixelRatio.getFontScale();
+
+    this._onHardwareBackButtonClick = this._onHardwareBackButtonClick.bind(this);
   }
 
   componentDidMount() {
@@ -279,8 +282,8 @@ class Login extends Component {
           <View style={styles.view1}>
             <CustomText style={styles.text0}>{logoutMsg}</CustomText> 
             <View>
-              <TouchableOpacity style={styles.button} onPress={this._logout}>
-                <CustomText style={styles.buttonText}>{logoutBtn}</CustomText>
+              <TouchableOpacity style={styles.defaultBtn} onPress={this._logout}>
+                <CustomText style={styles.defaultBtnText}>{logoutBtn}</CustomText>
               </TouchableOpacity>
             </View>
           </View>
@@ -297,8 +300,8 @@ class Login extends Component {
           <View style={styles.view1}>
             <CustomText style={styles.text0}>{removeProfileMsg}</CustomText> 
             <View>
-              <TouchableOpacity style={styles.button} onPress={this._removeProfile}>
-                <CustomText style={styles.buttonText}>{removeProfileBtn}</CustomText>
+              <TouchableOpacity style={styles.defaultBtn} onPress={this._removeProfile}>
+                <CustomText style={styles.defaultBtnText}>{removeProfileBtn}</CustomText>
               </TouchableOpacity>
             </View>
           </View>
@@ -312,28 +315,40 @@ class Login extends Component {
       return;
 
       
-    const { editProfileBtn, logoutBtn, removeProfileBtn } = this.props.locale.messages;
+    const { editProfileBtn, logoutBtn, removeProfileBtn, informations, ageText, birthDate, countryText, sexText } = this.props.locale.messages;
     const { user } = this.props.auth;
 
     return (
       <View style={styles.mainView}>
         <View style={styles.view0}>
-          <View style={styles.view1s}>
-          <CustomText style={[styles.userInfo, {fontSize: 20, marginBottom: 20, fontFamily: "montserrat-bold"}]}>{user.info.username}</CustomText>
-            <CustomText style={styles.userInfo}>{user.email}</CustomText> 
-            <CustomText style={styles.userInfo}>{profile.ageToString(user.info.age)}</CustomText>
-            <CustomText style={styles.userInfo}>{user.info.country}</CustomText>
-            <CustomText style={styles.userInfo}>{this._sexToString(user.info.sex)}</CustomText>
+          <View style={[styles.view1s, styles.userInformations]}>
+            <CustomText style={[styles.userName]}>{user.info.username}</CustomText>
+            <CustomText style={styles.userEmail}>{user.email}</CustomText> 
+            <CustomText style={styles.userInformationsText}>{informations}</CustomText> 
+            <View style={styles.informationsRow}>
+              <CustomText style={styles.informationsRowText}>{ageText}</CustomText> 
+              <CustomText style={styles.userAge}>{profile.ageToString(user.info.age)}</CustomText>
+            </View>
+            <View style={styles.informationsRow}>
+              <CustomText style={styles.informationsRowText}>{countryText}</CustomText> 
+              <CustomText style={styles.userLocation}>{user.info.country}</CustomText>
+            </View>
+            <View style={styles.informationsRow}>
+              <CustomText style={styles.informationsRowText}>{sexText}</CustomText> 
+              <CustomText style={styles.userSex}>{this._sexToString(user.info.sex)}</CustomText>
+            </View>
           </View>
-          <TouchableOpacity style={[styles.button]} onPress={this._onProfileEditPress}>
-              <CustomText style={styles.buttonText}>{editProfileBtn}</CustomText>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, {marginTop: 10}]} onPress={this._onProfileRemovePress}>
-              <CustomText style={styles.buttonText}>{removeProfileBtn}</CustomText>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, {marginTop: 10}]} onPress={this._onLogoutPress}>
-              <CustomText style={styles.buttonText}>{logoutBtn}</CustomText>
-          </TouchableOpacity>
+          <View style={styles.buttonsView}>
+            <TouchableOpacity style={[styles.button]} onPress={this._onProfileEditPress}>
+                <CustomText style={styles.buttonText}>{editProfileBtn}</CustomText>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.button, {marginTop: 10}]} onPress={this._onProfileRemovePress}>
+                <CustomText style={styles.buttonText}>{removeProfileBtn}</CustomText>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.defaultBtn, {marginTop: 10}]} onPress={this._onLogoutPress}>
+                <CustomText style={styles.defaultBtnText}>{logoutBtn}</CustomText>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     );
@@ -407,8 +422,8 @@ class Login extends Component {
             </Item>
           </Form>
           </View>
-          <TouchableOpacity style={styles.button} onPress={this._setUserData}>
-              <CustomText style={styles.buttonText}>{confirm}</CustomText>
+          <TouchableOpacity style={styles.defaultBtn} onPress={this._setUserData}>
+              <CustomText style={styles.defaultBtnText}>{confirm}</CustomText>
           </TouchableOpacity>
         </View>
       </View>
@@ -550,7 +565,7 @@ const styles = StyleSheet.create({
   },
   view0: { 
     flex: 1, 
-    alignItems: 'center' 
+    alignItems: 'center',
   },
   view01: {
     width: "90%", 
@@ -572,7 +587,7 @@ const styles = StyleSheet.create({
     width: "90%",
     alignItems: 'center', 
     marginTop: 50, 
-    justifyContent: 'center' 
+    justifyContent: 'center',
   },
   view2: {
     marginTop: 20
@@ -628,7 +643,7 @@ const styles = StyleSheet.create({
     fontWeight: "300"
   },
   buttonText: {
-    color: "white",
+    color: "black",
     fontFamily: "montserrat-bold",
     fontSize: 14,
     textTransform: "uppercase",
@@ -640,9 +655,31 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: Colors.lightGray,
+    display: "flex",
+    minWidth: "50%",
+  },
+  defaultBtn: {
+    marginTop: 40,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 4,
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: "black",
     display: "flex",
     minWidth: "50%",
+  },
+  defaultBtnText: {
+    color: "white",
+    fontFamily: "montserrat-bold",
+    fontSize: 14,
+    textTransform: "uppercase",
+  },
+  buttonsView: {
+    flex: 1,
+    justifyContent: "flex-end",
+    paddingBottom: "20%"
   },
   bottomText: { 
     fontSize: 14,
@@ -677,7 +714,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     borderColor: "white",
     borderBottomColor: "black",
-    backgroundColor: Colors.lightGray,
+    backgroundColor: "white",
     borderTopLeftRadius: 4,
     borderTopRightRadius: 4,
   },
@@ -727,9 +764,46 @@ const styles = StyleSheet.create({
     borderLeftWidth: 2,
     borderRightWidth: 2
   },
-  userInfo: {
-    fontSize: 16,
-    marginBottom: 5
+  userInformations: {
+    alignItems: "flex-start",
+    marginTop: 50,
+    alignItems: 'center', 
+  },  
+  userInformationsText: {
+    fontSize: 12,
+    textTransform: "capitalize",
+    color: Colors.mediumGray,
+    marginBottom: 19
+  },
+  informationsRow: {
+    flexDirection: "row",
+  },
+  informationsRowText: {
+    fontSize: 15,
+    fontFamily: "montserrat-regular",
+    color: "black"
+  },
+  userEmail: {
+    color: Colors.mediumGray,
+    fontSize: 14,
+    marginBottom: 40
+  },
+  userName: {
+    fontFamily: "montserrat-bold",
+    fontSize: 20,
+    textAlign: "left"
+  },
+  userAge: {
+    fontFamily: "montserrat-bold",
+    fontSize: 15
+  },
+  userLocation: {
+    fontFamily: "montserrat-bold",
+    fontSize: 15
+  },
+  userSex: {
+    fontFamily: "montserrat-bold",
+    fontSize: 15
   }
 });
 

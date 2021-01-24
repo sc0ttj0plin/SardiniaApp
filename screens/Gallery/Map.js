@@ -53,7 +53,7 @@ class GalleryMapScreen extends PureComponent {
       tid: -1,
       coords: {},
       poisLimit: Constants.PAGINATION.poisLimit,
-      region: Constants.MAP.defaultRegionZoomed,
+      region: Constants.MAP.defaultRegion,
       selectedEvent: null,
       snapPoints: [],
       tracksViewChanges: false,
@@ -75,13 +75,23 @@ class GalleryMapScreen extends PureComponent {
    */
   componentDidMount() {
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
-    setTimeout(() => (this._regionOnCompleteEnabled = true ), 500);
+    setTimeout(() => {
+      var region = Constants.MAP.defaultRegionZoomed;
+      this._mapRef.animateCamera({
+          center: { latitude: region.latitude, longitude: region.longitude },
+          zoom: region.zoom
+        },
+        {duration: 500}
+      )
+      this._regionOnCompleteEnabled = true 
+      }, 500);
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.others.geolocation !== this.props.others.geolocation && this.props.others.geolocation.coords) {
       // { coords: { latitude, longitude }, altitude, accuracy, altitudeAccuracy, heading, speed, timestamp (ms since epoch) }
     }
+    
   }
 
     /**
@@ -91,6 +101,7 @@ class GalleryMapScreen extends PureComponent {
   _onPageLayout = (event) => {
     const { width, height } = event.nativeEvent.layout;
     //height of parent - Constants.COMPONENTS.header.height (header) - Constants.COMPONENTS.header.bottomLineHeight (color under header) - 24 (handle) - 36 (header text) - 160 (entityItem) - 10 (margin of entityItem) - 36 (whereToGo text)
+    
     this._generateGrid(width, height);
   }; 
 
@@ -198,7 +209,7 @@ class GalleryMapScreen extends PureComponent {
     }
 
     this.setState({cells: cells, cellW: dX, cellH: dY}, () => {
-      this._getPois(this.state.region);
+
     });
     
   }
@@ -296,8 +307,9 @@ class GalleryMapScreen extends PureComponent {
       x: e.nativeEvent.coordinate.longitude,
       y: e.nativeEvent.coordinate.latitude,
     }
+
     var index = this._getPressedCell(point);
-    
+
     if(index >= 1) {
       //("animate", index);
       this._selectPoi(index);
@@ -350,11 +362,6 @@ class GalleryMapScreen extends PureComponent {
       this.setState({panning: false});
     }, t);
   }
-
-  _onPressCell = (i) => {
-    console.log(i);
-  }
-  
   
   /* Render content */
   _renderContent = () => {
@@ -380,8 +387,43 @@ class GalleryMapScreen extends PureComponent {
           showsUserLocation={ true }
           showsIndoorLevelPicker={false}
           showsCompass={false}
+          customMapStyle={[
+            {
+              featureType: "administrative",
+              elementType: "geometry",
+              stylers: [
+              {
+                  visibility: "true"
+              }
+              ]
+            },
+            {
+              featureType: "poi",
+              stylers: [
+                {
+                  visibility: "off"
+                }
+              ]
+            },
+            {
+              featureType: "road",
+              elementType: "labels.icon",
+              stylers: [
+                {
+                  visibility: "true"
+                }
+              ]
+            },
+            {
+              featureType: "transit",
+              stylers: [
+                {
+                  visibility: "off"
+                }
+              ]
+            }
+          ]}
           renderCluster={this._renderCluster}
-          clusteringEnabled={true}
           clusterColor={Colors.colorEventsScreen}
           style={{flex: 1}}
           onRegionChangeComplete={this._onRegionChangeComplete}
@@ -405,7 +447,7 @@ class GalleryMapScreen extends PureComponent {
             })
           }
         </MapView>
-        {!this.state.debug && Object.keys(pois).length > 0 && <View style={[styles.gridView, {opacity: panning ? 0.3 : 1}]}>
+        {!this.state.debug && Object.keys(pois).length > 0 && <View pointerEvents="none" style={[styles.gridView, {opacity: panning ? 0.3 : 1}]}>
           {Object.keys(pois).map((key) => {
             var poi = pois[key];
             var cell = this.state.cells[key];
@@ -416,17 +458,15 @@ class GalleryMapScreen extends PureComponent {
                 top: cell.rect.bl.y,
                 width: cell.rect.w,
                 height: cell.rect.h,
-                borderWidth: 0.5,
               }}
             source={{uri: poi.image350x}}
-            PlaceholderContent={<ActivityIndicator />}
               />
           }})}
         </View>}
-        {cells && <View style={styles.gridView}>
+        {cells && <View pointerEvents="none" style={styles.gridView}>
           {cells.map((cell, i) => {
             return (
-              <View pointerEvents="none"
+              <View 
               style={{
               position: 'absolute',
               left: cell.rect.bl.x,
@@ -434,6 +474,7 @@ class GalleryMapScreen extends PureComponent {
               width: cell.rect.w,
               height: cell.rect.h,
               borderColor: Colors.colorPlacesScreen,
+              opacity: 0.3,
               borderWidth: 0.5,
 
             }}

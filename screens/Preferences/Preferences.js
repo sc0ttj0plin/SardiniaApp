@@ -282,6 +282,7 @@ class PreferencesScreen extends Component {
             {this._renderIcon(Constants.EMOTICONS.grinHearts, true)}
           </View>
           {this._renderStepsBar()}
+          
         </View>
       </>
     )
