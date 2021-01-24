@@ -4,6 +4,8 @@ const INITIAL_STATE = {
   searchOrAutocomplete: "autocomplete",
   searchStr: "",
   url: null,
+  urlType: null,
+  mainScreenDidMount: false,
   placesTerms: [],
   inspirersTerms: [],
   accomodationsTerms: [],
@@ -13,6 +15,7 @@ const INITIAL_STATE = {
   geolocationSource: null,
   checkForUpdates: true, // see notes in reducer.
   networkStatus: {},
+  navigatorReady: false,
 }
 
 
@@ -103,10 +106,11 @@ export default function reducer(state = INITIAL_STATE, action) {
       };
     // SET LINKING URL (LINKING)
     case Constants.SET_URL:
-      console.log("Set link", action.payload);
+      console.log("Setting urls", action.payload)
       return { 
         ...state, 
-        url: action.payload, 
+        url: action.payload.url,
+        urlType: action.payload.type 
       };
     // DRAGGING
     case Constants.MAP_SET_DRAGGING:
@@ -139,6 +143,16 @@ export default function reducer(state = INITIAL_STATE, action) {
       return {
         ...state,
         networkStatus: action.payload
+      }
+    case Constants.SET_NAVIGATOR_READY:
+      return {
+        ...state,
+        navigatorReady: action.payload
+      }
+    case Constants.SET_MAIN_SCREEN_MOUNTED:
+      return {
+        ...state,
+        mainScreenDidMount: action.payload
       }
     default:
       return state;

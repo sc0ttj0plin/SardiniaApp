@@ -62,7 +62,7 @@ class ItinerariesScreen extends PureComponent {
    */
   componentDidMount() {
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
-    this.props.actions.checkForUpdates();
+    this.props.actions.setMainScreenMounted(true); /* tell that the main screen has mounted (used by ConnectedSplashLoader) */
     if(this.props.others.geolocation && this.props.others.geolocation.coords) {
       this._onUpdateCoords(this.props.others.geolocation.coords);
     }
@@ -148,23 +148,28 @@ class ItinerariesScreen extends PureComponent {
       const coordinates = _.get(stage, ["poi", "georef", "coordinates"], null) 
       distanceStr = distanceToString(distance(coords.latitude, coords.longitude, coordinates[1], coordinates[0]));
     }
-    return (
-      <EntityItem
-        keyItem={item.nid}
-        listType={Constants.ENTITY_TYPES.itineraries}
-        onPress={() => this._openItem(item)}
-        title={`${title}`}
-        image={`${image}`}
-        subtitle={`${term}`}
-        distance={this.state.isCordsInBound ? distanceStr : null}
-        style={styles.itinerariesListItem}
-        horizontal={false}
-        extraStyle={{
-          width: "100%"
-        }}
-        animated={true}
-      />
-  )}
+    if (title) {
+      return (
+        <EntityItem
+          keyItem={item.nid}
+          listType={Constants.ENTITY_TYPES.itineraries}
+          onPress={() => this._openItem(item)}
+          title={`${title}`}
+          image={`${image}`}
+          subtitle={`${term}`}
+          distance={this.state.isCordsInBound ? distanceStr : null}
+          style={styles.itinerariesListItem}
+          horizontal={false}
+          extraStyle={{
+            width: "100%"
+          }}
+          animated={true}
+        />
+      )
+    } else {
+      return null;
+    }
+  }
 
   /* Render content */
   _renderContent = () => {

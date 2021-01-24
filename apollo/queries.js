@@ -137,5 +137,21 @@ export function apolloQuery(action) {
         pois.forEach((e) => processEntity(e, action.coords));
         return pois;
     })
+  } else if (action.type === Constants.SEARCH) {
+    return apolloClient.query({
+      query: Queries.searchQuery,
+      variables: action.query
+    }).then((resp) => {
+      if (resp.data && resp.data.search.length > 0) 
+        resp.data.search.forEach((e) => processEntity(e.node));
+      return resp.data.search;
+    })
+  } else if (action.type === Constants.AUTOCOMPLETE) {
+    return apolloClient.query({
+      query: Queries.autocompleteQuery,
+      variables: action.query
+    }).then((resp) => {
+      return resp.data.autocomplete;
+    })
   }
 }

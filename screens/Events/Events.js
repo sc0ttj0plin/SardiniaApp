@@ -69,10 +69,9 @@ class EventsScreen extends Component {
   componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
-    this.props.actions.checkForUpdates();
-    this.props.actions.resetEvents()
+    this.props.actions.resetEvents();
+    this.props.actions.setMainScreenMounted(true); /* tell that the main screen has mounted (used by ConnectedSplashLoader) */
     this._loadEvents(INITIAL_DATE);
-
   }
 
   /**
@@ -271,16 +270,19 @@ class EventsScreen extends Component {
     const image = item.image;
     const date1 = item.date1render;
     const date2 = item.date2render;
-    return(
-      <EventListItem 
-        onPress={() => this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item })}  
-        title={title} 
-        term={term}
-        image={image}
-        startDate={date1}
-        endDate={date2}
-      />
-    )
+    if (title)
+      return(
+        <EventListItem 
+          onPress={() => this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item })}  
+          title={title} 
+          term={term}
+          image={image}
+          startDate={date1}
+          endDate={date2}
+        />
+      )
+    else 
+      return null;
   }
 
   render() {

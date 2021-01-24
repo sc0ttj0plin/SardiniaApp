@@ -2,7 +2,8 @@
 import _, { replace } from 'lodash';
 import videos from '../constants/_sampleVideos';
 import { Linking, Alert } from 'react-native';
-import * as Constants from "../constants"
+import * as Constants from "../constants";
+import Url from 'url-parse';
 
 export const searchParser = (queryStr) => {
   return queryStr.replace(/ /g, " & ");
@@ -24,6 +25,24 @@ export const greedyArrayFinder = (array, findKey, match, returnKey, notFoundRetu
   }
   return notFoundReturnVal;
 }
+
+/**
+ * Split the url into composing subelements
+ * @param {*} url input url
+ * @returns url object made of:
+ *  href
+ *  protocol
+ *  username
+ *  password
+ *  host
+ *  hostname
+ *  port
+ *  pathname
+ *  search
+ *  hash
+ */
+//hostname, pathname, query, hash
+export const parseUrl = (url) => new Url(url);
 
 
 /**

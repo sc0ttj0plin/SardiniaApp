@@ -25,6 +25,9 @@
     "scheme": "sinnos",
     "ios": {
       "bundleIdentifier": "crs4.sinnos.sardinia",
+      "associatedDomains": [
+        "applinks:www.sardegnaturismo.it"
+      ],
       "supportsTablet": false,
       "config": {
         "googleMapsApiKey": "AIzaSyA5YkfcNGR6dX062bFqhaZ1Asdr2uaNFJo"
@@ -45,6 +48,22 @@
         "INTERNET",
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION"
+      ],
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "https",
+              "host": "www.sardegnaturismo.it",
+              "pathPrefix": ""
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
       ],
       "package": "crs4.sinnos.sardinia",
       "useNextNotificationsApi": true,

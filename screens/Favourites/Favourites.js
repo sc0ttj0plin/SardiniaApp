@@ -54,7 +54,6 @@ class FavouritesScreen extends Component {
   componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
-    this.props.actions.checkForUpdates();
     let placesUuids = Object.keys(this.props.favourites.places);
     let eventsUuids = Object.keys(this.props.favourites.events);
     let itinerariesUuids = Object.keys(this.props.favourites.itineraries);

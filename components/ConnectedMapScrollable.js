@@ -27,7 +27,6 @@ const { Value, event, interpolate } = Animated;
 import {Modalize} from 'react-native-modalize';
 import BottomSheet from 'reanimated-bottom-sheet';
 import EntityWidgetInModal from "../components/EntityWidgetInModal";
-import * as Location from 'expo-location';
 import MapViewTop from "./MapViewTop";
 import { useSafeArea } from 'react-native-safe-area-context';
 

@@ -2,8 +2,10 @@
 /**
  * normalizeLanguage Normalizes language in input (single strings, object or arrays (TBI))
  * Since Android and Ios can result in different language return strings
- * this method maps them to a common unified version used throughout the app
+ * this method maps them to a common unified version used throughout the app.
+ * An use case is given when the user may want to map en-gb, en-US, .. into en
  * @param input the input language (e.g. en or en-gb)
+ * @returns language the unified version of the language
  */
 export const normalizeLanguage = (input) => {
     if (typeof(input) === 'string')

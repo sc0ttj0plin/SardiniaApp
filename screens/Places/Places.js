@@ -12,7 +12,8 @@ import {
   EntityItem,
   ConnectedAuthHandler,
   SectionTitle,
-  ConnectedMapScrollable
+  ConnectedMapScrollable,
+  ConnectedNetworkChecker,
  } from "../../components";
 import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
 import { connect, useStore } from 'react-redux';
@@ -76,10 +77,9 @@ class PlacesScreen extends PureComponent {
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
     //If it's the first mount gets pois categories ("art and archeology...")
     this.props.actions.getCategories({ vid: Constants.VIDS.poisCategories });
-    this.props.actions.checkForUpdates();
-    if ( this.props.others.geolocation.coords) {
+    this.props.actions.setMainScreenMounted(true); /* tell that the main screen has mounted (used by ConnectedSplashLoader) */
+    if (this.props.others.geolocation.coords) 
       this._onUpdateCoords(this.props.others.geolocation.coords);
-    }
   }
 
   /**
@@ -250,35 +250,38 @@ class PlacesScreen extends PureComponent {
     );
   }
 
-  /* Renders a poi in Header: index */
+  /* Renders an entity in Header (horizontal=true) and inside the Scrollable (horizontal=false) */
   _renderPoiListItem = (item, index, horizontal) => {
     const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
     const termName = _.get(item, "term.name", "");
-    return (
-      <EntityItem 
-        index={index}
-        keyItem={item.nid}
-        extraStyle={ horizontal ? {
-          marginBottom: 0
-        } : {width: '100%'}}
-        backgroundTopLeftCorner={"white"}
-        iconColor={Colors.colorPlacesScreen}
-        listType={Constants.ENTITY_TYPES.places}
-        onPress={() => this._openPoi(item)}
-        title={title}
-        subtitle={termName}
-        image={item.image}
-        distance={this.state.isCordsInBound ? item.distanceStr : ""}
-        horizontal={horizontal}
-        sideMargins={20}
-        topSpace={10}
-        animated={true}
-      />
-  )}
+    if (title)
+      return (
+        <EntityItem 
+          index={index}
+          keyItem={item.nid}
+          extraStyle={ horizontal ? {
+            marginBottom: 0
+          } : {width: '100%'}}
+          backgroundTopLeftCorner={"white"}
+          iconColor={Colors.colorPlacesScreen}
+          listType={Constants.ENTITY_TYPES.places}
+          onPress={() => this._openPoi(item)}
+          title={title}
+          subtitle={termName}
+          image={item.image}
+          distance={this.state.isCordsInBound ? item.distanceStr : ""}
+          horizontal={horizontal}
+          sideMargins={20}
+          topSpace={10}
+          animated={true}
+        />
+      )
+    else 
+      return null;
+  }
 
   /* Renders categories list */
-  _renderCategoryListItem = (item, index, length) =>
-      <CategoryListItem onPress={() => this._selectCategory(item)} image={item.image} title={item.name}/>;
+  _renderCategoryListItem = (item, index, length) => item.name ? <CategoryListItem onPress={() => this._selectCategory(item)} image={item.image} title={item.name}/> : null;
     
 
   /* Render content */
@@ -289,7 +292,7 @@ class PlacesScreen extends PureComponent {
     const isPoiList = this._isPoiList();
     let scrollableData = [];
     let renderScrollableListItem = null;
-    //if no more nested categories renders pois
+    //if no more nested categories renders pois (scrollable)
     if (isPoiList) {
       scrollableData = pois;
       renderScrollableListItem = ({ item, index }) => this._renderPoiListItem(item, index);

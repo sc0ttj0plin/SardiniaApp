@@ -7,7 +7,6 @@ import { useIsDrawerOpen } from '@react-navigation/drawer';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {useRoute} from '@react-navigation/native';
-
 import TabBarIcon from '../components/TabBarIcon';
 import PlacesScreen from '../screens/Places/Places';
 import PlaceScreen from '../screens/Places/Place';
@@ -49,8 +48,8 @@ const {
   NavMainStackScreen, NavMediaScreen, NavFavouritesScreen, NavFavouritesListScreen, NavFavouritesStackScreen, NavFiltersScreen 
 } = Constants.NAVIGATION;
 
-import {FromTopTransition} from './transitions'
-import Login from '../screens/Auth/Auth';
+// Reference used for components that lack navigation access
+export const navigationRef = React.createRef();
 
  /**
   * Navigation Translations (mainly for BottomTabNavigator)

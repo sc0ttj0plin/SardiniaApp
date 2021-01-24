@@ -95,6 +95,7 @@ const dict = {
     emailOnPressBtnTitle: "Scrivi",
     entityIsNotTranslated: "Questa entità non ha una traduzione per la lingua corrente",
     retry: "Riprova",
+    cancel: "Annulla",
     //LOGIN
     possibleCauses: "Possibili cause:",
     reusedOldLink: "• È stato usato un link di login scaduto o già utilizzato",
@@ -159,6 +160,12 @@ const dict = {
     disconnected: "Verificare la connessione",
     pleaseConnect: "Sembra che tu non abbia accesso ad internet. Verifica la connessione e riprova.",
     retry: "Riprova",
+    cancel: "Cancel",
+    //LINKING
+    loadingLinkingContentTitle: "Caricamento del contenuto", 
+    loadingLinkingContentDescription: "Stiamo cercando il contenuto richiesto",
+    loadingLinkingContentTitleError: "Errore nel caricamento del contenuto", 
+    loadingLinkingContentDescriptionError: "C'è stato un'errore nella ricerca del contenuto",
     //App Location Tracking background
     notificationTitle: "L'app Sardinia ti avvisa",
     notificationBody: "Sei vicino ad un punto di interesse!",
@@ -250,6 +257,7 @@ const dict = {
     emailOnPressBtnTitle: "Open email",
     entityIsNotTranslated: "This entity hasn't got a translation for the current language",
     retry: "Retry",
+    cancel: "Cancel",
     //LOGIN
     possibleCauses: "Possible causes:",
     reusedOldLink: "• The login link has already been used or is expired",
@@ -314,6 +322,12 @@ const dict = {
     disconnected: "Disconnected...",
     pleaseConnect: "Please turn on internet connection to access the app contents",
     retry: "Retry",
+    cancel: "Cancel",
+    //LINKING
+    loadingLinkingContentTitle: "Loading content", 
+    loadingLinkingContentDescription: "We are searching for the requested content",
+    loadingLinkingContentTitleError: "Loading content error", 
+    loadingLinkingContentDescriptionError: "We had troubles loading the linked content",
     //App Location Tracking background
     notificationTitle: "Sardinia App Location",
     notificationBody: "Sardinia App is tracking your location",

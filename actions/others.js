@@ -87,9 +87,9 @@ export function setCurrentMapEntity(entity) {
   }
 }
 
-export const setUrl = (url) => 
+export const setUrl = (url, type) => 
   async (dispatch) => {
-    dispatch({ type: Constants.SET_URL, payload: url });
+    dispatch({ type: Constants.SET_URL, payload: { url, type } });
   }
 
 export const setScrollableSnapIndex = (id, val) => 
@@ -116,3 +116,12 @@ export const checkForUpdates = () => ({ type: Constants.CHECK_FOR_UPDATES });
 
 
 export const setNetworkStatus = (status) => ({ type: Constants.SET_NETWORK_STATUS, payload: status });
+
+
+export const setNavigatorReady = (ready) => ({ type: Constants.SET_NAVIGATOR_READY, payload: ready });
+
+/**
+ * Used to set the main screen mounting status only once (used by SplashLoader to prompt any modal after the mounting event)
+ * @param {*} mounted true or false
+ */
+export const setMainScreenMounted = (mounted) => ({ type: Constants.SET_MAIN_SCREEN_MOUNTED, payload: mounted });

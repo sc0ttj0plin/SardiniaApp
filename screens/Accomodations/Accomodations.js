@@ -64,7 +64,6 @@ class AccomodationsScreen extends Component {
   componentDidMount() {
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
     //If it's the first mount gets pois categories ("art and archeology...")
-    this.props.actions.checkForUpdates();
     this.props.actions.getCategories({ vid: Constants.VIDS.accomodations });
     if ( this.props.others.geolocation.coords) {
       this._onUpdateCoords(this.props.others.geolocation.coords);
@@ -265,7 +264,7 @@ class AccomodationsScreen extends Component {
       )
   }
 
-  /* Renders a poi in Header */
+  /* Renders an entity in Header (horizontal=true) and inside the Scrollable (horizontal=false) */
   _renderPoiListItem = (item, index, horizontal) => {
     const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
     const termName = _.get(item, "term.name", "")
@@ -294,133 +293,133 @@ class AccomodationsScreen extends Component {
       />
   )}
 
-/* Renders categories list */
-_renderCategoryListItem = (item, index, length) => {
-  let marginBottom = (index + 1) == length ? 20 : 0;
-  let marginTop = index == 0 ? 0 : 10;
-  return(
-    <CategoryListItem onPress={() => this._selectCategory(item)} image={item.image} title={item.name} style={{
-      marginBottom,
-      marginTop
-    }}/>
-  )
-}
-
-/* Render content */
-_renderContent = () => {
-  const { term, childUuids } = this._getCurrentTerm(true);
-  const { nearToYou } = this.props.locale.messages;
-  const { pois, snapIndex, coords, region, nearPois  } = this.state;
-  const isPoiList = this._isPoiList();
-  let scrollableData = [];
-  let renderScrollableListItem = null;
-  //if no more nested categories renders pois
-  if (isPoiList) {
-    scrollableData = pois;
-    renderScrollableListItem = ({ item, index }) => this._renderPoiListItem(item, index);
-  } else {
-    //initially term is null so we get terms from redux, then term is populated with nested terms (categories) 
-    scrollableData = term;
-    renderScrollableListItem = ({ item, index }) => this._renderCategoryListItem(item, index, scrollableData.length);
+  /* Renders categories list */
+  _renderCategoryListItem = (item, index, length) => {
+    let marginBottom = (index + 1) == length ? 20 : 0;
+    let marginTop = index == 0 ? 0 : 10;
+    return(
+      <CategoryListItem onPress={() => this._selectCategory(item)} image={item.image} title={item.name} style={{
+        marginBottom,
+        marginTop
+      }}/>
+    )
   }
 
-  const entitiesType = Constants.ENTITY_TYPES.accomodations;
-
-  const scrollableProps = {
-    show: true,
-    data: scrollableData,
-    scrollableTopComponentIsLoading: this._isLoadingData(),
-    onEndReached: this._loadMorePois,
-    renderItem: renderScrollableListItem,
-    keyExtractor: item => item.uuid,
-  }
-
-  // ClusteredMapViewTopProps (CMVT)
-  const CMVTProps = { 
-    term, 
-    coords, 
-    region,
-    types: [Constants.NODE_TYPES.accomodations],
-    childUuids,
-    isLoadingCb: (isLoading) => this.setState({ isCMVTLoading: isLoading }),
-    animateToMyLocation: this.state.animateToMyLocation
-  };
-
-  const extraComponentProps = {
-    data: term,
-    keyExtractor: item => item.uuid,
-    onPress: this._selectCategory,
-    iconProps: { 
-      name: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].iconName,
-      backgroundColor: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].backgroundColor,
-      color: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].iconColor,
+  /* Render content */
+  _renderContent = () => {
+    const { term, childUuids } = this._getCurrentTerm(true);
+    const { nearToYou } = this.props.locale.messages;
+    const { pois, snapIndex, coords, region, nearPois  } = this.state;
+    const isPoiList = this._isPoiList();
+    let scrollableData = [];
+    let renderScrollableListItem = null;
+    //if no more nested categories renders pois
+    if (isPoiList) {
+      scrollableData = pois;
+      renderScrollableListItem = ({ item, index }) => this._renderPoiListItem(item, index);
+    } else {
+      //initially term is null so we get terms from redux, then term is populated with nested terms (categories) 
+      scrollableData = term;
+      renderScrollableListItem = ({ item, index }) => this._renderCategoryListItem(item, index, scrollableData.length);
     }
+
+    const entitiesType = Constants.ENTITY_TYPES.accomodations;
+
+    const scrollableProps = {
+      show: true,
+      data: scrollableData,
+      scrollableTopComponentIsLoading: this._isLoadingData(),
+      onEndReached: this._loadMorePois,
+      renderItem: renderScrollableListItem,
+      keyExtractor: item => item.uuid,
+    }
+
+    // ClusteredMapViewTopProps (CMVT)
+    const CMVTProps = { 
+      term, 
+      coords, 
+      region,
+      types: [Constants.NODE_TYPES.accomodations],
+      childUuids,
+      isLoadingCb: (isLoading) => this.setState({ isCMVTLoading: isLoading }),
+      animateToMyLocation: this.state.animateToMyLocation
+    };
+
+    const extraComponentProps = {
+      data: term,
+      keyExtractor: item => item.uuid,
+      onPress: this._selectCategory,
+      iconProps: { 
+        name: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].iconName,
+        backgroundColor: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].backgroundColor,
+        color: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].iconColor,
+      }
+    }
+
+    const mapEntityWidgetProps = { 
+      isAccomodationItem: true, 
+      coords: this.state.coords 
+    };
+
+    const extraModalProps = {
+      data: nearPois,
+      keyExtractor: item => item.uuid,
+      renderItem: ({ item }) => this._renderPoiListItem(item, null, true),
+      title: nearToYou,
+      onEndReached: () => this._fetchNearestPois(coords),
+    }
+
+    /** 
+     * NOTE: changing numColums on the fly isn't supported and causes the component to unmount, 
+     * thus slowing down the process
+     * set a key to the inner flatlist therefore 
+    */
+    return (
+      <ConnectedMapScrollable
+        // entities type
+        entitiesType={entitiesType}
+        // Scrollable container props
+        scrollableProps={scrollableProps}
+
+        // Extra component: if scrollableRenderExtraComponent is undefined, must specify extra component props
+        // scrollableRenderExtraComponent={this._renderFiltersList}
+        scrollableExtraComponentProps={extraComponentProps}
+        
+        // Header text component: if scrollableHeaderTextComponent is undefined, must specify scrollableHeaderText
+        scrollableHeaderTextComponent={this._renderHeaderText}
+        // scrollableHeaderText={() => <Text>Header Text</Text>}
+
+        // Top component (ClusteredMapViewTop or MapView or Custom)
+        topComponentType="ClusteredMapViewTop" //or MapView or Custom (if Custom must implement topComponentRender)
+        topComponentCMVTProps={CMVTProps}
+        
+        // Map entity widget (in modal): if renderMapEntityWidget is undefined, must specify mapEntityWidgetProps and mapEntityWidgetOnPress 
+        // e.g. this.state.selectedEntity can now be used in renderMapEntityWidget
+        // mapEntityWidgetOnPress={(entity) => this.setState({ selectedEntity: entity })} 
+        // renderMapEntityWidget={this._renderEntityWidget}
+        mapEntityWidgetProps={mapEntityWidgetProps}
+
+        // Extra modal content: if renderExtraModalComponent is undefined, must specify mapEntityWidgetProps
+        // renderExtraModalComponent={this._renderNearToYou}
+        extraModalProps={extraModalProps}
+
+        fullscreen={true}
+
+        onBackPress={this._backButtonPress}
+      />
+    )
   }
 
-  const mapEntityWidgetProps = { 
-    isAccomodationItem: true, 
-    coords: this.state.coords 
-  };
 
-  const extraModalProps = {
-    data: nearPois,
-    keyExtractor: item => item.uuid,
-    renderItem: ({ item }) => this._renderPoiListItem(item, null, true),
-    title: nearToYou,
-    onEndReached: () => this._fetchNearestPois(coords),
+  render() {
+    const { render } = this.state;
+    return (
+      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onPageLayout}>
+        <ConnectedHeader onBackPress={this._backButtonPress} iconTintColor={Colors.colorAccomodationsScreen} />
+        {render && this._renderContent()}
+      </View>
+    )
   }
-
-  /** 
-   * NOTE: changing numColums on the fly isn't supported and causes the component to unmount, 
-   * thus slowing down the process
-   * set a key to the inner flatlist therefore 
-  */
-  return (
-    <ConnectedMapScrollable
-      // entities type
-      entitiesType={entitiesType}
-      // Scrollable container props
-      scrollableProps={scrollableProps}
-
-      // Extra component: if scrollableRenderExtraComponent is undefined, must specify extra component props
-      // scrollableRenderExtraComponent={this._renderFiltersList}
-      scrollableExtraComponentProps={extraComponentProps}
-      
-      // Header text component: if scrollableHeaderTextComponent is undefined, must specify scrollableHeaderText
-      scrollableHeaderTextComponent={this._renderHeaderText}
-      // scrollableHeaderText={() => <Text>Header Text</Text>}
-
-      // Top component (ClusteredMapViewTop or MapView or Custom)
-      topComponentType="ClusteredMapViewTop" //or MapView or Custom (if Custom must implement topComponentRender)
-      topComponentCMVTProps={CMVTProps}
-      
-      // Map entity widget (in modal): if renderMapEntityWidget is undefined, must specify mapEntityWidgetProps and mapEntityWidgetOnPress 
-      // e.g. this.state.selectedEntity can now be used in renderMapEntityWidget
-      // mapEntityWidgetOnPress={(entity) => this.setState({ selectedEntity: entity })} 
-      // renderMapEntityWidget={this._renderEntityWidget}
-      mapEntityWidgetProps={mapEntityWidgetProps}
-
-      // Extra modal content: if renderExtraModalComponent is undefined, must specify mapEntityWidgetProps
-      // renderExtraModalComponent={this._renderNearToYou}
-      extraModalProps={extraModalProps}
-
-      fullscreen={true}
-
-      onBackPress={this._backButtonPress}
-    />
-  )
-}
-
-
-render() {
-  const { render } = this.state;
-  return (
-    <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onPageLayout}>
-      <ConnectedHeader onBackPress={this._backButtonPress} iconTintColor={Colors.colorAccomodationsScreen} />
-      {render && this._renderContent()}
-    </View>
-  )
-}
   
 }
 

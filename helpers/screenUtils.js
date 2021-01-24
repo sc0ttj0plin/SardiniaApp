@@ -7,23 +7,33 @@
 import * as Constants from '../constants';
 
 /**
- * openRelatedEntity navigates to screen depending 
+ * openRelatedEntity navigates to screen using navigator param (can be push or navigate depending on pushOrNavigate)
  * @param type one of Constants.NAVIGATION.*
- * @param navOpts navigation options for the destination screen
+ * @param navigator the navigator instance
+ * @param pushOrNavigate if push then uses navigator.push, else use navigator.navigate
+ * @param screenNavOpts navigation options for the destination screen
  */
-export const openRelatedEntity = (type, navigator, navOpts) => {
+export const openRelatedEntity = (type, navigator, pushOrNavigate, screenNavOpts) => {
+  console.log('open entity')
+  let navFun = navigator.push;
+  if (pushOrNavigate == "navigate")
+    navFun = navigator.navigate;
   switch(type) {
     case Constants.NODE_TYPES.places:
-      navigator.push(Constants.NAVIGATION.NavPlaceScreen, navOpts);
+      navFun(Constants.NAVIGATION.NavPlaceScreen, screenNavOpts);
+      break;
+    case Constants.NODE_TYPES.turisticLocation:
+      console.log('turistic')
+      navFun(Constants.NAVIGATION.NavPlaceScreen, screenNavOpts);
       break;
     case Constants.NODE_TYPES.events:
-      navigator.navigate(Constants.NAVIGATION.NavEventScreen, navOpts);
+      navFun(Constants.NAVIGATION.NavEventScreen, screenNavOpts);
       break;
     case Constants.NODE_TYPES.itineraries:
-      navigator.navigate(Constants.NAVIGATION.NavItineraryScreen, navOpts)
+      navFun(Constants.NAVIGATION.NavItineraryScreen, screenNavOpts)
       break;
     case Constants.NODE_TYPES.inspirers:
-      navigator.navigate(Constants.NAVIGATION.NavInspirerScreen, navOpts)
+      navFun(Constants.NAVIGATION.NavInspirerScreen, screenNavOpts)
       break;
     default:
       break;

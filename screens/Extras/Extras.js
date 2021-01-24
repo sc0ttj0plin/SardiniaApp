@@ -38,7 +38,7 @@ class ExtrasScreen extends Component {
   componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
-
+    this.props.actions.setMainScreenMounted(true); /* tell that the main screen has mounted (used by ConnectedSplashLoader) */
     this.props.actions.getPois({uuids: Constants.SCREENS.extras.defaultUuids});
   }
 
@@ -80,14 +80,17 @@ class ExtrasScreen extends Component {
     if(item.uuid == "fdabb67f-fc45-40fc-83da-ac3ab6f4672e") {
       item.image = "https://www.sardegnaturismo.it/sites/default/files/styles/top_pagina/public/petalirossi_saramadura_0.jpg?itok=N3tibLym"
     }
-    return(
-      <ExtraItem 
-        onPress={ () => this.props.navigation.navigate(Constants.NAVIGATION.NavExtraScreen, { item })}
-        title={title}
-        image={item.image}
-        btnTitle={findOutMore}
-      />
-    )
+    if (title)
+      return (
+        <ExtraItem 
+          onPress={ () => this.props.navigation.navigate(Constants.NAVIGATION.NavExtraScreen, { item })}
+          title={title}
+          image={item.image}
+          btnTitle={findOutMore}
+        />
+      )
+    else
+      return null;
   } 
 
   _renderContent = () => {

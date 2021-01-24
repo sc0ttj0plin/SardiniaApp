@@ -34,7 +34,7 @@ class PreferencesScreen extends Component {
       render: USE_DR ? false : true,
       entities: [],
       entityIndex: 0,
-      selectedIconName: null,
+      selectedIconId: null,
       started: false,
       finished: false,
       selectedColors: [],
@@ -55,7 +55,6 @@ class PreferencesScreen extends Component {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
     const { poisCategories, inspirersCategories } = Constants.VIDS;
-    this.props.actions.checkForUpdates();
     if (!this.props.categories.data[poisCategories])
       this.props.actions.getCategories({ vid: poisCategories });
     else 
@@ -90,43 +89,41 @@ class PreferencesScreen extends Component {
    * Parses categories returning a simplified array of [{name, uuid, image}]
    */
   _parseCategories = (vid) => {
-      this.setState({ 
-        [vid]: this.props.categories.data[vid].map(el => ({
-          name: el.name,
-          image: el.image,
-          uuid: el.uuid,
-        })),
-      }, () => {
-        this.setState({
-          entities: [
-            ...this.state.entities,
-            ...this.state[vid]
-          ]
-        })
-      });
+    let entities = this.props.categories.data[vid].map(el => ({
+      name: el.name,
+      image: el.image,
+      uuid: el.uuid,
+    }));
+
+    entities = entities.slice(0,4).concat(this.state.entities);
+    this.setState({ entities });
   }
 
+  _onRatingPress = (emoticon) => {
+    // Store the result term uuid + likeness ratio in user space
+    const { entityIndex, entities } = this.state;
+    const uuid = entities[entityIndex].uuid;
+    const name = entities[entityIndex].name;
+    const rating = emoticon.likenessRatio;
+    this.props.actions.setPreferences({ name, uuid, rating });
+    this._selectActiveIcon(emoticon);
+  }
 
-  _selectActiveIcon = (iconName) => {
+  _selectActiveIcon = (emoticon) => {
     this.setState({
-      selectedIconName: iconName
+      selectedIconId: emoticon.iconId
     }, () => {
       const { entityIndex, selectedColors } = this.state;
-      const color = Constants.EMOTICONS[iconName].color;
+      const color = emoticon.activeColor;
       const newColors = [...selectedColors, color];
-      const { poisCategories, inspirersCategories } = Constants.VIDS;
-      let entities = [
-        ...this.state[poisCategories].slice(0,4),
-        ...this.state[inspirersCategories].slice(0,4)
-      ]
-      let length = entities.length
-      if(entityIndex < length){
+      let length = this.state.entities.length;
+      if (entityIndex < length){
         let timeout = setTimeout(() => {
           const finished = (entityIndex + 1) < length ? false : true;
           this.setState({
             entityIndex: entityIndex + 1,
             selectedColors: newColors,
-            selectedIconName: null,
+            selectedIconId: null,
             finished
           })
         }, 300)
@@ -134,7 +131,7 @@ class PreferencesScreen extends Component {
       else{
         this.setState({
           finished: true,
-          selectedIconName: null
+          selectedIconId: null
         })
       }
     })
@@ -143,19 +140,25 @@ class PreferencesScreen extends Component {
   _onFinished = () => {
     this.props.navigation.goBack();
   }
-
+  
   /********************* Render methods go down here *********************/
 
-  _renderIcon = (name, iconColor, clickable) => {
-    const { selectedIconName } = this.state;
-    const color = selectedIconName == name ? Constants.EMOTICONS[name].color : iconColor;
+  _renderIcon = (emoticon, clickable) => {
+    const { selectedIconId } = this.state;
+    let color;
+    if ((clickable && selectedIconId == emoticon.iconId) || !clickable)
+      color = emoticon.activeColor;
+    else if (clickable && selectedIconId !== emoticon.iconId) 
+      color = emoticon.clickableDefaultColor;
+
+      
     return(
       <TouchableOpacity
         style={styles.iconButton}
         activeOpacity={clickable ? 0.7 : 1}
-        onPress={clickable ? () => this._selectActiveIcon(name) : null}>
+        onPress={clickable ? () => this._onRatingPress(emoticon) : null}>
           <FontAwesome5 
-            name={name}
+            name={emoticon.iconId}
             color={color}
             size={42}
             style={styles.icon}
@@ -174,12 +177,7 @@ class PreferencesScreen extends Component {
 
   _renderSteps = () => {
     const { poisCategories, inspirersCategories } = Constants.VIDS;
-    let entities = [
-      ...this.state[poisCategories].slice(0,4),
-      ...this.state[inspirersCategories].slice(0,4)
-    ]
-    return entities.map( (entity, index) => {
-      console.log("entity", index, entity)
+    return this.state.entities.map( (entity, index) => {
       return this._renderStep(entity, index);
     })
   }
@@ -223,10 +221,10 @@ class PreferencesScreen extends Component {
           <CustomText style={styles.text1}>{preferencesText1}</CustomText>
           <CustomText style={styles.text2}>{preferencesText2}</CustomText>
           <View style={styles.icons}>
-            {this._renderIcon("dizzy", Colors.colorEventsScreen, false)}
-            {this._renderIcon("meh", Colors.colorInspirersScreen, false)}
-            {this._renderIcon("laugh-squint", Colors.colorPlacesScreen, false)}
-            {this._renderIcon("grin-hearts", Colors.colorItinerariesScreen, false)}
+            {this._renderIcon(Constants.EMOTICONS.dizzy, false)}
+            {this._renderIcon(Constants.EMOTICONS.meh, false)}
+            {this._renderIcon(Constants.EMOTICONS.laughSquint, false)}
+            {this._renderIcon(Constants.EMOTICONS.grinHearts, false)}
           </View>
           <View style={styles.startButtonView}>
             <TouchableOpacity
@@ -250,10 +248,10 @@ class PreferencesScreen extends Component {
           <CustomText style={styles.text1}>{thanks}</CustomText>
           <CustomText style={styles.text2}>{preferencesText3}</CustomText>
           <View style={styles.icons}>
-            {this._renderIcon("dizzy", Colors.colorEventsScreen, false)}
-            {this._renderIcon("meh", Colors.colorInspirersScreen, false)}
-            {this._renderIcon("laugh-squint", Colors.colorPlacesScreen, false)}
-            {this._renderIcon("grin-hearts", Colors.colorItinerariesScreen, false)}
+            {this._renderIcon(Constants.EMOTICONS.dizzy, false)}
+            {this._renderIcon(Constants.EMOTICONS.meh, false)}
+            {this._renderIcon(Constants.EMOTICONS.laughSquint, false)}
+            {this._renderIcon(Constants.EMOTICONS.grinHearts, false)}
           </View>
           <View style={styles.startButtonView}>
             <TouchableOpacity
@@ -270,13 +268,7 @@ class PreferencesScreen extends Component {
 
   _renderStartedContent = () => { 
     const { doYouLikeIt } = this.props.locale.messages;
-    const { entityIndex } = this.state;
-    const { poisCategories, inspirersCategories } = Constants.VIDS;
-    let entities = [
-      ...this.state[poisCategories].slice(0,4),
-      ...this.state[inspirersCategories].slice(0,4)
-    ]
-    // console.log("entities", entities)
+    const { entityIndex, entities } = this.state;
     const entity = entities[entityIndex] || null;
     return(
       <>
@@ -284,10 +276,10 @@ class PreferencesScreen extends Component {
           <CustomText style={styles.startedContentText}>{doYouLikeIt}</CustomText>
           {entity && this._renderEntity(entity)}
           <View style={[styles.icons, {marginTop: 70, paddingHorizontal: 50}]}>
-            {this._renderIcon("dizzy", Colors.lightGray, true)}
-            {this._renderIcon("meh", Colors.lightGray, true)}
-            {this._renderIcon("laugh-squint", Colors.lightGray, true)}
-            {this._renderIcon("grin-hearts", Colors.lightGray, true)}
+            {this._renderIcon(Constants.EMOTICONS.dizzy, true)}
+            {this._renderIcon(Constants.EMOTICONS.meh, true)}
+            {this._renderIcon(Constants.EMOTICONS.laughSquint, true)}
+            {this._renderIcon(Constants.EMOTICONS.grinHearts, true)}
           </View>
           {this._renderStepsBar()}
         </View>

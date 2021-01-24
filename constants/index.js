@@ -4,7 +4,7 @@ import * as Location from 'expo-location';
 import * as Localization from 'expo-localization';
 import  { normalizeLanguage } from '../helpers/language';
 
-// Actions
+// ACTIONS
 export const SET_URL = 'sardinia/others/SET_URL';
 export const AUTH = 'sardinia/auth/AUTH';
 export const AUTH_SUCCESS = 'sardinia/auth/AUTH_SUCCESS';
@@ -134,11 +134,14 @@ export const SCROLLABLE_SET_SCROLLINDEX = 'sardinia/others/SCROLLABLE_SET_SCROLL
 export const SET_GEOLOCATION = 'sardinia/others/SET_GEOLOCATION';
 export const CHECK_FOR_UPDATES = 'sardinia/others/CHECK_FOR_UPDATES';
 export const SET_NETWORK_STATUS = 'sardinia/others/SET_NETWORK_STATUS';
+export const SET_NAVIGATOR_READY = 'sardinia/others/SET_NAVIGATOR_READY';
+export const SET_MAIN_SCREEN_MOUNTED = 'sardinia/others/SET_MAIN_SCREEN_MOUNTED';
 
 // API
 export const FETCH_NUM_MONTHS_BACKWARDS = 1;
 export const FETCH_NUM_MONTHS_FORWARD = 0;
-// Others
+
+// OTHERS
 /* probability that a main component checks for OTA updates on didMount: 0.5: 50%, 0.2: 20% */
 export const CHECK_FOR_UPDATES_WHILE_FOREGROUNDED_PROB = 0.1; 
 export const DEFAULT_LANGUAGE = normalizeLanguage(Localization.locale); /* deal with en or en-gb => en */
@@ -149,17 +152,31 @@ export const YEAR_MONTH_FORMAT = `YYYY${DATE_SEP}MM`;
 
 export const REGION_SARDINIA = { longitude: 9.0, latitude: 40.0, longitudeDelta: 2, latitudeDelta: 3.2 };
 
+//DOMAIN & LINKING
+export const LINKING_AUTH_SEARCHSTR = "apiKey"; /* if the input link contains this substr, consider it */
 export const WEBSITE_URL = "https://www.sardegnaturismo.it/";
+export const WEBSITE_DOMAIN = "sardegnaturismo.it";
+export const WEBSITE_STAGING_URL = "https://www.dev.sardegnaturismocloud.it";
+export const WEBSITE_STAGING_DOMAIN = "dev.sardegnaturismocloud.it";
+export const LINKING_TYPES = {
+  auth: "auth",
+  website: "website",
+  notifications: "notifications"
+}
 
 export const FIREBASE_LINK_PROXY = 'https://wt-6e2a5f000b93f69e1b65cf98021e1945-0.sandbox.auth0-extend.com/firebase-authentication-link-redirect';
 
 export const SPLASH_EXPO_DURATION = 1000;
 export const SPLASH_LOADING_DURATION = 3000;
 export const SPLASH_LOADING_DISAPPEAR_DURATION = 250;
+/* after the main screen is visible to the user, after how long the update + network + linking + notifications modals can be shown */
+export const MODALS_SHOW_DELAY = 2000; 
+/* linking entity can be too quick to load, add an extra loading delay to let the user see the loading modal */
+export const NAVIGATE_TO_LINKED_ENTITY_DELAY = 3000;
 
-/* NAVIGATION */
+// NAVIGATION
 export const NAVIGATION = {
-  NavDrawerNavigator: "MainDrawerNavigator",
+  NavDrawerNavigator: "RootNavigation",
   NavPlacesScreen: "PlacesScreen",
   NavInspirersScreen: "InspirersScreen",
   NavMapScreen: "MapScreen",
@@ -343,17 +360,33 @@ export const MAP = {
 }
 
 export const EMOTICONS = {
-  "dizzy": {
-    color: Colors.colorEventsScreen
+  dizzy: {
+    id: "dizzy",
+    iconId: "dizzy",
+    activeColor: Colors.colorEventsScreen,
+    clickableDefaultColor: Colors.lightGray,
+    likenessRatio: 0.0,
   },
-  "meh": {
-    color: Colors.colorInspirersScreen
+  meh: {
+    id: "meh",
+    iconId: "meh",
+    activeColor: Colors.colorInspirersScreen,
+    clickableDefaultColor: Colors.lightGray,
+    likenessRatio: 0.33,
   },
-  "laugh-squint": {
-    color: Colors.colorPlacesScreen
+  laughSquint: {
+    id: "laughSquint",
+    iconId: "laugh-squint",
+    activeColor: Colors.colorPlacesScreen,
+    clickableDefaultColor: Colors.lightGray,
+    likenessRatio: 0.66,
   },
-  "grin-hearts": {
-    color: Colors.colorItinerariesScreen  
+  grinHearts: {
+    id: "grinHearts",
+    iconId: "grin-hearts",
+    activeColor: Colors.colorItinerariesScreen,
+    clickableDefaultColor: Colors.lightGray,
+    likenessRatio: 1.0,
   }
 }
 

@@ -46,8 +46,7 @@ async (dispatch, getState) => {
         let userInfo = await firebase.database().ref(`users/${user.uid}/info`).once('value');
         user.info = userInfo.val();
         dispatch({ type: Constants.AUTH_SUCCESS, payload: { user: user, token } });
-      }
-      else
+      } else
         dispatch({ type: Constants.AUTH_FAIL, payload: { message: 'Errore nel login!' } });
     } catch (e) {
       console.log(e.message);
@@ -84,7 +83,7 @@ async (dispatch, getState) => {
     const token = await firebase.auth().currentUser.getIdToken(/* forceRefresh */ true);
     dispatch({ type: Constants.AUTH_SUCCESS, payload: { user, token } });
  } catch(error) {
-    console.log("Error", error.message);
+    console.log("passwordLessLogin", error.message);
     dispatch({ type: Constants.AUTH_FAIL, payload: { message: error.message } });
   }
 }
@@ -110,7 +109,6 @@ export const logout = () =>
       console.log('Logout..');
       await AsyncStorage.removeItem('email');
       const user = firebase.auth().currentUser;
-      //await firebase.database().ref(`users/${user.uid}/info`).remove();
       await firebase.auth().signOut();
     } catch(e) {
       console.log("Logout error", e.message);

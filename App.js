@@ -10,21 +10,15 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
 import { Provider } from 'react-redux'
 import AppNavigator from './navigation/AppNavigator';
-import AsyncStorage from '@react-native-community/async-storage';
 import { CommonActions } from '@react-navigation/native';
 import { ApolloProvider } from '@apollo/react-hooks';
 import actions from './actions';
 import { PersistGate } from 'redux-persist/lib/integration/react';
 import { persistor, store } from './store';
 import { Video } from 'expo-av';
-import { ConnectedUpdateHandler, ConnectedNetworkChecker } from './components';
 import { enableScreens } from 'react-native-screens';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import config from './config/config';
-import * as firebase from 'firebase';
-import * as Constants from './constants';
-import * as Location from 'expo-location';
-import SplashLoading from './components/SplashLoading';
+import ConnectedSplashLoader from './components/ConnectedSplashLoader';
 import { registerRootComponent } from 'expo';
 
 enableScreens();
@@ -43,7 +37,6 @@ export default class App extends Component {
     //Ignores warning boxes
     LogBox.ignoreLogs(['Warning:']); //or: LogBox.ignoreAllLogs();
     SplashScreen.preventAutoHideAsync();
-    this._navigator = null;
   }
 
   async componentDidMount() {
@@ -52,49 +45,54 @@ export default class App extends Component {
   
   _initAppAsync = async () => {
     await this._loadResourcesAsync();
-    await this._initFirebaseAppAndLogin();
-    await this._initLinkingAsync();
+    // await this._initFirebaseAppAndLogin();
+    /* testing deep linking */
+    // await this._initLinkingAsync("https://www.sardegnaturismo.it/it/luoghi/est/tortoli");
+    // await this._initLinkingAsync("https://www.sardegnaturismo.it/it/i-mari-del-sud-acqua-caraibica-e-anima-mediterranea?language=it");
+    // await this._initLinkingAsync();
     this._handleFinishLoading();
   }
 
-  _initLinkingAsync = async () => {
-    //app is closed
-    const url = await Linking.getInitialURL();
-    if (url) {
-      store.dispatch(actions.setUrl(url));
-      this._parseLinkingUrl(url);
-    }
-    //or app is opened 
-    Linking.addEventListener('url', ({ url }) => {
-      console.log("Linking.addEventListener");
-      store.dispatch(actions.setUrl(url));
-      this._parseLinkingUrl(url);
-    });
-  }
+  // _initLinkingAsync = async (forceUrl=null) => {
+  //   //app is closed
+  //   const closedAppUrl = forceUrl || await Linking.getInitialURL();
+  //   if (closedAppUrl) {
+  //     store.dispatch(actions.setUrl(closedAppUrl));
+  //     console.log("Linking.getInitialURL", closedAppUrl)
+  //     this._parseLinkingUrl(closedAppUrl);
+  //   }
+  //   //or app is opened 
+  //   Linking.addEventListener('url', ({ url: openedAppUrl }) => {
+  //     const url = forceUrl || openedAppUrl;
+  //     console.log("Linking.addEventListener", url);
+  //     store.dispatch(actions.setUrl(url));
+  //     this._parseLinkingUrl(url);
+  //   });
+  // }
 
 
-  _parseLinkingUrl = async (url) => {
-    //Login url type
-    if (url.indexOf("apiKey") >=0) {
-      if(!store.getState().authState.success) {
-        store.dispatch(actions.passwordLessLinkHandler(url));
-      }
-    }
-  }
+  // _parseLinkingUrl = async (url) => {
+  //   //Login url type
+  //   if (url.indexOf(Constants.LINKING_AUTH_SEARCHSTR) >=0) {
+  //     if(!store.getState().authState.success) {
+  //       store.dispatch(actions.passwordLessLinkHandler(url));
+  //     }
+  //   }
+  // }
 
-  _initFirebaseAppAndLogin = () => {
-    //Initialize app is synchronous
-    if (firebase.apps.length === 0)
-      firebase.initializeApp(config.firebase);
-    this._performLogin();
-  }
+  // _initFirebaseAppAndLogin = () => {
+  //   //Initialize app is synchronous
+  //   if (firebase.apps.length === 0)
+  //     firebase.initializeApp(config.firebase);
+  //   this._performLogin();
+  // }
 
-  _performLogin = async () => {
-    //Attempt login
-    const email = await AsyncStorage.getItem('email');
-    if (email)
-      store.dispatch(actions.passwordLessLogin());
-  }
+  // _performLogin = async () => {
+  //   //Attempt login using exiting user info
+  //   const email = await AsyncStorage.getItem('email');
+  //   if (email) 
+  //     store.dispatch(actions.passwordLessLogin());
+  // }
 
   _loadResourcesAsync = async () => {
     await Promise.all([
@@ -163,10 +161,8 @@ export default class App extends Component {
               <SafeAreaProvider style={{ flex: 1 }} forceInset={{ top: 'always', bottom:'always' }}>
                   <View style={[styles.container]}>
                     {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-                    <AppNavigator ref={nav => { this._navigator = nav; }} />
-                    <ConnectedUpdateHandler />
-                    <ConnectedNetworkChecker />
-                    <SplashLoading loading={!this.state.isIntroEnded} onFinish={this._onSplashFinished}/>
+                    <AppNavigator/>
+                    <ConnectedSplashLoader loading={!this.state.isIntroEnded} onFinish={this._onSplashFinished}/>
                   </View>
               </SafeAreaProvider>
             </ApolloProvider>

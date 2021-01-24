@@ -128,7 +128,7 @@ class ConnectedHeader extends PureComponent {
       this.props.actions.autocomplete({ 
         queryStr: search, 
         vidsInclude: [Constants.VIDS.poisCategories, Constants.VIDS.pois, Constants.VIDS.inspirersCategories, Constants.VIDS.events],
-        typesExclude: [Constants.NODE_TYPES.events]
+        // typesExclude: [Constants.NODE_TYPES.events]
       });
     this.setState({ searchStr: search });
     this.props.actions.setSearchOrAutocomplete(search);

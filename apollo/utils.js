@@ -81,7 +81,7 @@ export const processEventTypes = function(eventTypes) {
  */
 export const processEntity = function(entity, coords=null) {
 
-  // Normalize languages
+  // Normalize language keys into a common key (e.g. en-GB: {}, en-US: {} => en: {})
   if (entity.title) 
     normalizeLanguage(entity.title);
   if (entity.abstract) 

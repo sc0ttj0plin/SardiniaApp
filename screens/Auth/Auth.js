@@ -46,8 +46,6 @@ class Login extends Component {
       sexError: false,
       countries: []
     };
-
-    this._onHardwareBackButtonClick = this._onHardwareBackButtonClick.bind(this);
   }
 
   componentDidMount() {
@@ -62,7 +60,7 @@ class Login extends Component {
 
     
     if (this.props.auth.error) {
-      console.log("AUTH_STATES.ERROR");
+      console.log(this.props.auth.error)
       this.setState({ loginStep: AUTH_STATES.ERROR });
     }
     else if (this.props.auth.success && this.props.auth.user)

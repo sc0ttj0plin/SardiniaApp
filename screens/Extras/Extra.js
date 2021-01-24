@@ -105,25 +105,6 @@ class ExtraScreen extends Component {
     this.setState({ entity, abstract,  title,  description,  whyVisit,  socialUrl, sampleVideoUrl, gallery });
   }
 
-  _openRelatedEntity = (item) => {
-    var type = item.type;
-    switch(type) {
-      case Constants.NODE_TYPES.places:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item, mustFetch: true });
-        break;
-      case Constants.NODE_TYPES.events:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item, mustFetch: true });
-        break;
-      case Constants.NODE_TYPES.itineraries:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, { item, mustFetch: true })
-        break;
-      case Constants.NODE_TYPES.inspirers:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavInspirerScreen, { item, mustFetch: true })
-        break;
-      default:
-        break;
-    }
-  }
 
   _openVRContent = () => {
     if(this.state.entity.uuid  == "eae5bf1e-1358-49a4-8681-a82b824a031c")
@@ -160,7 +141,7 @@ class ExtraScreen extends Component {
         contentContainerStyle={styles.relatedListContent}
         showsHorizontalScrollIndicator={false}
         locale={this.props.locale}
-        onPressItem={this._openRelatedEntity}
+        onPressItem={item => openRelatedEntity(item.type, this.props.navigation, "navigate", { item, mustFetch: true })}
         listType={listType}
         listTitle={title}
         listTitleStyle={styles.sectionTitle}

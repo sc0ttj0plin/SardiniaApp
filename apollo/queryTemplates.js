@@ -9,46 +9,50 @@ query ($queryStr: String, $vidsInclude: [Int!], $typesExclude: [String!]) {
     limit: 20,
     where: { _or: [{ _and: [ {nid: {_is_null: true}}, {term: {vid: {_in: $vidsInclude}}}]},
           {_and: [{nid: {_is_null: false}}, {node: {type: {_nin: $typesExclude}}} ]}]}){
-    keywords
-    rank
-    nid
-    tid
-    term {
-      uuid
-      vid
-      vocabulary {
-        name
-      }
-    }
-    node {
-      type
+      keywords
+      rank
       nid
-      uuid
-      title: legacy(path: "title_field")
-    }
+      tid
+      term {
+        uuid
+        vid
+        vocabulary {
+          name
+        }
+      }
+      node {
+        type
+        nid
+        uuid
+        title: legacy(path: "title_field")
+      }
   }
 }
 `
 
 export const searchQuery = gql`
-query ($queryStr: String, $nodeTypes: [String!]) {
-  search(args: {search: $queryStr}, order_by: {rank: desc}, where: {tid: {_is_null: true}, node: {type: {_in: $nodeTypes}}}) {
-    headline
-    rank
-    nid
-    term {
-      uuid
-      vid
-      vocabulary {
-        name
-      }
-    }
-    node {
-      type
+query ($queryStr: String, $nodeTypes: [String!], $limit: Int) {
+  search(args: {search: $queryStr}, 
+    limit: $limit, 
+    order_by: {rank: desc}, 
+    where: {tid: {_is_null: true}, 
+    node: {type: {_in: $nodeTypes}}}) {
+      headline
+      rank
       nid
-      uuid
-      title: legacy(path: "title_field")
-    }
+      term {
+        uuid
+        vid
+        vocabulary {
+          name
+        }
+      }
+      node {
+        type
+        nid
+        uuid
+        title: legacy(path: "title_field")
+      }
   }
 }
 `

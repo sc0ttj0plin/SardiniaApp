@@ -178,7 +178,7 @@ class PlaceScreen extends Component {
         showsHorizontalScrollIndicator={false}
         locale={this.props.locale}
         onPressItem={(item) => 
-          openRelatedEntity(item.type, this.props.navigation, { item, mustFetch: true, nestingCounter: this.state.nestingCounter + 1 })
+          openRelatedEntity(item.type, this.props.navigation, "push", { item, mustFetch: true, nestingCounter: this.state.nestingCounter + 1 })
         }
         listType={listType}
         listTitle={title}

@@ -47,9 +47,8 @@ class InspirersScreen extends Component {
   componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
-    this.props.actions.checkForUpdates();
     this.props.actions.getCategories({ vid: Constants.VIDS.inspirersCategories });
-
+    this.props.actions.setMainScreenMounted(true); /* tell that the main screen has mounted (used by ConnectedSplashLoader) */
     BackHandler.addEventListener('hardwareBackPress', this._onHardwareBackButtonClick);
   }
 
@@ -172,21 +171,25 @@ class InspirersScreen extends Component {
   /* Renders a poi in Header */
   _renderPoiListItem = (item, index) => {
     const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
-    return (
-      <EntityItem 
-        keyItem={item.nid}
-        listType={Constants.ENTITY_TYPES.inspirers}
-        iconColor={Colors.colorInspirersScreen}
-        onPress={() => this._openPoi(item)}
-        title={title}
-        subtitle={item.term.name}
-        image={item.image}
-        horizontal={false}
-        sideMargins={10}
-        extraStyle={styles.inspirersListItem}
-        animated={true}
-      />
-  )}
+    if (title)
+      return (
+        <EntityItem 
+          keyItem={item.nid}
+          listType={Constants.ENTITY_TYPES.inspirers}
+          iconColor={Colors.colorInspirersScreen}
+          onPress={() => this._openPoi(item)}
+          title={title}
+          subtitle={item.term.name}
+          image={item.image}
+          horizontal={false}
+          sideMargins={10}
+          extraStyle={styles.inspirersListItem}
+          animated={true}
+        />
+      )
+    else 
+      return null;
+}
 
   /* Renders categories list */
   _renderCategoryListItem = (item) => 

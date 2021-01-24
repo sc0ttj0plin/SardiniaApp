@@ -31,13 +31,13 @@ class ConnectedNetworkChecker extends PureComponent {
       modalVisible: true,
       modalAction: null,
       //
-      isConnected: true
+      networkIsConnected: true
     };
 
     this._unsubscribeNetInfo = null;
     // Subscribe
     this._unsubscribeNetInfo = NetInfo.addEventListener(state => {
-      this.setState({ isConnected: state.isConnected });
+      this.setState({ networkIsConnected: state.isConnected });
       this.props.actions.setNetworkStatus(state);
     });
   }
@@ -47,7 +47,7 @@ class ConnectedNetworkChecker extends PureComponent {
   async componentDidMount() {
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), DR_TIMEOUT))};
     // const netResult = await Network.getNetworkStateAsync();
-    //{ type: Network.StateType.CELL ULAR,isConnected: true,isInternetReachable: true,}
+    //{ type: Network.StateType.CELL ULAR,networkIsConnected: true,isInternetReachable: true,}
   }
 
   componentWillUnmount() {
@@ -57,7 +57,7 @@ class ConnectedNetworkChecker extends PureComponent {
 
   _onPressed = () => {
     NetInfo.fetch().then(state => {
-      this.setState({ isConnected: state.isConnected });
+      this.setState({ networkIsConnected: state.isConnected });
       this.props.actions.setNetworkStatus(state);
     });
   }
@@ -66,14 +66,14 @@ class ConnectedNetworkChecker extends PureComponent {
 
   /********************* Render methods go down here *********************/
   _renderContent = () => {
-    const { isConnected } = this.state;
+    const { networkIsConnected } = this.state;
     const { disconnected, pleaseConnect, retry } = this.props.locale.messages;
-    if (!isConnected) 
+    if (!networkIsConnected) 
       return (
         <Modal
           animationType="fade"
           transparent={true}
-          visible={!isConnected}
+          visible={!networkIsConnected}
           onRequestClose={() => { }}>
             <View 
               style={styles.modalView} >
