@@ -53,7 +53,9 @@ export default class LLEntitiesFlatlist extends PureComponent{
 
     render(){
 
-        let listTitle = this.props.title ? this.props.title : null;
+        const listTitle = this.props.title ? this.props.title : null;
+        const numColumns = this.props.numColumns ? this.props.numColumns : 1;
+
         return (
             <> 
                 { listTitle &&
@@ -64,13 +66,15 @@ export default class LLEntitiesFlatlist extends PureComponent{
                         horizontal={this.props.horizontal ? this.props.horizontal : false}
                         data={Array.from({ length: 5 }).map((_, i) => String(i))}
                         keyExtractor={i => i}
-                        numColumns={this.props.numColumns ? this.props.numColumns : 1}
+                        numColumns={numColumns}
                         bodyContainerStyle={this.props.bodyContainerStyle}
                         renderItem={this._renderItem}
                         showsHorizontalScrollIndicator={false}
                         style={this.props.style}
                         contentContainerStyle={[styles.container, this.props.contentContainerStyle]}
                         ItemSeparatorComponent={this.props.ItemSeparatorComponent}
+                        key={"LLFlatList" + numColumns}
+                        initialNumToRender={10}
                         >
                         
                     </FlatList>
