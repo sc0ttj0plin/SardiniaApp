@@ -68,7 +68,7 @@ class GalleryScreen extends Component {
 
     this._videoUuids = uuids;
 
-    setTimeout(() => this.props.actions.getPois({ uuids: uuids }), 1500);
+    setTimeout(() => this.props.actions.getPois({ uuids: uuids }), 1);
   }
 
   /**
