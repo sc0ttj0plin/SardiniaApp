@@ -57,9 +57,6 @@ class GeoRefHListItem extends PureComponent{
 }
 
 const styles = StyleSheet.create({  
-    spinner: {
-      marginBottom: 20
-    },
     container: {
       backgroundColor: "white",
       alignItems: "flex-start",

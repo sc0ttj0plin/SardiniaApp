@@ -275,12 +275,14 @@ class AccomodationsScreen extends Component {
         extraStyle={ horizontal ? {
           borderColor: Colors.lightGray,
           borderWidth: 1,
-          marginBottom: 0
+          marginBottom: 0,
+          marginRight: 10
         } : {
           width: '100%',
           borderColor: Colors.lightGray,
           borderWidth: 1,
-          marginLeft: 0
+          marginLeft: 0,
+          marginBottom: 10
         }}
         horizontal={horizontal}
         sizeMargins={20}

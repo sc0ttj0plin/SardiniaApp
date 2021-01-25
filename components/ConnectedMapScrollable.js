@@ -407,7 +407,6 @@ class ConnectedMapScrollable extends PureComponent {
                   keyExtractor={keyExtractor}
                   onEndReachedThreshold={0.5} 
                   onEndReached={onEndReached}
-                  ItemSeparatorComponent={this._renderHorizontalSeparator}
                   contentContainerStyle={styles.listContainerHeader}
                   showsHorizontalScrollIndicator={false}
                   initialNumToRender={3} // Reduce initial render amount
