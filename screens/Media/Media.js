@@ -288,7 +288,7 @@ class MediaScreen extends PureComponent {
           paddingTop={this.props.insets.top}
           />
         {title && (
-            <View style={[styles.footer, {paddingBottom: this.props.insets.bottom}]}>
+            <View style={[styles.footer, {paddingBottom: Math.max(this.props.insets.bottom, 10)}]}>
                 <HTML baseFontStyle={styles.footerText} html={title} />
             </View>
         )}
@@ -436,6 +436,7 @@ const styles = StyleSheet.create({
       width: "100%",
       textAlign: 'center',
       justifyContent: 'center',
+      alignItems: "center",
       padding: 10,
       backgroundColor: "rgba(0,0,0,0.5)",
   },
@@ -443,7 +444,7 @@ const styles = StyleSheet.create({
       color: 'white',
       fontSize: 14,
       textAlign: 'center',
-      fontFamily: "montserrat-regular"
+      fontFamily: "montserrat-regular",
   },
   loadingDotsView1: {
     position: "absolute",
