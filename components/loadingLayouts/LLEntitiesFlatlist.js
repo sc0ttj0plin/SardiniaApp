@@ -8,11 +8,18 @@ export default class LLEntitiesFlatlist extends PureComponent{
 
     constructor(props){
         super(props);
+        
+        this.state = {
+            separatorSize: {
+                width: props.separatorSize ? props.separatorSize.width : 10,
+                height: props.separatorSize ? props.separatorSize.height : 10,
+            }
+        }
     }
 
     _renderHorizontalSeparator = () => {
         return (
-          <View style={{width: 10}}></View>
+          <View style={{width: this.state.separatorSize.width}}></View>
         )
     }
 
@@ -24,13 +31,15 @@ export default class LLEntitiesFlatlist extends PureComponent{
             { horizontal===false &&
                 <ShimmerWrapper 
                     style={[styles.item]} 
-                    shimmerStyle={[styles.item, this.props.itemStyle,  
-                        size && {
-                        marginRight: size.marginRight,
-                        marginLeft: size.marginLeft,
-                        marginBottom: size.marginBottom, 
-                        width: size.width,
-                        height: size.height }]}/>
+                    shimmerStyle={[styles.item, this.props.itemStyle, !disableSeparator && {
+                        marginBottom: this.state.separatorSize.height, 
+                    },
+                    size && {
+                    marginRight: size.marginRight,
+                    marginLeft: size.marginLeft,
+                    marginBottom: size.marginBottom, 
+                    width: size.width,
+                    height: size.height }]}/>
             }
             { horizontal || vertical &&
                 <ShimmerWrapper 
@@ -75,7 +84,6 @@ const styles = StyleSheet.create({
     item: {
         width: '100%',
         height: '100%',
-        marginRight: 5,
         borderRadius: 10,
     },
     container: {

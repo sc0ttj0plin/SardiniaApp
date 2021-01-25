@@ -20,6 +20,10 @@ export default class EntityRelatedList extends PureComponent {
             data: props.data || [],
             windowWidth: Layout.window.width,
             itemSizeProperties: itemSizeProperties,
+            separatorSize: {
+                width: props.separatorSize ? props.separatorSize.width : 10,
+                height: props.separatorSize ? props.separatorSize.height : 10,
+            }
         }
     }
 
@@ -71,7 +75,6 @@ export default class EntityRelatedList extends PureComponent {
 
     _renderEntityListItem = (item, index) => {
         const {listType, listTitle, horizontal, itemStyle, disableSeparator} = this.props
-        const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
 
         if(this.props.renderListItem) {
             return this.props.renderListItem(item, index, this.state.itemSizeProperties);
@@ -81,6 +84,7 @@ export default class EntityRelatedList extends PureComponent {
             return this._renderAccomodationListItem(item, index, this.state.itemSizeProperties);
         }
         
+        const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
         let place = item && item.term ? item.term.name : "";
 
         return (
@@ -107,7 +111,7 @@ export default class EntityRelatedList extends PureComponent {
 
     _renderHorizontalSeparator = () => {
         return (
-          <View style={{width: 10}}></View>
+          <View style={{width: this.state.separatorSize.width}}></View>
         )
     }
 
@@ -138,7 +142,7 @@ export default class EntityRelatedList extends PureComponent {
                         size={this.state.itemSizeProperties}
                         error={false}
                         disableSeparator={disableSeparator}
-                        ItemSeparatorComponent={() => <View style={{height: 10}}></View>}
+                        ItemSeparatorComponent={() => <View style={{height: this.state.separatorSize.height}}></View>}
                         />
                 }
                 {horizontal &&
@@ -189,7 +193,7 @@ export default class EntityRelatedList extends PureComponent {
                         initialNumToRender={6} // Reduce initial render amount
                         updateCellsBatchingPeriod={400} // Increase time between renders
                         windowSize={10} // Reduce the window size
-                        ItemSeparatorComponent={() => <View style={{height: 10}}></View>}
+                        ItemSeparatorComponent={() => <View style={{height: this.state.separatorSize.width}}></View>}
                     />
                     </AsyncOperationStatusIndicator>
                 </View>

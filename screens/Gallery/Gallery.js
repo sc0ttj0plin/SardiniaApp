@@ -8,6 +8,7 @@ import {
   EntityItem,
   AsyncOperationStatusIndicator,  
   ConnectedHeader, 
+  CustomText
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -24,12 +25,16 @@ import sampleVrModels from '../../constants/_sampleVrModels';
 import {MEDIA_TYPES} from '../Media/Media';
 import EntityRelatedList from '../../components/EntityRelatedList';
 import { useSafeArea } from 'react-native-safe-area-context';
+import EntityItemInGrid from '../../components/EntityItemInGrid'; 
+import {LLEntitiesFlatlist} from "../../components/loadingLayouts/";
 
 /* Deferred rendering to speedup page inital load: 
    deferred rendering delays the rendering reducing the initial 
    number of components loaded when the page initially mounts.
    Other components are loaded right after the mount */
 const USE_DR = false;
+const PADDING = 3;
+
 class GalleryScreen extends Component {
 
   constructor(props) {
@@ -40,6 +45,10 @@ class GalleryScreen extends Component {
 
     this.state = {
       render: USE_DR ? false : true,
+      itemSize: {
+        width: (Layout.window.width-PADDING*3)/2,
+        height: (Layout.window.width-PADDING*3)/2,
+      }
       //
     };
   }
@@ -59,7 +68,7 @@ class GalleryScreen extends Component {
 
     this._videoUuids = uuids;
 
-    this.props.actions.getPois({ uuids: uuids });
+    setTimeout(() => this.props.actions.getPois({ uuids: uuids }), 1500);
   }
 
   /**
@@ -69,7 +78,9 @@ class GalleryScreen extends Component {
   componentDidUpdate(prevProps) {
     setTimeout(() => {
         if (prevProps.pois !== this.props.pois) {
-            this._getPois(this._videoUuids);
+            this._getPois(this._videoUuids).then(({pois, gridItems}) => {
+              this.setState({pois, gridItems});
+            });
         }
     }, 1);
   }
@@ -100,7 +111,7 @@ class GalleryScreen extends Component {
    * Open single inspirer screen
    * @param {*} item: item list
    */
-  _openVideo = (item) => {
+  _openMedia = (item) => {
     if(item.media_url)
       this.props.navigation.navigate(Constants.NAVIGATION.NavMediaScreen, { source: item.media_url, type: item.mediaType, item: item });
   }
@@ -112,70 +123,150 @@ class GalleryScreen extends Component {
 
   _getPois = (uuids) => {
 
-    var videos = [];
-    sampleVideos.map(mediaItem => {
-      videos.push({...mediaItem});
-    });
-    var vrModels = [];
-    sampleVrModels.map(mediaItem => {
-      vrModels.push({...mediaItem});
-    });
+    return new Promise((res,rej) => {
 
-    let pois = []
-    uuids.map( (uuid, index) => {
-      if(this.props.pois.data[uuid]) {
-        var poi = {...this.props.pois.data[uuid]};
-        
-        videos.map((mediaItem, index) => {
-          if(mediaItem.uuid === poi.uuid && !mediaItem.assigned && !poi.media_url) {
-              poi.media_url = mediaItem.video_url;
-              poi.mediaType = MEDIA_TYPES.VIDEO;
-              poi.uuid_media = uuid + "_" + MEDIA_TYPES.VIDEO;
-              mediaItem.assigned = true;
-          }
-        })
+      var videos = [];
+      sampleVideos.map(mediaItem => {
+        videos.push({...mediaItem});
+      });
+      var vrModels = [];
+      sampleVrModels.map(mediaItem => {
+        vrModels.push({...mediaItem});
+      });
 
-        vrModels.map((mediaItem, index) => {
-          if(mediaItem.uuid === poi.uuid && !mediaItem.assigned && !poi.media_url) {
-              poi.media_url = mediaItem.vr_url;
-              poi.mediaType = MEDIA_TYPES.VIRTUAL_TOUR;
-              poi.uuid_media = uuid + "_" + MEDIA_TYPES.VIRTUAL_TOUR;
-              mediaItem.assigned = true;
-          }
-        });
+      let pois = [];
+      uuids.map( (uuid, index) => {
+        if(this.props.pois.data[uuid]) {
+          var poi = {...this.props.pois.data[uuid]};
+          
+          videos.map((mediaItem, index) => {
+            if(mediaItem.uuid === poi.uuid && !mediaItem.assigned && !poi.media_url) {
+                poi.media_url = mediaItem.video_url;
+                poi.mediaType = MEDIA_TYPES.VIDEO;
+                poi.uuid_media = uuid + "_" + MEDIA_TYPES.VIDEO;
+                mediaItem.assigned = true;
+            }
+          })
 
-        pois.push(poi)
-      }
+          vrModels.map((mediaItem, index) => {
+            if(mediaItem.uuid === poi.uuid && !mediaItem.assigned && !poi.media_url) {
+                poi.media_url = mediaItem.vr_url;
+                poi.mediaType = MEDIA_TYPES.VIRTUAL_TOUR;
+                poi.uuid_media = uuid + "_" + MEDIA_TYPES.VIRTUAL_TOUR;
+                mediaItem.assigned = true;
+            }
+          });
+
+          pois.push(poi);
+        }
+      })
+      var gridItems = this._prepareGridItems(pois);
+
+      res({pois, gridItems})
+    
     })
+  }
 
-    this.setState({ pois: pois });
+
+  _prepareGridItems = (pois) => {
+    var windowWidth = Layout.window.width;
+    var itemSize = this.state.itemSize;
+    var gridItems = [];
+    var currentIndex = 0;
+    var mainItemIndex = 0;
+    while(pois.length - currentIndex > 0) {
+      var random = Math.random();
+      var rowItem = {};
+      rowItem.itemSize = itemSize;
+      rowItem.items = [];
+      if(pois.length - currentIndex >= 3 && random > 0.5) {
+        rowItem.items.push(this._parseEntity(pois[currentIndex++]));
+        rowItem.items.push(this._parseEntity(pois[currentIndex++]));
+        rowItem.items.push(this._parseEntity(pois[currentIndex++]));
+        rowItem.mainItemIndex = mainItemIndex == 0 ? 0 : 2;
+        rowItem.index = gridItems.length;
+        gridItems.push(rowItem);
+        mainItemIndex=(mainItemIndex+1)%2;
+      }
+      else {
+        if(pois[currentIndex]) {
+          rowItem.items.push(this._parseEntity(pois[currentIndex]));
+          currentIndex++;
+        }
+        if(pois[currentIndex]) {
+          rowItem.items.push(this._parseEntity(pois[currentIndex]));
+          currentIndex++;
+        }
+        rowItem.index = gridItems.length;
+        gridItems.push(rowItem);
+      }
+    }
+    return gridItems;
+  }
+
+
+  _parseEntity = (item) => {
+    const title = item.title && _.get(item.title, [this.props.locale.lan, 0, "value"], "");
+    const subtitle = item && item.term ? item.term.name : "";
+    const image = item.image;
+    const media_url = item.media_url, mediaType = item.mediaType, uuid_media = item.uuid_media;
+    return {title, subtitle, image, media_url, mediaType, uuid_media};
   }
 
   /********************* Render methods go down here *********************/
 
 
+  _renderRow = ({item, index}) => {
+    return <EntityItemInGrid
+      itemSize={item.itemSize}
+      items={item.items}
+      mainItemIndex={item.mainItemIndex}
+      keyItem={index}
+      onPressItem={this._openMedia}
+      padding={PADDING}
+    />;
+  }
+
+  _renderLoadingLayout = () => {
+    return <LLEntitiesFlatlist 
+        itemStyle={{
+          width: this.state.itemSize.width,
+          height: this.state.itemSize.height,
+          borderRadius: 0
+        }}
+        numColumns={2}
+        horizontal={false} 
+        style={[styles.fill, styles.listStyle]} 
+        contentContainerStyle={styles.contentContainerStyle}
+        error={false}
+        disableSeparator={false}
+        separatorSize={{width: PADDING, height: PADDING}}
+        />
+  }
+
   _renderContent = () => {
-    const { pois } = this.state;
     const {videoAnd3D} = this.props.locale.messages;
-    const numColumns = 2;
+    const data = this.state.gridItems;
 
     return (
-        <EntityRelatedList
-            horizontal={false}
-            data={pois}
-            keyExtractor={item => item.media_url}
-            showsHorizontalScrollIndicator={false}
-            locale={this.props.locale}
-            numColumns={numColumns}
-            onPressItem={this._openItem}
-            contentContainerStyle={[styles.contentContainerStyle, {paddingBottom: Math.max(this.props.insets.bottom, 10)}]}
-            listType={Constants.ENTITY_TYPES.places}
-            listTitle={videoAnd3D}
-            listTitleStyle={styles.sectionTitle}
-            style={[styles.listStyle]}
-            sideMargins={10}
-            onPressItem={this._openVideo}
-            />
+      <View style={{flex: 1}} onLayout={this._onLayout}>   
+        <CustomText style={[styles.sectionTitle]}>{videoAnd3D}</CustomText>
+          <AsyncOperationStatusIndicator
+              loading={true}
+              success={data && data.length > 0}
+              error={false}
+              loadingLayout={this._renderLoadingLayout()}>
+          <FlatList
+              data={data}
+              keyExtractor={item => item.index}
+              showsHorizontalScrollIndicator={false}
+              numColumns={1}
+              contentContainerStyle={[styles.contentContainerStyle, {paddingBottom: this.props.insets.bottom}]}
+              style={[styles.listStyle]}
+              renderItem={this._renderRow}
+              />
+        </AsyncOperationStatusIndicator>
+      </View>
     );
   }
 
@@ -209,15 +300,10 @@ const styles = StyleSheet.create({
   },
   listStyle: {
     backgroundColor: "transparent",
-    paddingHorizontal: 10
+    paddingHorizontal: 3
   },
   contentContainerStyle: {
-    paddingTop: 10,
-  },
-  listStyleLL: {
-    backgroundColor: "transparent",
-    marginHorizontal: 10,
-    height: "100%",
+    paddingTop: PADDING
   },
   sectionTitle: {
     textAlign: "center",
