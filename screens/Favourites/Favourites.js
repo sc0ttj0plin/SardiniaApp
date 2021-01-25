@@ -108,7 +108,7 @@ class FavouritesScreen extends Component {
         let favUuids = Object.keys(this.props.favourites.accomodations);
         this._getAccomodations(favUuids)
       }
-    }, 1500);
+    }, 1);
   }
     
 
