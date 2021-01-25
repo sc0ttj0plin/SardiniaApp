@@ -26,7 +26,7 @@ import { navigationRef } from "../navigation/RootNavigation"; /* Only usable whe
 */
 
 const USE_DR = false;
-const LINKING_DEFAULT_URL = null; //"https://www.sardegnaturismo.it/it/luoghi/est/tortoli?test=1&test1=2"
+const LINKING_DEFAULT_URL = "https://www.sardegnaturismo.it/it/luoghi/est/tortoli?test=1&test1=2"; /* NOTE: use with _initLinkingAsync */
 const SHOW_MODALS_DELAY = 5000;
 const defaultColors = [ Colors.blue, Colors.yellow, Colors.green, Colors.red ];
 const { Value, Clock, eq, clockRunning, not, cond, startClock, timing, interpolate, and, set, block } = Animated;
@@ -140,7 +140,8 @@ class ConnectedSplashLoader extends Component {
     // Updates
     !__DEV__ && await this._checkUpdates();
     // Linking: supported links: auth + entity references (shows loading linked entity modal)
-    this._initLinkingAsync(); /* use this._initLinkingAsync(LINKING_TEST_URL) for testing */
+    this._initLinkingAsync(); 
+    //this._initLinkingAsync(LINKING_DEFAULT_URL);
     // Network checker
     this._initNetworkChecker();
     //Notifications
@@ -337,7 +338,6 @@ class ConnectedSplashLoader extends Component {
   _initNetworkChecker = () => {
     // Subscribe
     this._unsubscribeNetInfo = NetInfo.addEventListener(state => {
-      console.log(state)
       this.setState({ networkIsConnected: state.isConnected });
       this.props.actions.setNetworkStatus(state);
     });
