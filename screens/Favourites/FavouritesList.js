@@ -133,7 +133,6 @@ class FavouritesListScreen extends Component {
           listTitleStyle={styles.sectionTitle}
           style={styles.list}
           sideMargins={10}
-          disableSeparator
           renderListItem={renderItemFun}
         />
     )
