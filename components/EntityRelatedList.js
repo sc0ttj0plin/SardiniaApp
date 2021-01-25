@@ -196,7 +196,7 @@ export default class EntityRelatedList extends PureComponent {
                         loadingLayout={this._renderLoadingLayout()}>
                     <FlatList 
                         horizontal={horizontal || false}
-                        numColumns={numColumns}
+                        numColumns={horizontal || numColumns}
                         key={listTitle + "-" + numColumns}
                         extraData={extraData}
                         keyExtractor={keyExtractor ? keyExtractor : item => item.uuid.toString()}
