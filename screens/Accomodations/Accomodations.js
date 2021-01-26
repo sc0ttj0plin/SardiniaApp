@@ -155,7 +155,6 @@ class AccomodationsScreen extends Component {
       // uuids: childUuids, /* no need to specify the category since we get random pois */
       offset: nearPois.length,
     })).then((pois) => {
-      console.log(pois.length);
       this.setState({ nearPois: [...nearPois, ...pois] });
     });
   }
