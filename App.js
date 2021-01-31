@@ -36,7 +36,7 @@ export default class App extends Component {
     };
     //Ignores warning boxes
     LogBox.ignoreLogs(['Warning:']); //or: LogBox.ignoreAllLogs();
-    SplashScreen.hideAsync();
+    SplashScreen.preventAutoHideAsync();
   }
 
   async componentDidMount() {

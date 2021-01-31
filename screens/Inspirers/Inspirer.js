@@ -25,7 +25,7 @@ import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-
+import { useSafeArea } from 'react-native-safe-area-context';
 
 const USE_DR = false;
 class InspirerScreen extends Component {
@@ -165,7 +165,7 @@ class InspirerScreen extends Component {
      return (
        <View style={styles.fill}>
          <Toast ref={(toast) => this._toast = toast} positionValue={220} opacity={0.7} />
-         <ScrollView style={styles.fill}>
+         <ScrollView style={[styles.fill]} contentContainerStyle={{paddingBottom: this.props.insets.bottom}}>
           <TopMedia urlVideo={sampleVideoUrl} urlImage={entity.image} />
           {this._renderFab(entity.uuid, title, coordinates, socialUrl)}   
           <View style={[styles.headerContainer]}> 
@@ -259,12 +259,14 @@ function InspirerScreenContainer(props) {
   const navigation = useNavigation();
   const route = useRoute();
   const store = useStore();
+  const insets = useSafeArea();
 
   return <InspirerScreen 
     {...props}
     navigation={navigation}
     route={route}
-    store={store} />;
+    store={store}
+    insets={insets} />;
 }
 
 

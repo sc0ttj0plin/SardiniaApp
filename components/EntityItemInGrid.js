@@ -93,7 +93,8 @@ export default class EntityItemInGrid extends PureComponent {
                 distance={distance}
                 style={[styles.fill, {borderRadius: 0}]}
                 animated={animated}
-                mediaType={mediaType} />
+                mediaType={mediaType}
+                borderRadius={0} />
             
       </ScrollableContainerTouchableOpacity>
     );

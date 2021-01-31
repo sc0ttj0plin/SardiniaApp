@@ -88,15 +88,13 @@ const styles = StyleSheet.create({
       padding: 5
     },
     itemButton: {
-      justifyContent: "center",
-      alignSelf: "center",
       backgroundColor: "#00000055",
     },
     itemButtonText: {
       color: "white",
       borderColor: "white",
       borderWidth: 2,
-      padding: 5,
+      paddingVertical: 5,
       paddingHorizontal: 15,
       fontFamily: "montserrat-bold",
     },

@@ -160,9 +160,7 @@ class ItinerariesScreen extends PureComponent {
           distance={this.state.isCordsInBound ? distanceStr : null}
           style={styles.itinerariesListItem}
           horizontal={false}
-          extraStyle={{
-            width: "100%"
-          }}
+          extraStyle={{width: '100%', marginBottom: 10}}
           animated={true}
         />
       )

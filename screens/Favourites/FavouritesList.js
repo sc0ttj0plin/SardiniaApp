@@ -116,7 +116,6 @@ class FavouritesListScreen extends Component {
   }
 
   _renderList = (list, title, type) => {
-    let renderItemFun = type == Constants.ENTITY_TYPES.accomodations ? this._renderAccomodationListItem : null;
     return (
         <EntityRelatedList
           horizontal={false}
@@ -126,37 +125,16 @@ class FavouritesListScreen extends Component {
           contentContainerStyle={styles.listContainer}
           showsHorizontalScrollIndicator={false}
           locale={this.props.locale}
-          numColumns={2}
           onPressItem={this._openItem}
           listType={type}
           listTitle={title}
           listTitleStyle={styles.sectionTitle}
           style={styles.list}
-          sideMargins={10}
-          renderListItem={renderItemFun}
+          sideMargins={20}
+          disableSeparator={false}
         />
     )
   }
-
-
-  _renderAccomodationListItem = (item, index) => {
-    const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
-    const termName = _.get(item, "term.name", "")
-    return (
-      <AccomodationItem 
-        index={index}
-        keyItem={item.nid}
-        horizontal={false}
-        sizeMargins={10}
-        title={title}
-        term={termName}
-        stars={item.stars}
-        onPress={() => this._openItem(item, Constants.ENTITY_TYPES.accomodations)}
-        location={item.location}
-        distance={item.distanceStr}
-        extraStyle={styles.accomodationListItem}
-      />
-  )}
 
   _renderContent = () => {
     const { favouritesPlaces, favouritesEvents, favouriteItineraries } = this.props.locale.messages;
@@ -206,10 +184,11 @@ const styles = StyleSheet.create({
     fontFamily: "montserrat-bold",
   },
   listContainer: {
-    paddingVertical: 20
+    paddingVertical: 20,
+    paddingHorizontal: 10,
   },
   list: {
-    marginHorizontal: 10,
+    
   },
   listStyle: {
     paddingTop: 10, 

@@ -212,8 +212,7 @@ class ScrollableContainer extends PureComponent {
             initialNumToRender={8}
             maxToRenderPerBatch={2}
             numColumns={numColumns || 1}
-            contentContainerStyle={styles.contentContainerStyle}
-            ItemSeparatorComponent={() => <View style={{height: 10}}></View>} />
+            contentContainerStyle={styles.contentContainerStyle}/>
       </AsyncOperationStatusIndicator>);
   }
 

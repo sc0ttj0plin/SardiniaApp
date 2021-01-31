@@ -155,7 +155,6 @@ class AccomodationsScreen extends Component {
       // uuids: childUuids, /* no need to specify the category since we get random pois */
       offset: nearPois.length,
     })).then((pois) => {
-      console.log(pois.length);
       this.setState({ nearPois: [...nearPois, ...pois] });
     });
   }
@@ -275,12 +274,14 @@ class AccomodationsScreen extends Component {
         extraStyle={ horizontal ? {
           borderColor: Colors.lightGray,
           borderWidth: 1,
-          marginBottom: 0
+          marginBottom: 0,
+          marginRight: 10
         } : {
           width: '100%',
           borderColor: Colors.lightGray,
           borderWidth: 1,
-          marginLeft: 0
+          marginLeft: 0,
+          marginBottom: 10
         }}
         horizontal={horizontal}
         sizeMargins={20}

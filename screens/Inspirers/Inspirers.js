@@ -19,6 +19,7 @@ import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
 import { LLVerticalItemsFlatlist } from "../../components/loadingLayouts";
+import { useSafeArea } from 'react-native-safe-area-context';
 
 /* Deferred rendering to speedup page inital load: 
    deferred rendering delays the rendering reducing the initial 
@@ -185,6 +186,7 @@ class InspirersScreen extends Component {
           sideMargins={10}
           extraStyle={styles.inspirersListItem}
           animated={true}
+          style={{marginBottom: 10}}
         />
       )
     else 
@@ -193,7 +195,7 @@ class InspirersScreen extends Component {
 
   /* Renders categories list */
   _renderCategoryListItem = (item) => 
-      <CategoryListItem onPress={() => this._selectCategory(item)} image={item.image} title={item.name} />;
+      <CategoryListItem onPress={() => this._selectCategory(item)} image={item.image} title={item.name} style={{marginBottom: 10}}/>;
 
 
   _renderContent = () => {
@@ -226,11 +228,10 @@ class InspirersScreen extends Component {
             key={"shimmer-layout" + numColumns} 
             itemStyle={styles.itemFlatlist} 
             style={styles.listStyleLL} 
-            bodyContainerStyle={styles.listContainer}/>}>
+            bodyContainerStyle={styles.listContainerLL}/>}>
           <View style={styles.listView}> 
             <FlatList
               ref={(ref) => this._refFlatList = ref}
-              ItemSeparatorComponent={() => <View style={{width: "100%", height: 10}}></View>}
               data={flatListData}
               renderItem={renderItem}
               numColumns={numColumns}
@@ -240,7 +241,7 @@ class InspirersScreen extends Component {
               initialNumToRender={6} // Reduce initial render amount
               maxToRenderPerBatch={2}
               showsVerticalScrollIndicator={false}
-              contentContainerStyle={styles.listContainerStyle}
+              contentContainerStyle={[styles.listContainer]}
               style={styles.listStyle}
               updateCellsBatchingPeriod={400} // Increase time between renders
               windowSize={5} // Reduce the window size
@@ -294,12 +295,10 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   //loading layout
-  listContainer: {
+  listContainerLL: {
     marginTop: 0,
     paddingTop: 0,
-    backgroundColor: "transparent",
     marginHorizontal: 20
-
   },
   listContainerHeader: {
     paddingLeft: 10,
@@ -312,9 +311,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     height: "100%",
   },
-  listContainerStyle: {
-    paddingBottom: 100,
-    paddingTop: 10
+  listContainer: {
+    paddingTop: 10,
+    paddingBottom: 60
   },
   listStyleLL: {
     backgroundColor: "transparent",
@@ -338,13 +337,15 @@ function InspirersScreenContainer(props) {
   const route = useRoute();
   const store = useStore();
   const isFocused = useIsFocused();
+  const insets = useSafeArea();
 
   return <InspirersScreen 
     {...props}
     navigation={navigation}
     route={route}
     store={store}
-    isFocused={isFocused} />;
+    isFocused={isFocused}
+    insets={insets} />;
 }
 
 

@@ -616,7 +616,7 @@ export const styles = {
     selectedDotColor: '#ffffff',
     disabledArrowColor: '#d9e1e8',
     indicatorColor: 'blue',
-    textDayFontSize: 14,
+    textDayFontSize: 15,
     textMonthFontSize: 16,
     textDayHeaderFontSize: 12,
     // textDayStyle: {marginTop: Platform.OS === 'android' ? 2 : 4},

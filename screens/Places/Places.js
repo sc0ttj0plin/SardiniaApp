@@ -260,8 +260,9 @@ class PlacesScreen extends PureComponent {
           index={index}
           keyItem={item.nid}
           extraStyle={ horizontal ? {
-            marginBottom: 0
-          } : {width: '100%'}}
+            marginBottom: 0,
+            marginRight: 10
+          } : {width: '100%', marginBottom: 10}}
           backgroundTopLeftCorner={"white"}
           iconColor={Colors.colorPlacesScreen}
           listType={Constants.ENTITY_TYPES.places}
@@ -271,8 +272,6 @@ class PlacesScreen extends PureComponent {
           image={item.image}
           distance={this.state.isCordsInBound ? item.distanceStr : ""}
           horizontal={horizontal}
-          sideMargins={20}
-          topSpace={10}
           animated={true}
         />
       )

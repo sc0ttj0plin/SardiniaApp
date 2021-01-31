@@ -28,7 +28,7 @@
       "associatedDomains": [
         "applinks:www.sardegnaturismo.it"
       ],
-      "supportsTablet": false,
+      "supportsTablet": true,
       "config": {
         "googleMapsApiKey": "AIzaSyA5YkfcNGR6dX062bFqhaZ1Asdr2uaNFJo"
       },

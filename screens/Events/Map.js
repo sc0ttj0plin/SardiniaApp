@@ -399,6 +399,7 @@ const styles = StyleSheet.create({
     borderColor: "#0000001A",
     borderRadius: 10,
     width: "100%",
+    marginBottom: 10
   },
   widget: {
     width: "100%",

@@ -23,9 +23,9 @@ class GeoRefHListItem extends PureComponent{
 
 
   render() {
-    const { distance = "", title = "", subtitle = "", animated, mediaType} = this.props;
+    const { distance = "", title = "", subtitle = "", animated, mediaType, borderRadius = 8} = this.props;
     return (
-      <View style={[styles.container, this.props.style]}>
+      <View style={[styles.container, this.props.style, {borderRadius: borderRadius}]}>
         <ShimmerWrapper shimmerStyle={styles.shimmer} />
         <View style={[styles.image]}>
           <AnimatedImage animated={animated} image={this.props.image} style={[styles.image]} />
@@ -57,14 +57,10 @@ class GeoRefHListItem extends PureComponent{
 }
 
 const styles = StyleSheet.create({  
-    spinner: {
-      marginBottom: 20
-    },
     container: {
       backgroundColor: "white",
       alignItems: "flex-start",
-      overflow: "hidden",
-      borderRadius: 8
+      overflow: "hidden"
     },
     title: {
       fontSize: 12,
