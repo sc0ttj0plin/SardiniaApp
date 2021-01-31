@@ -36,7 +36,7 @@ export default class App extends Component {
     };
     //Ignores warning boxes
     LogBox.ignoreLogs(['Warning:']); //or: LogBox.ignoreAllLogs();
-    SplashScreen.preventAutoHideAsync();
+    SplashScreen.hideAsync();
   }
 
   async componentDidMount() {
@@ -45,54 +45,8 @@ export default class App extends Component {
   
   _initAppAsync = async () => {
     await this._loadResourcesAsync();
-    // await this._initFirebaseAppAndLogin();
-    /* testing deep linking */
-    // await this._initLinkingAsync("https://www.sardegnaturismo.it/it/luoghi/est/tortoli");
-    // await this._initLinkingAsync("https://www.sardegnaturismo.it/it/i-mari-del-sud-acqua-caraibica-e-anima-mediterranea?language=it");
-    // await this._initLinkingAsync();
     this._handleFinishLoading();
   }
-
-  // _initLinkingAsync = async (forceUrl=null) => {
-  //   //app is closed
-  //   const closedAppUrl = forceUrl || await Linking.getInitialURL();
-  //   if (closedAppUrl) {
-  //     store.dispatch(actions.setUrl(closedAppUrl));
-  //     console.log("Linking.getInitialURL", closedAppUrl)
-  //     this._parseLinkingUrl(closedAppUrl);
-  //   }
-  //   //or app is opened 
-  //   Linking.addEventListener('url', ({ url: openedAppUrl }) => {
-  //     const url = forceUrl || openedAppUrl;
-  //     console.log("Linking.addEventListener", url);
-  //     store.dispatch(actions.setUrl(url));
-  //     this._parseLinkingUrl(url);
-  //   });
-  // }
-
-
-  // _parseLinkingUrl = async (url) => {
-  //   //Login url type
-  //   if (url.indexOf(Constants.LINKING_AUTH_SEARCHSTR) >=0) {
-  //     if(!store.getState().authState.success) {
-  //       store.dispatch(actions.passwordLessLinkHandler(url));
-  //     }
-  //   }
-  // }
-
-  // _initFirebaseAppAndLogin = () => {
-  //   //Initialize app is synchronous
-  //   if (firebase.apps.length === 0)
-  //     firebase.initializeApp(config.firebase);
-  //   this._performLogin();
-  // }
-
-  // _performLogin = async () => {
-  //   //Attempt login using exiting user info
-  //   const email = await AsyncStorage.getItem('email');
-  //   if (email) 
-  //     store.dispatch(actions.passwordLessLogin());
-  // }
 
   _loadResourcesAsync = async () => {
     await Promise.all([
@@ -145,12 +99,6 @@ export default class App extends Component {
 
   }
 
-
-  //<Image 
-  //source={require("./assets/videos/splash_mare.gif")}
-  //onLoad={this._onSplashIntroLoad}
-  //resizeMode="cover"
-  //style={[styles.backgroundGif]} />
 
   render() {
     if(this.state.isLoadingComplete) {

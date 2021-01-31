@@ -136,7 +136,7 @@ class ConnectedSplashLoader extends Component {
    */
   _initWithFeedback = async () => {
     this.setState({ canShowModals: true });
-    console.log("initialization with feedback");
+    console.log("initialization with feedback aa");
     // Updates
     !__DEV__ && await this._checkUpdates();
     // Linking: supported links: auth + entity references (shows loading linked entity modal)
@@ -274,6 +274,7 @@ class ConnectedSplashLoader extends Component {
   _initLinkingAsync = async (forceUrl=null) => {
     //app is closed
     const closedAppUrl = forceUrl || await Linking.getInitialURL();
+    console.log("closedurl", closedAppUrl);
     if (closedAppUrl) {
       console.log("Linking.getInitialURL", closedAppUrl)
       this._parseLinkingUrl(closedAppUrl);
@@ -352,7 +353,7 @@ class ConnectedSplashLoader extends Component {
 
   /********************* Render methods go down here *********************/
 
-  _renderSplash = () => {
+  _renderSplashImage = () => {
     const { opacity } = this.state;
     return (
       <Animated.View style={[styles.loadingGif, {opacity}]} >
@@ -361,7 +362,7 @@ class ConnectedSplashLoader extends Component {
           resizeMode="cover"
           onLoad={this._onSplashLoad}
           style={[styles.backgroundGif]} />
-        <View style={[styles.loadingDotsView1, {bottom: 100}]}>
+        <View style={[styles.loadingDotsView1]}>
           <View style={styles.loadingDotsView2}>
             <LoadingDots isLoading={true}/>
           </View>
@@ -446,7 +447,7 @@ class ConnectedSplashLoader extends Component {
 
     return (
       <>
-        {show && this._renderSplash()}
+        {show && this._renderSplashImage()}
         {canShowModals && showUpdate && this._renderUpdate()}
         {canShowModals && showLinking && this._renderLinking()}
         {canShowModals && !networkIsConnected && this._renderNetworkCheck()}
@@ -466,7 +467,10 @@ const styles = StyleSheet.create({
   backgroundGif: {
     width: "100%",
     height: "100%",
-    position: "absolute"
+    position: "absolute",
+    top: 0,
+    left: 0,
+    zIndex: 1
   },
   loadingGif: {
     flex: 1,
@@ -474,17 +478,20 @@ const styles = StyleSheet.create({
     zIndex: 10000,
     width: "100%",
     height: "100%",
+    top: 0,
+    left: 0
   },
   loadingDotsView1: {
     position: "absolute",
-    bottom: 0,
+    bottom: 100,
     left: 0,
-    width: '100%',
+    zIndex: 999,
+    width: "100%",
     alignItems: "center",
     justifyContent: "center"
   },
   loadingDotsView2: {
-    width: 100
+    width: 100,
   },
   // UPDATE
   modalView: {
@@ -518,16 +525,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginBottom: 14,
     fontFamily: "montserrat-regular"
-  },
-  loadingDotsView1: {
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-    height: 100,
-  },
-  loadingDotsView2: {
-    width: 100,
-    height: 30
   },
   modalButtons: {
     flexDirection: "row",
