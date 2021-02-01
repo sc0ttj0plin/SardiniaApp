@@ -7,7 +7,8 @@ import {
   AsyncOperationStatusIndicator, 
   ConnectedHeader, 
   ConnectedAuthHandler,
-  CustomText
+  CustomText,
+  ScreenErrorBoundary
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -200,10 +201,12 @@ class TutorialScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader/>
-        {render && this._renderContent()}
-      </View>
+      <ScreenErrorBoundary>
+        <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
+          <ConnectedHeader/>
+          {render && this._renderContent()}
+        </View>
+      </ScreenErrorBoundary>
     )
   }
   

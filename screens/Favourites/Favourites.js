@@ -6,7 +6,8 @@ import {
   AccomodationItem,
   AsyncOperationStatusIndicator, 
   ConnectedHeader, 
-  CustomText
+  CustomText,
+  ScreenErrorBoundary
  } from "../../components";
 import TouchableOpacity from "../../components/ScrollableContainerTouchableOpacity"
 import { connect, useStore } from 'react-redux';
@@ -304,27 +305,28 @@ class FavouritesScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onLayout}>
-        <ConnectedHeader />
-        <AsyncOperationStatusIndicator
-          loading={this._isLoadingData()}
-          success={this._isSuccessData()}
-          error={this._isErrorData()}
-          loadingLayout={<EntityRelatedList 
-            horizontal={false}
-            extraData={this.props.locale}
-            keyExtractor={item => item.uuid.toString()}
-            showsHorizontalScrollIndicator={false}
-            locale={this.props.locale}
-            onPressItem={this._openItem}
-            style={[styles.fill, {paddingTop: 60, padding: 10}]}
-            error={false}/>
-            }>
-            {this._renderNoFavourites()}
-            {render && this._renderContent()}
-        </AsyncOperationStatusIndicator>
-        
-      </View>
+      <ScreenErrorBoundary>
+        <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onLayout}>
+          <ConnectedHeader />
+          <AsyncOperationStatusIndicator
+            loading={this._isLoadingData()}
+            success={this._isSuccessData()}
+            error={this._isErrorData()}
+            loadingLayout={<EntityRelatedList 
+              horizontal={false}
+              extraData={this.props.locale}
+              keyExtractor={item => item.uuid.toString()}
+              showsHorizontalScrollIndicator={false}
+              locale={this.props.locale}
+              onPressItem={this._openItem}
+              style={[styles.fill, {paddingTop: 60, padding: 10}]}
+              error={false}/>
+              }>
+              {this._renderNoFavourites()}
+              {render && this._renderContent()}
+          </AsyncOperationStatusIndicator>
+        </View>
+      </ScreenErrorBoundary>
     )
   }
   

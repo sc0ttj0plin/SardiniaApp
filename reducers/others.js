@@ -16,6 +16,9 @@ const INITIAL_STATE = {
   checkForUpdates: true, // see notes in reducer.
   networkStatus: {},
   navigatorReady: false,
+  //global redux error
+  reduxError: null, //the error object
+  reduxErrorSourceAction: null, //the action that caused the error (retry)
 }
 
 
@@ -153,6 +156,18 @@ export default function reducer(state = INITIAL_STATE, action) {
       return {
         ...state,
         mainScreenDidMount: action.payload
+      }
+    case Constants.SET_ERROR:
+      return {
+        ...state,
+        reduxError: action.payload.error,
+        reduxErrorSourceAction: action.payload.sourceAction
+      }
+    case Constants.UNSET_ERROR: 
+      return {
+        ...state,
+        reduxError: null,
+        reduxErrorSourceAction: null,
       }
     default:
       return state;

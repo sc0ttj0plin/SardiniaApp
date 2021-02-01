@@ -8,7 +8,8 @@ import {
   ConnectedMapScrollable,
   EntityItem,
   CustomText,
-  SectionTitle
+  SectionTitle,
+  ScreenErrorBoundary,
  } from "../../components";
 import { coordsInBound, distance, distanceToString, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
 // import MapView from "react-native-map-clustering";
@@ -297,19 +298,20 @@ const extraModalProps = {
   render() {
     const { render, hideScrollable } = this.state;
     return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onPageLayout}>
-        <ConnectedHeader 
-          iconTintColor={Colors.colorEventsScreen}  
-          backButtonVisible={true}
-        />
-        {this.state.headerTitle && 
-          <View style={styles.calendarListTitleView}>
-            <CustomText style={styles.calendarListTitle}>{this.state.headerTitle}</CustomText>
-          </View>
-        }
-        
-        {render && this._renderContent()}
-      </View>
+      <ScreenErrorBoundary>
+        <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onPageLayout}>
+          <ConnectedHeader 
+            iconTintColor={Colors.colorEventsScreen}  
+            backButtonVisible={true}
+          />
+          {this.state.headerTitle && 
+            <View style={styles.calendarListTitleView}>
+              <CustomText style={styles.calendarListTitle}>{this.state.headerTitle}</CustomText>
+            </View>
+          }
+          {render && this._renderContent()}
+        </View>
+      </ScreenErrorBoundary>
     )
   }
   

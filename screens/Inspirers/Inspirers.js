@@ -8,6 +8,7 @@ import {
   EntityItem,
   AsyncOperationStatusIndicator,  
   ConnectedHeader, 
+  ScreenErrorBoundary
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -255,14 +256,16 @@ class InspirersScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader 
-          onBackPress={this._backButtonPress}
-          iconTintColor={Colors.colorInspirersScreen}  
-          backButtonVisible={this.props.others.inspirersTerms.length > 0}
-        />
-        {render && this._renderContent()}
-      </View>
+      <ScreenErrorBoundary>
+        <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
+          <ConnectedHeader 
+            onBackPress={this._backButtonPress}
+            iconTintColor={Colors.colorInspirersScreen}  
+            backButtonVisible={this.props.others.inspirersTerms.length > 0}
+          />
+          {render && this._renderContent()}
+        </View>
+      </ScreenErrorBoundary>
     )
   }
   

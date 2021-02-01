@@ -5,7 +5,12 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Image } from "react-native-elements";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
-import { ConnectedHeader, CustomText, EntityItem } from "../../components";
+import { 
+  ConnectedHeader, 
+  CustomText, 
+  EntityItem,
+  ScreenErrorBoundary,
+ } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
@@ -258,11 +263,13 @@ class ItineraryStagesMapScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onLayout}>
-        <ConnectedHeader iconTintColor={Colors.colorItinerariesScreen} />
-        {render && this._renderMapTitle()}
-        {render && this._renderContent()}
-      </View>
+      <ScreenErrorBoundary>
+        <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onLayout}>
+          <ConnectedHeader iconTintColor={Colors.colorItinerariesScreen} />
+          {render && this._renderMapTitle()}
+          {render && this._renderContent()}
+        </View>
+      </ScreenErrorBoundary>
     )
   }
   

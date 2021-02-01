@@ -15,7 +15,8 @@ import {
   EntityAccomodations,
   TopMedia,
   ConnectedFab, 
-  EntityVirtualTour
+  EntityVirtualTour,
+  ScreenErrorBoundary
  } from "../../components";
 import Toast from 'react-native-easy-toast';
 import { connect, useStore } from 'react-redux';
@@ -295,10 +296,12 @@ class PlaceScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader iconTintColor="#24467C" />
-        {render && this._renderContent()}
-      </View>
+      <ScreenErrorBoundary>
+        <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
+          <ConnectedHeader iconTintColor="#24467C" />
+          {render && this._renderContent()}
+        </View>
+      </ScreenErrorBoundary>
     )
   }
   

@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import {  Platform, KeyboardAvoidingView, StyleSheet, ActivityIndicator, BackHandler, TouchableOpacity, PixelRatio } from 'react-native';
 import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native';
-import { ConnectedHeader, CustomText } from "../../components";
+import { 
+  ConnectedHeader, 
+  CustomText,
+  ScreenErrorBoundary,
+} from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import actions from '../../actions';
@@ -513,27 +517,31 @@ class Login extends Component {
       // Not yet authenticated (input -> sent -> error)
       const { register } = this.props.locale.messages;
       return (
-        <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-          <ConnectedHeader onBackPress={this._onBackPress} />
-          <CustomText style={styles.title}>{register}</CustomText>
-          {loginStep === AUTH_STATES.INIT && this._renderInit()}
-          {loginStep === AUTH_STATES.LINK_SENT && this._renderLinkSent()}
-          {loginStep === AUTH_STATES.ERROR && this._renderError()}
-          {/*this._renderAuthOutcome()*/}
-        </View>
+        <ScreenErrorBoundary>
+          <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
+            <ConnectedHeader onBackPress={this._onBackPress} />
+            <CustomText style={styles.title}>{register}</CustomText>
+            {loginStep === AUTH_STATES.INIT && this._renderInit()}
+            {loginStep === AUTH_STATES.LINK_SENT && this._renderLinkSent()}
+            {loginStep === AUTH_STATES.ERROR && this._renderError()}
+            {/*this._renderAuthOutcome()*/}
+          </View>
+        </ScreenErrorBoundary>
       )
     } else if (this.props.auth.success) {
       const { profile } = this.props.locale.messages;
       return (
-        <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-          <ConnectedHeader onBackPress={this._onBackPress} />
-          <CustomText style={styles.title}>{profile}</CustomText>
-          {loginStep === AUTH_STATES.PROFILE_REMOVE && this._renderProfileRemove()}
-          {loginStep === AUTH_STATES.PROFILE_EDIT && this._renderProfileEdit()}
-          {loginStep === AUTH_STATES.PROFILE_SHOW && this._renderProfileShow()}
-          {loginStep === AUTH_STATES.ERROR && this._renderError()}
-          {loginStep === AUTH_STATES.LOGOUT && this._renderLogout()}
-        </View>
+        <ScreenErrorBoundary>
+          <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
+            <ConnectedHeader onBackPress={this._onBackPress} />
+            <CustomText style={styles.title}>{profile}</CustomText>
+            {loginStep === AUTH_STATES.PROFILE_REMOVE && this._renderProfileRemove()}
+            {loginStep === AUTH_STATES.PROFILE_EDIT && this._renderProfileEdit()}
+            {loginStep === AUTH_STATES.PROFILE_SHOW && this._renderProfileShow()}
+            {loginStep === AUTH_STATES.ERROR && this._renderError()}
+            {loginStep === AUTH_STATES.LOGOUT && this._renderLogout()}
+          </View>
+        </ScreenErrorBoundary>
       );
     } else {
       return null;

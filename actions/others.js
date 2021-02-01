@@ -125,3 +125,18 @@ export const setNavigatorReady = (ready) => ({ type: Constants.SET_NAVIGATOR_REA
  * @param {*} mounted true or false
  */
 export const setMainScreenMounted = (mounted) => ({ type: Constants.SET_MAIN_SCREEN_MOUNTED, payload: mounted });
+
+/**
+ * Set/unset a global error (with the corresponding action)
+ * This action is to be used in the apollo middleware + rest middleware to notify about failed actions 
+ * @param {*} error The error generated during an action
+ * @param {*} action The action that caused the error (for retry purposes)
+ */
+export const setReduxError = (error, sourceAction) => ({ type: Constants.SET_ERROR, payload: { error, sourceAction } });
+export const unsetReduxError = () => ({ type: Constants.UNSET_ERROR });
+
+/**
+ * Send an action to redux (used to retry a possibly failed action)
+ * @param {*} action The action to submit
+ */
+export const sendAction = (action) => ({ ...action });

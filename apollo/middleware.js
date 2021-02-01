@@ -2,6 +2,7 @@ import _ from 'lodash';
 import * as Constants from '../constants';
 import * as Queries from './queryTemplates';
 import { processCategories, processEventTypes, processEntity, _tmpAddMockPois } from "./utils";
+import { setReduxError } from '../actions';
 
 /**
  * Creates the apollo middleware to intercept actions and dispatch success/error actions through redux
@@ -24,6 +25,7 @@ const apolloMiddleware = client => {
             console.log(e);
             //also dispatch the id which has failed
             store.dispatch({ type: Constants.GET_POI_FAIL, payload: e });
+            store.dispatch(setReduxError(e, action));
           });
         }
         else if (action.type === Constants.GET_POIS) {
@@ -44,6 +46,7 @@ const apolloMiddleware = client => {
             console.log(e);
             //also dispatch the id which has failed
             store.dispatch({ type: Constants.GET_POIS_FAIL, payload: e });
+            store.dispatch(setReduxError(e, action));
           });
         }
         else if (action.type === Constants.GET_INSPIRER) {
@@ -61,6 +64,7 @@ const apolloMiddleware = client => {
             console.log(e);
             //also dispatch the id which has failed
             store.dispatch({ type: Constants.GET_INSPIRER_FAIL, payload: e });
+            store.dispatch(setReduxError(e, action));
           });
         }
         else if (action.type === Constants.GET_INSPIRERS) {
@@ -83,6 +87,7 @@ const apolloMiddleware = client => {
             console.log(e);
             //also dispatch the id which has failed
             store.dispatch({ type: Constants.GET_INSPIRERS_FAIL, payload: e });
+            store.dispatch(setReduxError(e, action));
           });
         }
         else if (action.type === Constants.GET_INSPIRERS_BY_ID) {
@@ -102,6 +107,7 @@ const apolloMiddleware = client => {
             console.log(e);
             //also dispatch the id which has failed
             store.dispatch({ type: Constants.GET_INSPIRERS_BY_ID_FAIL, payload: e });
+            store.dispatch(setReduxError(e, action));
           });
         }
         else if (action.type === Constants.GET_EXTRAS) {
@@ -122,6 +128,7 @@ const apolloMiddleware = client => {
             console.log(e);
             //also dispatch the id which has failed
             store.dispatch({ type: Constants.GET_EXTRAS_FAIL, payload: e });
+            store.dispatch(setReduxError(e, action));
           });
         }
         else if (action.type === Constants.GET_CATEGORIES) {
@@ -132,7 +139,7 @@ const apolloMiddleware = client => {
                 if (resp.data) {
                     var termsMap = {};
                     var terms = processCategories(resp.data.terms, termsMap);
-                    let dispacth = { 
+                    let dispatch = { 
                       type: Constants.GET_CATEGORIES_SUCCESS, 
                       payload: { 
                         vid: action.query.vid,
@@ -140,11 +147,12 @@ const apolloMiddleware = client => {
                         termsMap: { [action.query.vid]: termsMap }
                       }  
                     };
-                    store.dispatch(dispacth);
+                    store.dispatch(dispatch);
                 }
             }).catch((e) => {
                 console.log(e);
                 store.dispatch({ type: Constants.GET_CATEGORIES_FAIL, payload: e });
+                store.dispatch(setReduxError(e, action));
             });
         }
         else if (action.type === Constants.GET_EVENTS) {
@@ -175,6 +183,7 @@ const apolloMiddleware = client => {
               start: action.query.start, end: action.query.end,
               payload: e
             });
+            store.dispatch(setReduxError(e, action));
           });
         } 
         else if (action.type === Constants.GET_EVENTS_BY_ID) {
@@ -203,6 +212,7 @@ const apolloMiddleware = client => {
               start: action.query.start, end: action.query.end,
               payload: e
             });
+            store.dispatch(setReduxError(e, action));
           });
         } 
         else if (action.type === Constants.GET_EVENT_TYPES) {
@@ -220,6 +230,7 @@ const apolloMiddleware = client => {
               type: Constants.GET_EVENT_TYPES_FAIL,
               payload: e
             });
+            store.dispatch(setReduxError(e, action));
           });
         }
         else if (action.type === Constants.GET_ITINERARIES) {
@@ -241,6 +252,7 @@ const apolloMiddleware = client => {
               type: Constants.GET_ITINERARIES_FAIL,
               payload: e
             });
+            store.dispatch(setReduxError(e, action));
           });
         }
         else if (action.type === Constants.GET_ITINERARIES_BY_ID) {
@@ -262,6 +274,7 @@ const apolloMiddleware = client => {
               type: Constants.GET_ITINERARIES_BY_ID_FAIL,
               payload: e
             });
+            store.dispatch(setReduxError(e, action));
           });
         }
         else if (action.type === Constants.AUTOCOMPLETE) {
@@ -286,6 +299,7 @@ const apolloMiddleware = client => {
               type: Constants.AUTOCOMPLETE_FAIL,
               payload: e
             });
+            store.dispatch(setReduxError(e, action));
           });
         }
         else if (action.type === Constants.SEARCH) {
@@ -311,6 +325,7 @@ const apolloMiddleware = client => {
               type: Constants.SEARCH_FAIL,
               payload: e
             });
+            store.dispatch(setReduxError(e, action));
           });
         }
         else if (action.type === Constants.GET_ACCOMODATIONS) {
@@ -333,6 +348,7 @@ const apolloMiddleware = client => {
             console.log(e);
             //also dispatch the id which has failed
             store.dispatch({ type: Constants.GET_ACCOMODATIONS_FAIL, payload: e });
+            store.dispatch(setReduxError(e, action));
           });
         }
         else if (action.type === Constants.GET_ACCOMODATION) {
@@ -350,6 +366,7 @@ const apolloMiddleware = client => {
             console.log(e);
             //also dispatch the id which has failed
             store.dispatch({ type: Constants.GET_ACCOMODATION_FAIL, payload: e });
+            store.dispatch(setReduxError(e, action));
           });
         }
         else if (action.type === Constants.GET_ACCOMODATIONS_BY_ID) {
@@ -369,6 +386,7 @@ const apolloMiddleware = client => {
             console.log(e);
             //also dispatch the id which has failed
             store.dispatch({ type: Constants.GET_ACCOMODATIONS_BY_ID_FAIL, payload: e });
+            store.dispatch(setReduxError(e, action));
           });
         }
         next(action);

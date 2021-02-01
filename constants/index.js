@@ -136,6 +136,8 @@ export const CHECK_FOR_UPDATES = 'sardinia/others/CHECK_FOR_UPDATES';
 export const SET_NETWORK_STATUS = 'sardinia/others/SET_NETWORK_STATUS';
 export const SET_NAVIGATOR_READY = 'sardinia/others/SET_NAVIGATOR_READY';
 export const SET_MAIN_SCREEN_MOUNTED = 'sardinia/others/SET_MAIN_SCREEN_MOUNTED';
+export const SET_ERROR = 'sardinia/others/SET_ERROR';
+export const UNSET_ERROR = 'sardinia/others/UNSET_ERROR';
 
 // API
 export const FETCH_NUM_MONTHS_BACKWARDS = 1;

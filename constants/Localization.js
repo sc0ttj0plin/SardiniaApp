@@ -180,6 +180,12 @@ const dict = {
     //App Location Tracking background
     notificationTitle: "L'app Sardinia ti avvisa",
     notificationBody: "Sei vicino ad un punto di interesse!",
+    //Redux error 
+    reduxErrorTitle: "Ops, qualcosa è andato storto",
+    reduxErrorBody: "L'applicazione ha riscontrato un'errore.",
+    //Generic Screen error
+    screenErrorTitle: "Ops, qualcosa è andato storto",
+    screenErrorBody: "L'applicazione ha riscontrato un'errore.",
   },
   [enKey]: {
     //GENERIC
@@ -353,6 +359,12 @@ const dict = {
     //App Location Tracking background
     notificationTitle: "Sardinia App Location",
     notificationBody: "Sardinia App is tracking your location",
+    //Redux error 
+    reduxErrorTitle: "Ops, something has gone wrong",
+    reduxErrorBody: "The application has encountered an error.",
+    //Generic Screen error
+    screenErrorTitle: "Ops, something has gone wrong",
+    screenErrorBody: "The application has encountered an error.",
   },
   zhKey: {},
   frKey: {},
