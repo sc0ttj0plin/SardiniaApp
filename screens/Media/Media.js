@@ -83,6 +83,8 @@ class MediaScreen extends PureComponent {
     /* Get props from navigation */ 
     const { source, type, images, initialPage, item } = this.props.route.params;
     this._refs = {};
+
+    console.log(item);
     
     this.state = {
       render: USE_DR ? false : true,
@@ -242,7 +244,7 @@ class MediaScreen extends PureComponent {
   _onOpenEntityPressed = () => {
     if(this._refs["vplayer"])
       this._refs["vplayer"].stopAsync();
-    this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item: this.state.item });
+    this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item: this.state.item, mustFetch: true });
   }
 
 

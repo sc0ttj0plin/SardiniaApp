@@ -216,8 +216,8 @@ class GalleryScreen extends Component {
     const title = item.title && _.get(item.title, [this.props.locale.lan, 0, "value"], "");
     const subtitle = item && item.term ? item.term.name : "";
     const image = item.image;
-    const media_url = item.media_url, mediaType = item.mediaType, uuid_media = item.uuid_media;
-    return {title, subtitle, image, media_url, mediaType, uuid_media};
+    const media_url = item.media_url, mediaType = item.mediaType, uuid_media = item.uuid_media, uuid = item.uuid;
+    return {title, subtitle, image, media_url, mediaType, uuid_media, uuid};
   }
 
   /********************* Render methods go down here *********************/

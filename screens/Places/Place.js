@@ -41,6 +41,8 @@ class PlaceScreen extends Component {
     this._entity = props.route.params.item;
     const { uuid } = props.route.params.item;
     const { mustFetch, nestingCounter = 1 } = props.route.params; /* no effect since place fetches anyway */
+    console.log(uuid, mustFetch);
+
     /* Get props from navigation */
     this.state = {
       render: USE_DR ? false : true,
