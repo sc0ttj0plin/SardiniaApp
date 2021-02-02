@@ -136,6 +136,7 @@ export const CHECK_FOR_UPDATES = 'sardinia/others/CHECK_FOR_UPDATES';
 export const SET_NETWORK_STATUS = 'sardinia/others/SET_NETWORK_STATUS';
 export const SET_NAVIGATOR_READY = 'sardinia/others/SET_NAVIGATOR_READY';
 export const SET_MAIN_SCREEN_MOUNTED = 'sardinia/others/SET_MAIN_SCREEN_MOUNTED';
+export const SET_MAIN_SCREEN_SHOWN = 'sardinia/others/SET_MAIN_SCREEN_SHOWN';
 export const SET_ERROR = 'sardinia/others/SET_ERROR';
 export const UNSET_ERROR = 'sardinia/others/UNSET_ERROR';
 
@@ -156,6 +157,8 @@ export const REGION_SARDINIA = { longitude: 9.0, latitude: 40.0, longitudeDelta:
 
 //DOMAIN & LINKING
 export const LINKING_AUTH_SEARCHSTR = "apiKey"; /* if the input link contains this substr, consider it */
+export const API_URL = `http://sinnos.andreamontaldo.com:81/hasura-Te7BEYo8VwbYFUDH/v1/graphql`;
+export const API_IMAGES_URL = 'http://sinnos.andreamontaldo.com:81/img';
 export const WEBSITE_URL = "https://www.sardegnaturismo.it/";
 export const WEBSITE_DOMAIN = "sardegnaturismo.it";
 export const WEBSITE_STAGING_URL = "https://www.dev.sardegnaturismocloud.it";

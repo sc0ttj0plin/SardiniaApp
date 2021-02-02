@@ -19,7 +19,7 @@ import { Video } from 'expo-av';
 import { enableScreens } from 'react-native-screens';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import ConnectedSplashLoader from './components/ConnectedSplashLoader';
-import ConnectedReduxErrorBoundary from './components/ConnectedReduxErrorBoundary';
+import ConnectedErrorBoundary from './components/ConnectedErrorBoundary';
 import { registerRootComponent } from 'expo';
 
 enableScreens();
@@ -110,9 +110,9 @@ export default class App extends Component {
               <SafeAreaProvider style={{ flex: 1 }} forceInset={{ top: 'always', bottom:'always' }}>
                   <View style={[styles.container]}>
                     {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-                    <ConnectedReduxErrorBoundary>
+                    <ConnectedErrorBoundary>
                       <AppNavigator/>
-                    </ConnectedReduxErrorBoundary>
+                    </ConnectedErrorBoundary>
                     <ConnectedSplashLoader loading={!this.state.isIntroEnded} onFinish={this._onSplashFinished}/>
                   </View>
               </SafeAreaProvider>

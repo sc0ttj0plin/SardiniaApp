@@ -14,7 +14,7 @@ import CustomText from "./CustomText";
  * We have two kinds of error boudaries: Redux & Screen,
  * Redux error boundary deals with failing actions, Screen error boundary deals with on-screen failures (components failures + api calls)
  * This component implements Screen error boundary and catches the on screen errors (component failures + api calls that throw)
- * Compared to ConnectedReduxErrorBoundary this component accept a retry function and doesn't use actions nor redux.
+ * Compared to ConnectedErrorBoundary this component accept a retry function and doesn't use actions nor redux.
  * In rare cases the retry function can be a full app restart.
  * To test this mechanism add in Places.js > componentDidMount the following piece of code:
  *   setTimeout(() => {throw new Error('Test')}, 6000); or setTimeout(() => { this._____() }, 6000);
@@ -31,13 +31,14 @@ class ScreenErrorBoundary extends PureComponent {
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
 
-  // static getDerivedStateFromError(error) {
-  //   return { modalVisible: true, hasErrored: true, error };  
-  // }
-
-  componentDidCatch(error, errorInfo) {
-    this.setState({ modalVisible: true, hasErrored: true, error });
+  static getDerivedStateFromError(error) {
+    console.log("Did catch")
+    return { modalVisible: true, hasErrored: true, error };  
   }
+
+  // componentDidCatch(error, errorInfo) {
+  //   this.setState({ modalVisible: true, hasErrored: true, error });
+  // }
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
 
@@ -87,7 +88,7 @@ class ScreenErrorBoundary extends PureComponent {
     if (this.state.hasErrored) {
       return (
         <>
-          {this.props.children}
+          {/* {this.props.children} */}
           {this._renderContent()}
         </>
       )

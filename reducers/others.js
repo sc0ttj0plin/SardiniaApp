@@ -6,6 +6,7 @@ const INITIAL_STATE = {
   url: null,
   urlType: null,
   mainScreenDidMount: false,
+  mainScreenIsShown: false,
   placesTerms: [],
   inspirersTerms: [],
   accomodationsTerms: [],
@@ -156,6 +157,11 @@ export default function reducer(state = INITIAL_STATE, action) {
       return {
         ...state,
         mainScreenDidMount: action.payload
+      }
+    case Constants.SET_MAIN_SCREEN_SHOWN:
+      return {
+        ...state,
+        mainScreenIsShown: action.payload
       }
     case Constants.SET_ERROR:
       return {

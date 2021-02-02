@@ -5,20 +5,23 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import * as Updates from 'expo-updates';
 import actions from '../actions';
 import _ from 'lodash';
 import * as Constants from '../constants';
 import Colors from '../constants/Colors';
 import CustomText from "./CustomText";
 
+
 /**
- * We have two kinds of error boudaries: Redux & Screen,
+ * We have two kinds of error boudaries: Global & Redux & Screen,
+ * Global errors are basically unhandled errors and are ca
  * Redux error boundary deals with failing actions, Screen error boundary deals with on-screen failures (components failures + api calls)
  * This component implements Redux Error boundary and catches the global redux errors allowing the the user to retry a failing action.
  * The mechanism is implemented as follows:
  *  1) A generic setReduxError action is sent every time an action that can be retried fails (in our case in apollo's middleware)
  *     setReduxError registers to redux the last error object + the last action that failed: this.props.others.reduxError & this.props.others.reduxErrorSourceAction
- *  2) ConnectedReduxErrorBoundary component listens for reduxError updates and if it isn't null it show a retry/cancel modal
+ *  2) ConnectedErrorBoundary component listens for reduxError updates and if it isn't null it show a retry/cancel modal
  *  3) On user retry, a special action named sendAction ships the failed action (reduxErrorSourceAction) to redux again 
  *  -) on retry or cancel the global error is cleared with unsetReduxError
  * To test this modal add in Places.js > componentDidMount the following piece of code which triggers a generic error and a poi loading action
@@ -32,7 +35,15 @@ import CustomText from "./CustomText";
  *     })
  *   }, 6000);
  */
-class ConnectedReduxErrorBoundary extends PureComponent {
+
+if (!__DEV__) 
+  ErrorUtils.setGlobalHandler(async (error, isFatal) => {
+    console.log("[global error] TODO: report to backend", error.message)
+    if (isFatal)
+      await Updates.reloadAsync();
+  });
+
+class ConnectedErrorBoundary extends PureComponent {
   constructor(props) {
     super(props);
     this.state = { 
@@ -47,8 +58,12 @@ class ConnectedReduxErrorBoundary extends PureComponent {
       //can resubmit the action with this.props.actions.sendAction(this.props.others.reduxErrorSourceAction)
       this.setState({ modalVisible: true });
       //TODO: send to backend the error trace along with the device info
-      console.log("Global redux error, send to backend", this.props.others.reduxError, this.props.others.reduxErrorSourceAction);
+      console.log("[redux error] TODO: report to backend", this.props.others.reduxError, this.props.others.reduxErrorSourceAction);
     }
+  }
+
+  componentDidCatch(error, errorInfo) {
+    // this.setState({ modalVisible: true, hasErrored: true, error });
   }
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
@@ -98,7 +113,7 @@ class ConnectedReduxErrorBoundary extends PureComponent {
   }
 
   render() {
-    if (this.props.others.reduxError) 
+    if (this.props.others.reduxError && this.props.others.mainScreenIsShown) 
       return (
         <>
           {this.props.children}
@@ -187,7 +202,7 @@ const styles = StyleSheet.create({
 function ConnectedReduxErrorBoundaryContainer(props) {
   const store = useStore();
 
-  return <ConnectedReduxErrorBoundary 
+  return <ConnectedErrorBoundary 
     {...props}
     store={store} />;
 }

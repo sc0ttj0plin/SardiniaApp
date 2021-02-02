@@ -153,7 +153,7 @@ class PlacesScreen extends PureComponent {
    * @param {*} coords: the coordinates for which to load new pois
    */
   _fetchNearestPois = (coords) => {
-    const { nearPois } =this.state;
+    const { nearPois } = this.state;
     return apolloQuery(actions.getNearestPois({
       limit: Constants.PAGINATION.poisLimit,
       x: coords.longitude,
@@ -162,6 +162,8 @@ class PlacesScreen extends PureComponent {
       offset: nearPois.length,
     })).then((pois) => {
       this.setState({ nearPois: [...nearPois, ...pois] });
+    }).catch(e => {
+      console.error(e);
     });
   }
 
@@ -192,6 +194,7 @@ class PlacesScreen extends PureComponent {
           else 
             this.setState({ isEntitiesLoading: false });
         }).catch(e => {
+          console.error(e);
           this.setState({ isEntitiesLoading: false });
         });
       });
@@ -379,7 +382,7 @@ class PlacesScreen extends PureComponent {
   render() {
     const { render } = this.state;
     return (
-      <ScreenErrorBoundary >
+      <ScreenErrorBoundary>
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
           <ConnectedHeader 
             onBackPress={this._backButtonPress}

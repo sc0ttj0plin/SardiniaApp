@@ -1,4 +1,4 @@
-import ConnectedReduxErrorBoundary from "./ConnectedReduxErrorBoundary";
+import ConnectedErrorBoundary from "./ConnectedErrorBoundary";
 import ScreenErrorBoundary from "./ScreenErrorBoundary";
 
 export AsyncOperationStatusIndicator from './AsyncOperationStatusIndicator';
@@ -42,6 +42,6 @@ export AnimatedImage from './AnimatedImage';
 export MapViewTop from "./MapViewTop";
 export LoadingDots from './LoadingDots';
 export ConnectedNetworkChecker from './ConnectedNetworkChecker';
-export ConnectedReduxErrorBoundary from './ConnectedReduxErrorBoundary';
+export ConnectedErrorBoundary from './ConnectedErrorBoundary';
 export ScreenErrorBoundary from './ScreenErrorBoundary';
 // export ConnectedLinkingHandler from './ConnectedLinkingHandler'; /* avoid circular refs */

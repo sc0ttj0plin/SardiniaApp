@@ -7,10 +7,8 @@ import sampleMarkers from '../constants/_sampleMarkers';
 import sampleImages from '../constants/_sampleImages';
 
 const IMAGE_REPLACE_SRC = "public://";
-// const IMAGE_REPLACE_DST = "https://www.sardegnaturismo.it/sites/default/files/";
-// const IMAGE_REPLACE_DST = "http://sinnos.andreamontaldo.com:81/img/400x300/";
-const IMAGE_REPLACE_DST_621x = "http://sinnos.andreamontaldo.com:81/img/621x/"; //width only
-const IMAGE_REPLACE_DST_350x = "http://sinnos.andreamontaldo.com:81/img/350x/";
+const IMAGE_REPLACE_DST_621x = `${Constants.API_IMAGES_URL}/621x/`; //width only
+const IMAGE_REPLACE_DST_350x = `${Constants.API_IMAGES_URL}/350x/`;
 
 /**
  * Process categories 

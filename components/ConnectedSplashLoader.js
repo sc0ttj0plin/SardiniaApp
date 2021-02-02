@@ -105,9 +105,16 @@ class ConnectedSplashLoader extends Component {
     }
 
     /******************************** LINKING ********************************/
+    // To know exactly when the splash has finished loading + the underlying screen has mounted check if mainScreenDidMount + the splash timeout
+    // Since the main screen mounts while splash is still showing
     if (prevProps.others.mainScreenDidMount !== this.props.others.mainScreenDidMount) {
       // When the component has mounted we surely have navigation object available and we can perform any action after the loading timeout
-      setTimeout(this._initWithFeedback, Constants.SPLASH_EXPO_DURATION + Constants.SPLASH_LOADING_DURATION + Constants.MODALS_SHOW_DELAY);
+      setTimeout(() => { 
+        this.props.actions.setMainScreenIsShown(true);
+        this._initWithFeedback()
+      }, 
+        Constants.SPLASH_EXPO_DURATION + Constants.SPLASH_LOADING_DURATION + Constants.MODALS_SHOW_DELAY
+      );
     }
   }
 
