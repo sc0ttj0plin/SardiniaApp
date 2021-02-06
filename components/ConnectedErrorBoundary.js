@@ -36,12 +36,6 @@ import CustomText from "./CustomText";
  *   }, 6000);
  */
 
-if (!__DEV__) 
-  ErrorUtils.setGlobalHandler(async (error, isFatal) => {
-    console.log("[global error] TODO: report to backend", error.message)
-    if (isFatal)
-      await Updates.reloadAsync();
-  });
 
 class ConnectedErrorBoundary extends PureComponent {
   constructor(props) {
@@ -49,6 +43,14 @@ class ConnectedErrorBoundary extends PureComponent {
     this.state = { 
       modalVisible: false,
     };
+
+  if (!__DEV__) 
+    ErrorUtils.setGlobalHandler(async (error, isFatal) => {
+      console.log("[global error]", error.message);
+      props.actions.reportBugs(props.others.reduxError);
+      if (isFatal)
+        await Updates.reloadAsync();
+    });
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
@@ -58,7 +60,8 @@ class ConnectedErrorBoundary extends PureComponent {
       //can resubmit the action with this.props.actions.sendAction(this.props.others.reduxErrorSourceAction)
       this.setState({ modalVisible: true });
       //TODO: send to backend the error trace along with the device info
-      console.log("[redux error] TODO: report to backend", this.props.others.reduxError, this.props.others.reduxErrorSourceAction);
+      this.props.actions.reportBugs(this.props.others.reduxError);
+      console.log("[redux error]", this.props.others.reduxError, this.props.others.reduxErrorSourceAction);
     }
   }
 

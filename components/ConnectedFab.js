@@ -24,8 +24,8 @@ class ConnectedFab extends PureComponent {
       active: false,
       modalVisible: false,
       direction: props.direction ? props.direction : "up",
-      uuid: props.uuid,
-      isFavourite: props.favourites.places[props.uuid]
+      // uuid: props.uuid,
+      isFavourite: props.favourites[props.uuid]
     };
   }
 
@@ -49,6 +49,17 @@ class ConnectedFab extends PureComponent {
   }
 
 
+  _isFavourite = () => this.props.favourites[this.props.uuid];
+
+  _toggleFav = () => {
+    this.props.actions.reportUserInteraction({ 
+      analyticsActionType: this._isFavourite() ? Constants.ANALYTICS_TYPES.userRemovesEntityFromFavourites : Constants.ANALYTICS_TYPES.userAddsEntityToFavourites, 
+      uuid: this.props.uuid, 
+      entityType: 'node', 
+      entitySubType: this.props.type
+    });
+    this.props.actions.toggleFavourite({ type: this.props.type, uuid: this.props.uuid });
+  }
 
   _renderButtonFontAwesome = (backgroundColor, iconName, onPress) => {
 
@@ -112,7 +123,7 @@ class ConnectedFab extends PureComponent {
   }
 
   render() {
-    const isFavourite = this.props.favourites.[this.props.type][this.state.uuid];
+    const isFavourite = this._isFavourite();
     const { nearParks, discoverParks, findParkBtn } = this.props.locale.messages;
     const { shareLink, coordinates, color, title } = this.props;
     const backgroundColor = color || Colors.colorPlacesScreen;
@@ -130,8 +141,8 @@ class ConnectedFab extends PureComponent {
               { shareLink != "" && shareLink &&
                 this._renderButtonFontAwesome(backgroundColor, "share-alt", () => this._shareInApp(shareLink))
               }
-              { this.state.uuid != "" && this.state.uuid &&
-                this._renderButtonFontAwesome(backgroundColor, isFavourite ? "heart" : "heart-o", () => this.props.actions.toggleFavourite({ type: this.props.type, id: this.state.uuid }))
+              { this.props.uuid != "" && this.props.uuid &&
+                this._renderButtonFontAwesome(backgroundColor, isFavourite ? "heart" : "heart-o", this._toggleFav)
               }
               {coordinates && (
                 this._renderButtonFontAwesome5(backgroundColor, "parking", () => this._openParkingModal())

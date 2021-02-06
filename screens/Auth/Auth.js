@@ -197,6 +197,7 @@ class Login extends Component {
     if(!usernameError && !ageError && !countryError && !sexError){
       const userData = { username, age: age, country, sex, updateDate: (new Date()).getTime() };
       this.props.actions.editUser(userData);
+      this.props.actions.reportProfileUpdate(userData);
       this.setState({ loginStep: AUTH_STATES.PROFILE_SHOW });
     }
     else{
@@ -212,6 +213,9 @@ class Login extends Component {
   }
 
   _removeProfile = () => {
+    const { username, age, country, sex, } = this.state;
+    const userData = { username, age, country, sex, updateDate: (new Date()).getTime() };
+    this.props.actions.reportProfileRemoval(userData);
     this.props.actions.removeUser();
     this._goBackScreen();
   }
@@ -524,7 +528,6 @@ class Login extends Component {
             {loginStep === AUTH_STATES.INIT && this._renderInit()}
             {loginStep === AUTH_STATES.LINK_SENT && this._renderLinkSent()}
             {loginStep === AUTH_STATES.ERROR && this._renderError()}
-            {/*this._renderAuthOutcome()*/}
           </View>
         </ScreenErrorBoundary>
       )

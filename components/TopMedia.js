@@ -9,6 +9,7 @@ class TopMedia extends PureComponent {
   
   constructor(props) {
     super(props);
+
     this.state = {
       loadedImage: false
     };
@@ -24,13 +25,18 @@ class TopMedia extends PureComponent {
   }
 
   _renderVideoPlayer = () => {
-    const { urlVideo } = this.props;
+    const { urlVideo, uuid, entityType } = this.props;
     return (
       <View style={[styles.fill, styles.videoPlayerView]}>
         <TouchableOpacity
           style={styles.playButton}
           activeOpacity={0.7}
-          onPress={ () => this.props.navigation.push(Constants.NAVIGATION.NavMediaScreen, { source: urlVideo, type: "video" })}>
+          onPress={ () => this.props.navigation.push(Constants.NAVIGATION.NavMediaScreen, { 
+            uuid, 
+            entityType,
+            source: urlVideo, 
+            type: "video" 
+          })}>
             <ImageBackground source={require("../assets/icons/play_bg.png")} style={styles.backgroundPlayImage}>
               <Image 
                 source={require("../assets/icons/play.png")} style={styles.playImage}>  

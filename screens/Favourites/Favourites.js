@@ -77,11 +77,6 @@ class FavouritesScreen extends Component {
    * or to post-process data once it changes
    */
   componentDidUpdate(prevProps) {
-    /**
-     * Is the former props different from the newly propagated prop (redux)? perform some action
-     * if(prevProps.xxx !== this.props.xxx)
-     *  doStuff();
-     */
     //Once pois are retrieved you filter only the favourites
 
     setTimeout(() => {

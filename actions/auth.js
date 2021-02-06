@@ -94,8 +94,8 @@ export const editUser = (el) =>
     try {
       dispatch({ type: Constants.USER_EDIT });
       const user = firebase.auth().currentUser;
-      let ref = firebase.database().ref(`users/${user.uid}/info`);
-      ref.set({...el});
+      let ref = await firebase.database().ref(`users/${user.uid}/info`);
+      await ref.set({ ...el });
       dispatch({ type: Constants.USER_EDIT_SUCCESS, payload: {userInfo: {...el}}});
     } catch(e) { 
       dispatch({ type: Constants.USER_EDIT_FAIL });

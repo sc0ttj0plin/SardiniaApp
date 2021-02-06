@@ -9,6 +9,7 @@ class EntityGallery extends PureComponent {
   
   constructor(props) {
     super(props);
+
     this.state = {
     };
   }
@@ -16,7 +17,7 @@ class EntityGallery extends PureComponent {
 
   
   render() {
-    const { title, images } = this.props;
+    const { title, images, uuid, entityType } = this.props;
     return (
       <>
         { images && images.length > 0 &&
@@ -24,7 +25,13 @@ class EntityGallery extends PureComponent {
             {/* <Text style={[styles.sectionTitle]}>{title}</Text> */}
             {/* <View style={styles.borderLine}></View> */}
             <GridGallery images={images} useFlatList={false} onPress={(index) => {
-                this.props.navigation.push(Constants.NAVIGATION.NavMediaScreen, { images: images, initialPage: index, type: "gallery" })
+                this.props.navigation.push(Constants.NAVIGATION.NavMediaScreen, { 
+                  uuid,
+                  entityType,
+                  images: images, 
+                  initialPage: index, 
+                  type: "gallery" 
+                })
             }}/>
           </View>
         }

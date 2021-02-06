@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { 
-  View, StyleSheet, Animated } from "react-native";
+  View, StyleSheet, Animated, ScrollView } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   AsyncOperationStatusIndicator, 
@@ -22,7 +22,7 @@ import Toast from 'react-native-easy-toast';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { greedyArrayFinder, getEntityInfo, getCoordinates, getSampleVideoIndex, getSampleVrModelIndex, getGalleryImages } from '../../helpers/utils';
-import { openRelatedEntity } from '../../helpers/screenUtils';
+import { openRelatedEntity, isCloseToBottom } from '../../helpers/screenUtils';
 import _ from 'lodash';
 import Layout from '../../constants/Layout';
 import { apolloQuery } from '../../apollo/queries';
@@ -42,7 +42,6 @@ class PlaceScreen extends Component {
     this._entity = props.route.params.item;
     const { uuid } = props.route.params.item;
     const { mustFetch, nestingCounter = 1 } = props.route.params; /* no effect since place fetches anyway */
-    console.log(uuid, mustFetch);
 
     /* Get props from navigation */
     this.state = {
@@ -82,6 +81,7 @@ class PlaceScreen extends Component {
     } else {
       this._parseEntity(this._entity);
     }
+    this._analytics(Constants.ANALYTICS_TYPES.userCompleteEntityAccess);
   }
 
   /* NOTE: since this screen is not */
@@ -172,13 +172,20 @@ class PlaceScreen extends Component {
   }
 
   _openVRContent = () => {
-    const {sampleVrUrl} = this.state;
+    const { sampleVrUrl, uuid } = this.state;
     if(sampleVrUrl) {
       this.props.navigation.push(Constants.NAVIGATION.NavMediaScreen, {
+          uuid,
+          entityType: Constants.NODE_TYPES.places,
           source: sampleVrUrl,
           type: "virtualTour"
       });
     }
+  }
+
+  _analytics = (analyticsActionType) => {
+    const { uuid } = this.state;
+    this.props.actions.reportUserInteraction({ analyticsActionType, uuid, entityType: 'node', entitySubType: Constants.NODE_TYPES.places });
   }
 
   /********************* Render methods go down here *********************/
@@ -257,7 +264,7 @@ class PlaceScreen extends Component {
          <Toast ref={(toast) => this._toast = toast} positionValue={220} opacity={0.7} />
          <Animated.ScrollView style={styles.fill}
           onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }],{useNativeDriver: true})}>
-          <TopMedia urlVideo={sampleVideoUrl} urlImage={entity.image} />
+          <TopMedia urlVideo={sampleVideoUrl} urlImage={entity.image} uuid={this.state.uuid} entityType={Constants.NODE_TYPES.places}/>
           {this._renderFab(entity.uuid, title, coordinates, socialUrl)}   
           <View style={[styles.headerContainer]}> 
             <EntityHeader title={title} term={entity.term ? entity.term.name : ""} borderColor={Colors.blue}/>
@@ -275,7 +282,7 @@ class PlaceScreen extends Component {
               { sampleVrUrl &&
               <EntityVirtualTour rotation={iconRotation} onPress={this._openVRContent}/>
               }
-              <EntityGallery images={gallery} title={galleryTitle}/>
+              <EntityGallery images={gallery} title={galleryTitle} uuid={this.state.uuid} entityType={Constants.NODE_TYPES.places}/>
               <EntityDescription title={descriptionTitle} text={description} color={Colors.colorPlacesScreen}/>
 
             </AsyncOperationStatusIndicator>
@@ -294,15 +301,18 @@ class PlaceScreen extends Component {
      );
   }
 
-
   render() {
     const { render } = this.state;
     return (
       <ScreenErrorBoundary>
-        <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
+        <ScrollView 
+          onScroll={({nativeEvent}) => isCloseToBottom(nativeEvent) && this._analytics(Constants.ANALYTICS_TYPES.userReadsAllEntity)}
+          scrollEventThrottle={1000}
+          style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}
+        >
           <ConnectedHeader iconTintColor="#24467C" />
           {render && this._renderContent()}
-        </View>
+        </ScrollView>
       </ScreenErrorBoundary>
     )
   }

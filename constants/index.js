@@ -115,6 +115,7 @@ export const RESET_SEARCH_AND_AUTOCOMPLETE_STR = 'sardinia/search_autocomplete/R
 export const SET_FAVOURITE = 'sardinia/favourites/SET_FAVOURITE';
 export const UNSET_FAVOURITE = 'sardinia/favourites/UNSET_FAVOURITE';
 export const TOGGLE_FAVOURITE = 'sardinia/favourites/TOGGLE_FAVOURITE';
+export const INIT_FAVOURITES = 'sardinia/favourites/INIT_FAVOURITES';
 export const PUSH_CURRENT_CATEGORY_PLACES = 'sardinia/places/PUSH_CURRENT_CATEGORY_PLACES';
 export const POP_CURRENT_CATEGORY_PLACES = 'sardinia/places/POP_CURRENT_CATEGORY_PLACES';
 export const RESET_CURRENT_CATEGORY_PLACES = 'sardinia/places/RESET_CURRENT_CATEGORY_PLACES';
@@ -139,6 +140,9 @@ export const SET_MAIN_SCREEN_MOUNTED = 'sardinia/others/SET_MAIN_SCREEN_MOUNTED'
 export const SET_MAIN_SCREEN_SHOWN = 'sardinia/others/SET_MAIN_SCREEN_SHOWN';
 export const SET_ERROR = 'sardinia/others/SET_ERROR';
 export const UNSET_ERROR = 'sardinia/others/UNSET_ERROR';
+export const FAVOURITES_EDIT = 'sardinia/favourites/FAVOURITES_EDIT'; 
+export const FAVOURITES_EDIT_SUCCESS = 'sardinia/favourites/FAVOURITES_EDIT_SUCCESS'; 
+export const FAVOURITES_EDIT_FAIL = 'sardinia/favourites/FAVOURITES_EDIT_FAIL'; 
 
 // API
 export const FETCH_NUM_MONTHS_BACKWARDS = 1;
@@ -178,6 +182,16 @@ export const SPLASH_LOADING_DISAPPEAR_DURATION = 250;
 export const MODALS_SHOW_DELAY = 2000; 
 /* linking entity can be too quick to load, add an extra loading delay to let the user see the loading modal */
 export const NAVIGATE_TO_LINKED_ENTITY_DELAY = 3000;
+
+// ANALYTICS
+export const ANALYTICS_TYPES = {
+  userCompleteEntityAccess: 0,
+  userPartialEntityAccess: 1,
+  userReadsAllEntity: 2,
+  userAddsEntityToFavourites: 3,
+  userOpensEntityMultimediaContent: 4,
+  userRemovesEntityFromFavourites: 5,
+}
 
 // NAVIGATION
 export const NAVIGATION = {

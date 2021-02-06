@@ -116,6 +116,12 @@ class ConnectedSplashLoader extends Component {
         Constants.SPLASH_EXPO_DURATION + Constants.SPLASH_LOADING_DURATION + Constants.MODALS_SHOW_DELAY
       );
     }
+
+    /******************************** FAVOURITES INITIALIZATION (requires auth) ********************************/
+    if (prevProps.auth.user !== this.props.auth.user && this.props.auth.user) {
+      // Initializes favourites
+      this.props.actions.initFavourites();
+    }
   }
 
   /**
@@ -133,7 +139,7 @@ class ConnectedSplashLoader extends Component {
   _initWithoutFeedback = async () => {
     console.log("initialization without feedback");
     // Auth 
-    this._initFirebaseAppAndAttemptLogin();
+    await this._initFirebaseAppAndAttemptLogin();
     // Geolocation (asks for permissions)
     await this._initGeolocation(); 
   }

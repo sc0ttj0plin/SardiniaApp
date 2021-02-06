@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { 
-  View, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { 
@@ -20,7 +19,7 @@ import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 import { greedyArrayFinder, getEntityInfo } from '../../helpers/utils';
-import { openRelatedEntity } from '../../helpers/screenUtils';
+import { openRelatedEntity, isCloseToBottom } from '../../helpers/screenUtils';
 import Layout from '../../constants/Layout';
 import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';
@@ -72,6 +71,7 @@ class ItineraryScreen extends Component {
       this.props.actions.getItinerariesById({ uuids: [uuid] });
     else 
       this._parseEntity(this.props.itineraries.dataById[uuid]);
+    this._analytics(Constants.ANALYTICS_TYPES.userCompleteEntityAccess);
   }
 
   componentDidUpdate(prevProps) {
@@ -84,10 +84,6 @@ class ItineraryScreen extends Component {
   }
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
-
-  _isSuccessData  = () => false;    /* e.g. this.props.pois.success; */
-  _isLoadingData  = () => true;   /* e.g. this.props.pois.loading; */
-  _isErrorData    = () => null;    /* e.g. this.props.pois.error; */
 
   _fetchNearNodes = async () => {
     try {
@@ -143,6 +139,12 @@ class ItineraryScreen extends Component {
     // console.log("stages marker", stagesMarkers, stages)
     return stagesMarkers;
   }
+
+  _analytics = (analyticsActionType) => {
+    const { uuid } = this.state;
+    this.props.actions.reportUserInteraction({ analyticsActionType, uuid, entityType: 'node', entitySubType: Constants.NODE_TYPES.itineraries });
+  }
+
 
 
   /********************* Render methods go down here *********************/
@@ -200,7 +202,7 @@ class ItineraryScreen extends Component {
       <View style={styles.fill}>
         <Toast ref={(toast) => this._toast = toast} positionValue={220} opacity={0.7} />
         <ScrollView style={styles.fill}>
-          <TopMedia urlImage={entity.image} />
+          <TopMedia urlImage={entity.image} uuid={this.state.uuid} entityType={Constants.NODE_TYPES.itineraries}/>
           {this._renderFab(entity.uuid, title, coordinates, socialUrl)}   
           <View style={[styles.headerContainer]}> 
             <EntityHeader title={title} term={entity.term ? entity.term.name : ""} borderColor={Colors.colorItinerariesScreen}/>
@@ -225,10 +227,14 @@ class ItineraryScreen extends Component {
     const { render } = this.state;
     return (
       <ScreenErrorBoundary>
-        <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
+        <ScrollView 
+          onScroll={({nativeEvent}) => isCloseToBottom(nativeEvent) && this._analytics(Constants.ANALYTICS_TYPES.userReadsAllEntity)}
+          scrollEventThrottle={1000}
+          style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}
+        >
           <ConnectedHeader iconTintColor={Colors.colorItinerariesScreen} />
           {render && this._renderContent()}
-        </View>
+        </ScrollView>
       </ScreenErrorBoundary>
     )
   }
