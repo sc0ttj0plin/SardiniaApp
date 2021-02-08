@@ -127,6 +127,15 @@ class ExtraScreen extends Component {
     this.props.actions.reportUserInteraction({ analyticsActionType, uuid, entityType: 'node', entitySubType: Constants.NODE_TYPES.inspirers });
   }
 
+  /**
+   * function called on scrollView scroll
+   * @param {*} nativeEvent 
+   */
+  _onScroll = ({nativeEvent}) => {
+    if(isCloseToBottom(nativeEvent))
+      this._analytics(Constants.ANALYTICS_TYPES.userReadsAllEntity);
+  }
+
   /********************* Render methods go down here *********************/
   /* Horizontal spacing for Header items */
   _renderHorizontalSeparator = () => <View style={{ width: 5, flex: 1 }}></View>;
@@ -166,6 +175,8 @@ class ExtraScreen extends Component {
     )
   }
 
+
+
   _renderContent = () => {
     const { uuid, entity, abstract, title, description, whyVisit, coordinates, socialUrl, sampleVideoUrl, sampleVrUrl, gallery } = this.state;
     const { relatedPlaces, relatedItineraries, relatedEvents } = this.state;
@@ -186,8 +197,11 @@ class ExtraScreen extends Component {
 
     return (
       <View style={styles.fill}>
-        <Animated.ScrollView style={styles.fill}
-          onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }],{useNativeDriver: true})}>
+         <Animated.ScrollView 
+            onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }],{useNativeDriver: true, listener: event => this._onScroll(event)})}
+            scrollEventThrottle={1000}
+            style={[styles.fill]}
+          >
           <TopMedia urlVideo={sampleVideoUrl} urlImage={entity.image} uuid={this.state.uuid} entityType={Constants.NODE_TYPES.inspirers}/>
           {this._renderFab(entity.uuid, title, coordinates, socialUrl)}   
           <View style={[styles.headerContainer]}> 
@@ -218,13 +232,7 @@ class ExtraScreen extends Component {
       <ScreenErrorBoundary>
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
           <ConnectedHeader />
-          <ScrollView 
-            onScroll={({nativeEvent}) => isCloseToBottom(nativeEvent) && this._analytics(Constants.ANALYTICS_TYPES.userReadsAllEntity)}
-            scrollEventThrottle={1000}
-            style={[styles.fill]}
-          >
-            {render && this._renderContent()}
-          </ScrollView>
+          {render && this._renderContent()}
         </View>
       </ScreenErrorBoundary>
     )

@@ -201,7 +201,11 @@ class ItineraryScreen extends Component {
     return (
       <View style={styles.fill}>
         <Toast ref={(toast) => this._toast = toast} positionValue={220} opacity={0.7} />
-        <ScrollView style={styles.fill}>
+        <ScrollView 
+            onScroll={({nativeEvent}) => isCloseToBottom(nativeEvent) && this._analytics(Constants.ANALYTICS_TYPES.userReadsAllEntity)}
+            scrollEventThrottle={1000}
+            style={[styles.fill]}
+          >
           <TopMedia urlImage={entity.image} uuid={this.state.uuid} entityType={Constants.NODE_TYPES.itineraries}/>
           {this._renderFab(entity.uuid, title, coordinates, socialUrl)}   
           <View style={[styles.headerContainer]}> 
@@ -229,13 +233,7 @@ class ItineraryScreen extends Component {
       <ScreenErrorBoundary>
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
           <ConnectedHeader iconTintColor={Colors.colorItinerariesScreen} />
-          <ScrollView 
-            onScroll={({nativeEvent}) => isCloseToBottom(nativeEvent) && this._analytics(Constants.ANALYTICS_TYPES.userReadsAllEntity)}
-            scrollEventThrottle={1000}
-            style={[styles.fill]}
-          >
-            {render && this._renderContent()}
-          </ScrollView>
+          {render && this._renderContent()}
         </View>
       </ScreenErrorBoundary>
     )

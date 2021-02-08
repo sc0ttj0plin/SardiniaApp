@@ -188,6 +188,15 @@ class PlaceScreen extends Component {
     this.props.actions.reportUserInteraction({ analyticsActionType, uuid, entityType: 'node', entitySubType: Constants.NODE_TYPES.places });
   }
 
+  /**
+   * function called on scrollView scroll
+   * @param {*} nativeEvent 
+   */
+  _onScroll = ({nativeEvent}) => {
+    if(isCloseToBottom(nativeEvent))
+      this._analytics(Constants.ANALYTICS_TYPES.userReadsAllEntity);
+  }
+
   /********************* Render methods go down here *********************/
 
 
@@ -262,8 +271,11 @@ class PlaceScreen extends Component {
      return (
        <View style={styles.fill}>
          <Toast ref={(toast) => this._toast = toast} positionValue={220} opacity={0.7} />
-         <Animated.ScrollView style={styles.fill}
-          onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }],{useNativeDriver: true})}>
+         <Animated.ScrollView 
+            onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }],{useNativeDriver: true, listener: event => this._onScroll(event)})}
+            scrollEventThrottle={1000}
+            style={[styles.fill]}
+          >
           <TopMedia urlVideo={sampleVideoUrl} urlImage={entity.image} uuid={this.state.uuid} entityType={Constants.NODE_TYPES.places}/>
           {this._renderFab(entity.uuid, title, coordinates, socialUrl)}   
           <View style={[styles.headerContainer]}> 
@@ -308,7 +320,7 @@ class PlaceScreen extends Component {
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
           <ConnectedHeader iconTintColor="#24467C" />
           <ScrollView 
-            onScroll={({nativeEvent}) => isCloseToBottom(nativeEvent) && this._analytics(Constants.ANALYTICS_TYPES.userReadsAllEntity)}
+            onScroll={({nativeEvent}) => isCloseToBottom(nativeEvent) && this._analytics(Constants.ANALYTICS_TYPES.userReadsAllEntity && Animated.event([{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }],{useNativeDriver: true}))}
             scrollEventThrottle={1000}
             style={[styles.fill]}
           >

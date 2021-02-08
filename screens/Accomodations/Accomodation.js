@@ -189,7 +189,11 @@ class AccomodationScreen extends Component {
     const isFavourite = favourites.places[uuid];
      return (
        <View style={styles.fill}>
-         <ScrollView style={styles.fill}>
+          <ScrollView 
+            onScroll={({nativeEvent}) => isCloseToBottom(nativeEvent) && this._analytics(Constants.ANALYTICS_TYPES.userReadsAllEntity)}
+            scrollEventThrottle={1000}
+            style={[styles.fill]}
+          >
          <AsyncOperationStatusIndicator
                     loading={true}
                     success={coordinates}
@@ -267,14 +271,8 @@ class AccomodationScreen extends Component {
       <ScreenErrorBoundary>
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
           <ConnectedHeader iconTintColor={Colors.colorAccomodationsScreen} />
-          <ScrollView 
-            onScroll={({nativeEvent}) => isCloseToBottom(nativeEvent) && this._analytics(Constants.ANALYTICS_TYPES.userReadsAllEntity)}
-            scrollEventThrottle={1000}
-            style={[styles.fill]}
-          >
-            {this._renderOpenDetailModal()}
-            {render && this._renderContent()}
-          </ScrollView>
+          {this._renderOpenDetailModal()}
+          {render && this._renderContent()}
         </View>
       </ScreenErrorBoundary>
     )
