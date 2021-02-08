@@ -7,6 +7,7 @@ import { Flablist } from "react-native-gesture-handler"
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   ConnectedHeader, 
+  ScreenErrorBoundary
  } from "../../components";
 import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
 // import MapView from "react-native-map-clustering";
@@ -377,6 +378,7 @@ class GalleryMapScreen extends PureComponent {
     }
 
     return (
+      <ScreenErrorBoundary>
       <View style={styles.fill} onLayout={this._onPageLayout}>
         <MapView
           ref={(ref) => this._mapRef = ref}
@@ -491,13 +493,9 @@ class GalleryMapScreen extends PureComponent {
                 </View>}
               </View>
           )})}
-          
-                
         </View>}
-
-
-        
       </View>
+      </ScreenErrorBoundary>
     )
   }
 

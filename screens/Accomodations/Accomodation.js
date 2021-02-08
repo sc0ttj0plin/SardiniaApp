@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import { 
-  View, Text, FlatList, ActivityIndicator, TouchableOpacity, TouchableWithoutFeedback, 
-  StyleSheet, BackHandler, Platform, ScrollView, Linking, Alert, Modal } from "react-native";
+import { View, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, ScrollView, Modal } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   EntityHeader,
@@ -11,12 +9,14 @@ import {
   EntityAccomodationDetail,
   ConnectedFab, 
   CustomText,
-  ShimmerWrapper
+  ShimmerWrapper,
+  ScreenErrorBoundary,
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Ionicons } from '@expo/vector-icons';
 import _ from 'lodash';
+import { openRelatedEntity, isCloseToBottom } from '../../helpers/screenUtils';
 import Layout from '../../constants/Layout';
 import { linkingOpenMail, linkingOpenNavigator, linkingCallNumber, linkingOpenUrl, getEntityInfo, getCoordinates, getSampleVideoIndex, getGalleryImages } from '../../helpers/utils';
 import { apolloQuery } from '../../apollo/queries';
@@ -69,6 +69,7 @@ class AccomodationScreen extends Component {
       this.props.actions.getAccomodationsById({ uuids: [uuid] });
     else 
       this._parseEntity(this._entity);
+    this._analytics(Constants.ANALYTICS_TYPES.userCompleteEntityAccess);
   }
 
   componentDidUpdate(prevProps) {
@@ -93,6 +94,11 @@ class AccomodationScreen extends Component {
     const gallery = getGalleryImages(entity);
     const stars = entity.stars;
     this.setState({ entity, abstract,  title,  description,  whyVisit,  coordinates,  socialUrl, sampleVideoUrl, gallery, stars, loaded: true });
+  }
+
+  _analytics = (analyticsActionType) => {
+    const { uuid } = this.state;
+    this.props.actions.reportUserInteraction({ analyticsActionType, uuid, entityType: 'node', entitySubType: Constants.NODE_TYPES.accomodations });
   }
 
   _isSuccessData  = () => this.props.accomodations.success; 
@@ -258,11 +264,17 @@ class AccomodationScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader iconTintColor={Colors.colorAccomodationsScreen} />
-        {this._renderOpenDetailModal()}
-        {render && this._renderContent()}
-      </View>
+      <ScreenErrorBoundary>
+        <ScrollView 
+          onScroll={({nativeEvent}) => isCloseToBottom(nativeEvent) && this._analytics(Constants.ANALYTICS_TYPES.userReadsAllEntity)}
+          scrollEventThrottle={1000}
+          style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}
+        >
+          <ConnectedHeader iconTintColor={Colors.colorAccomodationsScreen} />
+          {this._renderOpenDetailModal()}
+          {render && this._renderContent()}
+        </ScrollView>
+      </ScreenErrorBoundary>
     )
   }
   

@@ -5,7 +5,8 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   ConnectedHeader, 
-  CustomText
+  CustomText,
+  ScreenErrorBoundary
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -189,10 +190,12 @@ class FiltersScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader onBackPress={this._onBackPress} iconTintColor={Colors.colorEventsScreen}/>
-        {render && this._renderContent()}
-      </View>
+      <ScreenErrorBoundary>
+        <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
+          <ConnectedHeader onBackPress={this._onBackPress} iconTintColor={Colors.colorEventsScreen}/>
+          {render && this._renderContent()}
+        </View>
+      </ScreenErrorBoundary>
     )
   }
   

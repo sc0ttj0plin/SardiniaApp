@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { 
-  View, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   ConnectedHeader, 
@@ -12,13 +11,14 @@ import {
   EntityAccomodations,
   TopMedia,
   ConnectedFab, 
+  ScreenErrorBoundary,
  } from "../../components";
 import Toast from 'react-native-easy-toast';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 import { greedyArrayFinder, getEntityInfo, getSampleVideoIndex } from '../../helpers/utils';
-import { openRelatedEntity } from '../../helpers/screenUtils';
+import { openRelatedEntity, isCloseToBottom } from '../../helpers/screenUtils';
 import Layout from '../../constants/Layout';
 import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';
@@ -69,11 +69,11 @@ class EventScreen extends Component {
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
     const { uuid, mustFetch } = this.state;
     this._fetchNearNodes();
-
     if (mustFetch)
       this.props.actions.getEventsById({ uuids :[uuid] });
     else
       this._parseEntity(this.props.events.eventsById[uuid]);
+    this._analytics(Constants.ANALYTICS_TYPES.userCompleteEntityAccess);
   }
 
   componentDidUpdate(prevProps) {
@@ -174,6 +174,11 @@ class EventScreen extends Component {
     });
   }
 
+  _analytics = (analyticsActionType) => {
+    const { uuid } = this.state;
+    this.props.actions.reportUserInteraction({ analyticsActionType, uuid, entityType: 'node', entitySubType: Constants.NODE_TYPES.events });
+  }
+
   /********************* Render methods go down here *********************/
 
   _renderFab = (uuid, title, coordinates, shareLink) => {
@@ -240,7 +245,7 @@ class EventScreen extends Component {
        <View style={styles.fill}>
          <Toast ref={(toast) => this._toast = toast} positionValue={220} opacity={0.7} />
          <ScrollView style={styles.fill}>
-          <TopMedia urlVideo={sampleVideoUrl} urlImage={entity.image} />
+          <TopMedia urlVideo={sampleVideoUrl} urlImage={entity.image} uuid={this.state.uuid} entityType={Constants.NODE_TYPES.events} />
           {this._renderFab(entity.uuid, title, coordinates, socialUrl)}   
           <View style={[styles.headerContainer]}> 
             <EntityHeader title={title} term={entity.term ? entity.term.name : ""} borderColor={Colors.orange}/>
@@ -269,10 +274,16 @@ class EventScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader iconTintColor={Colors.colorEventsScreen} />
-        {render && this._renderContent()}
-      </View>
+      <ScreenErrorBoundary>
+        <ScrollView 
+          onScroll={({nativeEvent}) => isCloseToBottom(nativeEvent) && this._analytics(Constants.ANALYTICS_TYPES.userReadsAllEntity)}
+          scrollEventThrottle={1000}
+          style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}
+        >
+          <ConnectedHeader iconTintColor={Colors.colorEventsScreen} />
+          {render && this._renderContent()}
+        </ScrollView>
+      </ScreenErrorBoundary>
     )
   }
   

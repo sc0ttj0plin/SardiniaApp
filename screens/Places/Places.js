@@ -14,6 +14,7 @@ import {
   SectionTitle,
   ConnectedMapScrollable,
   ConnectedNetworkChecker,
+  ScreenErrorBoundary
  } from "../../components";
 import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
 import { connect, useStore } from 'react-redux';
@@ -152,7 +153,7 @@ class PlacesScreen extends PureComponent {
    * @param {*} coords: the coordinates for which to load new pois
    */
   _fetchNearestPois = (coords) => {
-    const { nearPois } =this.state;
+    const { nearPois } = this.state;
     return apolloQuery(actions.getNearestPois({
       limit: Constants.PAGINATION.poisLimit,
       x: coords.longitude,
@@ -161,6 +162,8 @@ class PlacesScreen extends PureComponent {
       offset: nearPois.length,
     })).then((pois) => {
       this.setState({ nearPois: [...nearPois, ...pois] });
+    }).catch(e => {
+      console.error(e);
     });
   }
 
@@ -191,6 +194,7 @@ class PlacesScreen extends PureComponent {
           else 
             this.setState({ isEntitiesLoading: false });
         }).catch(e => {
+          console.error(e);
           this.setState({ isEntitiesLoading: false });
         });
       });
@@ -260,8 +264,9 @@ class PlacesScreen extends PureComponent {
           index={index}
           keyItem={item.nid}
           extraStyle={ horizontal ? {
-            marginBottom: 0
-          } : {width: '100%'}}
+            marginBottom: 0,
+            marginRight: 10
+          } : {width: '100%', marginBottom: 10}}
           backgroundTopLeftCorner={"white"}
           iconColor={Colors.colorPlacesScreen}
           listType={Constants.ENTITY_TYPES.places}
@@ -271,8 +276,6 @@ class PlacesScreen extends PureComponent {
           image={item.image}
           distance={this.state.isCordsInBound ? item.distanceStr : ""}
           horizontal={horizontal}
-          sideMargins={20}
-          topSpace={10}
           animated={true}
         />
       )
@@ -379,15 +382,17 @@ class PlacesScreen extends PureComponent {
   render() {
     const { render } = this.state;
     return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader 
-          onBackPress={this._backButtonPress}
-          iconTintColor={Colors.colorPlacesScreen}  
-          backButtonVisible={this.props.others.placesTerms.length > 0}
-        /> 
-        <ConnectedAuthHandler loginOptional={true} timeout={Constants.SPLASH_LOADING_DURATION + 1500} />
-        {render && this._renderContent()}
-      </View> 
+      <ScreenErrorBoundary>
+        <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
+          <ConnectedHeader 
+            onBackPress={this._backButtonPress}
+            iconTintColor={Colors.colorPlacesScreen}  
+            backButtonVisible={this.props.others.placesTerms.length > 0}
+          /> 
+          <ConnectedAuthHandler loginOptional={true} timeout={Constants.SPLASH_LOADING_DURATION + 1500} />
+          {render && this._renderContent()}
+        </View> 
+      </ScreenErrorBoundary>
     )
   }
   

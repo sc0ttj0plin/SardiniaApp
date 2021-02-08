@@ -7,7 +7,8 @@ import {
   AsyncOperationStatusIndicator, 
   ConnectedHeader, 
   ConnectedAuthHandler,
-  CustomText
+  CustomText,
+  ScreenErrorBoundary,
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -305,11 +306,13 @@ class PreferencesScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader />
-        <ConnectedAuthHandler loginOptional={false} />
-        {render && this._renderContent()}
-      </View>
+      <ScreenErrorBoundary>
+        <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
+          <ConnectedHeader />
+          <ConnectedAuthHandler loginOptional={false} />
+          {render && this._renderContent()}
+        </View>
+      </ScreenErrorBoundary>
     )
   }
   

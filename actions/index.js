@@ -11,7 +11,7 @@ import * as restActions from './rest';
 import * as accomodationsActions from './accomodations';
 import * as searchAutocompleteActions from './searchAutocomplete';
 import * as preferencesActions from './preferences';
-
+import * as analyticsActions from './analytics';
 import * as authActions from './auth';
 
 const allActions = { 
@@ -28,6 +28,7 @@ const allActions = {
    ...accomodationsActions,
    ...searchAutocompleteActions,
    ...preferencesActions,
+   ...analyticsActions,
    ...authActions,
  }
 export default allActions;

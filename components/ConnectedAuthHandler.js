@@ -35,13 +35,13 @@ class ConnectedAuthHandler extends PureComponent {
     this.authSubscription = () => {};
   }
 
-  //////////////////////////////////////
+  /********************* React.[Component|PureComponent] methods go down here *********************/
+
   async componentDidMount() {
     var timeout = this.props.timeout ? this.props.timeout : 150;
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), timeout))};
   }
 
-  /********************* React.[Component|PureComponent] methods go down here *********************/
 
   componentDidUpdate(prevProps) {
     if (prevProps.auth.user !== this.props.auth.user && this.props.auth.user) {
@@ -108,7 +108,7 @@ class ConnectedAuthHandler extends PureComponent {
       )
     else 
       return null;
-}
+  }
 
 
   render() {

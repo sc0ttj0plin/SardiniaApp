@@ -6,7 +6,8 @@ import {
   AccomodationItem,
   AsyncOperationStatusIndicator, 
   ConnectedHeader, 
-  CustomText
+  CustomText,
+  ScreenErrorBoundary
  } from "../../components";
 import TouchableOpacity from "../../components/ScrollableContainerTouchableOpacity"
 import { connect, useStore } from 'react-redux';
@@ -40,7 +41,7 @@ class FavouritesScreen extends Component {
       favInspirers: [],
       favEvents: [],
       favItineraries: [],
-      favAccomodations: [],
+      favAccomodations: []
     };
       
   }
@@ -76,11 +77,6 @@ class FavouritesScreen extends Component {
    * or to post-process data once it changes
    */
   componentDidUpdate(prevProps) {
-    /**
-     * Is the former props different from the newly propagated prop (redux)? perform some action
-     * if(prevProps.xxx !== this.props.xxx)
-     *  doStuff();
-     */
     //Once pois are retrieved you filter only the favourites
 
     setTimeout(() => {
@@ -193,7 +189,7 @@ class FavouritesScreen extends Component {
         accomodations.push(this.props.accomodations.dataById[uuid])
     })
     accomodations.loaded = true;
-    // console.log("places", accomodations.length)
+    
     if(accomodations.length != this.state.favAccomodations.length)
       this.setState({ favAccomodations: accomodations })
   }
@@ -223,7 +219,6 @@ class FavouritesScreen extends Component {
   } 
 
   _onShowListButtonPress = (list, title, type, isAccomodationsList) => {
-    // console.log("ciao")
     this.props.navigation.navigate(Constants.NAVIGATION.NavFavouritesListScreen, { items: list, title, type, isAccomodationsList });
   }
 
@@ -261,13 +256,12 @@ class FavouritesScreen extends Component {
           keyExtractor={item => item.uuid.toString()}
           showsHorizontalScrollIndicator={false}
           locale={this.props.locale}
-          numColumns={2}
           onPressItem={this._openItem}
           listType={type}
           listTitle={title}
           listTitleStyle={styles.sectionTitle}
           style={styles.list}
-          sideMargins={10}
+          sideMargins={20}
           renderListItem={renderItemFun}
         />
         {list.length > 6 && 
@@ -306,24 +300,28 @@ class FavouritesScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onLayout}>
-        <ConnectedHeader />
-        <AsyncOperationStatusIndicator
-          loading={this._isLoadingData()}
-          success={this._isSuccessData()}
-          error={this._isErrorData()}
-          loadingLayout={<LLEntitiesFlatlist 
-            numColumns={2}
-            sideMargins={10} 
-            horizontal={false} 
-            style={[styles.fill, {paddingTop: 60, padding: 10}]}
-            error={false}/>
-            }>
-            {this._renderNoFavourites()}
-            {render && this._renderContent()}
-        </AsyncOperationStatusIndicator>
-        
-      </View>
+      <ScreenErrorBoundary>
+        <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onLayout}>
+          <ConnectedHeader />
+          <AsyncOperationStatusIndicator
+            loading={this._isLoadingData()}
+            success={this._isSuccessData()}
+            error={this._isErrorData()}
+            loadingLayout={<EntityRelatedList 
+              horizontal={false}
+              extraData={this.props.locale}
+              keyExtractor={item => item.uuid.toString()}
+              showsHorizontalScrollIndicator={false}
+              locale={this.props.locale}
+              onPressItem={this._openItem}
+              style={[styles.fill, {paddingTop: 60, padding: 10}]}
+              error={false}/>
+              }>
+              {this._renderNoFavourites()}
+              {render && this._renderContent()}
+          </AsyncOperationStatusIndicator>
+        </View>
+      </ScreenErrorBoundary>
     )
   }
   

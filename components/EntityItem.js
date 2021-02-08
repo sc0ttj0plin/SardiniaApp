@@ -9,13 +9,13 @@ import Layout from "../constants/Layout";
 export default class EntityItem extends PureComponent {
   constructor(props){
     super(props)
-    this.entityIconOpts = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[props.listType] || Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS.places
+    this.entityIconOpts = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[props.listType]
   }
 
 
   
   render() {
-    const { onPress, keyItem, title, subtitle, image, distance, size, extraStyle, style, animated = false, mediaType} = this.props;
+    const { onPress, keyItem, title, subtitle, image, distance, size, extraStyle, style, animated = false, borderRadius = 8, mediaType} = this.props;
     return (
         <ScrollableContainerTouchableOpacity 
             key={keyItem}  
@@ -37,17 +37,23 @@ export default class EntityItem extends PureComponent {
                 distance={distance}
                 style={styles.fill}
                 animated={animated}
-                mediaType={mediaType} />
-            <View style={[styles.corner, {
-              borderTopColor: this.entityIconOpts.backgroundTopRightCorner,
-            }]}>
-              <CustomIcon
-                  name={this.entityIconOpts.iconName}
-                  size={15}
-                  style={styles.cornerIcon}
-                  color={this.entityIconOpts.iconColor}
-              />
-            </View>
+                borderRadius={borderRadius}
+                mediaType={mediaType}/>
+
+                {this.entityIconOpts && (
+                  <View style={[styles.corner, {
+                    borderTopColor: this.entityIconOpts.backgroundTopRightCorner,
+                    borderTopRightRadius: borderRadius
+                  }]}>
+                    <CustomIcon
+                        name={this.entityIconOpts.iconName}
+                        size={15}
+                        style={styles.cornerIcon}
+                        color={this.entityIconOpts.iconColor}
+                    />
+                  </View>
+                )}
+            
       </ScrollableContainerTouchableOpacity>
     );
   }
@@ -81,15 +87,5 @@ const styles = StyleSheet.create({
     top: -35,
     right: 3,
     width: 15,
-  },
-  shadow: {
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 5,
-    elevation: 5,
   }
 })

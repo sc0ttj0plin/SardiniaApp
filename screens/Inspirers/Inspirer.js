@@ -13,19 +13,20 @@ import {
   EntityWhyVisit,
   TopMedia,
   ConnectedFab, 
+  ScreenErrorBoundary,
  } from "../../components";
 import Toast from 'react-native-easy-toast';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { greedyArrayFinder, getEntityInfo, getCoordinates, getSampleVideoIndex, getGalleryImages } from '../../helpers/utils';
-import { openRelatedEntity } from '../../helpers/screenUtils';
+import { openRelatedEntity, isCloseToBottom } from '../../helpers/screenUtils';
 import _ from 'lodash';
 import Layout from '../../constants/Layout';
 import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-
+import { useSafeArea } from 'react-native-safe-area-context';
 
 const USE_DR = false;
 class InspirerScreen extends Component {
@@ -69,6 +70,7 @@ class InspirerScreen extends Component {
       this.props.actions.getInspirersById({ uuids: [uuid], vid: Constants.VIDS.inspirersCategories });
     else 
       this._parseEntity(this.props.inspirers.dataById[uuid]);
+    this._analytics(Constants.ANALYTICS_TYPES.userCompleteEntityAccess);
   }
 
   componentDidUpdate(prevProps) {
@@ -110,6 +112,12 @@ class InspirerScreen extends Component {
     if (!textToCheck || !textToCheck[lan])
       this._toast.show(entityIsNotTranslated, 2000);
   }
+
+  _analytics = (analyticsActionType) => {
+    const { uuid } = this.state;
+    this.props.actions.reportUserInteraction({ analyticsActionType, uuid, entityType: 'node', entitySubType: Constants.NODE_TYPES.inspirers });
+  }
+
 
   /********************* Render methods go down here *********************/
 
@@ -165,8 +173,8 @@ class InspirerScreen extends Component {
      return (
        <View style={styles.fill}>
          <Toast ref={(toast) => this._toast = toast} positionValue={220} opacity={0.7} />
-         <ScrollView style={styles.fill}>
-          <TopMedia urlVideo={sampleVideoUrl} urlImage={entity.image} />
+         <ScrollView style={[styles.fill]} contentContainerStyle={{paddingBottom: this.props.insets.bottom}}>
+          <TopMedia urlVideo={sampleVideoUrl} urlImage={entity.image} uuid={this.state.uuid} entityType={Constants.NODE_TYPES.inspirers}/>
           {this._renderFab(entity.uuid, title, coordinates, socialUrl)}   
           <View style={[styles.headerContainer]}> 
             <EntityHeader title={title} term={entity.term ? entity.term.name : ""} borderColor={Colors.colorInspirersScreen}/>
@@ -175,7 +183,7 @@ class InspirerScreen extends Component {
             <EntityAbstract abstract={abstract}/>
             <EntityWhyVisit title={whyVisitTitle} text={whyVisit}/>
             <EntityMap coordinates={coordinates}/>
-            <EntityGallery images={gallery} title={galleryTitle}/>
+            <EntityGallery images={gallery} title={galleryTitle} uuid={this.state.uuid} entityType={Constants.NODE_TYPES.inspirers}/>
             <EntityDescription title={descriptionTitle} text={description} color={Colors.colorInspirersScreen}/>
             <View style={styles.separator}/>
             {this.state.nestingCounter < Constants.SCREENS.maxRelatedNestingNavigation 
@@ -190,10 +198,16 @@ class InspirerScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader iconTintColor={Colors.colorInspirersScreen} />
-        {render && this._renderContent()}
-      </View>
+      <ScreenErrorBoundary>
+        <ScrollView 
+          onScroll={({nativeEvent}) => isCloseToBottom(nativeEvent) && this._analytics(Constants.ANALYTICS_TYPES.userReadsAllEntity)}
+          scrollEventThrottle={1000}
+          style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}
+        >
+          <ConnectedHeader iconTintColor={Colors.colorInspirersScreen} />
+          {render && this._renderContent()}
+        </ScrollView>
+      </ScreenErrorBoundary>
     )
   }
   
@@ -259,12 +273,14 @@ function InspirerScreenContainer(props) {
   const navigation = useNavigation();
   const route = useRoute();
   const store = useStore();
+  const insets = useSafeArea();
 
   return <InspirerScreen 
     {...props}
     navigation={navigation}
     route={route}
-    store={store} />;
+    store={store}
+    insets={insets} />;
 }
 
 

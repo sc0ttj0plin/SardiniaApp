@@ -14,7 +14,6 @@ import * as Constants from '../constants';
  * @param screenNavOpts navigation options for the destination screen
  */
 export const openRelatedEntity = (type, navigator, pushOrNavigate, screenNavOpts) => {
-  console.log('open entity')
   let navFun = navigator.push;
   if (pushOrNavigate == "navigate")
     navFun = navigator.navigate;
@@ -39,3 +38,8 @@ export const openRelatedEntity = (type, navigator, pushOrNavigate, screenNavOpts
       break;
   }
 }
+
+export const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
+  const paddingToBottom = 10;
+  return layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
+};

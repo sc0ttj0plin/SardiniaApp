@@ -13,10 +13,13 @@ export default class EntityRelatedList extends PureComponent {
     constructor(props){
         super(props)
 
-        this.space = 10;
-        var itemSizeProperties = this._getItemSizeProperties(Layout.window.width);
+        this.itemWidth = this.props.itemWidth ? this.props.itemWidth : 220;
+    
+        var numColumns = this.props.numColumns ? this.props.numColumns : this._numColumns(Layout.window.width);
+        var itemSizeProperties = this._getItemSizeProperties(Layout.window.width, numColumns);
 
         this.state = {
+            numColumns,
             data: props.data || [],
             windowWidth: Layout.window.width,
             itemSizeProperties: itemSizeProperties,
@@ -33,19 +36,25 @@ export default class EntityRelatedList extends PureComponent {
         }
     }
 
-    _onLayout = (event) => { 
-        var itemSizeProperties = this._getItemSizeProperties(event.nativeEvent.layout.width);
-        this.setState({itemSizeProperties: itemSizeProperties});
+    _numColumns = (windowWidth) => {
+        return Math.ceil(windowWidth / this.itemWidth);
     }
 
-    _getItemSizeProperties = (windowWidth) => {
-        const { horizontal, index, sideMargins, numColumns = 1 } = this.props;
+    _onLayout = (event) => {
+        var numColumns = this._numColumns(event.nativeEvent.layout.width);
+        var itemSizeProperties = this._getItemSizeProperties(event.nativeEvent.layout.width, numColumns);
+        this.setState({itemSizeProperties: itemSizeProperties, windowWidth: event.nativeEvent.layout.width, numColumns});
+    }
+
+    _getItemSizeProperties = (windowWidth, numColumns = 1) => {
+        const { horizontal, index, sideMargins } = this.props;
         const margins = sideMargins || 20
-        const itemWidth = (windowWidth - margins*2 - this.space)/numColumns;
+        const horizontalSeparatorSize = this.props.separatorSize ? this.props.separatorSize.width : 10;
+        const itemWidth = (windowWidth - horizontalSeparatorSize*(numColumns-1) - margins)/numColumns;
         const width = horizontal==false ? itemWidth : 160;
         const height = width;
         const marginRight = 0;
-        const marginBottom = horizontal===true ? 10 : 0
+        const marginBottom = horizontal===true ? horizontalSeparatorSize : 0
         return { width, height, marginRight, marginBottom};
     }
 
@@ -59,7 +68,7 @@ export default class EntityRelatedList extends PureComponent {
             index={index}
             keyItem={item.nid}
             horizontal={false}
-            sideMargins={10}
+            sideMargins={20}
             title={title}
             term={termName}
             stars={item.stars}
@@ -74,7 +83,7 @@ export default class EntityRelatedList extends PureComponent {
       )}
 
     _renderEntityListItem = (item, index) => {
-        const {listType, listTitle, horizontal, itemStyle, disableSeparator} = this.props
+        const {listType, listTitle, horizontal, itemStyle, disableSeparator, itemBorderRadius} = this.props
 
         if(this.props.renderListItem) {
             return this.props.renderListItem(item, index, this.state.itemSizeProperties);
@@ -103,6 +112,7 @@ export default class EntityRelatedList extends PureComponent {
                 size={this.state.itemSizeProperties}
                 horizontal={horizontal}
                 mediaType={item.mediaType}
+                borderRadius={itemBorderRadius}
             />
             {!disableSeparator && this._renderHorizontalSeparator()}
             </>
@@ -123,11 +133,14 @@ export default class EntityRelatedList extends PureComponent {
             horizontal, 
             extraData,
             showsHorizontalScrollIndicator,
-            numColumns,
             sideMargins,
             itemStyle,
             disableSeparator
         } = this.props; 
+
+        const {
+            numColumns, itemSizeProperties, separatorSize
+        } = this.state;
 
         return(
             <>
@@ -139,10 +152,11 @@ export default class EntityRelatedList extends PureComponent {
                         horizontal={horizontal} 
                         style={[styles.fill, this.props.style]} 
                         contentContainerStyle={contentContainerStyle}
-                        size={this.state.itemSizeProperties}
+                        size={itemSizeProperties}
                         error={false}
                         disableSeparator={disableSeparator}
                         ItemSeparatorComponent={() => <View style={{height: this.state.separatorSize.height}}></View>}
+                        separatorSize={separatorSize}
                         />
                 }
                 {horizontal &&
@@ -164,13 +178,14 @@ export default class EntityRelatedList extends PureComponent {
             horizontal, 
             extraData,
             showsHorizontalScrollIndicator,
-            numColumns,
             sideMargins,
             itemStyle,
             keyExtractor
         } = this.props; 
-        const {data} = this.state
+        const {data, numColumns} = this.state;
+
         return (
+            
            
             <View style={{flex: 1}} onLayout={this._onLayout}>   
                 <CustomText style={[listTitleStyle]}>{listTitle}</CustomText>
@@ -181,8 +196,8 @@ export default class EntityRelatedList extends PureComponent {
                         loadingLayout={this._renderLoadingLayout()}>
                     <FlatList 
                         horizontal={horizontal || false}
-                        numColumns={numColumns}
-                        key={listTitle + "-1"}
+                        numColumns={horizontal || numColumns}
+                        key={listTitle + "-" + numColumns}
                         extraData={extraData}
                         keyExtractor={keyExtractor ? keyExtractor : item => item.uuid.toString()}
                         data={data}

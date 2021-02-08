@@ -8,7 +8,8 @@ import {
   ConnectedHeader, 
   ConnectedMapScrollable,
   EntityItem,
-  SectionTitle
+  SectionTitle,
+  ScreenErrorBoundary
  } from "../../components";
 import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
 import MapView from "react-native-maps";
@@ -160,9 +161,7 @@ class ItinerariesScreen extends PureComponent {
           distance={this.state.isCordsInBound ? distanceStr : null}
           style={styles.itinerariesListItem}
           horizontal={false}
-          extraStyle={{
-            width: "100%"
-          }}
+          extraStyle={{width: '100%', marginBottom: 10}}
           animated={true}
         />
       )
@@ -260,10 +259,12 @@ class ItinerariesScreen extends PureComponent {
   render() {
     const { render } = this.state;
     return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onPageLayout}>
-        <ConnectedHeader iconTintColor={Colors.colorItinerariesScreen} />
-        {render && this._renderContent()}
-      </View>
+      <ScreenErrorBoundary>
+        <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onPageLayout}>
+          <ConnectedHeader iconTintColor={Colors.colorItinerariesScreen} />
+          {render && this._renderContent()}
+        </View>
+      </ScreenErrorBoundary>
     )
   }
   

@@ -1,10 +1,11 @@
 import { HttpLink } from 'apollo-link-http';
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from "apollo-cache-inmemory";
+import * as Constants from '../constants';
 const makeApolloClient = (token) => {
   // create an apollo link instance, a network interface for apollo client
   const link = new HttpLink({
-    uri: `http://sinnos.andreamontaldo.com:81/hasura-Te7BEYo8VwbYFUDH/v1/graphql`,
+    uri: Constants.API_URL,
     headers: {
       'x-hasura-admin-secret': `${token}`,
       'content-type': 'application/json'

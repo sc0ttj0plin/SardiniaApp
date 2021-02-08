@@ -8,7 +8,8 @@ import {
   EntityItem,
   AsyncOperationStatusIndicator,  
   ConnectedHeader, 
-  CustomText
+  CustomText,
+  ScreenErrorBoundary
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -27,6 +28,7 @@ import EntityRelatedList from '../../components/EntityRelatedList';
 import { useSafeArea } from 'react-native-safe-area-context';
 import EntityItemInGrid from '../../components/EntityItemInGrid'; 
 import {LLEntitiesFlatlist} from "../../components/loadingLayouts/";
+import * as Device from 'expo-device';
 
 /* Deferred rendering to speedup page inital load: 
    deferred rendering delays the rendering reducing the initial 
@@ -48,14 +50,15 @@ class GalleryScreen extends Component {
       itemSize: {
         width: (Layout.window.width-PADDING*3)/2,
         height: (Layout.window.width-PADDING*3)/2,
-      }
-      //
+      },
+      windowWidth: Layout.window.width
     };
+    
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
 
-  componentDidMount() {
+  async componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
     this.props.actions.checkForUpdates();
@@ -67,6 +70,8 @@ class GalleryScreen extends Component {
     shuffleArray(uuids);
 
     this._videoUuids = uuids;
+
+    this._deviceType = await Device.getDeviceTypeAsync();
 
     setTimeout(() => this.props.actions.getPois({ uuids: uuids }), 1);
   }
@@ -120,6 +125,9 @@ class GalleryScreen extends Component {
   _isLoadingData  = () => this.props.pois.loading; 
   _isErrorData    = () => this.props.pois.error;   
 
+  _renderContent = () => {
+    
+  }
 
   _getPois = (uuids) => {
 
@@ -209,8 +217,8 @@ class GalleryScreen extends Component {
     const title = item.title && _.get(item.title, [this.props.locale.lan, 0, "value"], "");
     const subtitle = item && item.term ? item.term.name : "";
     const image = item.image;
-    const media_url = item.media_url, mediaType = item.mediaType, uuid_media = item.uuid_media;
-    return {title, subtitle, image, media_url, mediaType, uuid_media};
+    const media_url = item.media_url, mediaType = item.mediaType, uuid_media = item.uuid_media, uuid = item.uuid;
+    return {title, subtitle, image, media_url, mediaType, uuid_media, uuid};
   }
 
   /********************* Render methods go down here *********************/
@@ -244,7 +252,7 @@ class GalleryScreen extends Component {
         />
   }
 
-  _renderContent = () => {
+  _renderMansonryGrid = () => {
     const {videoAnd3D} = this.props.locale.messages;
     const data = this.state.gridItems;
 
@@ -264,24 +272,65 @@ class GalleryScreen extends Component {
               contentContainerStyle={[styles.contentContainerStyle, {paddingBottom: this.props.insets.bottom}]}
               style={[styles.listStyle]}
               renderItem={this._renderRow}
+              initialNumToRender={10}
+              windowSize={10}
               />
         </AsyncOperationStatusIndicator>
       </View>
     );
   }
 
+  _onLayout = (event) => { 
+    this.setState({windowWidth: event.nativeEvent.layout.width});
+  }
+
+  _renderGrid = () => {
+    const data = this.state.pois;
+    const {videoAnd3D} = this.props.locale.messages;
+
+    return (
+        <EntityRelatedList
+            horizontal={false}
+            data={data}
+            keyExtractor={item => item.media_url}
+            showsHorizontalScrollIndicator={false}
+            locale={this.props.locale}
+            onPressItem={this._openMedia}
+            contentContainerStyle={[styles.contentContainerStyle, {paddingBottom: this.props.insets.bottom, paddingTop: 5}]}
+            listTitle={videoAnd3D}
+            listTitleStyle={[styles.sectionTitle]}
+            style={[styles.listStyle, {paddingHorizontal: 5}]}
+            sideMargins={10}
+            disableSeparator={false}
+            separatorSize={{width: 5, height: 5}}
+            itemStyle={{borderRadius: 0}}
+            itemBorderRadius={0}
+            />
+    );
+  }
+
+  _renderContent = () => {
+    if(this._deviceType === Device.DeviceType.TABLET) {
+      return this._renderGrid();
+    } else {
+      return this._renderMansonryGrid();
+    }
+  }
+
 
   render() {
     const { render } = this.state;
     return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader 
-          onBackPress={this._backButtonPress}
-          iconTintColor={Colors.colorGalleryScreen}  
-          backButtonVisible={this.props.others.inspirersTerms.length > 0}
-        />
-        {render && this._renderContent()}
-      </View>
+      <ScreenErrorBoundary>
+        <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onLayout}>
+          <ConnectedHeader 
+            onBackPress={this._backButtonPress}
+            iconTintColor={Colors.colorGalleryScreen}  
+            backButtonVisible={this.props.others.inspirersTerms.length > 0}
+          />
+          {render && this._renderContent()}
+        </View>
+      </ScreenErrorBoundary>
     )
   }
   

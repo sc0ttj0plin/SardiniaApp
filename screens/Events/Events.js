@@ -8,7 +8,8 @@ import {
   AsyncOperationStatusIndicator, 
   ConnectedHeader,
   EventListItem, 
-  CustomText
+  CustomText,
+  ScreenErrorBoundary,
  } from "../../components";
 import moment from "moment";
 import { connect, useStore } from 'react-redux';
@@ -288,10 +289,12 @@ class EventsScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader iconTintColor={Colors.colorEventsScreen}/>
-        {render && this._renderContent()}
-      </View>
+      <ScreenErrorBoundary>
+        <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
+          <ConnectedHeader iconTintColor={Colors.colorEventsScreen}/>
+          {render && this._renderContent()}
+        </View>
+      </ScreenErrorBoundary>
     )
   }
   

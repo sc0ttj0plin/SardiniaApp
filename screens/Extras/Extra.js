@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { 
-  View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
-  StyleSheet, BackHandler, Platform, ScrollView, Animated } from "react-native";
+  View, StyleSheet, ScrollView, Animated } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   EntityAbstract,
@@ -12,10 +11,12 @@ import {
   TopMedia,
   ConnectedHeader, 
   ConnectedFab, 
+  ScreenErrorBoundary,
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
+import { openRelatedEntity, isCloseToBottom } from '../../helpers/screenUtils';
 import { greedyArrayFinder, getEntityInfo, getCoordinates, getSampleVideoIndex, getSampleVrModelIndex, getGalleryImages } from '../../helpers/utils';
 import Layout from '../../constants/Layout';
 import { apolloQuery } from '../../apollo/queries';
@@ -42,6 +43,7 @@ class ExtraScreen extends Component {
     this.state = {
       render: USE_DR ? false : true,
       //
+      uuid: null, 
       entity: item,
       relatedPlaces: [], 
       relatedItineraries: [], 
@@ -62,6 +64,7 @@ class ExtraScreen extends Component {
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
     this._parseEntity(this.state.entity);
     this._fetchNearNodes();
+    this._analytics(Constants.ANALYTICS_TYPES.userCompleteEntityAccess);
   }
 
   /**
@@ -103,24 +106,26 @@ class ExtraScreen extends Component {
     const sampleVideoUrl = getSampleVideoIndex(entity.uuid);
     const sampleVrUrl = getSampleVrModelIndex(entity.uuid);
     const gallery = getGalleryImages(entity);
-    this.setState({ entity, abstract,  title,  description,  whyVisit,  socialUrl, sampleVideoUrl, sampleVrUrl, gallery });
+    this.setState({ entity, uuid: entity.uuid, abstract,  title,  description,  whyVisit,  socialUrl, sampleVideoUrl, sampleVrUrl, gallery });
   }
 
 
   _openVRContent = () => {
-    const {sampleVrUrl} = this.state;
+    const { sampleVrUrl, uuid } = this.state;
     if(sampleVrUrl) {
       this.props.navigation.navigate(Constants.NAVIGATION.NavMediaScreen, {
-          source: sampleVrUrl,
-          type: "virtualTour"
+        uuid,
+        entityType: Constants.NODE_TYPES.inspirers,
+        source: sampleVrUrl,
+        type: "virtualTour"
       });
     }
   }
 
-  _isSuccessData  = () => false;    /* e.g. this.props.pois.success; */
-  _isLoadingData  = () => true;   /* e.g. this.props.pois.loading; */
-  _isErrorData    = () => null;    /* e.g. this.props.pois.error; */
-
+  _analytics = (analyticsActionType) => {
+    const { uuid } = this.state;
+    this.props.actions.reportUserInteraction({ analyticsActionType, uuid, entityType: 'node', entitySubType: Constants.NODE_TYPES.inspirers });
+  }
 
   /********************* Render methods go down here *********************/
   /* Horizontal spacing for Header items */
@@ -183,7 +188,7 @@ class ExtraScreen extends Component {
       <View style={styles.fill}>
         <Animated.ScrollView style={styles.fill}
           onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }],{useNativeDriver: true})}>
-          <TopMedia urlVideo={sampleVideoUrl} urlImage={entity.image} />
+          <TopMedia urlVideo={sampleVideoUrl} urlImage={entity.image} uuid={this.state.uuid} entityType={Constants.NODE_TYPES.inspirers}/>
           {this._renderFab(entity.uuid, title, coordinates, socialUrl)}   
           <View style={[styles.headerContainer]}> 
             <EntityHeader title={title} borderColor={Colors.black}/>
@@ -195,7 +200,7 @@ class ExtraScreen extends Component {
             { sampleVrUrl &&
             <EntityVirtualTour rotation={iconRotation} onPress={this._openVRContent}/>
             }
-            <EntityGallery images={gallery} title={galleryTitle}/>
+            <EntityGallery images={gallery} title={galleryTitle} uuid={this.state.uuid} entityType={Constants.NODE_TYPES.inspirers} />
             <View style={styles.separator}/>
             {this._renderRelatedList("Luoghi", relatedPlaces, Constants.ENTITY_TYPES.places)}
             {this._renderRelatedList("Itinerari", relatedItineraries, Constants.ENTITY_TYPES.itineraries)}
@@ -210,10 +215,16 @@ class ExtraScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader />
-        {render && this._renderContent()}
-      </View>
+      <ScreenErrorBoundary>
+        <ScrollView 
+          onScroll={({nativeEvent}) => isCloseToBottom(nativeEvent) && this._analytics(Constants.ANALYTICS_TYPES.userReadsAllEntity)}
+          scrollEventThrottle={1000}
+          style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}
+        >
+          <ConnectedHeader />
+          {render && this._renderContent()}
+        </ScrollView>
+      </ScreenErrorBoundary>
     )
   }
   

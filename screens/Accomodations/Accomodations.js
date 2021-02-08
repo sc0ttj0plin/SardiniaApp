@@ -10,6 +10,7 @@ import {
   ConnectedHeader, 
   AccomodationItem,
   SectionTitle,
+  ScreenErrorBoundary,
  } from "../../components";
 import ConnectedMapScrollable from "../../components/ConnectedMapScrollable"
 import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
@@ -155,7 +156,6 @@ class AccomodationsScreen extends Component {
       // uuids: childUuids, /* no need to specify the category since we get random pois */
       offset: nearPois.length,
     })).then((pois) => {
-      console.log(pois.length);
       this.setState({ nearPois: [...nearPois, ...pois] });
     });
   }
@@ -275,12 +275,14 @@ class AccomodationsScreen extends Component {
         extraStyle={ horizontal ? {
           borderColor: Colors.lightGray,
           borderWidth: 1,
-          marginBottom: 0
+          marginBottom: 0,
+          marginRight: 10
         } : {
           width: '100%',
           borderColor: Colors.lightGray,
           borderWidth: 1,
-          marginLeft: 0
+          marginLeft: 0,
+          marginBottom: 10
         }}
         horizontal={horizontal}
         sizeMargins={20}
@@ -414,10 +416,12 @@ class AccomodationsScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onPageLayout}>
-        <ConnectedHeader onBackPress={this._backButtonPress} iconTintColor={Colors.colorAccomodationsScreen} />
-        {render && this._renderContent()}
-      </View>
+      <ScreenErrorBoundary>
+        <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onPageLayout}>
+          <ConnectedHeader onBackPress={this._backButtonPress} iconTintColor={Colors.colorAccomodationsScreen} />
+          {render && this._renderContent()}
+        </View>
+      </ScreenErrorBoundary>
     )
   }
   

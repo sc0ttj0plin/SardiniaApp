@@ -81,11 +81,16 @@ class MediaScreen extends PureComponent {
     super(props);
 
     /* Get props from navigation */ 
-    const { source, type, images, initialPage, item } = this.props.route.params;
+    const { source, type, images, initialPage, item, uuid, entityType } = this.props.route.params;
     this._refs = {};
+
+    console.log(item);
     
     this.state = {
       render: USE_DR ? false : true,
+      //
+      uuid,
+      entityType,
       //
       source: source,
       type: type || null,
@@ -113,6 +118,13 @@ class MediaScreen extends PureComponent {
     this.setState({ orientation });
     await ScreenOrientation.unlockAsync();
     ScreenOrientation.addOrientationChangeListener(this._onOrientationChange);
+
+    this.props.actions.reportUserInteraction({ 
+      analyticsActionType: Constants.ANALYTICS_TYPES.userOpensEntityMultimediaContent, 
+      uuid: this.state.uuid, 
+      entityType: 'node', 
+      entitySubType: this.state.entityType
+    });
   }
 
   /**
@@ -242,7 +254,7 @@ class MediaScreen extends PureComponent {
   _onOpenEntityPressed = () => {
     if(this._refs["vplayer"])
       this._refs["vplayer"].stopAsync();
-    this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item: this.state.item });
+    this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item: this.state.item, mustFetch: true });
   }
 
 
@@ -288,7 +300,7 @@ class MediaScreen extends PureComponent {
           paddingTop={this.props.insets.top}
           />
         {title && (
-            <View style={[styles.footer, {paddingBottom: this.props.insets.bottom}]}>
+            <View style={[styles.footer, {paddingBottom: Math.max(this.props.insets.bottom, 10)}]}>
                 <HTML baseFontStyle={styles.footerText} html={title} />
             </View>
         )}
@@ -436,6 +448,7 @@ const styles = StyleSheet.create({
       width: "100%",
       textAlign: 'center',
       justifyContent: 'center',
+      alignItems: "center",
       padding: 10,
       backgroundColor: "rgba(0,0,0,0.5)",
   },
@@ -443,7 +456,7 @@ const styles = StyleSheet.create({
       color: 'white',
       fontSize: 14,
       textAlign: 'center',
-      fontFamily: "montserrat-regular"
+      fontFamily: "montserrat-regular",
   },
   loadingDotsView1: {
     position: "absolute",
