@@ -51,7 +51,7 @@ class ConnectedSplashLoader extends Component {
       /* Update State */
       updating: false,
       /* Linking State */
-      showLinking: true,
+      showLinking: false,
       linkingSuccess: false,
       linkingLoading: false,
       linkingError: null,
