@@ -265,15 +265,17 @@ class AccomodationScreen extends Component {
     const { render } = this.state;
     return (
       <ScreenErrorBoundary>
-        <ScrollView 
-          onScroll={({nativeEvent}) => isCloseToBottom(nativeEvent) && this._analytics(Constants.ANALYTICS_TYPES.userReadsAllEntity)}
-          scrollEventThrottle={1000}
-          style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}
-        >
+        <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
           <ConnectedHeader iconTintColor={Colors.colorAccomodationsScreen} />
-          {this._renderOpenDetailModal()}
-          {render && this._renderContent()}
-        </ScrollView>
+          <ScrollView 
+            onScroll={({nativeEvent}) => isCloseToBottom(nativeEvent) && this._analytics(Constants.ANALYTICS_TYPES.userReadsAllEntity)}
+            scrollEventThrottle={1000}
+            style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}
+          >
+            {this._renderOpenDetailModal()}
+            {render && this._renderContent()}
+          </ScrollView>
+        </View>
       </ScreenErrorBoundary>
     )
   }
