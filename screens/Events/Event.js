@@ -280,7 +280,7 @@ class EventScreen extends Component {
           <ScrollView 
             onScroll={({nativeEvent}) => isCloseToBottom(nativeEvent) && this._analytics(Constants.ANALYTICS_TYPES.userReadsAllEntity)}
             scrollEventThrottle={1000}
-            style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}
+            style={[styles.fill]}
           >
             {render && this._renderContent()}
           </ScrollView>
