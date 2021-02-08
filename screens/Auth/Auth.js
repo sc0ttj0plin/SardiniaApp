@@ -444,11 +444,11 @@ class Login extends Component {
                 <Input autoCapitalize={'none'} placeholder="Email" onChangeText={(email) => this.setState({email: email.toLowerCase()})} />
               </Item>
             </Form>
-            <TouchableOpacity style={styles.button} onPress={this._validateForm}>
+            <TouchableOpacity style={styles.defaultBtn} onPress={this._validateForm}>
               {isVerifyingEmail ? 
               <ActivityIndicator animating={isVerifyingEmail} size={"small"} color={Colors.tintColor}/>
               :
-              <CustomText style={styles.buttonText}>{next}</CustomText>
+              <CustomText style={styles.defaultBtnText}>{next}</CustomText>
               }
             </TouchableOpacity>
           </View>
