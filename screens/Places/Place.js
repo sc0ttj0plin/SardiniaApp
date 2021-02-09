@@ -319,13 +319,7 @@ class PlaceScreen extends Component {
       <ScreenErrorBoundary>
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
           <ConnectedHeader iconTintColor="#24467C" />
-          <ScrollView 
-            onScroll={({nativeEvent}) => isCloseToBottom(nativeEvent) && this._analytics(Constants.ANALYTICS_TYPES.userReadsAllEntity && Animated.event([{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }],{useNativeDriver: true}))}
-            scrollEventThrottle={1000}
-            style={[styles.fill]}
-          >
             {render && this._renderContent()}
-          </ScrollView>
         </View>
       </ScreenErrorBoundary>
     )
