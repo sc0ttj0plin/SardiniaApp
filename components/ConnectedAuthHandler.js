@@ -46,7 +46,6 @@ class ConnectedAuthHandler extends PureComponent {
   componentDidUpdate(prevProps) {
     if (prevProps.auth.user !== this.props.auth.user && this.props.auth.user) {
       const isProfileComplete = this.props.auth.user.info !== undefined;
-      console.log("updated user", this.props.auth)
       // If the profile is incomplete navigate to login screen
       if (!isProfileComplete)
         this.props.navigation.navigate(Constants.NAVIGATION.NavAuthScreen); 

@@ -2,7 +2,7 @@ import * as firebase from 'firebase';
 import * as Constants from '../constants';
 import * as Linking from 'expo-linking';
 import AsyncStorage from '@react-native-community/async-storage';
-
+import ExpoConstants from 'expo-constants';
 
 //@passwordless
 export const passwordLessSignup = (email) =>
@@ -12,8 +12,7 @@ export const passwordLessSignup = (email) =>
     //Auth Storage is persisted (see store.js)
     const expoLink = Linking.makeUrl(); //no navigation path, no params
     //Note: This is added to authorized domains in firebase
-    const FIREBASE_LINK_PROXY = Constants.FIREBASE_LINK_PROXY;
-    const proxyUrl = `${FIREBASE_LINK_PROXY}?redirectUrl=${encodeURIComponent(expoLink)}`;
+    const proxyUrl = `${ExpoConstants.manifest.extra.firebasePassLessAuthLinkProxy}?redirectUrl=${encodeURIComponent(expoLink)}`;
 
     var actionCodeSettings = {
       handleCodeInApp: true,

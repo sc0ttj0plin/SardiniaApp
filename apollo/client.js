@@ -1,11 +1,12 @@
 import { HttpLink } from 'apollo-link-http';
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from "apollo-cache-inmemory";
-import * as Constants from '../constants';
+import ExpoConstants from 'expo-constants';
+
 const makeApolloClient = (token) => {
   // create an apollo link instance, a network interface for apollo client
   const link = new HttpLink({
-    uri: Constants.API_URL,
+    uri: ExpoConstants.manifest.extra.apiUrl,
     headers: {
       'x-hasura-admin-secret': `${token}`,
       'content-type': 'application/json'

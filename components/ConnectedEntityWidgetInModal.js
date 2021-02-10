@@ -5,6 +5,8 @@ import { ActivityIndicator } from 'react-native';
 // import { Image } from 'react-native-elements';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import {distance, distanceToString} from '../helpers/maps';
+import { connect, useStore } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import actions from '../actions';
 import { apolloQuery } from '../apollo/queries';
 import * as Constants from "../constants"
@@ -15,21 +17,20 @@ import Colors from "../constants/Colors"
 import CustomText from "./CustomText";
 
 /**
- * EntityWidgetInModal 
+ * ConnectedEntityWidgetInModal 
  */
-class EntityWidgetInModal extends PureComponent {  
+class ConnectedEntityWidgetInModal extends PureComponent {  
 
   constructor(props) { 
     super(props);
 
     var { entity, entityType, coords } = props;
 
-    /* Only for entityType == 'places' and 'accomodations', for 'event' or 'itinerary' we already have data in props.entity */
+    /* Only for entityType == 'places' and 'accomodations', for 'event' or 'itinerary' we already have data in props.entity, owt we need to load it */
     this._isClusteredEntity = (entityType === Constants.ENTITY_TYPES.places || entityType === Constants.ENTITY_TYPES.accomodations); 
 
     this.state = {
       entity,
-      isEntityLoaded: this._isClusteredEntity ? false : true,
     };
   }
 
@@ -84,6 +85,14 @@ class EntityWidgetInModal extends PureComponent {
           query = actions.getPoi;
           params = { uuid: entity.uuid };
         }
+        // Report interaction
+        this.props.actions.reportAction({ 
+          analyticsActionType: Constants.ANALYTICS_TYPES.userPartialEntityAccess, 
+          uuid: this.props.entity.uuid, 
+          entityType: 'node', 
+          entitySubType: this.props.entityType
+        });
+
         // Launch the query to get the real entity from the cluster
         apolloQuery(query(params)).then((data) => {
           let entity = data[0];
@@ -208,12 +217,31 @@ const styles = StyleSheet.create({
 });
 
 
-export default function EntityWidgetInModalContainer(props) {
+function ConnectedEntityWidgetInModalContainer(props) {
+  const store = useStore();
   const navigation = useNavigation();
   const route = useRoute();
 
-  return <EntityWidgetInModal 
+  return <ConnectedEntityWidgetInModal 
     {...props}
     navigation={navigation}
-    route={route}/>;
+    route={route}
+    store={store} />;
 }
+
+
+const mapStateToProps = state => ({ 
+  locale: state.localeState,
+  favourites: state.favouritesState,
+});
+const mapDispatchToProps = dispatch => {
+  return {...bindActionCreators({ ...actions}, dispatch)};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps, (stateProps, dispatchProps, props) => {
+  return {
+    ...stateProps,
+    actions: dispatchProps,
+    ...props
+  }
+})(ConnectedEntityWidgetInModalContainer)

@@ -9,7 +9,7 @@ import { bindActionCreators } from 'redux';
 import NetInfo from "@react-native-community/netinfo";
 import AsyncStorage from '@react-native-community/async-storage';
 import _ from 'lodash';
-import config from '../config/config';
+import ExpoConstants from 'expo-constants';
 import * as firebase from 'firebase';
 import { parseUrl } from '../helpers/utils';
 import actions from '../actions';
@@ -207,7 +207,7 @@ class ConnectedSplashLoader extends Component {
   _initFirebaseAppAndAttemptLogin = async () => {
     // Initialize app is synchronous
     if (firebase.apps.length === 0)
-      firebase.initializeApp(config.firebase);
+      firebase.initializeApp(ExpoConstants.manifest.extra.firebase);
     // If an email has been stored, attempt login using exiting user info
     const email = await AsyncStorage.getItem('email');
     if (email) 
@@ -224,9 +224,11 @@ class ConnectedSplashLoader extends Component {
       //Foreground location
       //  Initial position
       let location = await Location.getCurrentPositionAsync(Constants.GEOLOCATION.getCurrentPositionAsyncOpts);
+      this.props.actions.reportAction({ analyticsActionType: Constants.ANALYTICS_TYPES.gpsTracking, meta: location });
       setTimeout(() => {this.props.actions.setGeolocation(location, Constants.GEOLOCATION.sources.foregroundGetOnce)}, Constants.SPLASH_LOADING_DURATION + 500);
       //  Watch
       Location.watchPositionAsync(Constants.GEOLOCATION.watchPositionAsyncOpts, location => {
+        this.props.actions.reportAction({ analyticsActionType: Constants.ANALYTICS_TYPES.gpsTracking, meta: location });
         this.props.actions.setGeolocation(location, Constants.GEOLOCATION.sources.foregroundWatch);
       });
     }
@@ -276,7 +278,7 @@ class ConnectedSplashLoader extends Component {
     }
   }
 
-  _reloadApp = () => setTimeout(async () => await Updates.reloadAsync(), RESTART_DELAY);
+  _reloadApp = () => setTimeout(async () => await Updates.reloadAsync(), Constants.RESTART_DELAY);
 
   /******************************** LINKING LOGIC ********************************/ 
   
@@ -313,7 +315,7 @@ class ConnectedSplashLoader extends Component {
       // this.props.actions.setUrl(url, Constants.LINKING_TYPES.auth);
       if(!this.props.auth.success)
         this.props.actions.passwordLessLinkHandler(url);
-    } else if (url.indexOf(Constants.WEBSITE_DOMAIN) || url.indexOf(Constants.WEBSITE_STAGING_DOMAIN)) {
+    } else if (url.indexOf(ExpoConstants.manifest.extra.websiteDomain)) {
       this._loadLinkingEntity(url)
       //this._linkingUrlType = Constants.LINKING_TYPES.website;
     }

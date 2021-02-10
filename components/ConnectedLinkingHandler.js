@@ -13,6 +13,7 @@ import * as Constants from '../constants';
 import LoadingDots from './LoadingDots';
 import Colors from '../constants/Colors';
 import * as Updates from 'expo-updates';
+import ExpoConstants from 'expo-constants';
 import { navigationRef } from "../navigation/RootNavigation";
 
 const USE_DR = false;
@@ -43,7 +44,7 @@ class UpdateHandler extends PureComponent {
   async componentDidMount() {
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), DR_TIMEOUT))};
     const url = this.props.others.url;
-    if (url && url.indexOf(Constants.WEBSITE_DOMAIN)) {
+    if (url && url.indexOf(ExpoConstants.manifest.extra.websiteDomain)) {
       /* www.abc.com/a/b/c?querystr1=x => c */
       const lastBackslashIdx = url.lastIndexOf('/')+1; 
       const trailingQueryStr = url.substring(lastBackslashIdx, url.length).split('?')[0]; 

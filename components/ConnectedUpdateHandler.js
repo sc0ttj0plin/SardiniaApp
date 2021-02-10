@@ -15,7 +15,6 @@ import * as Updates from 'expo-updates';
 
 const USE_DR = true;
 const DR_TIMEOUT = 1000;
-const RESTART_DELAY = 2000;
 
 class UpdateHandler extends PureComponent {
 
@@ -64,7 +63,7 @@ class UpdateHandler extends PureComponent {
     }
   }
 
-  _reloadApp = () => setTimeout(async () => await Updates.reloadAsync(), RESTART_DELAY);
+  _reloadApp = () => setTimeout(async () => await Updates.reloadAsync(), Constants.RESTART_DELAY);
 
   /********************* Render methods go down here *********************/
   _renderContent = () => {

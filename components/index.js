@@ -32,7 +32,7 @@ export EntityAccomodationDetail from './EntityAccomodationDetail';
 export ConnectedAuthHandler from './ConnectedAuthHandler';
 export CustomText from './CustomText';
 export SectionTitle from './SectionTitle';
-export EntityWidgetInModal from './EntityWidgetInModal';
+export ConnectedEntityWidgetInModal from './ConnectedEntityWidgetInModal';
 export EntityItemInModal from './EntityItemInModal';
 export ConnectedUpdateHandler from './ConnectedUpdateHandler';
 export ShimmerWrapper from './ShimmerWrapper';

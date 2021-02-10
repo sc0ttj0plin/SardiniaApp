@@ -52,7 +52,7 @@ class ConnectedFab extends PureComponent {
   _isFavourite = () => this.props.favourites[this.props.uuid];
 
   _toggleFav = () => {
-    this.props.actions.reportUserInteraction({ 
+    this.props.actions.reportAction({ 
       analyticsActionType: this._isFavourite() ? Constants.ANALYTICS_TYPES.userRemovesEntityFromFavourites : Constants.ANALYTICS_TYPES.userAddsEntityToFavourites, 
       uuid: this.props.uuid, 
       entityType: 'node', 

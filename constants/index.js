@@ -149,6 +149,7 @@ export const FETCH_NUM_MONTHS_BACKWARDS = 1;
 export const FETCH_NUM_MONTHS_FORWARD = 0;
 
 // OTHERS
+export const RESTART_DELAY = 2000;
 /* probability that a main component checks for OTA updates on didMount: 0.5: 50%, 0.2: 20% */
 export const CHECK_FOR_UPDATES_WHILE_FOREGROUNDED_PROB = 0.1; 
 export const DEFAULT_LANGUAGE = normalizeLanguage(Localization.locale); /* deal with en or en-gb => en */
@@ -161,19 +162,12 @@ export const REGION_SARDINIA = { longitude: 9.0, latitude: 40.0, longitudeDelta:
 
 //DOMAIN & LINKING
 export const LINKING_AUTH_SEARCHSTR = "apiKey"; /* if the input link contains this substr, consider it */
-export const API_URL = `http://sinnos.andreamontaldo.com:81/hasura-Te7BEYo8VwbYFUDH/v1/graphql`;
-export const API_IMAGES_URL = 'http://sinnos.andreamontaldo.com:81/img';
-export const WEBSITE_URL = "https://www.sardegnaturismo.it/";
-export const WEBSITE_DOMAIN = "sardegnaturismo.it";
-export const WEBSITE_STAGING_URL = "https://www.dev.sardegnaturismocloud.it";
-export const WEBSITE_STAGING_DOMAIN = "dev.sardegnaturismocloud.it";
+
 export const LINKING_TYPES = {
   auth: "auth",
   website: "website",
   notifications: "notifications"
 }
-
-export const FIREBASE_LINK_PROXY = 'https://wt-6e2a5f000b93f69e1b65cf98021e1945-0.sandbox.auth0-extend.com/firebase-authentication-link-redirect';
 
 export const SPLASH_EXPO_DURATION = 1000;
 export const SPLASH_LOADING_DURATION = 3000;
@@ -184,13 +178,20 @@ export const MODALS_SHOW_DELAY = 2000;
 export const NAVIGATE_TO_LINKED_ENTITY_DELAY = 3000;
 
 // ANALYTICS
+export const ANALYTICS_MAX_STORED_ACTIONS = 5; /* sends actions to backend after N accumulated actions before sending to backend */
 export const ANALYTICS_TYPES = {
+  // Interaction
   userCompleteEntityAccess: 0,
   userPartialEntityAccess: 1,
   userReadsAllEntity: 2,
   userAddsEntityToFavourites: 3,
   userOpensEntityMultimediaContent: 4,
   userRemovesEntityFromFavourites: 5,
+  userSearches: 201,
+  // Error
+  errorTrace: 100,
+  // GPS
+  gpsTracking: 200,
 }
 
 // NAVIGATION

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { 
   View, StyleSheet, Animated, ScrollView } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
+import ExpoConstants from 'expo-constants';
 import { 
   AsyncOperationStatusIndicator, 
   ConnectedHeader, 
@@ -142,7 +143,7 @@ class PlaceScreen extends Component {
     const { lan } = locale;
     const { abstract, title, description, whyVisit } = getEntityInfo(entity, ["abstract", "title", "description", "whyVisit"], [lan, 0, "value"], null, {"description": {s: /\. /g, d: ".<br/>"}, "whyVisit": {s: /<\/?[^>]+(>|$)/g, d: ""}});
     const coordinates = getCoordinates(entity);
-    const socialUrl = `${Constants.WEBSITE_URL}${greedyArrayFinder(entity.url_alias, "language", lan, "alias", "")}`;
+    const socialUrl = `${ExpoConstants.manifest.extra.websiteUrl}${greedyArrayFinder(entity.url_alias, "language", lan, "alias", "")}`;
     const sampleVideoUrl = getSampleVideoIndex(entity.uuid);
     const sampleVrUrl = getSampleVrModelIndex(entity.uuid);
     const gallery = getGalleryImages(entity);
@@ -185,7 +186,7 @@ class PlaceScreen extends Component {
 
   _analytics = (analyticsActionType) => {
     const { uuid } = this.state;
-    this.props.actions.reportUserInteraction({ analyticsActionType, uuid, entityType: 'node', entitySubType: Constants.NODE_TYPES.places });
+    this.props.actions.reportAction({ analyticsActionType, uuid, entityType: 'node', entitySubType: Constants.NODE_TYPES.places });
   }
 
   /**

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
+import ExpoConstants from 'expo-constants';
 import { 
   ConnectedHeader, 
   EntityDescription,
@@ -123,7 +124,7 @@ class EventScreen extends Component {
     const { locale } = this.props;
     const { lan } = locale;
     const { abstract, title, description } = getEntityInfo(entity, ["abstract", "title", "description"], [lan, 0, "value"], null, {"description": {s: /\. /g, d: ".<br/>"}});
-    const socialUrl = `${Constants.WEBSITE_URL}${greedyArrayFinder(entity.url_alias, "language", lan, "alias", "")}`;
+    const socialUrl = `${ExpoConstants.manifest.extra.websiteUrl}${greedyArrayFinder(entity.url_alias, "language", lan, "alias", "")}`;
     const sampleVideoUrl = getSampleVideoIndex(entity.nid);
     const steps = _.get(entity, ["steps", lan], []);
     const stepsCoordinates = this._getEventStepsMarkers(entity.steps[lan]);
@@ -176,7 +177,7 @@ class EventScreen extends Component {
 
   _analytics = (analyticsActionType) => {
     const { uuid } = this.state;
-    this.props.actions.reportUserInteraction({ analyticsActionType, uuid, entityType: 'node', entitySubType: Constants.NODE_TYPES.events });
+    this.props.actions.reportAction({ analyticsActionType, uuid, entityType: 'node', entitySubType: Constants.NODE_TYPES.events });
   }
 
   /********************* Render methods go down here *********************/

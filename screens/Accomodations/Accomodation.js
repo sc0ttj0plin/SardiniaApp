@@ -98,7 +98,7 @@ class AccomodationScreen extends Component {
 
   _analytics = (analyticsActionType) => {
     const { uuid } = this.state;
-    this.props.actions.reportUserInteraction({ analyticsActionType, uuid, entityType: 'node', entitySubType: Constants.NODE_TYPES.accomodations });
+    this.props.actions.reportAction({ analyticsActionType, uuid, entityType: 'node', entitySubType: Constants.NODE_TYPES.accomodations });
   }
 
   _isSuccessData  = () => this.props.accomodations.success; 

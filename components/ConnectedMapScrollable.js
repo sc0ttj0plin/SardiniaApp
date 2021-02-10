@@ -26,7 +26,7 @@ import CustomIcon from './CustomIcon';
 const { Value, event, interpolate } = Animated;
 import {Modalize} from 'react-native-modalize';
 import BottomSheet from 'reanimated-bottom-sheet';
-import EntityWidgetInModal from "../components/EntityWidgetInModal";
+import ConnectedEntityWidgetInModal from "../components/ConnectedEntityWidgetInModal";
 import MapViewTop from "./MapViewTop";
 import { useSafeArea } from 'react-native-safe-area-context';
 
@@ -306,10 +306,10 @@ class ConnectedMapScrollable extends PureComponent {
     const { lan } = this.props.locale;
     const bottom = this.props.fullscreen ? this.props.insets.bottom : 0;
 
-    //TODO: refactoring -> 'getCoordsFun' is used by topComponentMVTProps and by EntityWidgetInModal, so we might move to more general props Object (not topComponentMVTProps).
+    //TODO: refactoring -> 'getCoordsFun' is used by topComponentMVTProps and by ConnectedEntityWidgetInModal, so we might move to more general props Object (not topComponentMVTProps).
     const getCoordsFun = this.props.topComponentMVTProps ? this.props.topComponentMVTProps.getCoordsFun : null;
     return (
-      <EntityWidgetInModal
+      <ConnectedEntityWidgetInModal
         entityType={this.props.entitiesType}
         {...this.props.mapEntityWidgetProps}
         locale={this.props.locale} 

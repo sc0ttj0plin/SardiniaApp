@@ -119,7 +119,7 @@ class MediaScreen extends PureComponent {
     await ScreenOrientation.unlockAsync();
     ScreenOrientation.addOrientationChangeListener(this._onOrientationChange);
 
-    this.props.actions.reportUserInteraction({ 
+    this.props.actions.reportAction({ 
       analyticsActionType: Constants.ANALYTICS_TYPES.userOpensEntityMultimediaContent, 
       uuid: this.state.uuid, 
       entityType: 'node', 

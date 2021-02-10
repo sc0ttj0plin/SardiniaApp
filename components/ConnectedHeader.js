@@ -108,6 +108,7 @@ class ConnectedHeader extends PureComponent {
       if (this.props.others.searchOrAutocomplete !== "search")
         this.props.actions.switchSearchOrAutocomplete("search");
       let queryStr = utils.searchParser(this.props.others.searchStr);
+      this.props.actions.reportAction({ analyticsActionType: Constants.ANALYTICS_TYPES.userSearches, meta: queryStr } );
       this.props.actions.search({
         queryStr, 
         nodeTypes: [Constants.NODE_TYPES.places, Constants.NODE_TYPES.events, Constants.NODE_TYPES.inspirers, Constants.NODE_TYPES.itineraries] 

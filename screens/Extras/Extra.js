@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { 
   View, StyleSheet, ScrollView, Animated } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
+import ExpoConstants from 'expo-constants';
 import { 
   EntityAbstract,
   EntityGallery,
@@ -102,7 +103,7 @@ class ExtraScreen extends Component {
     const { locale } = this.props;
     const { lan } = locale;
     const { abstract, title, description, whyVisit } = getEntityInfo(entity, ["abstract", "title", "description", "whyVisit"], [lan, 0, "value"], null, {"description": {s: /\. /g, d: ".<br/>"}});
-    const socialUrl = `${Constants.WEBSITE_URL}${greedyArrayFinder(entity.url_alias, "language", lan, "alias", "")}`;
+    const socialUrl = `${ExpoConstants.manifest.extra.websiteUrl}${greedyArrayFinder(entity.url_alias, "language", lan, "alias", "")}`;
     const sampleVideoUrl = getSampleVideoIndex(entity.uuid);
     const sampleVrUrl = getSampleVrModelIndex(entity.uuid);
     const gallery = getGalleryImages(entity);
@@ -124,7 +125,7 @@ class ExtraScreen extends Component {
 
   _analytics = (analyticsActionType) => {
     const { uuid } = this.state;
-    this.props.actions.reportUserInteraction({ analyticsActionType, uuid, entityType: 'node', entitySubType: Constants.NODE_TYPES.inspirers });
+    this.props.actions.reportAction({ analyticsActionType, uuid, entityType: 'node', entitySubType: Constants.NODE_TYPES.inspirers });
   }
 
   /**

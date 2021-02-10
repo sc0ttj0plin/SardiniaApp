@@ -6,7 +6,19 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "test": "jest --watchAll"
+    "test": "jest --watchAll",
+    "publish": "expo publish --release-channel dev",
+    "publish_dev": "expo publish --release-channel dev",
+    "publish_stage": "expo publish --release-channel stage",
+    "publish_prod": "expo publish --release-channel prod",
+    "build_ios": "expo build:ios --release-channel dev",
+    "build_ios_dev": "expo build:ios --release-channel dev",
+    "build_ios_stage": "expo build:ios --release-channel stage",
+    "build_ios_prod": "expo build:ios --release-channel prod",
+    "build_android": "expo build:android --release-channel dev",
+    "build_android_dev": "expo build:android --release-channel dev",
+    "build_android_stage": "expo build:android --release-channel stage",
+    "build_android_prod": "expo build:android --release-channel prod"
   },
   "jest": {
     "preset": "jest-expo"

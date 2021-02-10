@@ -5,8 +5,8 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as Updates from 'expo-updates';
 import actions from '../actions';
+import * as Updates from 'expo-updates';
 import _ from 'lodash';
 import * as Constants from '../constants';
 import Colors from '../constants/Colors';
@@ -47,9 +47,9 @@ class ConnectedErrorBoundary extends PureComponent {
   if (!__DEV__) 
     ErrorUtils.setGlobalHandler(async (error, isFatal) => {
       console.log("[global error]", error.message);
-      props.actions.reportBugs(props.others.reduxError);
+      props.actions.reportAction({ analyticsActionType: Constants.ANALYTICS_TYPES.errorTrace, meta: error } );
       if (isFatal)
-        await Updates.reloadAsync();
+        setTimeout(Updates.reloadAsync, Constants.RESTART_DELAY);
     });
   }
 
@@ -59,8 +59,7 @@ class ConnectedErrorBoundary extends PureComponent {
     if (prevProps.others.reduxError !== this.props.others.reduxError && this.props.others.reduxError) {
       //can resubmit the action with this.props.actions.sendAction(this.props.others.reduxErrorSourceAction)
       this.setState({ modalVisible: true });
-      //TODO: send to backend the error trace along with the device info
-      this.props.actions.reportBugs(this.props.others.reduxError);
+      this.props.actions.reportAction({ analyticsActionType: Constants.ANALYTICS_TYPES.errorTrace, meta: this.props.others.reduxError } );
       console.log("[redux error]", this.props.others.reduxError, this.props.others.reduxErrorSourceAction);
     }
   }

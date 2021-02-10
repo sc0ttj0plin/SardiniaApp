@@ -5,10 +5,11 @@ import  { normalizeLanguage } from '../helpers/language';
 import samplePois from '../constants/_samplePois';
 import sampleMarkers from '../constants/_sampleMarkers';
 import sampleImages from '../constants/_sampleImages';
+import ExpoConstants from 'expo-constants';
 
 const IMAGE_REPLACE_SRC = "public://";
-const IMAGE_REPLACE_DST_621x = `${Constants.API_IMAGES_URL}/621x/`; //width only
-const IMAGE_REPLACE_DST_350x = `${Constants.API_IMAGES_URL}/350x/`;
+const IMAGE_REPLACE_DST_621x = `${ExpoConstants.manifest.extra.apiImagesUrl}/621x/`; //width only
+const IMAGE_REPLACE_DST_350x = `${ExpoConstants.manifest.extra.apiImagesUrl}/350x/`;
 
 /**
  * Process categories 

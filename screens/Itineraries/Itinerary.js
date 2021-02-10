@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
-
+import ExpoConstants from 'expo-constants';
 import { 
   ConnectedHeader, 
   EntityAbstract,
@@ -101,7 +101,7 @@ class ItineraryScreen extends Component {
     const { lan } = locale;
     // console.log("language", lan)
     const { abstract, title, description } = getEntityInfo(entity, ["abstract", "title", "description"], [lan, 0, "value"], null, {"description": {s: /\.\s?/g, d: ".<br/><br/>"}});
-    const socialUrl = `${Constants.WEBSITE_URL}${greedyArrayFinder(entity.url_alias, "language", lan, "alias", "")}`;
+    const socialUrl = `${ExpoConstants.manifest.extra.websiteUrl}${greedyArrayFinder(entity.url_alias, "language", lan, "alias", "")}`;
     const stagesMarkers = this._getItineraryStagesMarkers(entity.stages[lan]);
     //Get the first stage coordinates to show on map
     const coordinates = _.get(entity, ["stages", lan, 0, "poi", "georef", "coordinates"], null);
@@ -142,7 +142,7 @@ class ItineraryScreen extends Component {
 
   _analytics = (analyticsActionType) => {
     const { uuid } = this.state;
-    this.props.actions.reportUserInteraction({ analyticsActionType, uuid, entityType: 'node', entitySubType: Constants.NODE_TYPES.itineraries });
+    this.props.actions.reportAction({ analyticsActionType, uuid, entityType: 'node', entitySubType: Constants.NODE_TYPES.itineraries });
   }
 
 
