@@ -1,7 +1,11 @@
 import * as Constants from '../constants';
 
-const INITIAL_STATE = {
-
+export const INITIAL_STATE = {
+  places: {},
+  accomodations: {},
+  events: {},
+  itineraries: {},
+  inspirers: {},
 };
 
 export default function reducer(state = INITIAL_STATE, action) {
@@ -10,7 +14,16 @@ export default function reducer(state = INITIAL_STATE, action) {
     case Constants.INIT_FAVOURITES:
       return action.payload;
     case Constants.TOGGLE_FAVOURITE:
-      return { ...state, [action.payload.uuid]: action.payload.val }
+      const favObj = { [action.payload.uuid]: action.payload.val };
+      let newState = { 
+        ...state, 
+        [action.payload.type]: { 
+          ...state[action.payload.type], 
+          ...favObj 
+        } 
+      }
+      return newState;
+      // return { ...state, [action.payload.uuid]: action.payload.val }
     default:
       return state;
   }

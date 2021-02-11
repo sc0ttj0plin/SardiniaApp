@@ -25,7 +25,7 @@ class ConnectedFab extends PureComponent {
       modalVisible: false,
       direction: props.direction ? props.direction : "up",
       // uuid: props.uuid,
-      isFavourite: props.favourites[props.uuid]
+      isFavourite: props.favourites[props.type][props.uuid]
     };
   }
 
@@ -49,7 +49,7 @@ class ConnectedFab extends PureComponent {
   }
 
 
-  _isFavourite = () => this.props.favourites[this.props.uuid];
+  _isFavourite = () => this.props.favourites[this.props.type][this.props.uuid];
 
   _toggleFav = () => {
     this.props.actions.reportAction({ 

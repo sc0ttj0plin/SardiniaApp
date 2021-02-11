@@ -186,7 +186,6 @@ class AccomodationScreen extends Component {
     } = locale.messages;
     
     const { orientation } = this.state;
-    const isFavourite = favourites.places[uuid];
      return (
        <View style={styles.fill}>
           <ScrollView 

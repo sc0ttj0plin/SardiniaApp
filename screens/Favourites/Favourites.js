@@ -43,7 +43,7 @@ class FavouritesScreen extends Component {
       favItineraries: [],
       favAccomodations: []
     };
-      
+  
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
@@ -55,11 +55,11 @@ class FavouritesScreen extends Component {
   componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
-    let placesUuids = Object.keys(this.props.favourites.places);
-    let eventsUuids = Object.keys(this.props.favourites.events);
-    let itinerariesUuids = Object.keys(this.props.favourites.itineraries);
-    let inspirersUuids = Object.keys(this.props.favourites.inspirers);
-    let accomodationsUuids = Object.keys(this.props.favourites.accomodations);
+    let placesUuids = Object.keys(_.pickBy(this.props.favourites.places, (val, key) => val===true));
+    let eventsUuids = Object.keys(_.pickBy(this.props.favourites.events, (val, key) => val===true));
+    let itinerariesUuids = Object.keys(_.pickBy(this.props.favourites.itineraries, (val, key) => val===true));
+    let inspirersUuids = Object.keys(_.pickBy(this.props.favourites.inspirers, (val, key) => val===true));
+    let accomodationsUuids = Object.keys(_.pickBy(this.props.favourites.accomodations, (val, key) => val===true));
 
     // this._getPois(placesUuids);
     // this._getEvents(eventsUuids)
@@ -81,27 +81,27 @@ class FavouritesScreen extends Component {
 
     setTimeout(() => {
       if ((prevProps.pois !== this.props.pois) || (prevProps.favourites.places !== this.props.favourites.places)) {
-        let favUuids = Object.keys(this.props.favourites.places);
+        let favUuids = Object.keys(_.pickBy(this.props.favourites.places, (val, key) => val===true));
         this._getPois(favUuids)
       }
   
       if ((prevProps.itineraries !== this.props.itineraries) || (prevProps.favourites.itineraries !== this.props.favourites.itineraries)) {
-        let favUuids = Object.keys(this.props.favourites.itineraries);
+        let favUuids = Object.keys(_.pickBy(this.props.favourites.itineraries, (val, key) => val===true));
         this._getItineraries(favUuids)
       }
   
       if ((prevProps.inspirers !== this.props.inspirers) || (prevProps.favourites.inspirers !== this.props.favourites.inspirers)) {
-        let favUuids = Object.keys(this.props.favourites.inspirers);
+        let favUuids = Object.keys(_.pickBy(this.props.favourites.inspirers, (val, key) => val===true));
         this._getInspirers(favUuids)
       }
   
       if ((prevProps.events.eventsById !== this.props.events.eventsById) || (prevProps.favourites.events !== this.props.favourites.events)) {
-        let favUuids = Object.keys(this.props.favourites.events);
+        let favUuids = Object.keys(_.pickBy(this.props.favourites.events, (val, key) => val===true));
         this._getEvents(favUuids)
       }
     
       if ((prevProps.accomodations !== this.props.accomodations) || (prevProps.favourites.accomodations !== this.props.favourites.accomodations)) {
-        let favUuids = Object.keys(this.props.favourites.accomodations);
+        let favUuids = Object.keys(_.pickBy(this.props.favourites.accomodations, (val, key) => val===true));
         this._getAccomodations(favUuids)
       }
     }, 1);
