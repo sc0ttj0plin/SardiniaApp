@@ -187,6 +187,10 @@ export const ANALYTICS_TYPES = {
   userAddsEntityToFavourites: 3,
   userOpensEntityMultimediaContent: 4,
   userRemovesEntityFromFavourites: 5,
+  //
+  userUpdatesPreferences: 6,
+  userUpdatesProfile: 7,
+  userRemovesProfile: 8,
   userSearches: 201,
   // Error
   errorTrace: 100,

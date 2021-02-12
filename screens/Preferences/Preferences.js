@@ -107,6 +107,7 @@ class PreferencesScreen extends Component {
     const name = entities[entityIndex].name;
     const rating = emoticon.likenessRatio;
     this.props.actions.setPreferences({ name, uuid, rating });
+    // this.props.actions.reportAction();
     this._selectActiveIcon(emoticon);
   }
 

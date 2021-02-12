@@ -76,7 +76,6 @@ export const setPreferences = (el) =>
   async (dispatch) => {
     try {
       const user = firebase.auth().currentUser;
-      // await axios.put(`${Constants.BACKEND_ANALYTICS_PREFERENCES_URL`, { uid: user.uid, uuid: el.uuid, , name: el.name, rating: el.rating });
       let ref = await firebase.database().ref(`users/${user.uid}/preferences/${el.uuid}`);
       await ref.set({ name: el.name, rating: el.rating });
     } catch(e) { 
