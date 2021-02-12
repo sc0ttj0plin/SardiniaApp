@@ -197,7 +197,10 @@ class Login extends Component {
     if(!usernameError && !ageError && !countryError && !sexError){
       const userData = { username, age: age, country, sex, updateDate: (new Date()).getTime() };
       this.props.actions.editUser(userData);
-      this.props.actions.reportProfileUpdate(userData);
+      this.props.actions.reportAction({ 
+        analyticsActionType: Constants.ANALYTICS_TYPES.userUpdatesProfile,
+        meta: userData
+      });
       this.setState({ loginStep: AUTH_STATES.PROFILE_SHOW });
     }
     else{
@@ -215,7 +218,10 @@ class Login extends Component {
   _removeProfile = () => {
     const { username, age, country, sex, } = this.state;
     const userData = { username, age, country, sex, updateDate: (new Date()).getTime() };
-    this.props.actions.reportProfileRemoval(userData);
+    this.props.actions.reportAction({ 
+      analyticsActionType: Constants.ANALYTICS_TYPES.userRemovesProfile,
+      meta: userData
+    });
     this.props.actions.removeUser();
     this._goBackScreen();
   }
@@ -255,7 +261,7 @@ class Login extends Component {
       age: info.age,
       country: info.country,
       sex: info.sex
-    })
+    });
   }
 
   _onProfileRemovePress = () => {

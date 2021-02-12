@@ -12,29 +12,6 @@ const deviceInfo = { isDevice, brand, manufacturer, modelName, modelId , designN
  * don't want to additionally bother the user with error messages about analytics so we don't dispatch error/success actions.
  */
 
-//////////////////// PROFILE ////////////////////
-export const reportProfileUpdate = (el) =>
-  async (dispatch) => {
-    try {
-      //el: { username, age, country, sex, updateDate }
-      const user = firebase.auth().currentUser;
-      // await axios.put(`${Constants.BACKEND_ANALYTICS_PROFILE_UPDATE_URL`, { uid: user.uid, username: el.username, age: el.age, country: el.country, sex: el.sex });
-    } catch(e) { 
-      console.log(e.message); 
-    }
-  }  
-
-export const reportProfileRemoval = (el) =>
-  async (dispatch) => {
-    try {
-      //el: { username, age, country, sex, updateDate }
-      // const user = firebase.auth().currentUser;
-      // await axios.put(`${Constants.BACKEND_ANALYTICS_PROFILE_REMOVAL_URL`, { uid: user.uid, username: el.username, age: el.age, country: el.country, sex: el.sex });
-    } catch(e) { 
-      console.log(e.message); 
-    }
-  }  
-
 //////////////////// USER INTERACTION ////////////////////
 /**
  * Sends user interaction to backend periodically (after reportedActionsAccumulator has reached Constants.ANALYTICS_MAX_STORED_ACTIONS)
