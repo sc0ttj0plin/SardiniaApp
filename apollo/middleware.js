@@ -374,7 +374,7 @@ const apolloMiddleware = client => {
               query: Queries.getAccomodationsById,
               variables: action.query
           }).then((resp) => {
-            let dispatch = { type: Constants.GET_ACCOMODATIONS_BY_ID_SUCCESS, payload: {} };
+            let dispatch = { type: Constants.GET_ACCOMODATIONS_BY_ID_SUCCESS, payload: {dataById: {}, data: []} };
             if (resp.data && resp.data.nodes && resp.data.nodes.length > 0) {
               let data = resp.data.nodes;
               data.forEach((e) => processEntity(e));

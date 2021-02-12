@@ -646,6 +646,24 @@ export const styles = {
         color: "black",
         fontFamily: 'montserrat-bold',
       },
+    },
+    'stylesheet.expandable.main': {
+      knobContainer: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        height: Platform.OS == "ios" ? 30 : 24,
+        bottom: 0,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: Colors.lightGray
+      },
+      knob: {
+        width: 40,
+        height: 4,
+        borderRadius: 3,
+        backgroundColor: "#e8ecf0"
+      }
     }
   }
 }

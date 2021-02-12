@@ -431,7 +431,7 @@ class ConnectedSplashLoader extends Component {
             <Text style={styles.modalTitle}>{modalTitle}</Text>
             <Text style={styles.modalDescription}>{modalDescription}</Text>
             {showLoadingDots && 
-            <View style={styles.loadingDotsView1}>
+            <View style={styles.contentLoadingDots}>
               <View style={styles.loadingDotsView2}>
                 <LoadingDots isLoading={true} />
               </View>
@@ -463,7 +463,7 @@ class ConnectedSplashLoader extends Component {
     return (
       <>
         {show && this._renderSplashImage()}
-        {canShowModals && showUpdate && this._renderUpdate()}
+        {canShowModals && updating && this._renderUpdate()}
         {canShowModals && showLinking && this._renderLinking()}
         {canShowModals && !networkIsConnected && this._renderNetworkCheck()}
       </>
@@ -495,6 +495,9 @@ const styles = StyleSheet.create({
     height: "100%",
     top: 0,
     left: 0
+  },
+  contentLoadingDots: {
+
   },
   loadingDotsView1: {
     position: "absolute",

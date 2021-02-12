@@ -60,7 +60,7 @@ class FavouritesScreen extends Component {
     let itinerariesUuids = Object.keys(_.pickBy(this.props.favourites.itineraries, (val, key) => val===true));
     let inspirersUuids = Object.keys(_.pickBy(this.props.favourites.inspirers, (val, key) => val===true));
     let accomodationsUuids = Object.keys(_.pickBy(this.props.favourites.accomodations, (val, key) => val===true));
-
+    console.log("accomodations", accomodationsUuids)
     // this._getPois(placesUuids);
     // this._getEvents(eventsUuids)
     // let eventsNids = Object.keys(this.props.favourites.events);
