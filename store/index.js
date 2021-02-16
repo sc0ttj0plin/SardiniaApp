@@ -21,7 +21,6 @@ import makeApolloClient from '../apollo/client';
 import restClient from '../rest/client';
 import thunk from 'redux-thunk';
 import { persistStore, persistReducer } from 'redux-persist';
-import * as Config from '../constants/Config';
 
 // Token is fetched from the persisted store.auth.token (so when app starts we should have token stored)
 const axiosMiddlewareOptions = {

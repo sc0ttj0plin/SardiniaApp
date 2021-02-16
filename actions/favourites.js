@@ -45,7 +45,13 @@ export const toggleFavourite = (payload) => async (dispatch, getState) => {
     // Note: the update is a little slow since we wait for firebase to ack our request and firebase is our reference
     const user = firebase.auth().currentUser;
     const lastSynced = Date.now();
-    let favValFinal = null;
+    const favourites = getState().favouritesState;
+    let favValFinal = !favourites[payload.type][payload.uuid];
+    // Optimistic rendering
+    dispatch({
+      type: Constants.TOGGLE_FAVOURITE,
+      payload: { type: payload.type, uuid: payload.uuid, lastSynced, val: favValFinal } ,
+    });
     if (user) {
       // if is logged: reference is firebase, set timestamp to firebase + local + favs to firebase + local 
       let refLastSynced = await firebase.database().ref(`users/${user.uid}/favourites/lastSynced`);
@@ -57,16 +63,13 @@ export const toggleFavourite = (payload) => async (dispatch, getState) => {
     }
     // In any case set to local: set timestamp to local only + favs to local
     // If we got the value from firebase use it, else fetch it from local redux store
-    if (favValFinal == null) {
-      const favourites = getState().favouritesState;
-      favValFinal = !favourites[payload.type][payload.uuid];
-    }
-    // Finally dispatch local store
+
+  } catch(e) {
+    console.log(e);
+    //reset to original value on failure
     dispatch({
       type: Constants.TOGGLE_FAVOURITE,
-      payload: { type: payload.type, uuid: payload.uuid, lastSynced, val: favValFinal } ,
+      payload: { type: payload.type, uuid: payload.uuid, lastSynced, val: !favValFinal } ,
     });
-  } catch(e) {
-    console.log(e)
   }
 }
