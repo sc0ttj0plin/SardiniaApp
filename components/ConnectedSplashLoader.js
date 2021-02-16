@@ -202,7 +202,6 @@ class ConnectedSplashLoader extends Component {
     ];
   }
 
-
   /******************************** LOGIN LOGIC ********************************/ 
   _initFirebaseAppAndAttemptLogin = async () => {
     // Initialize app is synchronous

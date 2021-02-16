@@ -43,6 +43,7 @@ async (dispatch, getState) => {
       if (result.user) {
         let user = result.user;
         let userInfo = await firebase.database().ref(`users/${user.uid}/info`).once('value');
+        await AsyncStorage.setItem('firebaseUid', user.uid);
         user.info = userInfo.val();
         dispatch({ type: Constants.AUTH_SUCCESS, payload: { user: user, token } });
       } else
@@ -72,7 +73,7 @@ _checkAuthStatus = () => {
 
 
 //@passwordless
-export const passwordLessLogin = (url) => 
+export const passwordLessLogin = () => 
 async (dispatch, getState) => {
   dispatch({ type: Constants.AUTH });
   try  {
@@ -80,6 +81,7 @@ async (dispatch, getState) => {
     let userInfo = await firebase.database().ref(`users/${user.uid}/info`).once('value');
     user.info = userInfo.val();
     const token = await firebase.auth().currentUser.getIdToken(/* forceRefresh */ true);
+    await AsyncStorage.setItem('firebaseUid', user.uid);
     dispatch({ type: Constants.AUTH_SUCCESS, payload: { user, token } });
  } catch(error) {
     console.log("passwordLessLogin", error.message);

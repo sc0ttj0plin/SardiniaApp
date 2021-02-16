@@ -1,10 +1,16 @@
 
-import _, { replace } from 'lodash';
+import _ from 'lodash';
 import videos from '../constants/_sampleVideos';
 import virtualTours from '../constants/_sampleVrModels';
 import { Linking, Alert } from 'react-native';
 import * as Constants from "../constants";
 import Url from 'url-parse';
+import * as Device from 'expo-device';
+import ExpoConstants from 'expo-constants';
+import * as firebase from 'firebase';
+import AsyncStorage from '@react-native-community/async-storage';
+// import * as Crypto from 'expo-crypto';
+import md5 from 'md5';
 
 export const searchParser = (queryStr) => {
   return queryStr.replace(/ /g, " & ");
@@ -160,3 +166,35 @@ export const shuffleArray = (array) => {
       [array[i], array[j]] = [array[j], array[i]];
   }
 }
+
+/**
+ * Get user token as a device id (an artifical token for when we don't have authentication tokens)
+ * NOTE: Skipping osName, osVersion, osBuildId, osInternalBuildId, osBuildFingerprint, platformApiLevel 
+ *        as when the system upgrades we might lose the "unique" device id
+ */
+export const getUserTokenFromDeviceSpecs = () => {
+  const { isDevice, brand, manufacturer, modelName, modelId , designName , productName , deviceYearClass, totalMemory, supportedCpuArchitectures, deviceName } = Device;
+  const deviceInfo = { isDevice, brand, manufacturer, modelName, modelId , designName , productName , deviceYearClass, totalMemory, supportedCpuArchitectures, deviceName };
+  const deviceInfoStr = JSON.stringify(deviceInfo);
+  return md5(deviceInfoStr);
+}
+
+
+/**
+ * Retrieves the unique device token using either device or auth information.
+ * It's important to note that firebase initialization takes too much for the user 
+ * to wait for it to complete, so we "sacrifice" one execution app to have the token 
+ * loaded from the async storage at the next execution after logging in
+ * @returns userToken object { 
+ *  userFirebaseToken: firebase uid
+ *  userDeviceToken: device token
+ * }
+ * We return both as the backend may want to reference the firebase uid to the device token
+ */
+export const getUserToken = async () => {
+  // If not logged in get
+  const userFirebaseToken = await AsyncStorage.getItem('firebaseUid') || null;
+  const userDeviceToken = getUserTokenFromDeviceSpecs(); 
+  return { userDeviceToken, userFirebaseToken };
+}
+
