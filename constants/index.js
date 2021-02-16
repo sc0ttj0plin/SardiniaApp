@@ -178,7 +178,7 @@ export const MODALS_SHOW_DELAY = 2000;
 export const NAVIGATE_TO_LINKED_ENTITY_DELAY = 3000;
 
 // ANALYTICS
-export const ANALYTICS_MAX_STORED_ACTIONS = 5; /* sends actions to backend after N accumulated actions before sending to backend */
+export const ANALYTICS_MAX_STORED_ACTIONS = 10; /* sends actions to backend after N accumulated actions before sending to backend */
 export const ANALYTICS_TYPES = {
   // Interaction
   userCompleteEntityAccess: 0,
@@ -187,7 +187,7 @@ export const ANALYTICS_TYPES = {
   userAddsEntityToFavourites: 3,
   userOpensEntityMultimediaContent: 4,
   userRemovesEntityFromFavourites: 5,
-  //
+  //Preferences & Profile
   userUpdatesPreferences: 400,
   userUpdatesProfile: 401,
   userRemovesProfile: 402,

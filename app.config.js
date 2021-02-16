@@ -28,6 +28,12 @@ const apiUrl = {
   "prod": "",
 }
 
+const apolloKey = {
+  "dev": "XeHJjvSB8eRryWJf",
+  "stage": "XeHJjvSB8eRryWJf",
+  "prod": "XeHJjvSB8eRryWJf",
+}
+
 const apiImagesUrl = {
   "dev": "http://sinnos.andreamontaldo.com:81/img",
   "stage": "",
@@ -57,5 +63,6 @@ export default {
     apiImagesUrl: apiImagesUrl[deploymentEnv],
     websiteUrl: websiteUrl[deploymentEnv],
     websiteDomain: websiteDomain[deploymentEnv],
+    apolloKey: apolloKey[deploymentEnv],
   }
 };

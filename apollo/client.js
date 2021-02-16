@@ -1,5 +1,6 @@
 import { HttpLink } from 'apollo-link-http';
 import { ApolloClient } from 'apollo-client';
+import { setContext } from "apollo-link-context";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { getUserToken } from '../helpers/utils';
 import ExpoConstants from 'expo-constants';
@@ -10,7 +11,7 @@ import ExpoConstants from 'expo-constants';
  * As soon as the user token is ready (either from firebase (is logged) or from device info (not logged))
  * we add auth information to the header through a context.
  * It might happen that the first time the user is logged in we still send null x-user-firebase-token.
- * This problem solves after the second (authenticated) execution.
+* This problem solves after the second (authenticated) execution.
  * That is the reason why we always include the device token, i.e. to cross reference the two and point to the same user.
  */
 
@@ -28,12 +29,12 @@ const authLink = setContext(async (_, { headers }) => {
 });
 
 
-const makeApolloClient = (authToken) => {
+const makeApolloClient = () => {
   // create an apollo link instance, a network interface for apollo client
   const httpLink = new HttpLink({
     uri: ExpoConstants.manifest.extra.apiUrl,
     headers: {
-      'x-hasura-admin-secret': `${authToken}`,
+      'x-hasura-admin-secret': ExpoConstants.manifest.extra.apolloKey,
       'content-type': 'application/json',
     }
   });

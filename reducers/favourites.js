@@ -1,6 +1,7 @@
 import * as Constants from '../constants';
 
 export const INITIAL_STATE = {
+  lastSynced: 0,
   places: {},
   accomodations: {},
   events: {},
@@ -17,6 +18,7 @@ export default function reducer(state = INITIAL_STATE, action) {
       const favObj = { [action.payload.uuid]: action.payload.val };
       let newState = { 
         ...state, 
+        lastSynced: action.payload.lastSynced,
         [action.payload.type]: { 
           ...state[action.payload.type], 
           ...favObj 
