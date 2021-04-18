@@ -39,19 +39,19 @@ export const initFavourites = () =>  async (dispatch, getState) => {
 
 
 export const toggleFavourite = (payload) => async (dispatch, getState) => {
+  //type: this.props.type, uuid: this.state.uuid
+  // So if is logged in the fav value comes from firebase (set val to either false or true), else it comes from the store (set favVal to null)
+  // Note: the update is a little slow since we wait for firebase to ack our request and firebase is our reference
+  const user = firebase.auth().currentUser;
+  const lastSynced = Date.now();
+  const favourites = getState().favouritesState;
+  let favValFinal = !favourites[payload.type][payload.uuid];
+  // Optimistic rendering
+  dispatch({
+    type: Constants.TOGGLE_FAVOURITE,
+    payload: { type: payload.type, uuid: payload.uuid, lastSynced, val: favValFinal } ,
+  });
   try {
-    //type: this.props.type, uuid: this.state.uuid
-    // So if is logged in the fav value comes from firebase (set val to either false or true), else it comes from the store (set favVal to null)
-    // Note: the update is a little slow since we wait for firebase to ack our request and firebase is our reference
-    const user = firebase.auth().currentUser;
-    const lastSynced = Date.now();
-    const favourites = getState().favouritesState;
-    let favValFinal = !favourites[payload.type][payload.uuid];
-    // Optimistic rendering
-    dispatch({
-      type: Constants.TOGGLE_FAVOURITE,
-      payload: { type: payload.type, uuid: payload.uuid, lastSynced, val: favValFinal } ,
-    });
     if (user) {
       // if is logged: reference is firebase, set timestamp to firebase + local + favs to firebase + local 
       let refLastSynced = await firebase.database().ref(`users/${user.uid}/favourites/lastSynced`);
