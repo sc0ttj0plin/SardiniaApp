@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { 
-  View, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import ExpoConstants from 'expo-constants';
 import { 

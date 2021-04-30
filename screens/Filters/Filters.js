@@ -1,12 +1,11 @@
 import React, { Component } from "react";
-import { 
-  View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
-  StyleSheet, BackHandler, Platform, ScrollView, TouchableOpacityComponent } from "react-native";
+import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   ConnectedHeader, 
   CustomText,
-  ConnectedScreenErrorBoundary
+  ConnectedScreenErrorBoundary,
+  CustomIcon
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -15,7 +14,6 @@ import Layout from '../../constants/Layout';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-import CustomIcon from '../../components/others/CustomIcon';
 
 /* Deferred rendering to speedup page inital load: 
    deferred rendering delays the rendering reducing the initial 

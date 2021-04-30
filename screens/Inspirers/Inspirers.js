@@ -1,14 +1,13 @@
 import React, { Component } from "react";
-import { 
-  View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
-  StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
+import { View, FlatList, StyleSheet, BackHandler } from "react-native";
 import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native';
 import { 
   CategoryListItem, 
   EntityItem,
   AsyncOperationStatusIndicator,  
   ConnectedHeader, 
-  ConnectedScreenErrorBoundary
+  ConnectedScreenErrorBoundary,
+  LoadingLayoutVerticalItemsFlatlist
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -18,7 +17,6 @@ import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-import { LoadingLayoutVerticalItemsFlatlist } from "../../components";
 import { useSafeArea } from 'react-native-safe-area-context';
 
 /* Deferred rendering to speedup page inital load: 

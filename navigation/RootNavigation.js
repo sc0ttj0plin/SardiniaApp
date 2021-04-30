@@ -34,10 +34,8 @@ import FiltersScreen from '../screens/Filters/Filters';
 import GalleryScreen from '../screens/Gallery/Gallery';
 import GalleryMapScreen from '../screens/Gallery/Map';
 
-import Boilerplate from '../screens/Boilerplates/Boilerplate';
 import { ConnectedText, ConnectedLanguageList, TabBar, CustomDrawer, ConnectedAuthText, TabBarIcon } from '../components';
 // import VirtualTourScreen from '../screens/Others/VirtualTourScreen';
-import { Ionicons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 import * as Constants from '../constants';
 const {
@@ -50,6 +48,7 @@ const {
 } = Constants.NAVIGATION;
 
 // Reference used for components that lack navigation access
+// export const navigationRefFun = () => React.createRef();
 export const navigationRef = React.createRef();
 
  /**

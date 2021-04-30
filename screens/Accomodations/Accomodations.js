@@ -1,9 +1,5 @@
 import React, { Component } from "react";
-import { 
-  View, Text, ActivityIndicator, 
-  StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
-import { FlatList, TouchableOpacity } from "react-native-gesture-handler"
-
+import { View, StyleSheet,  } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   CategoryListItem, 
@@ -13,7 +9,7 @@ import {
   ConnectedScreenErrorBoundary,
   ConnectedMapScrollable,
  } from "../../components";
-import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
+import { coordsInBound } from '../../helpers/maps';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';

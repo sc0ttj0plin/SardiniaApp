@@ -1,27 +1,20 @@
 import React, { Component } from "react";
-import { 
-  View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
-  StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
-import { ListItem } from "react-native-elements";
+import { View, FlatList, TouchableOpacity, StyleSheet } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   AsyncOperationStatusIndicator, 
   ConnectedHeader, 
-  CustomText,
   ConnectedScreenErrorBoundary,
+  CustomIcon,
+  LoadingDots
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 import Layout from '../../constants/Layout';
-import { greedyArrayFinder, getEntityInfo, getCoordinates, getSampleVideoIndex, getGalleryImages } from '../../helpers/utils';
-import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';
 import * as Constants from '../../constants';
-import Colors from '../../constants/Colors';
 import * as utils from '../../helpers/utils';
-import CustomIcon from '../../components/others/CustomIcon';
-import LoadingDots from '../../components/loading/LoadingDots';
 import HTML from 'react-native-render-html';
 
 /**

@@ -1,11 +1,11 @@
 import React, { PureComponent } from "react";
-import { 
-  View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
-  StyleSheet, BackHandler, Platform, ScrollView, StatusBar } from "react-native";
+import { View, StyleSheet, Platform } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   HeaderFullscreen,
-  CustomText
+  CustomText,
+  LoadingDots,
+  ScrollableContainerTouchableOpacity
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -19,8 +19,6 @@ import {WebView} from 'react-native-webview';
 const { OrientationLock } = ScreenOrientation;
 import HTML from 'react-native-render-html';
 import { useSafeArea } from 'react-native-safe-area-context';
-import LoadingDots from '../../components/loading/LoadingDots';
-import ScrollableContainerTouchableOpacity from "../../components/map/ScrollableContainerTouchableOpacity";
 
 const injectedJavaScript = `
 window.ReactNativeWebView.postMessage('pageLoaded');

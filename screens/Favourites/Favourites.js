@@ -1,20 +1,18 @@
 import React, { Component } from "react";
-import { View, Text, FlatList, ActivityIndicator, StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   EntityRelatedList,
-  AccomodationItem,
   AsyncOperationStatusIndicator, 
   ConnectedHeader, 
   CustomText,
-  ConnectedScreenErrorBoundary
+  ConnectedScreenErrorBoundary,
+  ScrollableContainerTouchableOpacity
  } from "../../components";
-import TouchableOpacity from "../../components/map/ScrollableContainerTouchableOpacity"
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 import Layout from '../../constants/Layout';
-import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 
@@ -232,14 +230,14 @@ class FavouritesScreen extends Component {
   _renderShowListButton = (list, title, type, isAccomodationsList) => {
     return(
       <View style={styles.showListButtonView}>
-        <TouchableOpacity
+        <ScrollableContainerTouchableOpacity
           style={[styles.showListButton, {
             backgroundColor: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[type].backgroundColor,
           }]}
           activeOpacity={0.7}
           onPress={() => this._onShowListButtonPress(list, title, type, isAccomodationsList)}>
             <CustomText style={styles.showListButtonText}>Visualizza tutti</CustomText>
-        </TouchableOpacity>
+        </ScrollableContainerTouchableOpacity>
       </View>
     )
   }

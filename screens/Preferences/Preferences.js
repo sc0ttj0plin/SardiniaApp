@@ -1,10 +1,7 @@
 import React, { Component } from "react";
-import { 
-  View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
-  StyleSheet, BackHandler, Platform, ScrollView, TouchableOpacityComponent, Image } from "react-native";
+import { View, ActivityIndicator, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
-  AsyncOperationStatusIndicator, 
   ConnectedHeader, 
   ConnectedAuthHandler,
   CustomText,

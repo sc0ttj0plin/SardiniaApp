@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import { 
-  View, Text, FlatList, ActivityIndicator, 
-  StyleSheet, BackHandler, Platform, ScrollView, SectionList, TouchableHighlight, NativeModules, PixelRatio} from "react-native";
+import { View, FlatList, StyleSheet, NativeModules, PixelRatio} from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 const { StatusBarManager } = NativeModules;
 import { 
@@ -10,20 +8,19 @@ import {
   EventListItem, 
   CustomText,
   ConnectedScreenErrorBoundary,
+  LoadingLayoutVerticalItemsFlatlist,
+  ScrollableContainerTouchableOpacity,
  } from "../../components";
 import moment from "moment";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
-import { Calendar, LocaleConfig, CalendarList, ExpandableCalendar, CalendarProvider } from 'react-native-calendars';
+import { LocaleConfig, ExpandableCalendar, CalendarProvider } from 'react-native-calendars';
 import Layout from '../../constants/Layout';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-import { LoadingLayoutVerticalItemsFlatlist } from "../../components";
-import * as Animatable from 'react-native-animatable';
 import { FETCH_NUM_MONTHS_FORWARD, FETCH_NUM_MONTHS_BACKWARDS } from '../../constants';
-import TouchableOpacity from '../../components/map/ScrollableContainerTouchableOpacity';
 
 //Example calendar: https://github.com/wix/react-native-calendars/blob/master/example/src/screens/calendars.js
 const USE_DR = false;
@@ -193,21 +190,21 @@ class EventsScreen extends Component {
       <View style={styles.toastContainer}>
         <View style={styles.toastInnerContainer}>
           <CustomText style={styles.toastText}>{exploreEventsOnMap}</CustomText>
-          <TouchableOpacity 
+          <ScrollableContainerTouchableOpacity 
             style={styles.toastButton}
             activeOpacity={0.7}
             onPress={this._openMap}>
             <CustomText style={styles.toastButtonText}>{go}</CustomText>
-          </TouchableOpacity>
+          </ScrollableContainerTouchableOpacity>
         </View>
         <View style={[styles.toastInnerContainer,{marginTop: 5}]}>
           <CustomText style={styles.toastText}>{filterEvents}</CustomText>
-          <TouchableOpacity 
+          <ScrollableContainerTouchableOpacity 
             style={styles.toastButton}
             activeOpacity={0.7}
             onPress={this._openFilters}>
             <CustomText style={styles.toastButtonText}>{filter}</CustomText>
-          </TouchableOpacity>
+          </ScrollableContainerTouchableOpacity>
         </View>
       </View>
     )

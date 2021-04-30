@@ -1,9 +1,5 @@
 import React, { PureComponent } from "react";
-import { 
-  View, Text, ActivityIndicator, Pressable,
-  StyleSheet, BackHandler, Platform, ScrollView, NativeModules, Easing, PixelRatio } from "react-native";
-
-import { FlatList, TouchableOpacity } from "react-native-gesture-handler"
+import { View, StyleSheet, PixelRatio } from "react-native";
 import { useNavigation, useRoute, useIsFocused} from '@react-navigation/native';
 import Animated from 'react-native-reanimated';
 import { 
@@ -13,10 +9,9 @@ import {
   ConnectedAuthHandler,
   SectionTitle,
   ConnectedMapScrollable,
-  ConnectedNetworkChecker,
   ConnectedScreenErrorBoundary
  } from "../../components";
-import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
+import { coordsInBound } from '../../helpers/maps';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { apolloQuery } from '../../apollo/queries';

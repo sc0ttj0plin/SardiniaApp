@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { 
-  View, StyleSheet, Animated, ScrollView } from "react-native";
+import { View, StyleSheet, Animated } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import ExpoConstants from 'expo-constants';
 import { 
@@ -17,7 +16,8 @@ import {
   TopMedia,
   ConnectedFab, 
   EntityVirtualTour,
-  ConnectedScreenErrorBoundary
+  ConnectedScreenErrorBoundary,
+  LoadingLayoutEntityDetail
  } from "../../components";
 import Toast from 'react-native-easy-toast';
 import { connect, useStore } from 'react-redux';
@@ -31,7 +31,6 @@ import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
 import { boundingRect } from '../../helpers/maps';
-import { LoadingLayoutEntityDetail } from "../../components";
 
 
 const USE_DR = false;

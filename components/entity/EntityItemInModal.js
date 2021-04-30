@@ -7,7 +7,8 @@ import * as Constants from '../../constants';
 import Layout from "../../constants/Layout";
 import CustomText from "../others/CustomText";
 import LoadingLayoutEntityTextWidget from '../layouts/LoadingLayoutEntityTextWidget';
-import { AsyncOperationStatusIndicator, ShimmerWrapper } from '../loading'
+import AsyncOperationStatusIndicator from '../loading/AsyncOperationStatusIndicator';
+import ShimmerWrapper from '../loading/ShimmerWrapper';
 
 export default class EntityItemInModal extends PureComponent {
   constructor(props){

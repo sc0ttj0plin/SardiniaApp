@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { 
-  View, StyleSheet, ScrollView, Animated } from "react-native";
+  View, StyleSheet, Animated } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import ExpoConstants from 'expo-constants';
 import { 
@@ -18,7 +18,7 @@ import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 import { openRelatedEntity, isCloseToBottom } from '../../helpers/screenUtils';
-import { greedyArrayFinder, getEntityInfo, getCoordinates, getSampleVideoIndex, getSampleVrModelIndex, getGalleryImages } from '../../helpers/utils';
+import { greedyArrayFinder, getEntityInfo, getSampleVideoIndex, getSampleVrModelIndex, getGalleryImages } from '../../helpers/utils';
 import Layout from '../../constants/Layout';
 import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';

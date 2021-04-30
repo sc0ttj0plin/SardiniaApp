@@ -1,12 +1,8 @@
 import React, { Component } from "react";
-import { 
-  View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
-  StyleSheet, Animated } from "react-native";
+import { View, StyleSheet, Animated } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { 
-  AsyncOperationStatusIndicator, 
+import {  
   ConnectedHeader, 
-  ConnectedAuthHandler,
   CustomText,
   ConnectedScreenErrorBoundary
  } from "../../components";

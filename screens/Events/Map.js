@@ -1,7 +1,5 @@
 import React, { PureComponent } from "react";
-import { 
-  View, Text, ActivityIndicator, TouchableOpacity, 
-  StyleSheet, BackHandler, Platform, ScrollView, NativeModules } from "react-native";
+import { View, StyleSheet, Platform } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   ConnectedHeader, 

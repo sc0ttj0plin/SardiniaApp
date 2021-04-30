@@ -10,17 +10,21 @@ import {
   ConnectedFab, 
   CustomText,
   ShimmerWrapper,
-  ConnectedScreenErrorBoundary,
-
- } from "../../components";
+  ConnectedScreenErrorBoundary } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Ionicons } from '@expo/vector-icons';
 import _ from 'lodash';
-import { openRelatedEntity, isCloseToBottom } from '../../helpers/screenUtils';
+import { isCloseToBottom } from '../../helpers/screenUtils';
 import Layout from '../../constants/Layout';
-import { linkingOpenMail, linkingOpenNavigator, linkingCallNumber, linkingOpenUrl, getEntityInfo, getCoordinates, getSampleVideoIndex, getGalleryImages } from '../../helpers/utils';
-import { apolloQuery } from '../../apollo/queries';
+import { 
+  linkingOpenNavigator, 
+  linkingCallNumber, 
+  linkingOpenUrl, 
+  getEntityInfo, 
+  getCoordinates, 
+  getSampleVideoIndex, 
+  getGalleryImages } from '../../helpers/utils';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';

@@ -18,7 +18,6 @@ import itDbCountries from "world_countries_lists/data/it/countries.json";
 import enDbCountries from "world_countries_lists/data/en/countries.json";
 import * as Validate from '../../helpers/validate';
 import * as profile from "../../helpers/profile";
-import * as Font from 'expo-font';
 
 const AUTH_STATES = {
   INIT: "INIT",

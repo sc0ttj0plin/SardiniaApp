@@ -1,15 +1,13 @@
 import React, { Component } from "react";
-import { 
-  View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
-  StyleSheet, Animated } from "react-native";
+import { View, StyleSheet, Animated } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { Image } from "react-native-elements";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import { 
   ConnectedHeader, 
   CustomText, 
   EntityItem,
   ConnectedScreenErrorBoundary,
+  SectionTitle,
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -18,7 +16,6 @@ import Layout from '../../constants/Layout';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-import SectionTitle from '../../components/others/SectionTitle';
 import { distance, distanceToString, coordsInBound } from '../../helpers/maps';
 import { useSafeArea } from 'react-native-safe-area-context';
 

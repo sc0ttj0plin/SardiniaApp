@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import { 
-  View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
-  StyleSheet, BackHandler, Platform, ScrollView, PixelRatio } from "react-native";
+import { View, FlatList, TouchableOpacity, StyleSheet, PixelRatio } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   ConnectedHeader, 

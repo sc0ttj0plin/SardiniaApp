@@ -1,8 +1,5 @@
 import React, { PureComponent } from "react";
-import { 
-  View, Text, ActivityIndicator, TouchableOpacity, 
-  StyleSheet, Image, BackHandler, Platform, ScrollView, NativeModules, Dimensions, StatusBar } from "react-native";
-import { FlatList } from "react-native-gesture-handler"
+import { View, StyleSheet, Platform } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   ConnectedHeader, 
@@ -20,7 +17,6 @@ import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
 import {distance, distanceToString} from '../../helpers/maps';
-
 
 const USE_DR = false;
 class ItinerariesScreen extends PureComponent {

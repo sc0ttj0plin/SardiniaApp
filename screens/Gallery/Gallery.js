@@ -1,11 +1,7 @@
 import React, { Component } from "react";
-import { 
-  View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
-  StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
+import { View, FlatList, StyleSheet } from "react-native";
 import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native';
 import { 
-  CategoryListItem, 
-  EntityItem,
   AsyncOperationStatusIndicator,  
   ConnectedHeader, 
   CustomText,
@@ -19,7 +15,6 @@ import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 import Layout from '../../constants/Layout';
 import { shuffleArray } from '../../helpers/utils';
-import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';

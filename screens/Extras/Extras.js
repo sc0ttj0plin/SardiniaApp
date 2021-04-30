@@ -1,23 +1,19 @@
 import React, { Component } from "react";
-import { 
-  View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
-  StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
+import { View, FlatList, StyleSheet } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   ExtraItem,
   AsyncOperationStatusIndicator,  
   ConnectedHeader, 
   ConnectedScreenErrorBoundary,
+  LoadingLayoutEntitiesFlatlist,
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 import Layout from '../../constants/Layout';
-import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';
 import * as Constants from '../../constants';
-import Colors from '../../constants/Colors';
-import { LoadingLayoutEntitiesFlatlist } from "../../components";
 
 const USE_DR = false;
 class ExtrasScreen extends Component {

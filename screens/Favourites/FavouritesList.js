@@ -1,9 +1,8 @@
 import React, { Component } from "react";
-import { View, Text, FlatList, ActivityIndicator, TouchableOpacity, StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   EntityRelatedList,
-  AccomodationItem,
   ConnectedHeader, 
   ConnectedScreenErrorBoundary,
  } from "../../components";

@@ -1,15 +1,10 @@
 import React, { PureComponent } from "react";
-import { 
-  View, Text, ActivityIndicator,
-  StyleSheet, Image, BackHandler, Platform, ScrollView, NativeModules, PointPropType } from "react-native";
-
-import { Flablist } from "react-native-gesture-handler"
+import { View, Text, StyleSheet, Image } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   ConnectedHeader, 
   ConnectedScreenErrorBoundary
  } from "../../components";
-// import MapView from "react-native-map-clustering";
 import MapView from "react-native-maps";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';

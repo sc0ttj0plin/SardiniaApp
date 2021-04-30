@@ -18,13 +18,13 @@ import * as Constants from '../../constants';
 import { apolloQuery } from '../../apollo/queries';
 import Colors from '../../constants/Colors';
 import CustomText from '../others/CustomText';
-import Animated, { Easing, stopClock, withDelay} from 'react-native-reanimated';
+import Animated, { Easing, stopClock, withDelay } from 'react-native-reanimated';
 import { navigationRef } from "../../navigation/RootNavigation"; /* Only usable when this.props.others.navigatorReady==true, navigationRef.current */
+
 /* NOTIFICATION SUPPORT: not yet integrated
   import * as Notifications from 'expo-notifications';
   import registerForPushNotificationsAsync from '../../../helpers/registerForPushNotificationsAsync';
 */
-
 const USE_DR = false;
 const LINKING_DEFAULT_URL = "https://www.sardegnaturismo.it/it/luoghi/est/tortoli?test=1&test1=2"; /* NOTE: use with _initLinkingAsync */
 const SHOW_MODALS_DELAY = 5000;
