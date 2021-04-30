@@ -47,7 +47,7 @@ import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
+import { LoadingLayoutEntitiesFlatlist } from "../../components/layouts";
 
 /* Deferred rendering to speedup page inital load: 
    deferred rendering delays the rendering reducing the initial 
@@ -125,7 +125,7 @@ class BoilerPlateScreen extends Component {
         error={this._isErrorData()}
         retryFun={() => {}} 
         loadingLayout={
-          <LLEntitiesFlatlist 
+          <LoadingLayoutEntitiesFlatlist 
             horizontal={false} 
             numColumns={1} 
             itemStyle={styles.itemFlatlist} 

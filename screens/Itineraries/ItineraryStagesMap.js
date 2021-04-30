@@ -9,7 +9,7 @@ import {
   ConnectedHeader, 
   CustomText, 
   EntityItem,
-  ScreenErrorBoundary,
+  ConnectedScreenErrorBoundary,
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -18,7 +18,7 @@ import Layout from '../../constants/Layout';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-import SectionTitle from '../../components/SectionTitle';
+import SectionTitle from '../../components/others/SectionTitle';
 import { distance, distanceToString, coordsInBound } from '../../helpers/maps';
 import { useSafeArea } from 'react-native-safe-area-context';
 
@@ -263,13 +263,13 @@ class ItineraryStagesMapScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <ScreenErrorBoundary>
+      <ConnectedScreenErrorBoundary>
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onLayout}>
           <ConnectedHeader iconTintColor={Colors.colorItinerariesScreen} />
           {render && this._renderMapTitle()}
           {render && this._renderContent()}
         </View>
-      </ScreenErrorBoundary>
+      </ConnectedScreenErrorBoundary>
     )
   }
   

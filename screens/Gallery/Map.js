@@ -7,9 +7,8 @@ import { Flablist } from "react-native-gesture-handler"
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   ConnectedHeader, 
-  ScreenErrorBoundary
+  ConnectedScreenErrorBoundary
  } from "../../components";
-import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
 // import MapView from "react-native-map-clustering";
 import MapView from "react-native-maps";
 import { connect, useStore } from 'react-redux';
@@ -20,11 +19,7 @@ import Layout from '../../constants/Layout';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-import { LLEntitiesFlablist } from "../../components/loadingLayouts";
-import { Button } from "react-native-paper";
 import { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { Ionicons } from '@expo/vector-icons';
-import {TouchableWithoutFeedback} from "react-native-gesture-handler";
 
 /**
  * Map:             Clusters + pois that update with user map's interaction
@@ -378,7 +373,7 @@ class GalleryMapScreen extends PureComponent {
     }
 
     return (
-      <ScreenErrorBoundary>
+      <ConnectedScreenErrorBoundary>
       <View style={styles.fill} onLayout={this._onPageLayout}>
         <MapView
           ref={(ref) => this._mapRef = ref}
@@ -495,7 +490,7 @@ class GalleryMapScreen extends PureComponent {
           )})}
         </View>}
       </View>
-      </ScreenErrorBoundary>
+      </ConnectedScreenErrorBoundary>
     )
   }
 

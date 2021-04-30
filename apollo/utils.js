@@ -25,7 +25,7 @@ const IMAGE_REPLACE_DST_350x = `${ExpoConstants.manifest.extra.apiImagesUrl}/350
  *       "1a8de1f9-c101-406c-87c6-8561f52a3565",
  *     ],
  *     ...
- *  IMPORTANT TODO: for inspirers we dont' have images just yet, adding sample images
+ * IMPORTANT TODO: for inspirers we dont' have images just yet, adding sample images
  * @param {*} categories input categories (with nested terms)
  * @param {*} termsMap terms keys by uuid
  */

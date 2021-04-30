@@ -9,7 +9,7 @@ import {
   ConnectedHeader,
   EventListItem, 
   CustomText,
-  ScreenErrorBoundary,
+  ConnectedScreenErrorBoundary,
  } from "../../components";
 import moment from "moment";
 import { connect, useStore } from 'react-redux';
@@ -20,10 +20,10 @@ import Layout from '../../constants/Layout';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-import { LLVerticalItemsFlatlist } from "../../components/loadingLayouts";
+import { LoadingLayoutVerticalItemsFlatlist } from "../../components";
 import * as Animatable from 'react-native-animatable';
 import { FETCH_NUM_MONTHS_FORWARD, FETCH_NUM_MONTHS_BACKWARDS } from '../../constants';
-import TouchableOpacity from '../../components/ScrollableContainerTouchableOpacity';
+import TouchableOpacity from '../../components/map/ScrollableContainerTouchableOpacity';
 
 //Example calendar: https://github.com/wix/react-native-calendars/blob/master/example/src/screens/calendars.js
 const USE_DR = false;
@@ -238,7 +238,7 @@ class EventsScreen extends Component {
               loading={this._isLoadingData()}
               success={this._isSuccessData()}
               error={this._isErrorData()}
-              loadingLayout={<LLVerticalItemsFlatlist style={[styles.content, styles.calendarList]} numColumns={1} itemStyle={styles.eventListItemLoadingLayout} />}>
+              loadingLayout={<LoadingLayoutVerticalItemsFlatlist style={[styles.content, styles.calendarList]} numColumns={1} itemStyle={styles.eventListItemLoadingLayout} />}>
             <View style={styles.calendarList}>
               {this._renderEventsList()}
             </View>
@@ -289,12 +289,12 @@ class EventsScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <ScreenErrorBoundary>
+      <ConnectedScreenErrorBoundary>
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
           <ConnectedHeader iconTintColor={Colors.colorEventsScreen}/>
           {render && this._renderContent()}
         </View>
-      </ScreenErrorBoundary>
+      </ConnectedScreenErrorBoundary>
     )
   }
   

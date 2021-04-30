@@ -7,6 +7,7 @@ import actions from '../actions';
 /**
  * Creates the apollo middleware to intercept actions and dispatch success/error actions through redux
  * @param {*} client: apollo client
+ * @tutorial x For some actions setReduxError is dispatched to ensure that the failed action can be repeated
  */
 const apolloMiddleware = client => {
     return store => next => action => {
@@ -23,7 +24,6 @@ const apolloMiddleware = client => {
             store.dispatch(dispatch);
           }).catch((e) => {
             console.log(e);
-            //also dispatch the id which has failed
             store.dispatch({ type: Constants.GET_POI_FAIL, payload: e });
             store.dispatch(actions.setReduxError(e, action));
           });
@@ -44,7 +44,6 @@ const apolloMiddleware = client => {
             store.dispatch(dispatch);
           }).catch((e) => {
             console.log(e);
-            //also dispatch the id which has failed
             store.dispatch({ type: Constants.GET_POIS_FAIL, payload: e });
             store.dispatch(actions.setReduxError(e, action));
           });
@@ -62,7 +61,6 @@ const apolloMiddleware = client => {
             store.dispatch(dispatch);
           }).catch((e) => {
             console.log(e);
-            //also dispatch the id which has failed
             store.dispatch({ type: Constants.GET_INSPIRER_FAIL, payload: e });
             store.dispatch(actions.setReduxError(e, action));
           });
@@ -85,7 +83,6 @@ const apolloMiddleware = client => {
             store.dispatch(dispatch);
           }).catch((e) => {
             console.log(e);
-            //also dispatch the id which has failed
             store.dispatch({ type: Constants.GET_INSPIRERS_FAIL, payload: e });
             store.dispatch(actions.setReduxError(e, action));
           });
@@ -105,7 +102,6 @@ const apolloMiddleware = client => {
             store.dispatch(dispatch);
           }).catch((e) => {
             console.log(e);
-            //also dispatch the id which has failed
             store.dispatch({ type: Constants.GET_INSPIRERS_BY_ID_FAIL, payload: e });
             store.dispatch(actions.setReduxError(e, action));
           });
@@ -126,7 +122,6 @@ const apolloMiddleware = client => {
             store.dispatch(dispatch);
           }).catch((e) => {
             console.log(e);
-            //also dispatch the id which has failed
             store.dispatch({ type: Constants.GET_EXTRAS_FAIL, payload: e });
             store.dispatch(actions.setReduxError(e, action));
           });
@@ -346,7 +341,6 @@ const apolloMiddleware = client => {
             store.dispatch(dispatch);
           }).catch((e) => {
             console.log(e);
-            //also dispatch the id which has failed
             store.dispatch({ type: Constants.GET_ACCOMODATIONS_FAIL, payload: e });
             store.dispatch(actions.setReduxError(e, action));
           });
@@ -364,7 +358,6 @@ const apolloMiddleware = client => {
             store.dispatch(dispatch);
           }).catch((e) => {
             console.log(e);
-            //also dispatch the id which has failed
             store.dispatch({ type: Constants.GET_ACCOMODATION_FAIL, payload: e });
             store.dispatch(actions.setReduxError(e, action));
           });
@@ -384,7 +377,6 @@ const apolloMiddleware = client => {
             store.dispatch(dispatch);
           }).catch((e) => {
             console.log(e);
-            //also dispatch the id which has failed
             store.dispatch({ type: Constants.GET_ACCOMODATIONS_BY_ID_FAIL, payload: e });
             store.dispatch(actions.setReduxError(e, action));
           });

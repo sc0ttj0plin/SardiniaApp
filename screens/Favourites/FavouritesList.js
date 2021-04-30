@@ -5,7 +5,7 @@ import {
   EntityRelatedList,
   AccomodationItem,
   ConnectedHeader, 
-  ScreenErrorBoundary,
+  ConnectedScreenErrorBoundary,
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -13,8 +13,6 @@ import _ from 'lodash';
 import Layout from '../../constants/Layout';
 import actions from '../../actions';
 import * as Constants from '../../constants';
-import Colors from '../../constants/Colors';
-import { LLHorizontalItemsFlatlist } from "../../components/loadingLayouts";
 
 /* Deferred rendering to speedup page inital load: 
    deferred rendering delays the rendering reducing the initial 
@@ -148,12 +146,12 @@ class FavouritesListScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <ScreenErrorBoundary>
+      <ConnectedScreenErrorBoundary>
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
           <ConnectedHeader />
           {render && this._renderContent()}
         </View>
-      </ScreenErrorBoundary>
+      </ConnectedScreenErrorBoundary>
     )
   }
   

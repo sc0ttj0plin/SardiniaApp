@@ -4,7 +4,7 @@ import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native'
 import { 
   ConnectedHeader, 
   CustomText,
-  ScreenErrorBoundary,
+  ConnectedScreenErrorBoundary,
 } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -527,7 +527,7 @@ class Login extends Component {
       // Not yet authenticated (input -> sent -> error)
       const { register } = this.props.locale.messages;
       return (
-        <ScreenErrorBoundary>
+        <ConnectedScreenErrorBoundary>
           <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
             <ConnectedHeader onBackPress={this._onBackPress} />
             <CustomText style={styles.title}>{register}</CustomText>
@@ -535,12 +535,12 @@ class Login extends Component {
             {loginStep === AUTH_STATES.LINK_SENT && this._renderLinkSent()}
             {loginStep === AUTH_STATES.ERROR && this._renderError()}
           </View>
-        </ScreenErrorBoundary>
+        </ConnectedScreenErrorBoundary>
       )
     } else if (this.props.auth.success) {
       const { profile } = this.props.locale.messages;
       return (
-        <ScreenErrorBoundary>
+        <ConnectedScreenErrorBoundary>
           <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
             <ConnectedHeader onBackPress={this._onBackPress} />
             <CustomText style={styles.title}>{profile}</CustomText>
@@ -550,7 +550,7 @@ class Login extends Component {
             {loginStep === AUTH_STATES.ERROR && this._renderError()}
             {loginStep === AUTH_STATES.LOGOUT && this._renderLogout()}
           </View>
-        </ScreenErrorBoundary>
+        </ConnectedScreenErrorBoundary>
       );
     } else {
       return null;

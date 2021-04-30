@@ -6,19 +6,16 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   ConnectedHeader, 
   CustomText,
-  ScreenErrorBoundary
+  ConnectedScreenErrorBoundary
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 import Layout from '../../constants/Layout';
-import { greedyArrayFinder, getEntityInfo, getCoordinates, getSampleVideoIndex, getGalleryImages } from '../../helpers/utils';
-import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
-import CustomIcon from '../../components/CustomIcon';
+import CustomIcon from '../../components/others/CustomIcon';
 
 /* Deferred rendering to speedup page inital load: 
    deferred rendering delays the rendering reducing the initial 
@@ -190,12 +187,12 @@ class FiltersScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <ScreenErrorBoundary>
+      <ConnectedScreenErrorBoundary>
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
           <ConnectedHeader onBackPress={this._onBackPress} iconTintColor={Colors.colorEventsScreen}/>
           {render && this._renderContent()}
         </View>
-      </ScreenErrorBoundary>
+      </ConnectedScreenErrorBoundary>
     )
   }
   

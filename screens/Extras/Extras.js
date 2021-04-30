@@ -7,7 +7,7 @@ import {
   ExtraItem,
   AsyncOperationStatusIndicator,  
   ConnectedHeader, 
-  ScreenErrorBoundary,
+  ConnectedScreenErrorBoundary,
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -17,7 +17,7 @@ import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
+import { LoadingLayoutEntitiesFlatlist } from "../../components";
 
 const USE_DR = false;
 class ExtrasScreen extends Component {
@@ -101,7 +101,7 @@ class ExtrasScreen extends Component {
         error={this._isErrorData()}
         retryFun={() => {}} 
         loadingLayout={
-          <LLEntitiesFlatlist 
+          <LoadingLayoutEntitiesFlatlist 
             vertical={true} 
             numColumns={1} 
             itemStyle={styles.item} 
@@ -124,12 +124,12 @@ class ExtrasScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <ScreenErrorBoundary>
+      <ConnectedScreenErrorBoundary>
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
           <ConnectedHeader />
           {render && this._renderContent()}
         </View>
-      </ScreenErrorBoundary>
+      </ConnectedScreenErrorBoundary>
     )
   }
   

@@ -18,8 +18,7 @@ import { persistor, store } from './store';
 import { Video } from 'expo-av';
 import { enableScreens } from 'react-native-screens';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import ConnectedSplashLoader from './components/ConnectedSplashLoader';
-import ConnectedErrorBoundary from './components/ConnectedErrorBoundary';
+import {ConnectedSplashLoader,ConnectedErrorBoundary} from './components';
 import { registerRootComponent } from 'expo';
 
 enableScreens();

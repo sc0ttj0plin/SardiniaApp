@@ -9,11 +9,10 @@ import {
   EntityItem,
   CustomText,
   SectionTitle,
-  ScreenErrorBoundary,
+  ConnectedScreenErrorBoundary,
  } from "../../components";
-import { coordsInBound, distance, distanceToString, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
+import { coordsInBound, distance, distanceToString } from '../../helpers/maps';
 // import MapView from "react-native-map-clustering";
-import MapView from "react-native-maps";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { apolloQuery } from '../../apollo/queries';
@@ -22,11 +21,6 @@ import Layout from '../../constants/Layout';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
-import { Button } from "react-native-paper";
-import { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { Ionicons } from '@expo/vector-icons';
-import { linkingOpenNavigator } from "../../helpers/utils"
 
 /**
  * Map:             Clusters + pois that update with user map's interaction
@@ -298,7 +292,7 @@ const extraModalProps = {
   render() {
     const { render, hideScrollable } = this.state;
     return (
-      <ScreenErrorBoundary>
+      <ConnectedScreenErrorBoundary>
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onPageLayout}>
           <ConnectedHeader 
             iconTintColor={Colors.colorEventsScreen}  
@@ -311,7 +305,7 @@ const extraModalProps = {
           }
           {render && this._renderContent()}
         </View>
-      </ScreenErrorBoundary>
+      </ConnectedScreenErrorBoundary>
     )
   }
   

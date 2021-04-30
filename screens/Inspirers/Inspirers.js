@@ -8,18 +8,17 @@ import {
   EntityItem,
   AsyncOperationStatusIndicator,  
   ConnectedHeader, 
-  ScreenErrorBoundary
+  ConnectedScreenErrorBoundary
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 import Layout from '../../constants/Layout';
-import { greedyArrayFinder, getEntityInfo, getCoordinates, getSampleVideoIndex, getGalleryImages } from '../../helpers/utils';
 import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-import { LLVerticalItemsFlatlist } from "../../components/loadingLayouts";
+import { LoadingLayoutVerticalItemsFlatlist } from "../../components";
 import { useSafeArea } from 'react-native-safe-area-context';
 
 /* Deferred rendering to speedup page inital load: 
@@ -224,7 +223,7 @@ class InspirersScreen extends Component {
         success={this._isSuccessData()}
         error={this._isErrorData()}
         loadingLayout={
-          <LLVerticalItemsFlatlist 
+          <LoadingLayoutVerticalItemsFlatlist 
             numColumns={numColumns}
             key={"shimmer-layout" + numColumns} 
             itemStyle={styles.itemFlatlist} 
@@ -256,7 +255,7 @@ class InspirersScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <ScreenErrorBoundary>
+      <ConnectedScreenErrorBoundary>
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
           <ConnectedHeader 
             onBackPress={this._backButtonPress}
@@ -265,7 +264,7 @@ class InspirersScreen extends Component {
           />
           {render && this._renderContent()}
         </View>
-      </ScreenErrorBoundary>
+      </ConnectedScreenErrorBoundary>
     )
   }
   

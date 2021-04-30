@@ -10,9 +10,9 @@ import {
   ConnectedHeader, 
   AccomodationItem,
   SectionTitle,
-  ScreenErrorBoundary,
+  ConnectedScreenErrorBoundary,
+  ConnectedMapScrollable,
  } from "../../components";
-import ConnectedMapScrollable from "../../components/ConnectedMapScrollable"
 import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -416,12 +416,12 @@ class AccomodationsScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <ScreenErrorBoundary>
+      <ConnectedScreenErrorBoundary>
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onPageLayout}>
           <ConnectedHeader onBackPress={this._backButtonPress} iconTintColor={Colors.colorAccomodationsScreen} />
           {render && this._renderContent()}
         </View>
-      </ScreenErrorBoundary>
+      </ConnectedScreenErrorBoundary>
     )
   }
   

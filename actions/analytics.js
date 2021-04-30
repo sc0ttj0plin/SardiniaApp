@@ -1,8 +1,6 @@
 import * as firebase from 'firebase';
-import axios from 'axios';
 import * as Constants from '../constants';
 import * as Device from 'expo-device';
-import ExpoConstants from 'expo-constants';
 
 const { isDevice, brand, manufacturer, modelName, modelId , designName , productName , deviceYearClass, totalMemory, supportedCpuArchitectures, osName, osVersion, osBuildId, osInternalBuildId, osBuildFingerprint, platformApiLevel, deviceName } = Device;
 const deviceInfo = { isDevice, brand, manufacturer, modelName, modelId , designName , productName , deviceYearClass, totalMemory, supportedCpuArchitectures, osName, osVersion, osBuildId, osInternalBuildId, osBuildFingerprint, platformApiLevel, deviceName };

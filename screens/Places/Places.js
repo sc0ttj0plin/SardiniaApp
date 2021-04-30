@@ -14,7 +14,7 @@ import {
   SectionTitle,
   ConnectedMapScrollable,
   ConnectedNetworkChecker,
-  ScreenErrorBoundary
+  ConnectedScreenErrorBoundary
  } from "../../components";
 import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
 import { connect, useStore } from 'react-redux';
@@ -382,7 +382,7 @@ class PlacesScreen extends PureComponent {
   render() {
     const { render } = this.state;
     return (
-      <ScreenErrorBoundary>
+      <ConnectedScreenErrorBoundary>
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
           <ConnectedHeader 
             onBackPress={this._backButtonPress}
@@ -392,7 +392,7 @@ class PlacesScreen extends PureComponent {
           <ConnectedAuthHandler loginOptional={true} timeout={Constants.SPLASH_LOADING_DURATION + 1500} />
           {render && this._renderContent()}
         </View> 
-      </ScreenErrorBoundary>
+      </ConnectedScreenErrorBoundary>
     )
   }
   

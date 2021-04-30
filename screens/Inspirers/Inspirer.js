@@ -14,7 +14,7 @@ import {
   EntityWhyVisit,
   TopMedia,
   ConnectedFab, 
-  ScreenErrorBoundary,
+  ConnectedScreenErrorBoundary,
  } from "../../components";
 import Toast from 'react-native-easy-toast';
 import { connect, useStore } from 'react-redux';
@@ -204,12 +204,12 @@ class InspirerScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <ScreenErrorBoundary>
+      <ConnectedScreenErrorBoundary>
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
           <ConnectedHeader iconTintColor={Colors.colorInspirersScreen} />
           {render && this._renderContent()}
         </View>
-      </ScreenErrorBoundary>
+      </ConnectedScreenErrorBoundary>
     )
   }
   

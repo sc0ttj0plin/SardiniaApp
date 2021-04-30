@@ -8,7 +8,7 @@ import {
   AsyncOperationStatusIndicator, 
   ConnectedHeader, 
   CustomText,
-  ScreenErrorBoundary,
+  ConnectedScreenErrorBoundary,
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -20,8 +20,8 @@ import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
 import * as utils from '../../helpers/utils';
-import CustomIcon from '../../components/CustomIcon';
-import LoadingDots from '../../components/LoadingDots';
+import CustomIcon from '../../components/others/CustomIcon';
+import LoadingDots from '../../components/loading/LoadingDots';
 import HTML from 'react-native-render-html';
 
 /**
@@ -193,12 +193,12 @@ class SearchScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <ScreenErrorBoundary>
+      <ConnectedScreenErrorBoundary>
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
           <ConnectedHeader />
           {render && this._renderContent()}
         </View>
-      </ScreenErrorBoundary>
+      </ConnectedScreenErrorBoundary>
     )
   }
   

@@ -9,7 +9,10 @@ import {
   AsyncOperationStatusIndicator,  
   ConnectedHeader, 
   CustomText,
-  ScreenErrorBoundary
+  ConnectedScreenErrorBoundary,
+  EntityRelatedList,
+  EntityItemInGrid, 
+  LoadingLayoutEntitiesFlatlist
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -20,14 +23,10 @@ import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-import { LLVerticalItemsFlatlist } from "../../components/loadingLayouts";
 import sampleVideos from '../../constants/_sampleVideos';
 import sampleVrModels from '../../constants/_sampleVrModels';
-import {MEDIA_TYPES} from '../Media/Media';
-import EntityRelatedList from '../../components/EntityRelatedList';
+import { MEDIA_TYPES } from '../Media/Media';
 import { useSafeArea } from 'react-native-safe-area-context';
-import EntityItemInGrid from '../../components/EntityItemInGrid'; 
-import {LLEntitiesFlatlist} from "../../components/loadingLayouts/";
 import * as Device from 'expo-device';
 
 /* Deferred rendering to speedup page inital load: 
@@ -236,7 +235,7 @@ class GalleryScreen extends Component {
   }
 
   _renderLoadingLayout = () => {
-    return <LLEntitiesFlatlist 
+    return <LoadingLayoutEntitiesFlatlist 
         itemStyle={{
           width: this.state.itemSize.width,
           height: this.state.itemSize.height,
@@ -321,7 +320,7 @@ class GalleryScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <ScreenErrorBoundary>
+      <ConnectedScreenErrorBoundary>
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onLayout}>
           <ConnectedHeader 
             onBackPress={this._backButtonPress}
@@ -330,7 +329,7 @@ class GalleryScreen extends Component {
           />
           {render && this._renderContent()}
         </View>
-      </ScreenErrorBoundary>
+      </ConnectedScreenErrorBoundary>
     )
   }
   

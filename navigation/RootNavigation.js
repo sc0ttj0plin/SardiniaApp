@@ -7,7 +7,6 @@ import { useIsDrawerOpen } from '@react-navigation/drawer';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {useRoute} from '@react-navigation/native';
-import TabBarIcon from '../components/TabBarIcon';
 import PlacesScreen from '../screens/Places/Places';
 import PlaceScreen from '../screens/Places/Place';
 // import InspirersScreen from '../screens/Inspirers/Inspirers';
@@ -36,7 +35,7 @@ import GalleryScreen from '../screens/Gallery/Gallery';
 import GalleryMapScreen from '../screens/Gallery/Map';
 
 import Boilerplate from '../screens/Boilerplates/Boilerplate';
-import { ConnectedText, ConnectedLanguageList, TabBar, CustomDrawer, ConnectedAuthText } from '../components';
+import { ConnectedText, ConnectedLanguageList, TabBar, CustomDrawer, ConnectedAuthText, TabBarIcon } from '../components';
 // import VirtualTourScreen from '../screens/Others/VirtualTourScreen';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';

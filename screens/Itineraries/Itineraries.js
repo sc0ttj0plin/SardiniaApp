@@ -9,25 +9,17 @@ import {
   ConnectedMapScrollable,
   EntityItem,
   SectionTitle,
-  ScreenErrorBoundary
+  ConnectedScreenErrorBoundary
  } from "../../components";
-import { coordsInBound, regionToPoligon, regionDiagonalKm } from '../../helpers/maps';
-import MapView from "react-native-maps";
+import { coordsInBound } from '../../helpers/maps';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { apolloQuery } from '../../apollo/queries';
 import _ from 'lodash';
 import Layout from '../../constants/Layout';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
-import { Button } from "react-native-paper";
-import { Marker } from 'react-native-maps';
-import { Ionicons } from '@expo/vector-icons';
-import { PROVIDER_GOOGLE } from 'react-native-maps';
 import {distance, distanceToString} from '../../helpers/maps';
-import Itinerary from "./Itinerary";
 
 
 const USE_DR = false;
@@ -259,12 +251,12 @@ class ItinerariesScreen extends PureComponent {
   render() {
     const { render } = this.state;
     return (
-      <ScreenErrorBoundary>
+      <ConnectedScreenErrorBoundary>
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onPageLayout}>
           <ConnectedHeader iconTintColor={Colors.colorItinerariesScreen} />
           {render && this._renderContent()}
         </View>
-      </ScreenErrorBoundary>
+      </ConnectedScreenErrorBoundary>
     )
   }
   

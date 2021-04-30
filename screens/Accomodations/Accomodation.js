@@ -10,7 +10,8 @@ import {
   ConnectedFab, 
   CustomText,
   ShimmerWrapper,
-  ScreenErrorBoundary,
+  ConnectedScreenErrorBoundary,
+
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -23,7 +24,6 @@ import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
 
 const USE_DR = false;
 class AccomodationScreen extends Component {
@@ -267,13 +267,13 @@ class AccomodationScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <ScreenErrorBoundary>
+      <ConnectedScreenErrorBoundary>
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
           <ConnectedHeader iconTintColor={Colors.colorAccomodationsScreen} />
           {this._renderOpenDetailModal()}
           {render && this._renderContent()}
         </View>
-      </ScreenErrorBoundary>
+      </ConnectedScreenErrorBoundary>
     )
   }
   

@@ -7,24 +7,23 @@ import {
   AsyncOperationStatusIndicator, 
   ConnectedHeader, 
   CustomText,
-  ScreenErrorBoundary
+  ConnectedScreenErrorBoundary
  } from "../../components";
-import TouchableOpacity from "../../components/ScrollableContainerTouchableOpacity"
+import TouchableOpacity from "../../components/map/ScrollableContainerTouchableOpacity"
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 import Layout from '../../constants/Layout';
-import { greedyArrayFinder, getEntityInfo, getCoordinates, getSampleVideoIndex, getGalleryImages } from '../../helpers/utils';
 import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';
 import * as Constants from '../../constants';
-import Colors from '../../constants/Colors';
-import { LLEntitiesFlatlist, LLHorizontalItemsFlatlist } from "../../components/loadingLayouts";
 
-/* Deferred rendering to speedup page inital load: 
-   deferred rendering delays the rendering reducing the initial 
-   number of components loaded when the page initially mounts.
-   Other components are loaded right after the mount */
+/* 
+  Deferred rendering to speedup page inital load: 
+  deferred rendering delays the rendering reducing the initial 
+  number of components loaded when the page initially mounts.
+  Other components are loaded right after the mount 
+*/
 const USE_DR = false;
 class FavouritesScreen extends Component {
 
@@ -300,7 +299,7 @@ class FavouritesScreen extends Component {
   render() {
     const { render } = this.state;
     return (
-      <ScreenErrorBoundary>
+      <ConnectedScreenErrorBoundary>
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]} onLayout={this._onLayout}>
           <ConnectedHeader />
           <AsyncOperationStatusIndicator
@@ -321,7 +320,7 @@ class FavouritesScreen extends Component {
               {render && this._renderContent()}
           </AsyncOperationStatusIndicator>
         </View>
-      </ScreenErrorBoundary>
+      </ConnectedScreenErrorBoundary>
     )
   }
   

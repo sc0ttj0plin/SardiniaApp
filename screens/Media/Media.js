@@ -4,51 +4,14 @@ import {
   StyleSheet, BackHandler, Platform, ScrollView, StatusBar } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
-  // CategoryListItem, 
-  // GeoRefHListItem, 
-  // GridGallery, 
-  // GridGalleryImage, 
-  // MapViewTop, 
-  // ScrollableHeader,
-  // TabBarIcon, 
-  // CalendarListItem, 
-  // EntityAbstract,
-  // EntityDescription,
-  // EntityGallery,
-  // EntityHeader,
-  // EntityItem,
-  // EventListItem,
-  // EntityMap,
-  // EntityRelatedList,
-  // EntityVirtualTour,
-  // EntityWhyVisit,
-  // TopMedia,
-  AsyncOperationStatusIndicator, 
-  // AsyncOperationStatusIndicatorPlaceholder,
-  // Webview, 
-  // ConnectedText, 
-  ConnectedHeader, 
   HeaderFullscreen,
-  // ImageGridItem, 
-  // ConnectedLanguageList, 
-  // BoxWithText,
-  // ConnectedFab, 
-  // PoiItem, 
-  // PoiItemsList, 
-  // ExtrasListItem, 
-  // MapViewItinerary,
   CustomText
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
-import Layout from '../../constants/Layout';
-import { greedyArrayFinder, getEntityInfo, getCoordinates, getSampleVideoIndex, getGalleryImages } from '../../helpers/utils';
-import { apolloQuery } from '../../apollo/queries';
 import actions from '../../actions';
 import * as Constants from '../../constants';
-import Colors from '../../constants/Colors';
-import { LLEntitiesFlatlist } from "../../components/loadingLayouts";
 import * as ScreenOrientation from 'expo-screen-orientation'
 import { Video } from 'expo-av';
 import Gallery from 'react-native-gallery-swiper-loader';
@@ -56,8 +19,8 @@ import {WebView} from 'react-native-webview';
 const { OrientationLock } = ScreenOrientation;
 import HTML from 'react-native-render-html';
 import { useSafeArea } from 'react-native-safe-area-context';
-import LoadingDots from '../../components/LoadingDots';
-import ScrollableContainerTouchableOpacity from "../../components/ScrollableContainerTouchableOpacity";
+import LoadingDots from '../../components/loading/LoadingDots';
+import ScrollableContainerTouchableOpacity from "../../components/map/ScrollableContainerTouchableOpacity";
 
 const injectedJavaScript = `
 window.ReactNativeWebView.postMessage('pageLoaded');
