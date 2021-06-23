@@ -133,6 +133,7 @@ const dict = {
     favourites: "Preferiti",
     accomodations: "Strutture Ricettive",
     doYouLikeIt: "Ti piace questo tipo di contenuto?",
+    setting: "Impostazioni",
     //LANGUAGES
     lanItalian: '🇮🇹 Italiano',
     lanEnglish: '🇬🇧 Inglese',
@@ -312,6 +313,7 @@ const dict = {
     favourites: "Favourites",
     accomodations: "Accomodations",
     doYouLikeIt: "Do you like this content",
+    setting: "Settings",
     //LANGUAGES
     lanItalian: '🇮🇹 Italian',
     lanEnglish: '🇬🇧 English',

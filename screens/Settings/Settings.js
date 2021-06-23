@@ -142,7 +142,7 @@ class SettingsScreen extends Component {
     const { render } = this.state;
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader iconTintColor="#24467C" />
+        <ConnectedHeader onBackPress={this._onBackPress} iconTintColor="#24467C" />
         {render && this._renderContent()}
       </View>
     )
@@ -151,8 +151,8 @@ class SettingsScreen extends Component {
 }
 
 
-BoilerPlateScreen.navigationOptions = {
-  title: 'Boilerplate',
+SettingsScreen.navigationOptions = {
+  title: 'Settings',
 };
 
 
@@ -170,12 +170,12 @@ const styles = StyleSheet.create({
 });
 
 
-function BoilerPlateScreenContainer(props) {
+function SettingsScreenContainer(props) {
   const navigation = useNavigation();
   const route = useRoute();
   const store = useStore();
 
-  return <BoilerPlateScreen 
+  return <SettingsScreen 
     {...props}
     navigation={navigation}
     route={route}

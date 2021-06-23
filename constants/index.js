@@ -241,6 +241,7 @@ export const NAVIGATION = {
   NavLanguageScreen1: "LanguageScreen1",
   NavSearchScreen: "SearchScreen",
   NavSearchStackScreen: "SearchStackScreen",
+  NavSettingScreen: "SettingScreen",
   NavMainStackScreen: "MainStackScreen",
   NavFavouritesScreen: "FavouritesScreen",
   NavFavouritesListScreen: "FavouritesListScreen",
@@ -251,6 +252,7 @@ export const NAVIGATION = {
   NavAccomodationsStackScreen: "AccomodationsStackScreen",
   NavFiltersScreen: "Filters",
   NavBoilerPlate: "Boilerplate",
+
 }
 
 /**

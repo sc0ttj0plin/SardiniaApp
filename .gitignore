@@ -56,3 +56,7 @@ Thumbs.db
 .expo/settings.json
 .expo-shared
 package.json
+
+# VS Code
+.history/
+.vscode
