@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { 
   View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
-  StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
+  StyleSheet, BackHandler, Platform, ScrollView,} from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { 
   // CategoryListItem, 
@@ -36,7 +36,8 @@ import {
   // PoiItemsList, 
   // ExtrasListItem, 
   // MapViewItinerary
-  CustomText
+  CustomText,
+  CustomSwitch
  } from "../../components";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -48,6 +49,7 @@ import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
 import { LoadingLayoutEntitiesFlatlist } from "../../components/layouts";
+import ToggleSwitch from 'toggle-switch-react-native'
 
 /* Deferred rendering to speedup page inital load: 
    deferred rendering delays the rendering reducing the initial 
@@ -64,8 +66,17 @@ class SettingsScreen extends Component {
 
     this.state = {
       render: USE_DR ? false : true,
+      nearpoi:true,
+      newcontent:false,
+      eventreminder:true,
+      eventnextweek:false,
+      emergencyalert:true,
+      newsfeed:false,
+      gpsopenapp:true,
+      gpsbackground:false,
+      virtualenclosure:false,
     };
-      
+        
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
@@ -111,13 +122,15 @@ class SettingsScreen extends Component {
    *    Loading state is stored in this.props.searchAutocomplete.searchLoading
    *    Error state is stored in this.props.searchAutocomplete.searchError
    */
-  _isSuccessData  = () => false;    /* e.g. this.props.pois.success; */
+  _isSuccessData  = () => true;    /* e.g. this.props.pois.success; */
   _isLoadingData  = () => true;   /* e.g. this.props.pois.loading; */
   _isErrorData    = () => null;    /* e.g. this.props.pois.error; */
 
 
   /********************* Render methods go down here *********************/
   _renderContent = () => {
+    const { notificationsetting,gpsauth } = this.props.locale.messages;
+    //const {nearpoi} = this.state;
      return (
       <AsyncOperationStatusIndicator
         loading={this._isLoadingData()}
@@ -132,7 +145,17 @@ class SettingsScreen extends Component {
             style={styles.listStyle} 
             bodyContainerStyle={styles.listContainer}/>}
         >
-        <Text>REAL CONTENT</Text>
+        <CustomText style={styles.title}>{notificationsetting}</CustomText>
+      <CustomSwitch text={"nearpoitext"}state={this.state}></CustomSwitch>
+       <CustomSwitch text={"newelementadded"}state={this.state}></CustomSwitch>
+        <CustomSwitch text={"eventreminder"}state={this.state}></CustomSwitch>
+         <CustomSwitch text={"neweventweek"}state={this.state}></CustomSwitch>
+          <CustomSwitch text={"alertemergency"}state={this.state}></CustomSwitch>
+           <CustomSwitch text={"newsfeed"}state={this.state}></CustomSwitch>
+           <CustomText style={styles.title}>{gpsauth}</CustomText>
+             <CustomSwitch text={"gpsapp"}state={this.state}></CustomSwitch>
+          <CustomSwitch text={"gpsbackground"}state={this.state}></CustomSwitch>
+           <CustomSwitch text={"virtualenclosure"}state={this.state}></CustomSwitch>
       </AsyncOperationStatusIndicator>
      )
   }
@@ -140,9 +163,11 @@ class SettingsScreen extends Component {
 
   render() {
     const { render } = this.state;
+    const {nearpoi} = this.state;
+    
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader onBackPress={this._onBackPress} iconTintColor="#24467C" />
+        <ConnectedHeader onBackPress={this._onBackPress} />
         {render && this._renderContent()}
       </View>
     )
@@ -166,6 +191,16 @@ const styles = StyleSheet.create({
   },
   container: {
     padding: 10,
+  },
+  title: {
+    textAlign: "center",
+    paddingTop: 10,
+    paddingBottom: 10,
+    color: "#000000E6",
+    backgroundColor: "#F2F2F2",
+    fontSize: 15,
+    fontFamily: "montserrat-bold",
+    textTransform: "uppercase"
   },
 });
 

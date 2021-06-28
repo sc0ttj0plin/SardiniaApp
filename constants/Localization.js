@@ -134,6 +134,7 @@ const dict = {
     accomodations: "Strutture Ricettive",
     doYouLikeIt: "Ti piace questo tipo di contenuto?",
     setting: "Impostazioni",
+    notificationsetting:"Notifiche ed Eventi",
     //LANGUAGES
     lanItalian: '🇮🇹 Italiano',
     lanEnglish: '🇬🇧 Inglese',
@@ -187,6 +188,17 @@ const dict = {
     //Generic Screen error
     screenErrorTitle: "Ops, qualcosa è andato storto",
     screenErrorBody: "L'applicazione ha riscontrato un'errore.",
+    //Setting
+    nearpoitext:"Vicinanza ad un punto di interesse",
+    newelementadded:"Nuovo contenuto aggiunto",
+    eventreminder:"Ricorda un evento",
+    neweventweek:"Nuovo evento fra una settimana",
+    alertemergency:"Emergenze ed allerte",
+    newsfeed:"Notizie ed aggiornamenti",
+    gpsauth:"LA MIA POSIZIONE GPS",
+    gpsapp:"Durante l'uso dell'app",
+    gpsbackground:"In backgroung",
+    virtualenclosure:"Recinti Virtuali",
   },
   [enKey]: {
     //GENERIC
@@ -314,6 +326,7 @@ const dict = {
     accomodations: "Accomodations",
     doYouLikeIt: "Do you like this content",
     setting: "Settings",
+    notificationsetting:"notifications and events",
     //LANGUAGES
     lanItalian: '🇮🇹 Italian',
     lanEnglish: '🇬🇧 English',
@@ -367,6 +380,17 @@ const dict = {
     //Generic Screen error
     screenErrorTitle: "Ops, something has gone wrong",
     screenErrorBody: "The application has encountered an error.",
+    //Setting
+    nearpoitext:"Proximity to a point of interest",
+    newelementadded:"New content added",
+    eventreminder:"Remember an event",
+    neweventweek:"New event in a week",
+    alertemergency:"Emergencies and alerts",
+    newsfeed:"News and updates",
+    gpsauth:"MY GPS LOCATION",
+    gpsapp:"While using the app",
+    gpsbackground:"In the background",
+    virtualenclosure:"Virtual Fences",
   },
   zhKey: {},
   frKey: {},
