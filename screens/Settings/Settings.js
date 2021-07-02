@@ -1,82 +1,90 @@
-import React, { Component } from "react";
-import { 
-  View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
-  StyleSheet, BackHandler, Platform, ScrollView,} from "react-native";
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { 
-  // CategoryListItem, 
-  // GeoRefHListItem, 
-  // GridGallery, 
-  // GridGalleryImage, 
-  // MapViewTop, 
-  // ScrollableHeader,
-  // TabBarIcon, 
-  // CalendarListItem, 
-  // EntityAbstract,
-  // EntityDescription,
-  // EntityGallery,
-  // EntityHeader,
-  // EntityItem,
-  // EventListItem,
-  // EntityMap,
-  // EntityRelatedList,
-  // EntityVirtualTour,
-  // EntityWhyVisit,
-  // TopMedia,
-  AsyncOperationStatusIndicator, 
-  // AsyncOperationStatusIndicatorPlaceholder,
-  // Webview, 
-  // ConnectedText, 
-  ConnectedHeader, 
-  // ImageGridItem, 
-  // ConnectedLanguageList, 
-  // BoxWithText,
-  // ConnectedFab, 
-  // PoiItem, 
-  // PoiItemsList, 
-  // ExtrasListItem, 
-  // MapViewItinerary
-  CustomText,
-  CustomSwitch
- } from "../../components";
-import { connect, useStore } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import React, {Component} from "react";
+import {
+    View, Text, FlatList, ActivityIndicator, TouchableOpacity,
+    StyleSheet, BackHandler, Platform, ScrollView,
+} from "react-native";
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {
+    // CategoryListItem,
+    // GeoRefHListItem,
+    // GridGallery,
+    // GridGalleryImage,
+    // MapViewTop,
+    // ScrollableHeader,
+    // TabBarIcon,
+    // CalendarListItem,
+    // EntityAbstract,
+    // EntityDescription,
+    // EntityGallery,
+    // EntityHeader,
+    // EntityItem,
+    // EventListItem,
+    // EntityMap,
+    // EntityRelatedList,
+    // EntityVirtualTour,
+    // EntityWhyVisit,
+    // TopMedia,
+    AsyncOperationStatusIndicator,
+    // AsyncOperationStatusIndicatorPlaceholder,
+    // Webview,
+    // ConnectedText,
+    ConnectedHeader,
+    // ImageGridItem,
+    // ConnectedLanguageList,
+    // BoxWithText,
+    // ConnectedFab,
+    // PoiItem,
+    // PoiItemsList,
+    // ExtrasListItem,
+    // MapViewItinerary
+    CustomText,
+    CustomSwitch
+} from "../../components";
+import {connect, useStore} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import _ from 'lodash';
 import Layout from '../../constants/Layout';
-import { greedyArrayFinder, getEntityInfo, getCoordinates, getSampleVideoIndex, getGalleryImages } from '../../helpers/utils';
-import { apolloQuery } from '../../apollo/queries';
+import {
+    greedyArrayFinder,
+    getEntityInfo,
+    getCoordinates,
+    getSampleVideoIndex,
+    getGalleryImages
+} from '../../helpers/utils';
+import {apolloQuery} from '../../apollo/queries';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-import { LoadingLayoutEntitiesFlatlist } from "../../components/layouts";
+import {LoadingLayoutEntitiesFlatlist} from "../../components/layouts";
 import ToggleSwitch from 'toggle-switch-react-native'
 
-/* Deferred rendering to speedup page inital load: 
-   deferred rendering delays the rendering reducing the initial 
+/* Deferred rendering to speedup page inital load:
+   deferred rendering delays the rendering reducing the initial
    number of components loaded when the page initially mounts.
    Other components are loaded right after the mount */
 const USE_DR = false;
-class SettingsScreen extends Component {
 
+class SettingsScreen extends Component {
   constructor(props) {
     super(props);
 
     /* Get props from navigation */
-    //let { someNavProps } = props.route.params; 
+    //let { someNavProps } = props.route.params;
 
     this.state = {
       render: USE_DR ? false : true,
-      nearpoi:true,
-      newcontent:false,
-      eventreminder:true,
-      eventnextweek:false,
-      emergencyalert:true,
-      newsfeed:false,
-      gpsopenapp:true,
-      gpsbackground:false,
-      virtualenclosure:false,
+      nearpoi: true,
+      newcontent: false,
+      eventreminder: true,
+      eventnextweek: false,
+      emergencyalert: true,
+      newsfeed: false,
+      gpsopenapp: true,
+      gpsbackground: false,
+      virtualenclosure: false,
     };
-        
+
+    console.log(props);
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
@@ -87,11 +95,13 @@ class SettingsScreen extends Component {
    */
   componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
-    {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
+    {
+      USE_DR && setTimeout(() => this.setState({ render: true }), 0);
+    }
   }
 
   /**
-   * Use this function to update state based on external props 
+   * Use this function to update state based on external props
    * or to post-process data once it changes
    */
   componentDidUpdate(prevProps) {
@@ -105,8 +115,7 @@ class SettingsScreen extends Component {
   /**
    * Use this function to unsubscribe or clear any event hooks
    */
-  componentWillUnmount() {
-  }
+  componentWillUnmount() {}
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
 
@@ -122,134 +131,188 @@ class SettingsScreen extends Component {
    *    Loading state is stored in this.props.searchAutocomplete.searchLoading
    *    Error state is stored in this.props.searchAutocomplete.searchError
    */
-  _isSuccessData  = () => true;    /* e.g. this.props.pois.success; */
-  _isLoadingData  = () => true;   /* e.g. this.props.pois.loading; */
-  _isErrorData    = () => null;    /* e.g. this.props.pois.error; */
+  _isSuccessData = () => true; /* e.g. this.props.pois.success; */
+  _isLoadingData = () => true; /* e.g. this.props.pois.loading; */
+  _isErrorData = () => null; /* e.g. this.props.pois.error; */
 
+  handleInputChange = (value, name) => {
+    console.log(value);
+    console.log(name);
+    this.setState({ [name]: value });
+  }
 
   /********************* Render methods go down here *********************/
   _renderContent = () => {
-    const { notificationsetting,gpsauth } = this.props.locale.messages;
-    //const {nearpoi} = this.state;
-     return (
+    const { notificationsetting, gpsauth } = this.props.locale.messages;
+    //const { nearpoi } = this.state;
+    
+    return (
       <AsyncOperationStatusIndicator
         loading={this._isLoadingData()}
         success={this._isSuccessData()}
         error={this._isErrorData()}
-        retryFun={() => {}} 
+        retryFun={() => {}}
         loadingLayout={
-          <LoadingLayoutEntitiesFlatlist 
-            horizontal={false} 
-            numColumns={1} 
-            itemStyle={styles.itemFlatlist} 
-            style={styles.listStyle} 
-            bodyContainerStyle={styles.listContainer}/>}
-        >
+          <LoadingLayoutEntitiesFlatlist
+            horizontal={false}
+            numColumns={1}
+            itemStyle={styles.itemFlatlist}
+            style={styles.listStyle}
+            bodyContainerStyle={styles.listContainer}
+          />
+        }
+      >
         <CustomText style={styles.title}>{notificationsetting}</CustomText>
-      <CustomSwitch text={"nearpoitext"}state={this.state}></CustomSwitch>
-       <CustomSwitch text={"newelementadded"}state={this.state}></CustomSwitch>
-        <CustomSwitch text={"eventreminder"}state={this.state}></CustomSwitch>
-         <CustomSwitch text={"neweventweek"}state={this.state}></CustomSwitch>
-          <CustomSwitch text={"alertemergency"}state={this.state}></CustomSwitch>
-           <CustomSwitch text={"newsfeed"}state={this.state}></CustomSwitch>
-           <CustomText style={styles.title}>{gpsauth}</CustomText>
-             <CustomSwitch text={"gpsapp"}state={this.state}></CustomSwitch>
-          <CustomSwitch text={"gpsbackground"}state={this.state}></CustomSwitch>
-           <CustomSwitch text={"virtualenclosure"}state={this.state}></CustomSwitch>
+        <CustomSwitch
+          parentstate={this.state.nearpoi}
+          parentkey={"nearpoi"}
+          handleInputChange={this.handleInputChange}
+          text={"nearpoitext"}
+        ></CustomSwitch>
+        <CustomSwitch
+          text={"newelementadded"}
+          parentstate={this.state.newcontent}
+          parentkey={"newcontent"}
+          handleInputChange={this.handleInputChange}
+        ></CustomSwitch>
+        <CustomSwitch
+          text={"eventreminder"}
+          parentkey={"eventreminder"}
+          handleInputChange={this.handleInputChange}
+          parentstate={this.state.eventreminder}
+        ></CustomSwitch>
+        <CustomSwitch
+          text={"neweventweek"}
+          parentstate={this.state.eventnextweek}
+          parentkey={"eventnextweek"}
+          handleInputChange={this.handleInputChange}
+        ></CustomSwitch>
+        <CustomSwitch
+          text={"alertemergency"}
+          parentstate={this.state.emergencyalert}
+          parentkey={"emergencyalert"}
+          handleInputChange={this.handleInputChange}
+        ></CustomSwitch>
+        <CustomSwitch
+          text={"newsfeed"}
+          parentstate={this.state.newsfeed}
+          parentkey={"newsfeed"}
+          handleInputChange={this.handleInputChange}
+        ></CustomSwitch>
+        <CustomText style={styles.title}>{gpsauth}</CustomText>
+        <CustomSwitch
+          text={"gpsapp"}
+          parentkey={"gpsopenapp"}
+          handleInputChange={this.handleInputChange}
+          parentstate={this.state.gpsopenapp}
+        ></CustomSwitch>
+        <CustomSwitch
+          text={"gpsbackground"}
+          parentstate={this.state.gpsbackground}
+          parentkey={"gpsbackground"}
+          handleInputChange={this.handleInputChange}
+        ></CustomSwitch>
+        <CustomSwitch
+          text={"virtualenclosure"}
+          parentstate={this.state.virtualenclosure}
+          parentkey={"virtualenclosure"}
+          handleInputChange={this.handleInputChange}
+        ></CustomSwitch>
       </AsyncOperationStatusIndicator>
-     )
-  }
-
+    );
+  };
 
   render() {
     const { render } = this.state;
-    const {nearpoi} = this.state;
     
+    //const { nearpoi } = this.state;
+
     return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
+      <View style={[styles.fill, { paddingTop: Layout.statusbarHeight }]}>
         <ConnectedHeader onBackPress={this._onBackPress} />
         {render && this._renderContent()}
       </View>
-    )
+    );
   }
-  
 }
 
 
 SettingsScreen.navigationOptions = {
-  title: 'Settings',
+    title: 'Settings',
 };
 
 
 const styles = StyleSheet.create({
-  fill: {
-    flex: 1,
-    backgroundColor: "white"
-  },
-  header: {
-    backgroundColor: "white"
-  },
-  container: {
-    padding: 10,
-  },
-  title: {
-    textAlign: "center",
-    paddingTop: 10,
-    paddingBottom: 10,
-    color: "#000000E6",
-    backgroundColor: "#F2F2F2",
-    fontSize: 15,
-    fontFamily: "montserrat-bold",
-    textTransform: "uppercase"
-  },
+    fill: {
+        flex: 1,
+        backgroundColor: "white"
+    },
+    header: {
+        backgroundColor: "white"
+    },
+    container: {
+        padding: 10,
+    },
+    title: {
+        textAlign: "center",
+        paddingTop: 10,
+        paddingBottom: 10,
+        color: "#000000E6",
+        backgroundColor: "#F2F2F2",
+        fontSize: 15,
+        fontFamily: "montserrat-bold",
+        textTransform: "uppercase"
+    },
 });
 
 
 function SettingsScreenContainer(props) {
-  const navigation = useNavigation();
-  const route = useRoute();
-  const store = useStore();
+    const navigation = useNavigation();
+    const route = useRoute();
+    const store = useStore();
 
-  return <SettingsScreen 
-    {...props}
-    navigation={navigation}
-    route={route}
-    store={store} />;
+    return <SettingsScreen
+        {...props}
+        navigation={navigation}
+        route={route}
+        store={store}/>;
 }
 
 
 const mapStateToProps = state => {
-  return {
-    restState: state.restState,
-    //auth
-    auth: state.authState,
-    //mixed state
-    others: state.othersState,
-    //language
-    locale: state.localeState,
-    //favourites
-    favourites: state.favouritesState,
-    //graphql
-    categories: state.categoriesState,
-    events: state.eventsState,
-    inspirers: state.inspirersState,
-    itineraries: state.itinerariesState,
-    nodes: state.nodesState,
-    pois: state.poisState,
-    searchAutocomplete: state.searchAutocompleteState,
-  };
+    return {
+        //setting: state.settingsState,
+        restState: state.restState,
+        //auth
+        auth: state.authState,
+        //mixed state
+        others: state.othersState,
+        //language
+        locale: state.localeState,
+        //favourites
+        favourites: state.favouritesState,
+        //graphql
+        categories: state.categoriesState,
+        events: state.eventsState,
+        inspirers: state.inspirersState,
+        itineraries: state.itinerariesState,
+        nodes: state.nodesState,
+        pois: state.poisState,
+        searchAutocomplete: state.searchAutocompleteState,
+        
+    };
 };
 
 
 const mapDispatchToProps = dispatch => {
-  return {...bindActionCreators({ ...actions }, dispatch)};
+    return {...bindActionCreators({...actions}, dispatch)};
 };
 
 
 export default connect(mapStateToProps, mapDispatchToProps, (stateProps, dispatchProps, props) => {
-  return {
-    ...stateProps,
-    actions: dispatchProps,
-    ...props
-  }
+    return {
+        ...stateProps,
+        actions: dispatchProps,
+        ...props
+    }
 })(SettingsScreenContainer)

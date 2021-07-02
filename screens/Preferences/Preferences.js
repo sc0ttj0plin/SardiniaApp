@@ -325,7 +325,7 @@ class PreferencesScreen extends Component {
 
 
 PreferencesScreen.navigationOptions = {
-  title: 'Boilerplate',
+  title: 'Settings',
 };
 
 

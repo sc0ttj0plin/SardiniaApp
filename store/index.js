@@ -14,6 +14,7 @@ import poisReducer from '../reducers/pois';
 import preferencesReducer from '../reducers/preferences';
 import accomodationsReducer from '../reducers/accomodations';
 import searchAutocompleteReducer from '../reducers/searchAutocomplete';
+import settingReducer from '../reducers/settings';
 import apolloMiddleware from '../apollo/middleware';
 import AsyncStorage from '@react-native-community/async-storage';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'; //2lvl objects
@@ -41,30 +42,30 @@ const axiosMiddlewareOptions = {
 
 
 
-const rootReducer = combineReducers({ 
-    restState: restReducer,
-    authState: authReducer,
-    localeState: localeReducer,
-    othersState: othersReducer,
-    favouritesState: favouritesReducer,
-    //Graphql states
-    categoriesState: categoriesReducer,
-    preferencesState: preferencesReducer,
-    eventsState: eventsReducer,
-    inspirersState: inspirersReducer,
-    itinerariesState: itinerariesReducer,
-    nodesState: nodesReducer,
-    poisState: poisReducer,
-    accomodationsState: accomodationsReducer,
-    searchAutocompleteState: searchAutocompleteReducer,
-  }
-);
+const rootReducer = combineReducers({
+  restState: restReducer,
+  authState: authReducer,
+  localeState: localeReducer,
+  othersState: othersReducer,
+  favouritesState: favouritesReducer,
+  //Graphql states
+  categoriesState: categoriesReducer,
+  preferencesState: preferencesReducer,
+  eventsState: eventsReducer,
+  inspirersState: inspirersReducer,
+  itinerariesState: itinerariesReducer,
+  nodesState: nodesReducer,
+  poisState: poisReducer,
+  accomodationsState: accomodationsReducer,
+  searchAutocompleteState: searchAutocompleteReducer,
+  settingsState: settingReducer,
+});
 
 const persistConfig = {
-  key: 'root',
+  key: "root",
   storage: AsyncStorage,
   stateReconciler: autoMergeLevel2, //Store up to two level nesting
-  whitelist: ['favouritesState', 'authState'], //only store whitelisted reducers
+  whitelist: ["favouritesState", "authState"], //only store whitelisted reducers
 };
 
 

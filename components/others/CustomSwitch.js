@@ -2,52 +2,51 @@ import React from 'react';
 import { Text, StyleSheet,View } from "react-native";
 import ToggleSwitch from 'toggle-switch-react-native'
 import { ConnectedText, ConnectedLanguageList, TabBar, CustomDrawer, ConnectedAuthText, TabBarIcon } from '../../components';
-export default function CustomSwitch(props) {
+export default function CustomSwitch(props,handleInputChange, parentstate,key) {
+  let flag;
   return (
-    <View style={{
+    <View
+      style={{
         flex: 0,
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-        alignItems: 'stretch',
-        alignContent :"center",
-        flexWrap :"nowrap",
-            
-        
-    }}>
-        <View style={{
-            flex: 1,
-            flexDirection: 'column',
-           
-            alignItems: 'flex-start',
-            paddingTop:0,
-            paddingStart:16,paddingBottom:8
-           
-        }}>
-            <ConnectedText languageKey={props.text} textStyle={styles.element} /></View>
-        <View style={{
-        flex: 0,
-        flexDirection: 'column',
-        paddingTop:10,
-        alignItems: 'flex-end',
-        paddingEnd:16
-           
-      }}>
-        <ToggleSwitch {...props}
-          
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        alignItems: "stretch",
+        alignContent: "center",
+        flexWrap: "nowrap",
+      }}
+    >
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "column",
+
+          alignItems: "stretch",
+          paddingTop: 0,
+          paddingStart: 16,
+          paddingBottom: 8,
+        }}
+      >
+        <ConnectedText languageKey={props.text} textStyle={styles.element} />
+      </View>
+      <View
+        style={{
+          flex: 0,
+          flexDirection: "column",
+          paddingTop: 10,
+          alignItems: "flex-end",
+          paddingEnd: 16,
+        }}
+      >
+        <ToggleSwitch
           onColor="black"
-          //size="default"
-          isOn={props.state.nearpoi}
-          onToggle={nearpoi => {
-            props.state.nearpoi.setState({ nearpoi });
-            console.log(
-             nearpoi )
+          isOn={props.parentstate}
+          onToggle={() => {
+            props.handleInputChange(!props.parentstate, props.parentkey);
           }}
         />
-
       </View>
-
     </View>
-  )
+  );
 }
 
 
