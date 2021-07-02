@@ -1,8 +1,7 @@
 import * as Constants from '../constants';
-import moment from 'moment';
-import _ from 'lodash';
 
 export const INITIAL_STATE = {
+         lastSynced:0,
          nearpoi: true,
          newcontent: true,
          eventreminder: true,
@@ -17,18 +16,21 @@ export const INITIAL_STATE = {
 export default function reducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     //SETTINGS
-    case Constants.INIT_SETTINGS:
+    case Constants.INIT_SETTING:
       return action.payload;
     case Constants.TOGGLE_SETTING:
-      const settObj = { [action.payload.uuid]: action.payload.val };
+      console.log("aggiornamento stato")
+      const settObj = { [action.payload.type]: action.payload.value };
+      console.log(settObj)
       let newState = { 
-        ...state, 
+        ...state,
         lastSynced: action.payload.lastSynced,
-        [action.payload.type]: { 
-          ...state[action.payload.type], 
-          ...settObj 
-        } 
+        aggiornato:true,
+          ...settObj
+        
       }
+      console.log(newState)
+      console.log("newState");
       return newState;
       // return { ...state, [action.payload.uuid]: action.payload.val }
     default:

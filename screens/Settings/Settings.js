@@ -73,18 +73,9 @@ class SettingsScreen extends Component {
 
     this.state = {
       render: USE_DR ? false : true,
-      nearpoi: true,
-      newcontent: false,
-      eventreminder: true,
-      eventnextweek: false,
-      emergencyalert: true,
-      newsfeed: false,
-      gpsopenapp: true,
-      gpsbackground: false,
-      virtualenclosure: false,
     };
 
-    console.log(props);
+    console.log(props.setting);
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
@@ -138,7 +129,13 @@ class SettingsScreen extends Component {
   handleInputChange = (value, name) => {
     console.log(value);
     console.log(name);
-    this.setState({ [name]: value });
+    console.log(this.props.type);
+    console.log(this.props.uuid);
+    this.props.actions.toggleSettings({
+      type: name,
+      value: value,
+    });
+    //this.setState({ [name]: value });
   }
 
   /********************* Render methods go down here *********************/
@@ -164,14 +161,14 @@ class SettingsScreen extends Component {
       >
         <CustomText style={styles.title}>{notificationsetting}</CustomText>
         <CustomSwitch
-          parentstate={this.state.nearpoi}
+          parentstate={this.props.setting.nearpoi}
           parentkey={"nearpoi"}
           handleInputChange={this.handleInputChange}
           text={"nearpoitext"}
         ></CustomSwitch>
         <CustomSwitch
           text={"newelementadded"}
-          parentstate={this.state.newcontent}
+          parentstate={this.props.setting.newcontent}
           parentkey={"newcontent"}
           handleInputChange={this.handleInputChange}
         ></CustomSwitch>
@@ -179,23 +176,23 @@ class SettingsScreen extends Component {
           text={"eventreminder"}
           parentkey={"eventreminder"}
           handleInputChange={this.handleInputChange}
-          parentstate={this.state.eventreminder}
+          parentstate={this.props.setting.eventreminder}
         ></CustomSwitch>
         <CustomSwitch
           text={"neweventweek"}
-          parentstate={this.state.eventnextweek}
+          parentstate={this.props.setting.eventnextweek}
           parentkey={"eventnextweek"}
           handleInputChange={this.handleInputChange}
         ></CustomSwitch>
         <CustomSwitch
           text={"alertemergency"}
-          parentstate={this.state.emergencyalert}
+          parentstate={this.props.setting.emergencyalert}
           parentkey={"emergencyalert"}
           handleInputChange={this.handleInputChange}
         ></CustomSwitch>
         <CustomSwitch
           text={"newsfeed"}
-          parentstate={this.state.newsfeed}
+          parentstate={this.props.setting.newsfeed}
           parentkey={"newsfeed"}
           handleInputChange={this.handleInputChange}
         ></CustomSwitch>
@@ -204,17 +201,17 @@ class SettingsScreen extends Component {
           text={"gpsapp"}
           parentkey={"gpsopenapp"}
           handleInputChange={this.handleInputChange}
-          parentstate={this.state.gpsopenapp}
+          parentstate={this.props.setting.gpsopenapp}
         ></CustomSwitch>
         <CustomSwitch
           text={"gpsbackground"}
-          parentstate={this.state.gpsbackground}
+          parentstate={this.props.setting.gpsbackground}
           parentkey={"gpsbackground"}
           handleInputChange={this.handleInputChange}
         ></CustomSwitch>
         <CustomSwitch
           text={"virtualenclosure"}
-          parentstate={this.state.virtualenclosure}
+          parentstate={this.props.setting.virtualenclosure}
           parentkey={"virtualenclosure"}
           handleInputChange={this.handleInputChange}
         ></CustomSwitch>
@@ -281,7 +278,7 @@ function SettingsScreenContainer(props) {
 
 const mapStateToProps = state => {
     return {
-        //setting: state.settingsState,
+        setting: state.settingsState,
         restState: state.restState,
         //auth
         auth: state.authState,
