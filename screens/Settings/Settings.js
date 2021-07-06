@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {
     View, Text, FlatList, ActivityIndicator, TouchableOpacity,
-    StyleSheet, BackHandler, Platform, ScrollView,
+    StyleSheet, BackHandler, Platform, ScrollView,Alert
 } from "react-native";
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {
@@ -57,6 +57,9 @@ import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
 import {LoadingLayoutEntitiesFlatlist} from "../../components/layouts";
 import ToggleSwitch from 'toggle-switch-react-native'
+import * as Location from "expo-location";
+import * as Permissions from "expo-permissions";
+
 
 /* Deferred rendering to speedup page inital load:
    deferred rendering delays the rendering reducing the initial
@@ -126,17 +129,53 @@ class SettingsScreen extends Component {
   _isLoadingData = () => true; /* e.g. this.props.pois.loading; */
   _isErrorData = () => null; /* e.g. this.props.pois.error; */
 
+  // async askPermission (){
+  //    const permission = await Location.getPermissionsAsync();
+  //    return permission.status === "granted";
+  // }
+  
+  // async getLocationAsync (){
+  //  let { status } = await Location.requestPermissionsAsync();
+  //  if (status !== 'granted') {
+  //    console.log(status)
+  //    let permission = (permission = await this.askPermission());
+  //    return permission;
+  //  } else {
+  //    this.setState({ hasLocationPermissions: true });
+  //  }
+  // }
+
   handleInputChange = (value, name) => {
     console.log(value);
     console.log(name);
     console.log(this.props.type);
     console.log(this.props.uuid);
+    this.checkPermission();
     this.props.actions.toggleSettings({
       type: name,
       value: value,
     });
     //this.setState({ [name]: value });
   }
+
+  checkPermission = async () => {
+  let { status } = await Permissions.askAsync(Permissions.LOCATION);
+  console.log("Location Permission" + status);
+  if(status !== 'granted'){
+    let auth = Location.enableNetworkProviderAsync();
+    let location = await Location.requestPermissionsAsync();
+    console.log("Permission not granted")
+    
+    
+    return;
+  }
+  console.log("Permission granted")
+}
+askPermission = async () => {
+  const permission = await Location.getPermissionsAsync();
+  console.log(permission)
+  return permission.status === 'granted';
+};
 
   /********************* Render methods go down here *********************/
   _renderContent = () => {
