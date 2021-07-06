@@ -1,4 +1,4 @@
-import  { normalizeLanguage } from '../helpers/language';
+import { normalizeLanguage } from "../helpers/language";
 
 const itKey = normalizeLanguage("it");
 const enKey = normalizeLanguage("en-*");
@@ -29,7 +29,8 @@ const dict = {
     nearTo: "Vicini a",
     myPreferences: "I miei gusti",
     access: "ACCEDI",
-    loginText: "Registrandoti vedrai contenuti personalizzati in base alle tue preferenze",
+    loginText:
+      "Registrandoti vedrai contenuti personalizzati in base alle tue preferenze",
     skip: "SALTA",
     informations: "informazioni",
     ageText: "Anni: ",
@@ -76,10 +77,10 @@ const dict = {
     favouriteAccomodations: "STRUTTURE RICETTIVE",
     noFavourites: "Nessun preferito",
     canBeOfInterest: "Potrebbe interessarti anche",
-    extrasWildNature: "Natura", 
-    extrasMythIsland: "Mito", 
-    extrasTradition: "Tradizioni", 
-    extrasCentenaryLand: "Centenari", 
+    extrasWildNature: "Natura",
+    extrasMythIsland: "Mito",
+    extrasTradition: "Tradizioni",
+    extrasCentenaryLand: "Centenari",
     extrasLiveTheSea: "Mare",
     extrasStarredPlaces: "Luoghi del cuore",
     extrasCulture: "Cultura",
@@ -93,15 +94,20 @@ const dict = {
     phoneModalTitle: "Chiama la struttura",
     websiteModalTitle: "Guarda il sito",
     emailModalTitle: "Manda una mail",
-    addressOnPressAlert: "Guarda dove troverai la struttura e segui le indicazioni per trovarla.",
-    phoneOnPressAlert: "Mettiti direttamente in contatto con la struttura per richiedere informazioni o fare una prenotazione.",
-    websiteOnPressAlert: "Naviga la pagina web della struttura per avere maggiori informazioni.",
-    emailOnPressAlert: "Mettiti direttamente in contatto con la struttura per richiedere informazioni o fare una prenotazione.",
+    addressOnPressAlert:
+      "Guarda dove troverai la struttura e segui le indicazioni per trovarla.",
+    phoneOnPressAlert:
+      "Mettiti direttamente in contatto con la struttura per richiedere informazioni o fare una prenotazione.",
+    websiteOnPressAlert:
+      "Naviga la pagina web della struttura per avere maggiori informazioni.",
+    emailOnPressAlert:
+      "Mettiti direttamente in contatto con la struttura per richiedere informazioni o fare una prenotazione.",
     addressOnPressBtnTitle: "Naviga",
     phoneOnPressBtnTitle: "Chiama la struttura",
     websiteOnPressBtnTitle: "Vai",
     emailOnPressBtnTitle: "Scrivi",
-    entityIsNotTranslated: "Questa entità non ha una traduzione per la lingua corrente",
+    entityIsNotTranslated:
+      "Questa entità non ha una traduzione per la lingua corrente",
     retry: "Riprova",
     cancel: "Annulla",
     //LOGIN
@@ -109,7 +115,8 @@ const dict = {
     reusedOldLink: "• È stato usato un link di login scaduto o già utilizzato",
     alreadyLoggedIn: "• Il login è stato già effettuato precedentemente",
     connectionIssues: "• La connessione ad internet è inattiva o intermittente",
-    unsuccessfulLogin: "Il login non è andato a buon fine, si prega di riprovare.",
+    unsuccessfulLogin:
+      "Il login non è andato a buon fine, si prega di riprovare.",
     //NAVIGATION
     tabWhatToDo: "Cosa fare",
     tabWhereToGo: "Dove andare",
@@ -134,23 +141,24 @@ const dict = {
     accomodations: "Strutture Ricettive",
     doYouLikeIt: "Ti piace questo tipo di contenuto?",
     setting: "Impostazioni",
-    notificationsetting:"Notifiche ed Eventi",
+    notificationsetting: "Notifiche ed Eventi",
+    info: "Info Utili",
     //LANGUAGES
-    lanItalian: '🇮🇹 Italiano',
-    lanEnglish: '🇬🇧 Inglese',
+    lanItalian: "🇮🇹 Italiano",
+    lanEnglish: "🇬🇧 Inglese",
     //AUTH
-    profile: 'Profilo',
-    username: "Inserisci un nome", 
-    name: "Nome", 
-    surname: "Cognome", 
-    birth: "Data di nascita", 
-    country: "Paese", 
+    profile: "Profilo",
+    username: "Inserisci un nome",
+    name: "Nome",
+    surname: "Cognome",
+    birth: "Data di nascita",
+    country: "Paese",
     sex: "Sesso",
     age: "Età",
     confirm: "Conferma",
     register: "Registrati",
     next: "Avanti",
-    sentLink: "Ti abbiamo mandato un link", 
+    sentLink: "Ti abbiamo mandato un link",
     checkInbox: "Controlla la tua mail",
     logoutMsg: "Vuoi disconnettere il tuo account?",
     logoutBtn: "Disconnetti",
@@ -163,42 +171,45 @@ const dict = {
     loggingIn: "Login in corso..",
     loginError: "Errore di login:",
     //Parks
-    nearParks: "Parcheggi nelle vicinanze!", 
-    discoverParks: "Scopri i parcheggi liberi più vicini a te attraverso uno dei servizi convenzionati.",
+    nearParks: "Parcheggi nelle vicinanze!",
+    discoverParks:
+      "Scopri i parcheggi liberi più vicini a te attraverso uno dei servizi convenzionati.",
     findParkBtn: "TROVA UN PARCHEGGIO",
     //Update
-    updateInProgressTitle: "Aggiornamento in corso", 
+    updateInProgressTitle: "Aggiornamento in corso",
     updateInProgressDescription: "Attendere il riavvio dell'applicazione",
     //Networking
     disconnected: "Verificare la connessione",
-    pleaseConnect: "Sembra che tu non abbia accesso ad internet. Verifica la connessione e riprova.",
+    pleaseConnect:
+      "Sembra che tu non abbia accesso ad internet. Verifica la connessione e riprova.",
     retry: "Riprova",
     cancel: "Cancel",
     //LINKING
-    loadingLinkingContentTitle: "Caricamento del contenuto", 
+    loadingLinkingContentTitle: "Caricamento del contenuto",
     loadingLinkingContentDescription: "Stiamo cercando il contenuto richiesto",
-    loadingLinkingContentTitleError: "Errore nel caricamento del contenuto", 
-    loadingLinkingContentDescriptionError: "C'è stato un'errore nella ricerca del contenuto",
+    loadingLinkingContentTitleError: "Errore nel caricamento del contenuto",
+    loadingLinkingContentDescriptionError:
+      "C'è stato un'errore nella ricerca del contenuto",
     //App Location Tracking background
     notificationTitle: "L'app Sardinia ti avvisa",
     notificationBody: "Sei vicino ad un punto di interesse!",
-    //Redux error 
+    //Redux error
     reduxErrorTitle: "Ops, qualcosa è andato storto",
     reduxErrorBody: "L'applicazione ha riscontrato un'errore.",
     //Generic Screen error
     screenErrorTitle: "Ops, qualcosa è andato storto",
     screenErrorBody: "L'applicazione ha riscontrato un'errore.",
     //Setting
-    nearpoitext:"Vicinanza ad un punto di interesse",
-    newelementadded:"Nuovo contenuto aggiunto",
-    eventreminder:"Ricorda un evento",
-    neweventweek:"Nuovo evento fra una settimana",
-    alertemergency:"Emergenze ed allerte",
-    newsfeed:"Notizie ed aggiornamenti",
-    gpsauth:"LA MIA POSIZIONE GPS",
-    gpsapp:"Durante l'uso dell'app",
-    gpsbackground:"In backgroung",
-    virtualenclosure:"Recinti Virtuali",
+    nearpoitext: "Vicinanza ad un punto di interesse",
+    newelementadded: "Nuovo contenuto aggiunto",
+    eventreminder: "Ricorda un evento",
+    neweventweek: "Nuovo evento fra una settimana",
+    alertemergency: "Emergenze ed allerte",
+    newsfeed: "Notizie ed aggiornamenti",
+    gpsauth: "LA MIA POSIZIONE GPS",
+    gpsapp: "Durante l'uso dell'app",
+    gpsbackground: "In backgroung",
+    virtualenclosure: "Recinti Virtuali",
   },
   [enKey]: {
     //GENERIC
@@ -210,7 +221,7 @@ const dict = {
     start: "Start",
     openNavigator: "Open navigator",
     openMap: "Open map",
-    time: "It\"s",
+    time: 'It"s',
     itineraries: "Itineraries",
     events: "Events",
     get_inspired: "Get Inspired",
@@ -227,7 +238,8 @@ const dict = {
     myPreferences: "My preferences",
     access: "REGISTER",
     completeAccess: "Complete profile",
-    loginText: "By registering you will be shown contents tailored to your preferences",
+    loginText:
+      "By registering you will be shown contents tailored to your preferences",
     skip: "SKIP",
     informations: "informations",
     ageText: "Age: ",
@@ -268,10 +280,10 @@ const dict = {
     favouriteAccomodations: "ACCOMODATIONS",
     noFavourites: "There are no favourites",
     canBeOfInterest: "You can be interested also to",
-    extrasWildNature: "Nature", 
-    extrasMythIsland: "The Island of the Myth", 
-    extrasTradition: "Tradition", 
-    extrasCentenaryLand: "The Island of the Centenaries", 
+    extrasWildNature: "Nature",
+    extrasMythIsland: "The Island of the Myth",
+    extrasTradition: "Tradition",
+    extrasCentenaryLand: "The Island of the Centenaries",
     extrasLiveTheSea: "Sea",
     extrasCulture: "Culture",
     extrasStarredPlaces: "Places of the Hearth",
@@ -293,7 +305,8 @@ const dict = {
     phoneOnPressBtnTitle: "Call the host",
     websiteOnPressBtnTitle: "Open browser",
     emailOnPressBtnTitle: "Open email",
-    entityIsNotTranslated: "This entity hasn't got a translation for the current language",
+    entityIsNotTranslated:
+      "This entity hasn't got a translation for the current language",
     retry: "Retry",
     cancel: "Cancel",
     //LOGIN
@@ -313,7 +326,8 @@ const dict = {
     preferences: "My preferences",
     tutorial: "Tutorial",
     preferencesText1: "It only takes a minute!",
-    preferencesText2: "Help us understand your preferences by clicking on the emoticons.",
+    preferencesText2:
+      "Help us understand your preferences by clicking on the emoticons.",
     preferencesText3: "Now we know your preferences.",
     tutorialText1: "Tutorial",
     tutorialText2: "",
@@ -326,23 +340,24 @@ const dict = {
     accomodations: "Accomodations",
     doYouLikeIt: "Do you like this content",
     setting: "Settings",
-    notificationsetting:"notifications and events",
+    notificationsetting: "notifications and events",
+    info: "Info Utili",
     //LANGUAGES
-    lanItalian: '🇮🇹 Italian',
-    lanEnglish: '🇬🇧 English',
+    lanItalian: "🇮🇹 Italian",
+    lanEnglish: "🇬🇧 English",
     //AUTH
-    profile: 'Profile',
-    username: "Username", 
-    name: "Name", 
-    surname: "Surname", 
-    birth: "Birth date", 
-    country: "Country", 
+    profile: "Profile",
+    username: "Username",
+    name: "Name",
+    surname: "Surname",
+    birth: "Birth date",
+    country: "Country",
     sex: "Sex",
     age: "Age",
     confirm: "Confirm",
     register: "Register",
     next: "Next",
-    sentLink: "We've sent you a link", 
+    sentLink: "We've sent you a link",
     checkInbox: "Check your inbox",
     logoutMsg: "Do you want to logout from your account?",
     logoutBtn: "Logout",
@@ -355,46 +370,50 @@ const dict = {
     loggingIn: "Logging in..",
     loginError: "Error loggin in:",
     //Parks
-    nearParks: "Nearest parkings!", 
-    discoverParks: "Discover the nearest free parkings provided by one of the affiliated services.",
+    nearParks: "Nearest parkings!",
+    discoverParks:
+      "Discover the nearest free parkings provided by one of the affiliated services.",
     findParkBtn: "FIND A PARK",
     //Update
     updateInProgressTitle: "Update in progress",
     updateInProgressDescription: "Please wait, Sardinia app is restarting",
     //Networking
     disconnected: "Disconnected...",
-    pleaseConnect: "Please turn on internet connection to access the app contents",
+    pleaseConnect:
+      "Please turn on internet connection to access the app contents",
     retry: "Retry",
     cancel: "Cancel",
     //LINKING
-    loadingLinkingContentTitle: "Loading content", 
-    loadingLinkingContentDescription: "We are searching for the requested content",
-    loadingLinkingContentTitleError: "Loading content error", 
-    loadingLinkingContentDescriptionError: "We had troubles loading the linked content",
+    loadingLinkingContentTitle: "Loading content",
+    loadingLinkingContentDescription:
+      "We are searching for the requested content",
+    loadingLinkingContentTitleError: "Loading content error",
+    loadingLinkingContentDescriptionError:
+      "We had troubles loading the linked content",
     //App Location Tracking background
     notificationTitle: "Sardinia App Location",
     notificationBody: "Sardinia App is tracking your location",
-    //Redux error 
+    //Redux error
     reduxErrorTitle: "Ops, something has gone wrong",
     reduxErrorBody: "The application has encountered an error.",
     //Generic Screen error
     screenErrorTitle: "Ops, something has gone wrong",
     screenErrorBody: "The application has encountered an error.",
     //Setting
-    nearpoitext:"Proximity to a point of interest",
-    newelementadded:"New content added",
-    eventreminder:"Remember an event",
-    neweventweek:"New event in a week",
-    alertemergency:"Emergencies and alerts",
-    newsfeed:"News and updates",
-    gpsauth:"MY GPS LOCATION",
-    gpsapp:"While using the app",
-    gpsbackground:"In the background",
-    virtualenclosure:"Virtual Fences",
+    nearpoitext: "Proximity to a point of interest",
+    newelementadded: "New content added",
+    eventreminder: "Remember an event",
+    neweventweek: "New event in a week",
+    alertemergency: "Emergencies and alerts",
+    newsfeed: "News and updates",
+    gpsauth: "MY GPS LOCATION",
+    gpsapp: "While using the app",
+    gpsbackground: "In the background",
+    virtualenclosure: "Virtual Fences",
   },
   zhKey: {},
   frKey: {},
   deKey: {},
-}
+};
 
 export default dict;
