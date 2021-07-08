@@ -143,6 +143,7 @@ const dict = {
     setting: "Impostazioni",
     notificationsetting: "Notifiche ed Eventi",
     info: "Info Utili",
+    alert:"Notizie ed emergenze",
     //LANGUAGES
     lanItalian: "🇮🇹 Italiano",
     lanEnglish: "🇬🇧 Inglese",
@@ -326,8 +327,7 @@ const dict = {
     preferences: "My preferences",
     tutorial: "Tutorial",
     preferencesText1: "It only takes a minute!",
-    preferencesText2:
-      "Help us understand your preferences by clicking on the emoticons.",
+    preferencesText2: "Help us understand your preferences by clicking on the emoticons.",
     preferencesText3: "Now we know your preferences.",
     tutorialText1: "Tutorial",
     tutorialText2: "",
@@ -341,7 +341,8 @@ const dict = {
     doYouLikeIt: "Do you like this content",
     setting: "Settings",
     notificationsetting: "notifications and events",
-    info: "Info Utili",
+    info: "Info",
+    alert:"Emergency and News",
     //LANGUAGES
     lanItalian: "🇮🇹 Italian",
     lanEnglish: "🇬🇧 English",

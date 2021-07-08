@@ -335,9 +335,8 @@ let ConnectedTextGalleryMap = () => <ConnectedText languageKey="galleryMap" text
 let ConnectedTextVideoGallery = () => <ConnectedText languageKey="videoAnd3D" textStyle={{ color: "black" }} />;
 let ConnectedTextLoginLogout = () => <ConnectedAuthText textStyle={{ color: "black" }} />;
 let ConnectedTextSetting = () => <ConnectedText languageKey="setting" textStyle={{ color: "black" }} />;
-let ConnectedTextInfo = () => (
-  <ConnectedText languageKey="info" textStyle={{ color: "black" }} />
-);
+let ConnectedTextInfo = () => (<ConnectedText languageKey="info" textStyle={{ color: "black" }} />);
+let ConnectedTextAlert = () => (<ConnectedText languageKey="alert" textStyle={{ color: "black" }} />);
 /**
  * Drawer navigator (level: 0)
  */
@@ -359,7 +358,7 @@ function CustomDrawerContent(props) {
         routeIndex={0}
         label={ConnectedTextTabName}
         screenName={Constants.NAVIGATION.NavMainStackScreen}
-        iconOpts={{ name: "map-marker", size: 20, color: Colors.mediumGray }}
+        iconOpts={{ name: "home", size: 20, color: Colors.mediumGray }}
       />
       <CustomDrawer.Item
         {...props}
@@ -373,7 +372,11 @@ function CustomDrawerContent(props) {
         routeIndex={2}
         label={ConnectedTextAccomodations}
         screenName={Constants.NAVIGATION.NavAccomodationsStackScreen}
-        iconOpts={{ name: "home", size: 20, color: Colors.mediumGray }}
+        iconOpts={{
+          name: "suitcase-rolling",
+          size: 20,
+          color: Colors.mediumGray,
+        }}
       />
       <CustomDrawer.Item
         {...props}
@@ -387,7 +390,7 @@ function CustomDrawerContent(props) {
         routeIndex={3}
         label={ConnectedTextPreferences}
         screenName={Constants.NAVIGATION.NavPreferencesScreen}
-        iconOpts={{ name: "thumbs-up", size: 20, color: Colors.mediumGray }}
+        iconOpts={{ name: "heart", size: 20, color: Colors.mediumGray }}
       />
       <CustomDrawer.Item
         {...props}
@@ -416,7 +419,14 @@ function CustomDrawerContent(props) {
         routeIndex={5}
         label={ConnectedTextVideoGallery}
         screenName={Constants.NAVIGATION.NavGalleryStackScreen}
-        iconOpts={{ name: "film", size: 20, color: Colors.mediumGray }}
+        iconOpts={{ name: "video", size: 20, color: Colors.mediumGray }}
+      />
+      <CustomDrawer.Item
+        {...props}
+        routeIndex={5}
+        label={ConnectedTextAlert}
+        screenName={Constants.NAVIGATION.NavGalleryStackScreen}
+        iconOpts={{ name: "exclamation-triangle", size: 20, color: Colors.mediumGray }}
       />
       <CustomDrawer.Separator />
       <CustomDrawer.Item

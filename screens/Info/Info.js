@@ -38,6 +38,7 @@ import {
   // MapViewItinerary
   CustomText
  } from "../../components";
+ import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
@@ -54,6 +55,55 @@ import { LoadingLayoutEntitiesFlatlist } from "../../components/layouts";
    number of components loaded when the page initially mounts.
    Other components are loaded right after the mount */
 const USE_DR = false;
+
+const DATA = [
+  {
+    id: "1",
+    title: "Arrivare in Sardegna",
+  },
+  {
+    id: "2",
+    title: "Muoversi in Sardegna",
+  },
+  {
+    id: "3",
+    title: "Porti Turistici",
+  },
+  {
+    id: "4",
+    title: "In crociera",
+  },
+  {
+    id: "5",
+    title: "Numeri utili",
+  },
+  {
+    id: "6",
+    title: "Porti Turistici",
+  },
+  {
+    id: "7",
+    title: "Consigli pratici",
+  },
+  {
+    id: "8",
+    title: "Salute e sicurezza",
+  },
+];
+
+const Item = (
+  { title } //mockdata
+) => (
+  <View
+    style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}
+  >
+    <Text style={styles.element}>{title}</Text>
+    <FontAwesome5 name="angle-right" size={25} color="black" />
+  </View>
+);
+
+const renderItem = ({ item }) => <Item title={item.title} />;
+
 class InfoScreen extends Component {
 
   constructor(props) {
@@ -136,6 +186,11 @@ class InfoScreen extends Component {
          }
        >
          <CustomText style={styles.title}>{info}</CustomText>
+         <FlatList
+           data={DATA}
+           renderItem={renderItem}
+           keyExtractor={(item) => item.id}
+         />
        </AsyncOperationStatusIndicator>
      );
   }
@@ -145,7 +200,7 @@ class InfoScreen extends Component {
     const { render } = this.state;
     return (
       <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-        <ConnectedHeader iconTintColor="#24467C" />
+        <ConnectedHeader />
         {render && this._renderContent()}
       </View>
     )
@@ -179,6 +234,16 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: "montserrat-bold",
     textTransform: "uppercase",
+  },
+  element: {
+    textAlign: "left",
+    paddingTop: 10,
+    paddingBottom: 10,
+    color: "black",
+    //backgroundColor: "#F2F2F2",
+    fontSize: 15,
+    fontFamily: "montserrat-regular",
+    //textTransform: "uppercase"
   },
 });
 
