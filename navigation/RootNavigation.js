@@ -425,7 +425,7 @@ function CustomDrawerContent(props) {
         {...props}
         routeIndex={5}
         label={ConnectedTextAlert}
-        screenName={Constants.NAVIGATION.NavGalleryStackScreen}
+        screenName={Constants.NAVIGATION.NavInfoScreen}
         iconOpts={{ name: "exclamation-triangle", size: 20, color: Colors.mediumGray }}
       />
       <CustomDrawer.Separator />
