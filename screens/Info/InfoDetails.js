@@ -1,17 +1,25 @@
 import React, { Component } from "react";
-import { 
-  View, Text, FlatList, ActivityIndicator, TouchableOpacity, 
-  StyleSheet, BackHandler, Platform, ScrollView } from "react-native";
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { 
-  // CategoryListItem, 
-  // GeoRefHListItem, 
-  // GridGallery, 
-  // GridGalleryImage, 
-  // MapViewTop, 
+import {
+  View,
+  Text,
+  FlatList,
+  ActivityIndicator,
+  TouchableOpacity,
+  StyleSheet,
+  BackHandler,
+  Platform,
+  ScrollView,
+} from "react-native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import {
+  // CategoryListItem,
+  // GeoRefHListItem,
+  // GridGallery,
+  // GridGalleryImage,
+  // MapViewTop,
   // ScrollableHeader,
-  // TabBarIcon, 
-  // CalendarListItem, 
+  // TabBarIcon,
+  // CalendarListItem,
   // EntityAbstract,
   // EntityDescription,
   // EntityGallery,
@@ -23,35 +31,42 @@ import {
   // EntityVirtualTour,
   // EntityWhyVisit,
   // TopMedia,
-  AsyncOperationStatusIndicator, 
+  AsyncOperationStatusIndicator,
   // AsyncOperationStatusIndicatorPlaceholder,
-  // Webview, 
-  // ConnectedText, 
-  ConnectedHeader, 
-  // ImageGridItem, 
-  // ConnectedLanguageList, 
+  // Webview,
+  // ConnectedText,
+  ConnectedHeader,
+  // ImageGridItem,
+  // ConnectedLanguageList,
   // BoxWithText,
-  // ConnectedFab, 
-  // PoiItem, 
-  // PoiItemsList, 
-  // ExtrasListItem, 
+  // ConnectedFab,
+  // PoiItem,
+  // PoiItemsList,
+  // ExtrasListItem,
   // MapViewItinerary
   CustomText,
   CustomSwitch,
-  MenuList
- } from "../../components";
- import { FontAwesome5, Ionicons } from "@expo/vector-icons";
-import { connect, useStore } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import _ from 'lodash';
-import Layout from '../../constants/Layout';
-import { greedyArrayFinder, getEntityInfo, getCoordinates, getSampleVideoIndex, getGalleryImages } from '../../helpers/utils';
-import { apolloQuery } from '../../apollo/queries';
-import actions from '../../actions';
-import * as Constants from '../../constants';
-import Colors from '../../constants/Colors';
+  MenuList,
+} from "../../components";
+import { FontAwesome5, Ionicons } from "@expo/vector-icons";
+import { connect, useStore } from "react-redux";
+import { bindActionCreators } from "redux";
+import _ from "lodash";
+import Layout from "../../constants/Layout";
+import {
+  greedyArrayFinder,
+  getEntityInfo,
+  getCoordinates,
+  getSampleVideoIndex,
+  getGalleryImages,
+} from "../../helpers/utils";
+import { apolloQuery } from "../../apollo/queries";
+import actions from "../../actions";
+import * as Constants from "../../constants";
+import Colors from "../../constants/Colors";
 import { LoadingLayoutEntitiesFlatlist } from "../../components/layouts";
-import { MOCKDATA } from "../../helpers/mock";
+
+//import { MOCKDATA } from "../../helpers/mock";
 
 /* Deferred rendering to speedup page inital load: 
    deferred rendering delays the rendering reducing the initial 
@@ -59,21 +74,16 @@ import { MOCKDATA } from "../../helpers/mock";
    Other components are loaded right after the mount */
 const USE_DR = false;
 
-
-
-
-class InfoScreen extends Component {
-
+class InfoDetailsScreen extends Component {
   constructor(props) {
     super(props);
 
     /* Get props from navigation */
-    //let { someNavProps } = props.route.params; 
+    //let { someNavProps } = props.route.params;
 
     this.state = {
       render: USE_DR ? false : true,
     };
-      
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
@@ -84,11 +94,13 @@ class InfoScreen extends Component {
    */
   componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
-    {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
+    {
+      USE_DR && setTimeout(() => this.setState({ render: true }), 0);
+    }
   }
 
   /**
-   * Use this function to update state based on external props 
+   * Use this function to update state based on external props
    * or to post-process data once it changes
    */
   componentDidUpdate(prevProps) {
@@ -102,8 +114,7 @@ class InfoScreen extends Component {
   /**
    * Use this function to unsubscribe or clear any event hooks
    */
-  componentWillUnmount() {
-  }
+  componentWillUnmount() {}
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
 
@@ -119,58 +130,51 @@ class InfoScreen extends Component {
    *    Loading state is stored in this.props.searchAutocomplete.searchLoading
    *    Error state is stored in this.props.searchAutocomplete.searchError
    */
-  _isSuccessData  = () => true;    /* e.g. this.props.pois.success; */mock
-  _isLoadingData  = () => true;   /* e.g. this.props.pois.loading; */
-  _isErrorData    = () => null;    /* e.g. this.props.pois.error; */
-
+  _isSuccessData = () => true;
+  /* e.g. this.props.pois.success; */ mock;
+  _isLoadingData = () => true; /* e.g. this.props.pois.loading; */
+  _isErrorData = () => null; /* e.g. this.props.pois.error; */
 
   /********************* Render methods go down here *********************/
   _renderContent = () => {
-    const { navigation } = this.props;
     const { info } = this.props.locale.messages;
-     return (
-       <AsyncOperationStatusIndicator
-         loading={this._isLoadingData()}
-         success={this._isSuccessData()}
-         error={this._isErrorData()}
-         retryFun={() => {}}
-         loadingLayout={
-           <LoadingLayoutEntitiesFlatlist
-             horizontal={false}
-             numColumns={1}
-             itemStyle={styles.itemFlatlist}
-             style={styles.listStyle}
-             bodyContainerStyle={styles.listContainer}
-           />
-         }
-       >
-         <CustomText style={styles.title}>{info}</CustomText>
+    return (
+      <AsyncOperationStatusIndicator
+        loading={this._isLoadingData()}
+        success={this._isSuccessData()}
+        error={this._isErrorData()}
+        retryFun={() => {}}
+        loadingLayout={
+          <LoadingLayoutEntitiesFlatlist
+            horizontal={false}
+            numColumns={1}
+            itemStyle={styles.itemFlatlist}
+            style={styles.listStyle}
+            bodyContainerStyle={styles.listContainer}
+          />
+        }
+      >
+        <CustomText style={styles.title}>"ecco il dettaglio"</CustomText>
 
-         {/* <MenuList></MenuList> */}
-         <MenuList navigation={navigation} data={MOCKDATA}></MenuList>
-       </AsyncOperationStatusIndicator>
-     );
-  }
-
+        
+      </AsyncOperationStatusIndicator>
+    );
+  };
 
   render() {
     const { render } = this.state;
-    const { navigation } = this.props;
     return (
-      <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
+      <View style={[styles.fill, { paddingTop: Layout.statusbarHeight }]}>
         <ConnectedHeader />
         {render && this._renderContent()}
       </View>
-    )
+    );
   }
-  
 }
 
-
-InfoScreen.navigationOptions = {
-  title: 'Info',
+InfoDetailsScreen.navigationOptions = {
+  title: "Info",
 };
-
 
 const styles = StyleSheet.create({
   fill: {
@@ -211,26 +215,27 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
     color: "black",
     //backgroundColor: "#F2F2F2",
-   
+
     //textTransform: "uppercase"
   },
 });
 
-
-function InfoScreenContainer(props) {
+function InfoDetailsScreenContainer(props) {
   const navigation = useNavigation();
   const route = useRoute();
   const store = useStore();
 
-  return <InfoScreen 
-    {...props}
-    navigation={navigation}
-    route={route}
-    store={store} />;
+  return (
+    <InfoDetailsScreen
+      {...props}
+      navigation={navigation}
+      route={route}
+      store={store}
+    />
+  );
 }
 
-
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     restState: state.restState,
     //auth
@@ -252,16 +257,18 @@ const mapStateToProps = state => {
   };
 };
 
-
-const mapDispatchToProps = dispatch => {
-  return {...bindActionCreators({ ...actions }, dispatch)};
+const mapDispatchToProps = (dispatch) => {
+  return { ...bindActionCreators({ ...actions }, dispatch) };
 };
 
-
-export default connect(mapStateToProps, mapDispatchToProps, (stateProps, dispatchProps, props) => {
-  return {
-    ...stateProps,
-    actions: dispatchProps,
-    ...props
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  (stateProps, dispatchProps, props) => {
+    return {
+      ...stateProps,
+      actions: dispatchProps,
+      ...props,
+    };
   }
-})(InfoScreenContainer)
+)(InfoDetailsScreenContainer);

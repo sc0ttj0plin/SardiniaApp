@@ -258,7 +258,9 @@ export const NAVIGATION = {
          NavAccomodationScreen: "AccomodationScreen",
          NavAccomodationsStackScreen: "AccomodationsStackScreen",
          NavFiltersScreen: "Filters",
+         NavInfoStackScreen: "InfoStackScreen",
          NavInfoScreen: "InfoScreen",
+         NavInfoDetailsScreen: "InfoDetailsScreen",
          NavBoilerPlate: "Boilerplate",
        };
 

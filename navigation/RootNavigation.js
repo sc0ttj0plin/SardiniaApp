@@ -35,6 +35,7 @@ import GalleryScreen from '../screens/Gallery/Gallery';
 import GalleryMapScreen from '../screens/Gallery/Map';
 import SettingsScreen from '../screens/Settings/Settings';
 import InfoScreen from "../screens/Info/Info";
+import InfoDetailsScreen from '../screens/Info/InfoDetails';
 
 import { ConnectedText, ConnectedLanguageList, TabBar, CustomDrawer, ConnectedAuthText, TabBarIcon } from '../components';
 // import VirtualTourScreen from '../screens/Others/VirtualTourScreen';
@@ -46,7 +47,7 @@ const {
   NavItineraryScreen, NavEventsScreen, NavEventScreen, NavItineraryStagesMapScreen,NavEventsMapScreen, NavEventsSubset, NavExploreScreen, 
   NavVirtualTourScreen, NavPlaceScreen, NavInspirerScreen, NavPreferencesScreen, NavTutorialScreen,
   NavExtrasScreen, NavExtraScreen, NavTabNavigator, NavSearchScreen, NavSearchStackScreen, 
-  NavMainStackScreen, NavMediaScreen, NavFavouritesScreen, NavFavouritesListScreen, NavFavouritesStackScreen, NavFiltersScreen ,NavSettingScreen, NavInfoScreen
+  NavMainStackScreen, NavMediaScreen, NavFavouritesScreen, NavFavouritesListScreen, NavFavouritesStackScreen, NavFiltersScreen ,NavSettingScreen,NavInfoStackScreen, NavInfoScreen,NavInfoDetailsScreen
 } = Constants.NAVIGATION;
 
 // Reference used for components that lack navigation access
@@ -195,6 +196,7 @@ function MainStackScreen() {
       {/* Accomodation */}
       <MainStack.Screen name={NavAccomodationsScreen} component={AccomodationsScreen}/>
       <MainStack.Screen name={NavAccomodationScreen} component={AccomodationScreen}/>
+      <MainStack.Screen name={NavInfoDetailsScreen} component={InfoDetailsScreen}/>
 
     </MainStack.Navigator>
     </>
@@ -321,6 +323,21 @@ function GalleryStackScreen() {
       <GalleryStack.Screen name={NavAccomodationsScreen} component={AccomodationsScreen}/>
       <GalleryStack.Screen name={NavAccomodationScreen} component={AccomodationScreen}/>
     </GalleryStack.Navigator>
+  );
+}
+
+/**
+ * Info Stack (level: 1, parent DrawerNavigator)
+ */
+
+var InfoStack = createStackNavigator();
+
+function InfoStackScreen() {
+  return (
+    <InfoStack.Navigator headerMode="none" initialRouteName={NavInfoStackScreen}>
+      <InfoStack.Screen name={NavInfoScreen} component={InfoScreen} />
+      <InfoStack.Screen name={NavInfoDetailsScreen} component={InfoDetailsScreen}/>
+    </InfoStack.Navigator>
   );
 }
 
@@ -480,7 +497,7 @@ function DrawerNavigator() {
       <Drawer.Screen name={NavPreferencesScreen} component={PreferencesScreen} options={{unmountOnBlur:true}} />
       <Drawer.Screen name={NavTutorialScreen} component={TutorialScreen} options={{unmountOnBlur:true}} />
       <Drawer.Screen name={NavSettingScreen} component={SettingsScreen} options={{unmountOnBlur:true}} />
-      <Drawer.Screen name={NavInfoScreen} component={InfoScreen} options={{unmountOnBlur:true}} />
+      <Drawer.Screen name={NavInfoScreen} component={InfoStackScreen} options={{unmountOnBlur:true}} />
       {/* The login screen is not shown in the navigation */}
       <Drawer.Screen name={NavAuthScreen} component={AuthScreen} options={{unmountOnBlur:true}} />
     </Drawer.Navigator>
