@@ -74,7 +74,7 @@ class PlacesScreen extends PureComponent {
     //If it's the first mount gets pois categories ("art and archeology...")
     this.props.actions.getCategories({ vid: Constants.VIDS.poisCategories });
     this.props.actions.setMainScreenMounted(true); /* tell that the main screen has mounted (used by ConnectedSplashLoader) */
-    if (this.props.others.geolocation.coords) 
+    if (this.props.others.geolocation.coords)
       this._onUpdateCoords(this.props.others.geolocation.coords);
   }
 
@@ -280,7 +280,7 @@ class PlacesScreen extends PureComponent {
 
   /* Renders categories list */
   _renderCategoryListItem = (item, index, length) => item.name ? <CategoryListItem onPress={() => this._selectCategory(item)} image={item.image} title={item.name}/> : null;
-    
+
 
   /* Render content */
   _renderContent = () => {
@@ -316,7 +316,7 @@ class PlacesScreen extends PureComponent {
       term, 
       coords, 
       region,
-      types: [Constants.NODE_TYPES.places],
+      types: [Constants.NODE_TYPES.places, Constants.NODE_TYPES.events],
       childUuids,
       isLoadingCb: (isLoading) => this.setState({ isCMVTLoading: isLoading }),
       animateToMyLocation: true
@@ -333,8 +333,9 @@ class PlacesScreen extends PureComponent {
       }
     }
 
-    const mapEntityWidgetProps = { 
-      coords: this.state.coords 
+    const mapEntityWidgetProps = {
+      isAccomodationItem: false,
+      coords: this.state.coords
     };
 
     const extraModalProps = {
@@ -358,7 +359,7 @@ class PlacesScreen extends PureComponent {
         scrollableHeaderTextComponent={this._renderHeaderText}
         // scrollableHeaderText={() => <Text>Header Text</Text>}
         // Top component (ClusteredMapViewTop or MapView or Custom)
-        topComponentType="ClusteredMapViewTop" //or MapView or Custom (if Custom must implement topComponentRender)
+        topComponentType="ClusteredMapAllPois" //or MapView or Custom (if Custom must implement topComponentRender)
         topComponentCMVTProps={CMVTProps}
         // Map entity widget (in modal): if renderMapEntityWidget is undefined, must specify mapEntityWidgetProps and mapEntityWidgetOnPress 
         // e.g. this.state.selectedEntity can now be used in renderMapEntityWidget
@@ -390,7 +391,6 @@ class PlacesScreen extends PureComponent {
       </ConnectedScreenErrorBoundary>
     )
   }
-  
 }
 
 

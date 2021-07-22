@@ -23,6 +23,7 @@ import { Modalize } from 'react-native-modalize';
 import ConnectedEntityWidgetInModal from "../entity/ConnectedEntityWidgetInModal";
 import MapViewTop from "./MapViewTop";
 import { useSafeArea } from 'react-native-safe-area-context';
+import ClusteredMapAllPois from "./ClusteredMapAllPois";
 
 /**
  * Map:             Clusters + pois that update with user map's interaction
@@ -322,7 +323,31 @@ class ConnectedMapScrollable extends PureComponent {
    * Renders the top component over the scrollable
    */
   _renderTopComponent = () => {
-    if (this.props.topComponentType === "ClusteredMapViewTop") {
+    if (this.props.topComponentType === "ClusteredMapAllPois") {
+      const { term, coords, region, types, childUuids, isLoadingCb, animateToMyLocation } = this.props.topComponentCMVTProps;
+      const { entitiesType } = this.props;
+      return (
+          <>
+            <ClusteredMapAllPois
+                term={term}
+                coords={coords}
+                region={region}
+                entityType={entitiesType}
+                modalState={this._modalState}
+                types={types}
+                uuids={childUuids}
+                style={{flex: 1}}
+                mapRef={ref => (this._refs["ClusteredMapAllPois"] = ref)}
+                onSelectedEntity={this._onSelectedEntity}
+                showNearEntitiesOnPress={this._showExtraModal}
+                paddingBottom={this.state.snapPoints[1]} /* set padding as the height of the first snap point */
+                isLoadingCb={isLoadingCb} /* to know if is loading */
+                fullscreen={this.props.fullscreen}
+                animateToMyLocation={animateToMyLocation}
+            />
+          </>
+      )
+    } else if (this.props.topComponentType === "ClusteredMapViewTop") {
       const { term, coords, region, types, childUuids, isLoadingCb, animateToMyLocation } = this.props.topComponentCMVTProps;
       const { entitiesType } = this.props;
       return (

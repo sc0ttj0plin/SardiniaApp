@@ -24,7 +24,7 @@ class ConnectedEntityWidgetInModal extends PureComponent {
     var { entity, entityType, coords } = props;
 
     /* Only for entityType == 'places' and 'accomodations', for 'event' or 'itinerary' we already have data in props.entity, owt we need to load it */
-    this._isClusteredEntity = (entityType === Constants.ENTITY_TYPES.places || entityType === Constants.ENTITY_TYPES.accomodations); 
+    this._isClusteredEntity = (/*entityType === Constants.ENTITY_TYPES.places || */entityType === Constants.ENTITY_TYPES.accomodations); // TODO: removed 'places' because now there are POIs that are not clustered, to be changed
 
     this.state = {
       entity,

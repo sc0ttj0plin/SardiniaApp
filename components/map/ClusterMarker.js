@@ -41,6 +41,7 @@ export default class ClusterMarker extends PureComponent {
       <Marker.Animated
         coordinate={{ longitude: cluster.centroid.coordinates[0],  latitude: cluster.centroid.coordinates[1] }}
         onPress={this.props.onPress}
+        style={{ zIndex: 2 }}
         tracksViewChanges={false}>
           <View
             style={[styles.marker, {borderRadius: width/2 + 10, width: width, height: width, backgroundColor: clusterBackgroundColor}]}>
