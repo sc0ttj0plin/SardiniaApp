@@ -130,6 +130,8 @@ class ClusteredMapViewTop extends PureComponent {
       term = props.others.placesTerms[props.others.placesTerms.length - 1];
     } else if (props.entityType === Constants.ENTITY_TYPES.accomodations) {
       term = props.others.accomodationsTerms[props.others.accomodationsTerms.length - 1];
+    } else if (props.entityType === Constants.ENTITY_TYPES.allPois) {
+      term = props.others.placesTerms[props.others.placesTerms.length - 1];
     } else {
       console.error("[ClusteredMapViewTop]: not a known entity");
     }

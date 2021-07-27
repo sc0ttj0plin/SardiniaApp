@@ -300,7 +300,7 @@ class PlacesScreen extends PureComponent {
       renderScrollableListItem = ({ item, index }) => this._renderCategoryListItem(item, index, scrollableData.length);
     }
 
-    const entitiesType = Constants.ENTITY_TYPES.places;
+    const entitiesType = Constants.ENTITY_TYPES.allPois;
 
     const scrollableProps = {
       show: true,
@@ -316,7 +316,7 @@ class PlacesScreen extends PureComponent {
       term, 
       coords, 
       region,
-      types: [Constants.NODE_TYPES.places, Constants.NODE_TYPES.events],
+      types: [Constants.NODE_TYPES.places],
       childUuids,
       isLoadingCb: (isLoading) => this.setState({ isCMVTLoading: isLoading }),
       animateToMyLocation: true

@@ -80,7 +80,7 @@ class ConnectedEntityWidgetInModal extends PureComponent {
         if (this.props.entityType === Constants.ENTITY_TYPES.accomodations) {
           query = actions.getAccomodationsById;
           params = { uuids: [entity.uuid] };
-        } else if (this.props.entityType === Constants.ENTITY_TYPES.places) {
+        } else if (this.props.entityType === Constants.ENTITY_TYPES.places || this.props.entityType === Constants.ENTITY_TYPES.allPois) {
           query = actions.getPoi;
           params = { uuid: entity.uuid };
         }
@@ -121,6 +121,15 @@ class ConnectedEntityWidgetInModal extends PureComponent {
         break;
       case Constants.ENTITY_TYPES.accomodations:
         this.props.navigation.navigate(Constants.NAVIGATION.NavAccomodationScreen, { item: entity, mustFetch: entity.loaded ? false : true })
+        break;
+      case Constants.ENTITY_TYPES.allPois:
+        if (entity.type === Constants.NODE_TYPES.places) {
+          this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item: entity, mustFetch: entity.loaded ? false : true } );
+        } else if (entity.type === Constants.NODE_TYPES.itineraries) {
+          this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, { item: entity });
+        } else if (entity.type === Constants.NODE_TYPES.events) {
+          this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item: entity });
+        }
         break;
       default:
         break;
@@ -186,6 +195,7 @@ class ConnectedEntityWidgetInModal extends PureComponent {
       case Constants.ENTITY_TYPES.places:
       case Constants.ENTITY_TYPES.events:
       case Constants.ENTITY_TYPES.itineraries:
+      case Constants.ENTITY_TYPES.allPois:
         return this._renderPoi();
       case Constants.ENTITY_TYPES.accomodations:
         return this._renderAccomodation();

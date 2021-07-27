@@ -282,6 +282,7 @@ export const ENTITY_TYPES = {
   itineraries: "itineraries",
   events: "events",
   accomodations: "accomodations",
+  allPois: "allPois",
 }
 
 /* SCREENS CONFIGURATIONS */
@@ -562,6 +563,13 @@ export const VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS = {
     backgroundColor: Colors.colorAccomodationsScreen,
     backgroundTransparent: Colors.colorAccomodationsScreenTransparent,
     iconName: 'icon-accomodation-map'
+  },
+  [ENTITY_TYPES.allPois]: {
+    backgroundTopRightCorner: Colors.colorPlacesScreen,
+    iconColor: "white",
+    backgroundColor: Colors.colorPlacesScreen,
+    backgroundTransparent: Colors.colorPlacesScreenTransparent,
+    iconName: 'icon-place-map'
   },
 }
 
