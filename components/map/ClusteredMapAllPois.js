@@ -18,7 +18,11 @@ import CustomText from "../others/CustomText";
 import Colors from '../../constants/Colors';
 import CustomIcon from '../others/CustomIcon';
 import moment from "moment";
-import {FETCH_NUM_MONTHS_BACKWARDS, FETCH_NUM_MONTHS_FORWARD} from "../../constants";
+import {
+  FETCH_NUM_MONTHS_BACKWARDS,
+  FETCH_NUM_MONTHS_FORWARD, NODE_TYPES, VIDS,
+  VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS
+} from "../../constants";
 
 /**
  * Definitions:
@@ -156,29 +160,15 @@ class ClusteredMapViewTop extends PureComponent {
     }
     uuidString += "}";
 
-    apolloQuery(actions.getClusters({
+    const clustersPromise = apolloQuery(actions.getClusters({
       polygon: regionString,
       cats: uuidString,
       dbscan_eps: dEps,
       types,
-    })).then((clusters) => {
-      if(!this._panTimeout)
-        this.setState({ clusters });
-      this.props.isLoadingCb && this.props.isLoadingCb(false);
-    }).catch(e => {
-      console.error(e);
-      this.props.isLoadingCb && this.props.isLoadingCb(false);
-    });
+    }))
 
-    apolloQuery(actions.getItineraries()).then(itineraries => {
-      if (!this._panTimeout) {
-        this.setState({ itineraries });
-      }
-      this.props.isLoadingCb && this.props.isLoadingCb(false);
-    }).catch(e => {
-      console.error(e);
-      this.props.isLoadingCb && this.props.isLoadingCb(false);
-    });
+    // TODO: move this to componentDidMount, itineraries never change
+    const itinerariesPromise = apolloQuery(actions.getItineraries())
 
     const date = moment("2021-03-05").format("YYYY-MM-DD"); // TODO: remove date
 
@@ -190,10 +180,12 @@ class ClusteredMapViewTop extends PureComponent {
       types: null,
     };
 
-    apolloQuery(actions.getEvents(eventsQuery, lbUb)).then(events => {
-      if (!this._panTimeout) {
-        this.setState({ events });
-      }
+    const eventsPromise = apolloQuery(actions.getEvents(eventsQuery, lbUb))
+
+    Promise.all([clustersPromise, itinerariesPromise, eventsPromise]).then(values => {
+      const [clusters, itineraries, events] = values;
+      if(!this._panTimeout)
+        this.setState({ clusters, itineraries, events });
       this.props.isLoadingCb && this.props.isLoadingCb(false);
     }).catch(e => {
       console.error(e);
@@ -215,7 +207,7 @@ class ClusteredMapViewTop extends PureComponent {
       if(Platform.OS == "ios")
         this._animateMapToRegion({latitude: item.centroid.coordinates[1], longitude: item.centroid.coordinates[0]});
       setTimeout(() => this._disableRegionChangeCallback = false, 1000);
-      this.setState({ selectedCluster: item });
+      this.setState({ selectedCluster: item, selectedEntity: null });
       if(this.props.onSelectedEntity)
         this.props.onSelectedEntity(item);
       //this.props.actions.setCurrentMapEntity(item);
@@ -267,10 +259,19 @@ class ClusteredMapViewTop extends PureComponent {
    * When user presses on map clears the selected cluster
    */
   _clearClusterSelection = () => {
-    if(this.props.onSelectedEntity)
-      this.props.onSelectedEntity(null);
-    if(this.state.selectedCluster)
-      this.setState({ selectedCluster: null });
+    if (this.props.onSelectedEntity) {
+      this.setState({
+        selectedCluster: null,
+        selectedEntity: null,
+        tracksViewChanges: true
+      }, () => {
+        this.setState({
+          tracksViewChanges: false
+        })
+        if(this.props.onSelectedEntity)
+          this.props.onSelectedEntity(null);
+      });
+    }
   }
 
 
@@ -409,62 +410,60 @@ class ClusteredMapViewTop extends PureComponent {
 
   _renderItineraries = (itineraries) => {
     if (!itineraries) return null;
+    const { selectedEntity } = this.state;
     return itineraries.map(itinerary => {
+      const selected = itinerary == selectedEntity;
+
       return (
-        <Marker.Animated
-          coordinate={this._getItineraryEntityCoords(itinerary)}
-          tracksViewChanges={false}
-          onPress={() => this._selectMarker(itinerary)}
-          style={{ width: 42, height: 42, zIndex: 1 }}
-        >
-          <View
-            style={{
-              width: 42,
-              height: 42,
-              padding: 6,
-              borderRadius: 21,
-              backgroundColor: Colors.colorItinerariesScreen,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <CustomIcon
-              name="icon-place-map"
-              size={17}
-              color="#FFF"
-            />
-          </View>
-        </Marker.Animated>
+          <Marker.Animated
+              key={itinerary.uuid + (selected ? '_selected' : '')}
+              coordinate={this._getItineraryEntityCoords(itinerary)}
+              onPress={() => this._selectMarker(itinerary)}
+              tracksViewChanges={false}
+              style={styles.markerEntityAnimated}>
+            <View style={[styles.markerEntityContainer, { backgroundColor: selected ? Colors.colorItinerariesScreenTransparent : "transparent"}]}>
+              <View
+                  style={[styles.markerEntity, {
+                    backgroundColor: Colors.colorItinerariesScreen,
+                  }]}>
+                <CustomIcon
+                    name={VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[NODE_TYPES.itineraries].iconName}
+                    size={17}
+                    color={Colors.white}
+                    style={styles.markerEntityIcon}
+                />
+              </View>
+            </View>
+          </Marker.Animated>
       );
     })
   }
 
   _renderEvents = (events) => {
     if (!events) return null;
+    const { selectedEntity } = this.state;
     return events.map(event => {
+      const selected = event == selectedEntity;
+
       return (
           <Marker.Animated
+              key={event.uuid + (selected ? '_selected' : '')}
               coordinate={this._getEventEntityCoords(event, true)}
-              tracksViewChanges={false}
               onPress={() => this._selectMarker(event)}
-              style={{ width: 42, height: 42, zIndex: 1 }}
-          >
-            <View
-                style={{
-                  width: 42,
-                  height: 42,
-                  padding: 6,
-                  borderRadius: 21,
-                  backgroundColor: Colors.colorEventsScreen,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-            >
-              <CustomIcon
-                  name="icon-place-map"
-                  size={17}
-                  color="#FFF"
-              />
+              tracksViewChanges={false}
+              style={styles.markerEntityAnimated}>
+            <View style={[styles.markerEntityContainer, { backgroundColor: selected ? Colors.colorEventsScreenTransparent : "transparent"}]}>
+              <View
+                  style={[styles.markerEntity, {
+                    backgroundColor: Colors.colorEventsScreen,
+                  }]}>
+                <CustomIcon
+                    name={VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[NODE_TYPES.events].iconName}
+                    size={17}
+                    color={Colors.white}
+                    style={styles.markerEntityIcon}
+                />
+              </View>
             </View>
           </Marker.Animated>
       );
@@ -507,6 +506,7 @@ class ClusteredMapViewTop extends PureComponent {
 
       this.setState({ selectedEntity: null }, () => {
         this.setState({
+          selectedCluster: null,
           selectedEntity: entity,
           tracksViewChanges: true
         }, () => {
@@ -523,6 +523,7 @@ class ClusteredMapViewTop extends PureComponent {
     } else {
       this.setState({
         selectedEntity: null,
+        selectedCluster: null,
         tracksViewChanges: true
       }, () => {
         this.setState({
@@ -620,6 +621,28 @@ const styles = StyleSheet.create({
   },
   markerText: {
     fontSize: 16
+  },
+  markerEntity: {
+    width: "100%",
+    height: "100%",
+    backgroundColor: "blue",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 21
+  },
+  markerEntityContainer: {
+    width: 42,
+    height: 42,
+    padding: 6,
+    borderRadius: 21,
+  },
+  markerEntityAnimated: {
+    width: 42,
+    height: 42,
+    zIndex: 1,
+  },
+  markerEntityIcon: {
   },
   buttonGoToMyLocationContainer:{
     position: "absolute",
