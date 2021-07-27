@@ -21,10 +21,7 @@ class ConnectedEntityWidgetInModal extends PureComponent {
   constructor(props) { 
     super(props);
 
-    var { entity, entityType, coords } = props;
-
-    /* Only for entityType == 'places' and 'accomodations', for 'event' or 'itinerary' we already have data in props.entity, owt we need to load it */
-    this._isClusteredEntity = (/*entityType === Constants.ENTITY_TYPES.places || */entityType === Constants.ENTITY_TYPES.accomodations); // TODO: removed 'places' because now there are POIs that are not clustered, to be changed
+    var { entity } = props;
 
     this.state = {
       entity,
@@ -44,11 +41,16 @@ class ConnectedEntityWidgetInModal extends PureComponent {
     }
   }
 
+  _isClusteredEntity = () => {
+    const { entity } = this.props;
+    return entity !== null && entity.cluster !== undefined;
+  }
+
   _parseEntity = (entity) => {
     const {coords, lan} = this.props;
 
     if(entity) {
-      if (this._isClusteredEntity) 
+      if (this._isClusteredEntity())
         this._fetchEntity();
       else {
         if(this.props.getCoordsFun) {
@@ -71,7 +73,7 @@ class ConnectedEntityWidgetInModal extends PureComponent {
   _fetchEntity = () => {
     // If is cluster (pois + accomodation) we don't have any data and we must fetch details, else we already have data and we show directly
     if(this.props.entity) {
-      if (this._isClusteredEntity) {
+      if (this._isClusteredEntity()) {
         // Get real entity from the cluster object (i.e. inside terms_objs[0])
         let query, params;
         const entity = this.props.entity.terms_objs[0];
