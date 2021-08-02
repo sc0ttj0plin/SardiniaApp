@@ -84,6 +84,7 @@ class InfoDetailsScreen extends Component {
     this.state = {
       render: USE_DR ? false : true,
     };
+    const { route } = this.props;
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
@@ -138,6 +139,8 @@ class InfoDetailsScreen extends Component {
   /********************* Render methods go down here *********************/
   _renderContent = () => {
     const { info } = this.props.locale.messages;
+    const { item } = this.props.route.params;
+    const { title, footer, main_content } = this.props.route.params.item;
     return (
       <AsyncOperationStatusIndicator
         loading={this._isLoadingData()}
@@ -154,14 +157,13 @@ class InfoDetailsScreen extends Component {
           />
         }
       >
-        <CustomText style={styles.title}>"ecco il dettaglio"</CustomText>
-
-        
+        <CustomText style={styles.title}>{title}</CustomText>
       </AsyncOperationStatusIndicator>
     );
   };
 
   render() {
+    
     const { render } = this.state;
     return (
       <View style={[styles.fill, { paddingTop: Layout.statusbarHeight }]}>
@@ -269,6 +271,7 @@ export default connect(
       ...stateProps,
       actions: dispatchProps,
       ...props,
+      
     };
   }
 )(InfoDetailsScreenContainer);
