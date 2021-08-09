@@ -119,7 +119,8 @@
     "toggle-switch-react-native": "^3.2.0",
     "url-parse": "^1.4.7",
     "world_countries_lists": "^2.1.0",
-    "expo-permissions": "~9.3.0"
+    "expo-permissions": "~9.3.0",
+    "expo-intent-launcher": "~8.3.0"
   },
   "devDependencies": {
     "babel-preset-expo": "^8.3.0",

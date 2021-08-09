@@ -53,12 +53,14 @@ import {
 } from '../../helpers/utils';
 import {apolloQuery} from '../../apollo/queries';
 import actions from '../../actions';
-import * as Constants from '../../constants';
+import * as AppConstants from '../../constants';
 import Colors from '../../constants/Colors';
 import {LoadingLayoutEntitiesFlatlist} from "../../components/layouts";
 import ToggleSwitch from 'toggle-switch-react-native'
 import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
+import * as IntentLauncher from "expo-intent-launcher";
+import Constants from "expo-constants";
 
 
 /* Deferred rendering to speedup page inital load:
@@ -66,6 +68,10 @@ import * as Permissions from "expo-permissions";
    number of components loaded when the page initially mounts.
    Other components are loaded right after the mount */
 const USE_DR = false;
+
+const pkg = Constants.manifest.releaseChannel
+  ? Constants.manifest.android.package
+  : "host.exp.exponent";
 
 class SettingsScreen extends Component {
   constructor(props) {
@@ -91,6 +97,7 @@ class SettingsScreen extends Component {
     //Deferred rendering to make the page load faster and render right after
     {
       USE_DR && setTimeout(() => this.setState({ render: true }), 0);
+      this.getfixLocationState();
     }
   }
 
@@ -99,6 +106,8 @@ class SettingsScreen extends Component {
    * or to post-process data once it changes
    */
   componentDidUpdate(prevProps) {
+    console.log("didupdate");
+    this.getfixLocationState();
     /**
      * Is the former props different from the newly propagated prop (redux)? perform some action
      * if(prevProps.xxx !== this.props.xxx)
@@ -129,59 +138,104 @@ class SettingsScreen extends Component {
   _isLoadingData = () => true; /* e.g. this.props.pois.loading; */
   _isErrorData = () => null; /* e.g. this.props.pois.error; */
 
-  // async askPermission (){
-  //    const permission = await Location.getPermissionsAsync();
-  //    return permission.status === "granted";
-  // }
-  
-  // async getLocationAsync (){
-  //  let { status } = await Location.requestPermissionsAsync();
-  //  if (status !== 'granted') {
-  //    console.log(status)
-  //    let permission = (permission = await this.askPermission());
-  //    return permission;
-  //  } else {
-  //    this.setState({ hasLocationPermissions: true });
-  //  }
-  // }
+  requestLocationPermission = async () => {
+    Alert.alert(
+      "alert Message",
+      "Inserire messaggio per cambiare impostazioni GPS",
+      [
+        {
+          text: "Apri Impostazioni",
+          onPress: () => this.goToSettings(),
+          style: "cancel",
+        },
+        { text: "Annulla", onPress: () => navigation.goback() },
+      ]
+    );
+  };
+
+  getfixLocationState = async () => {
+    // permissions returns only for location permissions on iOS and under certain conditions, see Permissions.LOCATION
+    const { status, permissions } = await Permissions.askAsync(
+      Permissions.LOCATION
+    );
+    console.log(status);
+    if (status === "granted") {
+      this.props.actions.toggleSettings({
+        type: "gpsbackground",
+        value: true,
+      });
+      return Location.getCurrentPositionAsync({ enableHighAccuracy: true });
+    } else {
+      if (this.props.setting.gpsbackground === true) {
+        this.props.actions.toggleSettings({
+          type: "gpsbackground",
+          value: false,
+        });
+      }
+      if (this.props.setting.gpsopenapp === true) {
+        this.props.actions.toggleSettings({
+          type: "gpsopenapp",
+          value: false,
+        });
+      }
+    }
+  };
+
+  goToSettings = () => {
+    if (Platform.OS == "ios") {
+      Linking.openURL("app-settings:");
+    } else {
+      IntentLauncher.startActivityAsync(
+        IntentLauncher.ACTION_APPLICATION_DETAILS_SETTINGS,
+        { data: "package:" + pkg }
+      );
+    }
+  };
 
   handleInputChange = (value, name) => {
+    console.log(name + value);
+    switch (name) {
+      case "gpsbackground":
+        this.requestLocationPermission();
+        break;
+      case "gpsopenapp":
+        if (value === false) {
+          this.goToSettings();
+        }
+
+        this.checkPermissionRender().then((data) => {
+          value = data;
+          console.log(value);
+        });
+
+        break;
+      default:
+        break;
+    }
     console.log(value);
-    console.log(name);
-    console.log(this.props.type);
-    console.log(this.props.uuid);
-    this.checkPermission();
     this.props.actions.toggleSettings({
       type: name,
       value: value,
     });
     //this.setState({ [name]: value });
-  }
+  };
 
-  checkPermission = async () => {
-  let { status } = await Permissions.askAsync(Permissions.LOCATION);
-  console.log("Location Permission" + status);
-  if(status !== 'granted'){
-    let auth = Location.enableNetworkProviderAsync();
-    let location = await Location.requestPermissionsAsync();
-    console.log("Permission not granted")
-    
-    
-    return;
-  }
-  console.log("Permission granted")
-}
-askPermission = async () => {
-  const permission = await Location.getPermissionsAsync();
-  console.log(permission)
-  return permission.status === 'granted';
-};
+  checkPermissionRender = async () => {
+    const { status } = await Permissions.askAsync(Permissions.LOCATION);
+    // console.log(status + 'test')
+    if (status === "granted") {
+      return Promise.resolve("true");
+    } else {
+      this.goToSettings();
+      return Promise.resolve("false");
+    }
+  };
 
   /********************* Render methods go down here *********************/
   _renderContent = () => {
     const { notificationsetting, gpsauth } = this.props.locale.messages;
     //const { nearpoi } = this.state;
-    
+
     return (
       <AsyncOperationStatusIndicator
         loading={this._isLoadingData()}
@@ -260,7 +314,7 @@ askPermission = async () => {
 
   render() {
     const { render } = this.state;
-    
+    //this.checkPermissionRender();
     //const { nearpoi } = this.state;
 
     return (
