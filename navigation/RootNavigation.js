@@ -139,23 +139,47 @@ const placesNavigationOptions = {
  * Tab navigator (level: 2, parent: MainStack)
  * To prevent Tabs from showing on level 2 onwards we decouple them from their stacks and place on the same level of MainStack
  */
-const BottomTabNavigator = createBottomTabNavigator();
+const BottomTabNavigator = createStackNavigator();
  
 function TabNavigator() {
   return (
-    <BottomTabNavigator.Navigator 
+    <BottomTabNavigator.Navigator
+      headerMode="none"
       lazy={true}
-      barStyle={{backgroundColor: Colors.tabBar}}
-      activeColor={Colors.tintColor}
-      tabBarPosition="bottom" 
+      //barStyle={{ backgroundColor: Colors.tabBar }}
+      //activeColor={Colors.tintColor}
+      tabBarPosition="bottom"
       swipeEnabled={false}
-      tabBar={props => <TabBar {...props} navOptions={[placesNavigationOptions, inspirersNavigationOptions, extrasNavigationOptions, itinerariesNavigationOptions, eventsNavigationOptions]}/>}
-      animationEnabled={true}>
-      <BottomTabNavigator.Screen name={NavPlacesScreen} component={PlacesScreen} options={placesNavigationOptions}/>
-      <BottomTabNavigator.Screen name={NavInspirersScreen} component={InspirersScreen} options={inspirersNavigationOptions} />
-      <BottomTabNavigator.Screen name={NavExtrasScreen} component={ExtrasScreen} options={extrasNavigationOptions}/>
-      <BottomTabNavigator.Screen name={NavItinerariesScreen} component={ItinerariesScreen} options={itinerariesNavigationOptions} />
-      <BottomTabNavigator.Screen name={NavEventsScreen} component={EventsScreen} options={eventsNavigationOptions}/>
+      options={(navigation) => ({
+        // tabBarIcon: ,
+        tabBarVisible: false,
+      })}
+    >
+      <BottomTabNavigator.Screen
+        name={NavPlacesScreen}
+        component={PlacesScreen}
+        options={placesNavigationOptions}
+      />
+      <BottomTabNavigator.Screen
+        name={NavInspirersScreen}
+        component={InspirersScreen}
+        options={inspirersNavigationOptions}
+      />
+      <BottomTabNavigator.Screen
+        name={NavExtrasScreen}
+        component={ExtrasScreen}
+        options={extrasNavigationOptions}
+      />
+      <BottomTabNavigator.Screen
+        name={NavItinerariesScreen}
+        component={ItinerariesScreen}
+        options={itinerariesNavigationOptions}
+      />
+      <BottomTabNavigator.Screen
+        name={NavEventsScreen}
+        component={EventsScreen}
+        options={eventsNavigationOptions}
+      />
     </BottomTabNavigator.Navigator>
   );
 }
@@ -168,7 +192,7 @@ var MainStack = createStackNavigator();
 function MainStackScreen() {
   return (
     <>
-    <MainStack.Navigator headerMode="none" initialRouteName={TabNavigator}>
+    <MainStack.Navigator headerMode="none">
       {/* Loading */}
       {/* <MainStack.Screen name={NavLoadingScreen} component={LoadingScreen} /> */}
       {/* TabNavigator */}
