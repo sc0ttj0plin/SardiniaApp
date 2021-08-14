@@ -34,6 +34,8 @@ import FiltersScreen from '../screens/Filters/Filters';
 import GalleryScreen from '../screens/Gallery/Gallery';
 import GalleryMapScreen from '../screens/Gallery/Map';
 import SettingsScreen from '../screens/Settings/Settings';
+import InfoScreen from "../screens/Info/Info";
+import InfoDetailsScreen from '../screens/Info/InfoDetails';
 
 import { ConnectedText, ConnectedLanguageList, TabBar, CustomDrawer, ConnectedAuthText, TabBarIcon } from '../components';
 // import VirtualTourScreen from '../screens/Others/VirtualTourScreen';
@@ -45,7 +47,7 @@ const {
   NavItineraryScreen, NavEventsScreen, NavEventScreen, NavItineraryStagesMapScreen,NavEventsMapScreen, NavEventsSubset, NavExploreScreen, 
   NavVirtualTourScreen, NavPlaceScreen, NavInspirerScreen, NavPreferencesScreen, NavTutorialScreen,
   NavExtrasScreen, NavExtraScreen, NavTabNavigator, NavSearchScreen, NavSearchStackScreen, 
-  NavMainStackScreen, NavMediaScreen, NavFavouritesScreen, NavFavouritesListScreen, NavFavouritesStackScreen, NavFiltersScreen ,NavSettingScreen
+  NavMainStackScreen, NavMediaScreen, NavFavouritesScreen, NavFavouritesListScreen, NavFavouritesStackScreen, NavFiltersScreen ,NavSettingScreen,NavInfoStackScreen, NavInfoScreen,NavInfoDetailsScreen
 } = Constants.NAVIGATION;
 
 // Reference used for components that lack navigation access
@@ -218,6 +220,7 @@ function MainStackScreen() {
       {/* Accomodation */}
       <MainStack.Screen name={NavAccomodationsScreen} component={AccomodationsScreen}/>
       <MainStack.Screen name={NavAccomodationScreen} component={AccomodationScreen}/>
+      <MainStack.Screen name={NavInfoDetailsScreen} component={InfoDetailsScreen}/>
 
     </MainStack.Navigator>
     </>
@@ -347,6 +350,21 @@ function GalleryStackScreen() {
   );
 }
 
+/**
+ * Info Stack (level: 1, parent DrawerNavigator)
+ */
+
+var InfoStack = createStackNavigator();
+
+function InfoStackScreen() {
+  return (
+    <InfoStack.Navigator headerMode="none" initialRouteName={NavInfoStackScreen}>
+      <InfoStack.Screen name={NavInfoScreen} component={InfoScreen} />
+      <InfoStack.Screen name={NavInfoDetailsScreen} component={InfoDetailsScreen}/>
+    </InfoStack.Navigator>
+  );
+}
+
 
 let ConnectedTextTabName = () => <ConnectedText languageKey="drawerTab" textStyle={{ color: "black" }}/>;
 let ConnectedTextSearch = () => <ConnectedText languageKey="drawerSearch" textStyle={{ color: "black" }} />;
@@ -358,7 +376,8 @@ let ConnectedTextGalleryMap = () => <ConnectedText languageKey="galleryMap" text
 let ConnectedTextVideoGallery = () => <ConnectedText languageKey="videoAnd3D" textStyle={{ color: "black" }} />;
 let ConnectedTextLoginLogout = () => <ConnectedAuthText textStyle={{ color: "black" }} />;
 let ConnectedTextSetting = () => <ConnectedText languageKey="setting" textStyle={{ color: "black" }} />;
-
+let ConnectedTextInfo = () => (<ConnectedText languageKey="info" textStyle={{ color: "black" }} />);
+let ConnectedTextAlert = () => (<ConnectedText languageKey="alert" textStyle={{ color: "black" }} />);
 /**
  * Drawer navigator (level: 0)
  */
@@ -375,18 +394,96 @@ function CustomDrawerContent(props) {
       {/* <DrawerItemList state={newState} {...rest}/> */}
       <CustomDrawer.Header />
       <CustomDrawer.Line />
-      <CustomDrawer.Item {...props} routeIndex={0} label={ConnectedTextTabName} screenName={Constants.NAVIGATION.NavMainStackScreen} iconOpts={{name: 'map-marker', size: 20, color: Colors.mediumGray}} />
-      <CustomDrawer.Item {...props} routeIndex={1} label={ConnectedTextSearch} screenName={Constants.NAVIGATION.NavSearchStackScreen} iconOpts={{name: 'search', size: 20, color: Colors.mediumGray}} />
-      <CustomDrawer.Item {...props} routeIndex={2} label={ConnectedTextAccomodations} screenName={Constants.NAVIGATION.NavAccomodationsStackScreen} iconOpts={{name: 'home', size: 20, color: Colors.mediumGray}} />
-      <CustomDrawer.Item {...props} routeIndex={3} label={ConnectedTextPreferences} screenName={Constants.NAVIGATION.NavPreferencesScreen} iconOpts={{name: 'thumbs-up', size: 20, color: Colors.mediumGray}} />
-      <CustomDrawer.Item {...props} routeIndex={3} label={ConnectedTextTutorial} screenName={Constants.NAVIGATION.NavTutorialScreen} iconOpts={{name: 'book', size: 20, color: Colors.mediumGray}} />
+      <CustomDrawer.Item
+        {...props}
+        routeIndex={0}
+        label={ConnectedTextTabName}
+        screenName={Constants.NAVIGATION.NavMainStackScreen}
+        iconOpts={{ name: "home", size: 20, color: Colors.mediumGray }}
+      />
+      <CustomDrawer.Item
+        {...props}
+        routeIndex={1}
+        label={ConnectedTextSearch}
+        screenName={Constants.NAVIGATION.NavSearchStackScreen}
+        iconOpts={{ name: "search", size: 20, color: Colors.mediumGray }}
+      />
+      <CustomDrawer.Item
+        {...props}
+        routeIndex={2}
+        label={ConnectedTextAccomodations}
+        screenName={Constants.NAVIGATION.NavAccomodationsStackScreen}
+        iconOpts={{
+          name: "suitcase-rolling",
+          size: 20,
+          color: Colors.mediumGray,
+        }}
+      />
+      <CustomDrawer.Item
+        {...props}
+        routeIndex={2}
+        label={ConnectedTextInfo}
+        screenName={Constants.NAVIGATION.NavInfoScreen}
+        iconOpts={{ name: "info", size: 20, color: Colors.mediumGray }}
+      />
+      <CustomDrawer.Item
+        {...props}
+        routeIndex={3}
+        label={ConnectedTextPreferences}
+        screenName={Constants.NAVIGATION.NavPreferencesScreen}
+        iconOpts={{ name: "heart", size: 20, color: Colors.mediumGray }}
+      />
+      <CustomDrawer.Item
+        {...props}
+        routeIndex={3}
+        label={ConnectedTextTutorial}
+        screenName={Constants.NAVIGATION.NavTutorialScreen}
+        iconOpts={{ name: "book", size: 20, color: Colors.mediumGray }}
+      />
       <CustomDrawer.Separator />
-      <CustomDrawer.Item {...props} routeIndex={4} label={ConnectedTextFavourites} screenName={Constants.NAVIGATION.NavFavouritesStackScreen} iconOpts={{name: 'heart', size: 20, color: Colors.mediumGray}} />
-      <CustomDrawer.Item {...props} routeIndex={5} label={ConnectedTextGalleryMap} screenName={Constants.NAVIGATION.NavGalleryMapStackScreen} iconOpts={{name: 'image', size: 20, color: Colors.mediumGray}} />
-      <CustomDrawer.Item {...props} routeIndex={5} label={ConnectedTextVideoGallery} screenName={Constants.NAVIGATION.NavGalleryStackScreen} iconOpts={{name: 'film', size: 20, color: Colors.mediumGray}} />
+      <CustomDrawer.Item
+        {...props}
+        routeIndex={4}
+        label={ConnectedTextFavourites}
+        screenName={Constants.NAVIGATION.NavFavouritesStackScreen}
+        iconOpts={{ name: "heart", size: 20, color: Colors.mediumGray }}
+      />
+      <CustomDrawer.Item
+        {...props}
+        routeIndex={5}
+        label={ConnectedTextGalleryMap}
+        screenName={Constants.NAVIGATION.NavGalleryMapStackScreen}
+        iconOpts={{ name: "image", size: 20, color: Colors.mediumGray }}
+      />
+      <CustomDrawer.Item
+        {...props}
+        routeIndex={5}
+        label={ConnectedTextVideoGallery}
+        screenName={Constants.NAVIGATION.NavGalleryStackScreen}
+        iconOpts={{ name: "video", size: 20, color: Colors.mediumGray }}
+      />
+      <CustomDrawer.Item
+        {...props}
+        routeIndex={5}
+        label={ConnectedTextAlert}
+        screenName={Constants.NAVIGATION.NavInfoScreen}
+        iconOpts={{ name: "exclamation-triangle", size: 20, color: Colors.mediumGray }}
+      />
       <CustomDrawer.Separator />
-      <CustomDrawer.Item {...props} routeIndex={6} label={ConnectedTextLoginLogout} screenName={Constants.NAVIGATION.NavAuthScreen} iconOpts={{name: 'user', size: 20, color: Colors.mediumGray}} />
-      <CustomDrawer.Item {...props} routeIndex={7} label={ConnectedTextSetting} screenName={Constants.NAVIGATION.NavSettingScreen} iconOpts={{name: 'cog', size: 20, color: Colors.mediumGray}} />
+      <CustomDrawer.Item
+        {...props}
+        routeIndex={6}
+        label={ConnectedTextLoginLogout}
+        screenName={Constants.NAVIGATION.NavAuthScreen}
+        iconOpts={{ name: "user", size: 20, color: Colors.mediumGray }}
+      />
+      <CustomDrawer.Item
+        {...props}
+        routeIndex={7}
+        label={ConnectedTextSetting}
+        screenName={Constants.NAVIGATION.NavSettingScreen}
+        iconOpts={{ name: "cog", size: 20, color: Colors.mediumGray }}
+      />
       <ConnectedLanguageList />
     </DrawerContentScrollView>
   );
@@ -424,6 +521,7 @@ function DrawerNavigator() {
       <Drawer.Screen name={NavPreferencesScreen} component={PreferencesScreen} options={{unmountOnBlur:true}} />
       <Drawer.Screen name={NavTutorialScreen} component={TutorialScreen} options={{unmountOnBlur:true}} />
       <Drawer.Screen name={NavSettingScreen} component={SettingsScreen} options={{unmountOnBlur:true}} />
+      <Drawer.Screen name={NavInfoScreen} component={InfoStackScreen} options={{unmountOnBlur:true}} />
       {/* The login screen is not shown in the navigation */}
       <Drawer.Screen name={NavAuthScreen} component={AuthScreen} options={{unmountOnBlur:true}} />
     </Drawer.Navigator>
