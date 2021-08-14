@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import ExpoConstants from 'expo-constants';
 
 //@passwordless
-export const passwordLessSignup = (email) =>
+export const passwordLessSignup = (email,password) =>
   async (dispatch, getState) => {
     dispatch({ type: Constants.AUTH });
     let token = null;
@@ -20,8 +20,31 @@ export const passwordLessSignup = (email) =>
     };
 
     try {
-      await firebase.auth().sendSignInLinkToEmail(email, actionCodeSettings);
-      AsyncStorage.setItem('email', email); //Store email to finish auth later
+      
+      await firebase
+        .auth()
+        .createUserWithEmailAndPassword(
+          email,
+          password
+        )
+        .then(() => {
+          console.log("User account created & signed in!");
+        })
+        .catch((error) => {
+          if (error.code === "auth/email-already-in-use") {
+            console.log("That email address is already in use!Redirect to login without registration");
+            var login = firebase.auth().signInWithEmailAndPassword(email,password)
+            console.log(login)
+          }
+
+          if (error.code === "auth/invalid-email") {
+            console.log("That email address is invalid!");
+          }
+
+          console.error(error);
+        });
+      AsyncStorage.setItem('email', email); 
+      AsyncStorage.setItem('password', password);//Store email to finish auth later
     } catch(e) {
       console.log("Error", e.message);
       dispatch({ type: Constants.AUTH_FAIL, payload: { message: e.message } });

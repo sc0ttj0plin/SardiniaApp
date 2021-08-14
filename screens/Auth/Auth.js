@@ -22,6 +22,7 @@ import * as profile from "../../helpers/profile";
 const AUTH_STATES = {
   INIT: "INIT",
   LINK_SENT: "LINK_SENT",
+  LOGIN_REQUEST:"LOGINREQ",
   PROFILE_REMOVE: "PROFILE_REMOVE",
   PROFILE_EDIT: "PROFILE_EDIT",
   PROFILE_SHOW: "PROFILE_SHOW",
@@ -40,6 +41,7 @@ class Login extends Component {
       loginStep: AUTH_STATES.INIT, 
       isVerifyingEmail: false,
       username: "",
+      password:"",
       usernameError: false,
       age: "",
       ageError: false,
@@ -163,12 +165,12 @@ class Login extends Component {
   }
 
   _validateForm = async () => {
-    const { email } = this.state;
+    const { email,password } = this.state;
     if (!Validate.email(email)) {
       alert('Invalid email');
     } else {
-      this.props.actions.passwordLessSignup(email);
-      this.setState({ loginStep: AUTH_STATES.LINK_SENT });
+      this.props.actions.passwordLessSignup(email,password);
+      this.setState({ loginStep: AUTH_STATES.LOGIN_REQUEST });
     }
   }
 
@@ -456,6 +458,11 @@ class Login extends Component {
                 </View>
                 <Input autoCapitalize={'none'} placeholder="Email" onChangeText={(email) => this.setState({email: email.toLowerCase()})} />
               </Item>
+              <Item style={styles.item} regular>
+                <View style={{marginLeft: 20, marginRight: 10}}>
+                </View>
+                <Input autoCapitalize={'none'} secureTextEntry={true} placeholder="Password" onChangeText={(password) => this.setState({password: password})} />
+              </Item>
             </Form>
             <TouchableOpacity style={styles.defaultBtn} onPress={this._validateForm}>
               {isVerifyingEmail ? 
@@ -471,16 +478,16 @@ class Login extends Component {
   }
 
   _renderLinkSent = () => {
-    const { sentLink, checkInbox } = this.props.locale.messages;
+    const { loginok, gotohome } = this.props.locale.messages;
     return (
       <View style={styles.screen}>
         <View style={styles.view0}>
           <View style={styles.view1}>
             <CustomText style={styles.text0}>
-              {sentLink}
+              {loginok}
             </CustomText> 
             <CustomText style={styles.text1}>
-              {checkInbox}
+              {gotohome}
             </CustomText>
           </View>
         </View>
@@ -533,6 +540,7 @@ class Login extends Component {
             {loginStep === AUTH_STATES.INIT && this._renderInit()}
             {loginStep === AUTH_STATES.LINK_SENT && this._renderLinkSent()}
             {loginStep === AUTH_STATES.ERROR && this._renderError()}
+            {loginStep === AUTH_STATES.LOGIN_REQUEST && this._renderLinkSent()}
           </View>
         </ConnectedScreenErrorBoundary>
       )

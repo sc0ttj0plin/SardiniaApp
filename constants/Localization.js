@@ -143,7 +143,7 @@ const dict = {
     setting: "Impostazioni",
     notificationsetting: "Notifiche ed Eventi",
     info: "Info Utili",
-    alert:"Notizie ed emergenze",
+    alert: "Notizie ed emergenze",
     //LANGUAGES
     lanItalian: "🇮🇹 Italiano",
     lanEnglish: "🇬🇧 Inglese",
@@ -171,6 +171,8 @@ const dict = {
     successfullLogin: "Autenticazione riuscita!",
     loggingIn: "Login in corso..",
     loginError: "Errore di login:",
+    loginok: "Grazie per esserti loggato",
+    gotohome: "Puoi Tornare alla Home",
     //Parks
     nearParks: "Parcheggi nelle vicinanze!",
     discoverParks:
@@ -327,7 +329,8 @@ const dict = {
     preferences: "My preferences",
     tutorial: "Tutorial",
     preferencesText1: "It only takes a minute!",
-    preferencesText2: "Help us understand your preferences by clicking on the emoticons.",
+    preferencesText2:
+      "Help us understand your preferences by clicking on the emoticons.",
     preferencesText3: "Now we know your preferences.",
     tutorialText1: "Tutorial",
     tutorialText2: "",
@@ -342,7 +345,7 @@ const dict = {
     setting: "Settings",
     notificationsetting: "notifications and events",
     info: "Info",
-    alert:"Emergency and News",
+    alert: "Emergency and News",
     //LANGUAGES
     lanItalian: "🇮🇹 Italian",
     lanEnglish: "🇬🇧 English",
@@ -360,6 +363,8 @@ const dict = {
     next: "Next",
     sentLink: "We've sent you a link",
     checkInbox: "Check your inbox",
+    loginok: "Login Successful",
+    gotohome: "You can go back to home",
     logoutMsg: "Do you want to logout from your account?",
     logoutBtn: "Logout",
     removeProfileMsg: "Do you want to delete your profile?",
