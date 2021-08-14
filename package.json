@@ -54,7 +54,7 @@
     "expo-linear-gradient": "^8.3.1",
     "expo-linking": "^1.0.5",
     "expo-localization": "^9.0.0",
-    "expo-location": "^10.0.0",
+    "expo-location": "~9.0.0",
     "expo-network": "^2.4.0",
     "expo-notifications": "^0.9.0",
     "expo-screen-orientation": "~2.0.0",
@@ -90,7 +90,7 @@
     "react-native-maps": "0.27.1",
     "react-native-maps-directions": "^1.8.0",
     "react-native-modalize": "^2.0.8",
-    "react-native-paper": "^3.12.0",
+    "react-native-paper": "^4.9.2",
     "react-native-pose": "^0.9.1",
     "react-native-reanimated": "^1.13.2",
     "react-native-render-html": "^4.2.3",
@@ -117,8 +117,11 @@
     "redux-thunk": "^2.3.0",
     "remove": "^0.1.5",
     "rn-placeholder": "^3.0.1",
+    "toggle-switch-react-native": "^3.2.0",
     "url-parse": "^1.4.7",
-    "world_countries_lists": "^2.1.0"
+    "world_countries_lists": "^2.1.0",
+    "expo-permissions": "~9.3.0",
+    "expo-intent-launcher": "~8.3.0"
   },
   "devDependencies": {
     "babel-preset-expo": "^8.3.0",

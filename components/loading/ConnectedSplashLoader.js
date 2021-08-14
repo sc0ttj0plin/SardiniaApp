@@ -121,6 +121,7 @@ class ConnectedSplashLoader extends Component {
     if (prevProps.auth.user !== this.props.auth.user && this.props.auth.user) {
       // Initializes favourites
       this.props.actions.initFavourites();
+      this.props.actions.initSettings();
     }
   }
 

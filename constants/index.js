@@ -143,6 +143,13 @@ export const UNSET_ERROR = 'sardinia/others/UNSET_ERROR';
 export const FAVOURITES_EDIT = 'sardinia/favourites/FAVOURITES_EDIT'; 
 export const FAVOURITES_EDIT_SUCCESS = 'sardinia/favourites/FAVOURITES_EDIT_SUCCESS'; 
 export const FAVOURITES_EDIT_FAIL = 'sardinia/favourites/FAVOURITES_EDIT_FAIL'; 
+export const SETTINGS_EDIT = "sardinia/settings/SETTINGS_EDIT"; 
+export const SETTINGS_EDIT_SUCCESS = "sardinia/settings/SETTINGS_EDIT_SUCCESS"; 
+export const SETTINGS_EDIT_FAIL = "sardinia/settings/SETTINGS_EDIT_FAIL";
+export const SET_SETTING = "sardinia/settings/SET_SETTING";
+export const UNSET_SETTING = "sardinia/settings/UNSET_SETTING";
+export const TOGGLE_SETTING = "sardinia/settings/TOGGLE_SETTING";
+export const INIT_SETTING = "sardinia/settings/INIT_SETTING";
 
 // API
 export const FETCH_NUM_MONTHS_BACKWARDS = 1;
@@ -241,6 +248,7 @@ export const NAVIGATION = {
   NavLanguageScreen1: "LanguageScreen1",
   NavSearchScreen: "SearchScreen",
   NavSearchStackScreen: "SearchStackScreen",
+  NavSettingScreen: "SettingScreen",
   NavMainStackScreen: "MainStackScreen",
   NavFavouritesScreen: "FavouritesScreen",
   NavFavouritesListScreen: "FavouritesListScreen",
@@ -251,6 +259,7 @@ export const NAVIGATION = {
   NavAccomodationsStackScreen: "AccomodationsStackScreen",
   NavFiltersScreen: "Filters",
   NavBoilerPlate: "Boilerplate",
+
 }
 
 /**
