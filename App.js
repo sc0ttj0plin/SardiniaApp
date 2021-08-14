@@ -20,6 +20,7 @@ import { enableScreens } from 'react-native-screens';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { ConnectedSplashLoader, ConnectedErrorBoundary } from './components';
 import { registerRootComponent } from 'expo';
+import GeoInfo from '../sardinia_app/helpers/geocoding';
 
 enableScreens();
 
@@ -101,6 +102,7 @@ export default class App extends Component {
 
 
   render() {
+    
     if(this.state.isLoadingComplete) {
       return (
         <Provider store={store}>

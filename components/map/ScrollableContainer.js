@@ -176,6 +176,7 @@ class ScrollableContainer extends PureComponent {
           </ScrollableContainerTouchableOpacity> 
         </Animated.View>
         <HeaderTextComponent></HeaderTextComponent>
+        <Text>ciao</Text>
       </Animated.View>);
   }
 
@@ -186,32 +187,43 @@ class ScrollableContainer extends PureComponent {
       renderItem,
       ListHeaderComponent,
       onEndReached = ()=>{} } = this.props;
-
-      return (<AsyncOperationStatusIndicator
-        loading={true}
-        success={this.state.data && this.state.data.length>0}
-        error={false}
-        loadingLayout={
-          <LoadingLayoutVerticalItemsFlatlist 
-            numColumns={numColumns}
-            key={"shimmer-layout" + numColumns} 
-            itemStyle={styles.itemFlatlist} 
-            style={styles.listStyleLL} 
-            bodyContainerStyle={styles.listContainer}/>}>
+      console.log(renderItem)
+      return (
+        <>
+          <Text>ciao2</Text>
+          <AsyncOperationStatusIndicator
+            loading={true}
+            success={this.state.data && this.state.data.length > 0}
+            error={false}
+            loadingLayout={
+              <>
+                <LoadingLayoutVerticalItemsFlatlist
+                  numColumns={numColumns}
+                  key={"shimmer-layout" + numColumns}
+                  itemStyle={styles.itemFlatlist}
+                  style={styles.listStyleLL}
+                  bodyContainerStyle={styles.listContainer}
+                />
+              </>
+            }
+          >
             <FlatList
-            style={{backgroundColor: "white", height: "100%"}}
-            data={this.state.data || []}
-            keyExtractor={keyExtractor}
-            renderItem={renderItem}
-            ListHeaderComponent={ListHeaderComponent || null}
-            onEndReached = {({distanceFromEnd})=> onEndReached()}
-            ref={(ref) => this._scrollableInner = ref}
-            onEndReachedThreshold={0.5} 
-            initialNumToRender={8}
-            maxToRenderPerBatch={2}
-            numColumns={numColumns || 1}
-            contentContainerStyle={styles.contentContainerStyle}/>
-      </AsyncOperationStatusIndicator>);
+              style={{ backgroundColor: "white", height: "100%" }}
+              data={this.state.data || []}
+              keyExtractor={keyExtractor}
+              renderItem={renderItem}
+              ListHeaderComponent={ListHeaderComponent || null}
+              onEndReached={({ distanceFromEnd }) => onEndReached()}
+              ref={(ref) => (this._scrollableInner = ref)}
+              onEndReachedThreshold={0.5}
+              initialNumToRender={8}
+              maxToRenderPerBatch={2}
+              numColumns={numColumns || 1}
+              contentContainerStyle={styles.contentContainerStyle}
+            />
+          </AsyncOperationStatusIndicator>
+        </>
+      );
   }
 
   _renderTopComponentLoading = (state) => {
@@ -242,39 +254,54 @@ class ScrollableContainer extends PureComponent {
 
     if (snapPoints && snapPoints.length > 0)
       return (
-          <View style={[styles.fill, {backgroundColor: "white", zIndex: -1,}]}>
-            <Animated.View style={[styles.fill, { transform: [{ translateY: this._translateAnimY } ]}]}>
-              {topComponent()}
+        <View style={[styles.fill, { backgroundColor: "white", zIndex: -1 }]}>
+          <Animated.View
+            style={[
+              styles.fill,
+              { transform: [{ translateY: this._translateAnimY }] },
+            ]}
+          >
+            {topComponent()}
+          </Animated.View>
+          {extraComponent && (
+            <Animated.View
+              style={[
+                styles.extraComponent,
+                { transform: [{ translateY: this._translateAnimY2 }] },
+              ]}
+            >
+              {extraComponent()}
             </Animated.View>
-            { extraComponent &&
-              <Animated.View style={[styles.extraComponent, { transform: [{ translateY: this._translateAnimY2 } ]}]}>
-                {extraComponent()}
-              </Animated.View>
-            }
-            {this._renderTopComponentLoading(this.props.topComponentIsLoading)}
-            <BottomSheet
-              componentType="FlatList"
-              key={numColumns} /* NOTE always set a key to refresh only this component and avoid unmounting */
-              snapPoints={snapPoints}
-              renderContent={this._renderContent}
-              initialSnap={snapPoints.length-1}
-              renderHeader={this._renderHandle}
-              ref={(ref)=>this._scrollable = ref}
-              onSettle = {(index) => this._onSettle(index)}
-              enabledContentGestureInteraction = {false}
-              callbackNode={this._translateAnim}
-              springConfig={{toss: 0.05}}
-              contentContainerStyle={[styles.contentContainerStyle, {
-                flex:  data && data.length == 0 ? 1 : null
-              }]}
-              onCloseStart={this._onCloseStart}
-              onCloseEnd={this._onCloseEnd}
-              onOpenEnd={this._onOpenEnd}
-              enabledBottomInitialAnimation={true}
-            />
-            
+          )}
+          {this._renderTopComponentLoading(this.props.topComponentIsLoading)}
+          <BottomSheet
+            componentType="FlatList"
+            key={
+              numColumns
+            } /* NOTE always set a key to refresh only this component and avoid unmounting */
+            snapPoints={snapPoints}
+            renderContent={this._renderContent}
+            initialSnap={snapPoints.length - 1}
+            renderHeader={this._renderHandle}
+            ref={(ref) => (this._scrollable = ref)}
+            onSettle={(index) => this._onSettle(index)}
+            enabledContentGestureInteraction={false}
+            callbackNode={this._translateAnim}
+            springConfig={{ toss: 0.05 }}
+            contentContainerStyle={[
+              styles.contentContainerStyle,
+              {
+                flex: data && data.length == 0 ? 1 : null,
+              },
+            ]}
+            onCloseStart={this._onCloseStart}
+            onCloseEnd={this._onCloseEnd}
+            onOpenEnd={this._onOpenEnd}
+            enabledBottomInitialAnimation={true}
+          />
+          
         </View>
-      )
+      );
     else 
       return null;
 
