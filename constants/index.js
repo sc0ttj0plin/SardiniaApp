@@ -261,6 +261,7 @@ export const NAVIGATION = {
          NavInfoStackScreen: "InfoStackScreen",
          NavInfoScreen: "InfoScreen",
          NavInfoDetailsScreen: "InfoDetailsScreen",
+         NavPrivacyScreen: "PrivacyScreen",
          NavBoilerPlate: "Boilerplate",
        };
 

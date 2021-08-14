@@ -176,7 +176,7 @@ class ScrollableContainer extends PureComponent {
           </ScrollableContainerTouchableOpacity> 
         </Animated.View>
         <HeaderTextComponent></HeaderTextComponent>
-        <Text>ciao</Text>
+       
       </Animated.View>);
   }
 
@@ -190,7 +190,7 @@ class ScrollableContainer extends PureComponent {
       console.log(renderItem)
       return (
         <>
-          <Text>ciao2</Text>
+         
           <AsyncOperationStatusIndicator
             loading={true}
             success={this.state.data && this.state.data.length > 0}

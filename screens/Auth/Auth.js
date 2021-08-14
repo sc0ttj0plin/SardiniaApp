@@ -330,7 +330,7 @@ class Login extends Component {
       return;
 
       
-    const { editProfileBtn, logoutBtn, removeProfileBtn, informations, ageText, birthDate, countryText, sexText } = this.props.locale.messages;
+    const { editProfileBtn, logoutBtn, removeProfileBtn, informations, ageText, birthDate, countryText, sexText ,privacy} = this.props.locale.messages;
     const { user } = this.props.auth;
 
     return (
@@ -362,6 +362,9 @@ class Login extends Component {
             </TouchableOpacity>
             <TouchableOpacity style={[styles.defaultBtn, {marginTop: 10}]} onPress={this._onLogoutPress}>
                 <CustomText style={styles.defaultBtnText}>{logoutBtn}</CustomText>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.button]} onPress={() => this.props.navigation.navigate("PrivacyScreen")}>
+                <CustomText style={styles.buttonText}>{privacy}</CustomText>
             </TouchableOpacity>
           </View>
         </View>

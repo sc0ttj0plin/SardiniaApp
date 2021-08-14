@@ -36,6 +36,7 @@ import GalleryMapScreen from '../screens/Gallery/Map';
 import SettingsScreen from '../screens/Settings/Settings';
 import InfoScreen from "../screens/Info/Info";
 import InfoDetailsScreen from '../screens/Info/InfoDetails';
+import PrivacyScreen from '../screens/Privacy/Privacy';
 
 import { ConnectedText, ConnectedLanguageList, TabBar, CustomDrawer, ConnectedAuthText, TabBarIcon } from '../components';
 // import VirtualTourScreen from '../screens/Others/VirtualTourScreen';
@@ -47,7 +48,8 @@ const {
   NavItineraryScreen, NavEventsScreen, NavEventScreen, NavItineraryStagesMapScreen,NavEventsMapScreen, NavEventsSubset, NavExploreScreen, 
   NavVirtualTourScreen, NavPlaceScreen, NavInspirerScreen, NavPreferencesScreen, NavTutorialScreen,
   NavExtrasScreen, NavExtraScreen, NavTabNavigator, NavSearchScreen, NavSearchStackScreen, 
-  NavMainStackScreen, NavMediaScreen, NavFavouritesScreen, NavFavouritesListScreen, NavFavouritesStackScreen, NavFiltersScreen ,NavSettingScreen,NavInfoStackScreen, NavInfoScreen,NavInfoDetailsScreen
+  NavMainStackScreen, NavMediaScreen, NavFavouritesScreen, NavFavouritesListScreen, NavFavouritesStackScreen, NavFiltersScreen ,NavSettingScreen,NavInfoStackScreen, 
+  NavInfoScreen,NavInfoDetailsScreen,NavPrivacyScreen,
 } = Constants.NAVIGATION;
 
 // Reference used for components that lack navigation access
@@ -221,6 +223,8 @@ function MainStackScreen() {
       <MainStack.Screen name={NavAccomodationsScreen} component={AccomodationsScreen}/>
       <MainStack.Screen name={NavAccomodationScreen} component={AccomodationScreen}/>
       <MainStack.Screen name={NavInfoDetailsScreen} component={InfoDetailsScreen}/>
+      {/*Privacy*/}
+      <MainStack.Screen name={NavPrivacyScreen} component={PrivacyScreen}/>
 
     </MainStack.Navigator>
     </>
@@ -256,7 +260,7 @@ function FavouritesStackScreen() {
       <FavouritesStack.Screen name={NavMediaScreen} component={MediaScreen}/>
       {/* Accomodation */}
       <FavouritesStack.Screen name={NavAccomodationsScreen} component={AccomodationsScreen}/>
-      <FavouritesStack.Screen name={NavAccomodationScreen} component={AccomodationScreen}/>
+      <FavouritesStack.Screen name={NavPrivacyScreen} component={PrivacyScreen}/>
     </FavouritesStack.Navigator>
   )
 }
@@ -376,6 +380,7 @@ let ConnectedTextGalleryMap = () => <ConnectedText languageKey="galleryMap" text
 let ConnectedTextVideoGallery = () => <ConnectedText languageKey="videoAnd3D" textStyle={{ color: "black" }} />;
 let ConnectedTextLoginLogout = () => <ConnectedAuthText textStyle={{ color: "black" }} />;
 let ConnectedTextSetting = () => <ConnectedText languageKey="setting" textStyle={{ color: "black" }} />;
+let ConnectedTextPrivacy = () => <ConnectedText languageKey="privacy" textStyle={{ color: "black" }} />;
 let ConnectedTextInfo = () => (<ConnectedText languageKey="info" textStyle={{ color: "black" }} />);
 let ConnectedTextAlert = () => (<ConnectedText languageKey="alert" textStyle={{ color: "black" }} />);
 /**
