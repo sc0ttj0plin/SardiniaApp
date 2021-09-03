@@ -16,3 +16,10 @@ export function getItinerariesById(query, props) {
   };
 }
 
+export function getItineraryTypes(query, props) {
+  return {
+    type: Constants.GET_ITINERARY_TYPES,
+    query: query,
+    ...props
+  };
+}

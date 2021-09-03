@@ -350,6 +350,53 @@ query {
 }
 `;
 
+export const getItineraryTypes = gql`
+    query {
+        itineraryTypes: nodes_terms_aggregate(where: {node: {type: {_eq: "${Constants.NODE_TYPES.itineraries}"}}}, distinct_on: term_uuid) {
+            nodes {
+                nid
+                uuid: term_uuid
+                #term_uuid
+                #field
+                term {
+                    tid
+                    name
+                    uuid
+                    vocabulary {
+                        name
+                    }
+                }
+            }
+            aggregate {
+                count
+            }
+        }
+    }
+`;
+
+export const getPlaceTypes = gql`
+    query {
+        placeTypes: nodes_terms_aggregate(where: {node: {type: {_eq: "${Constants.NODE_TYPES.places}"}}, field: {_eq: "field_tipologia_attrattore"}}, distinct_on: term_uuid) {
+            nodes {
+                nid
+                uuid: term_uuid
+                #term_uuid
+                #field
+                term {
+                    tid
+                    name
+                    uuid
+                    vocabulary {
+                        name
+                    }
+                }
+            }
+            aggregate {
+                count
+            }
+        }
+    }
+`;
 
 export const getPoi = gql`
 query ($uuid: String, $nid: Int) {

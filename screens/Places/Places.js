@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { View, StyleSheet, PixelRatio } from "react-native";
+import {View, StyleSheet, PixelRatio, Button} from "react-native";
 import { useNavigation, useRoute, useIsFocused} from '@react-navigation/native';
 import Animated from 'react-native-reanimated';
 import { 
@@ -346,30 +346,33 @@ class PlacesScreen extends PureComponent {
     }
 
     return (
-      <ConnectedMapScrollable 
-        // entities type (used to discriminate the rendering function, places, accomodations, events, itineraries)
-        entitiesType={entitiesType}
-        // Scrollable container props
-        scrollableProps={scrollableProps}
-        // Extra component: if scrollableRenderExtraComponent is undefined, must specify extra component props
-        // scrollableRenderExtraComponent={this._renderFiltersList}
-        scrollableExtraComponentProps={extraComponentProps}
-        // Header text component: if scrollableHeaderTextComponent is undefined, must specify scrollableHeaderText
-        scrollableHeaderTextComponent={this._renderHeaderText}
-        // scrollableHeaderText={() => <Text>Header Text</Text>}
-        // Top component (ClusteredMapViewTop or MapView or Custom)
-        topComponentType="ClusteredMapViewTop" //or MapView or Custom (if Custom must implement topComponentRender)
-        topComponentCMVTProps={CMVTProps}
-        // Map entity widget (in modal): if renderMapEntityWidget is undefined, must specify mapEntityWidgetProps and mapEntityWidgetOnPress 
-        // e.g. this.state.selectedEntity can now be used in renderMapEntityWidget
-        // mapEntityWidgetOnPress={(entity) => this.setState({ selectedEntity: entity })} 
-        // renderMapEntityWidget={this._renderEntityWidget}
-        mapEntityWidgetProps={mapEntityWidgetProps}
-        // Extra modal content: if renderExtraModalComponent is undefined, must specify mapEntityWidgetProps
-        // renderExtraModalComponent={this._renderNearToYou}
-        extraModalProps={extraModalProps}
-        onBackPress={this._backButtonPress}
-      />
+        <>
+          <Button title="Open filters" onPress={() => { this.props.navigation.navigate(Constants.NAVIGATION.NavPlacesFiltersScreen) }} />
+          <ConnectedMapScrollable
+            // entities type (used to discriminate the rendering function, places, accomodations, events, itineraries)
+            entitiesType={entitiesType}
+            // Scrollable container props
+            scrollableProps={scrollableProps}
+            // Extra component: if scrollableRenderExtraComponent is undefined, must specify extra component props
+            // scrollableRenderExtraComponent={this._renderFiltersList}
+            scrollableExtraComponentProps={extraComponentProps}
+            // Header text component: if scrollableHeaderTextComponent is undefined, must specify scrollableHeaderText
+            scrollableHeaderTextComponent={this._renderHeaderText}
+            // scrollableHeaderText={() => <Text>Header Text</Text>}
+            // Top component (ClusteredMapViewTop or MapView or Custom)
+            topComponentType="ClusteredMapViewTop" //or MapView or Custom (if Custom must implement topComponentRender)
+            topComponentCMVTProps={CMVTProps}
+            // Map entity widget (in modal): if renderMapEntityWidget is undefined, must specify mapEntityWidgetProps and mapEntityWidgetOnPress
+            // e.g. this.state.selectedEntity can now be used in renderMapEntityWidget
+            // mapEntityWidgetOnPress={(entity) => this.setState({ selectedEntity: entity })}
+            // renderMapEntityWidget={this._renderEntityWidget}
+            mapEntityWidgetProps={mapEntityWidgetProps}
+            // Extra modal content: if renderExtraModalComponent is undefined, must specify mapEntityWidgetProps
+            // renderExtraModalComponent={this._renderNearToYou}
+            extraModalProps={extraModalProps}
+            onBackPress={this._backButtonPress}
+          />
+      </>
     )
   }
 

@@ -11,6 +11,12 @@ const INITIAL_STATE = {
   success: false, 
   error: null,
   loading: false,
+  //terms
+  itineraryTypes: [],
+  itineraryTypesSuccess: false,
+  itineraryTypesError: null,
+  itineraryTypesLoading: false,
+  selectedItineraryTypes: [],
 }
 
 export default function reducer(state = INITIAL_STATE, action) {
@@ -42,7 +48,34 @@ export default function reducer(state = INITIAL_STATE, action) {
         success: false,
         loading: false, 
         error: 'Error while fetching itineraries',
-      }; 
+      };// ITINERARY TYPES
+    case Constants.GET_ITINERARY_TYPES:
+      return {
+        ...state,
+        itineraryTypesSuccess: false,
+        itineraryTypesError: null,
+        itineraryTypesLoading: true
+      };
+    case Constants.GET_ITINERARY_TYPES_SUCCESS:
+      return {
+        ...state,
+        itineraryTypesSuccess: true,
+        itineraryTypes: action.payload.itineraryTypes,
+        itineraryTypesError: null,
+        itineraryTypesLoading: false
+      };
+    case Constants.GET_ITINERARY_TYPES_FAIL:
+      return {
+        ...state,
+        itineraryTypesSuccess: false,
+        itineraryTypesLoading: false,
+        itineraryTypesError: 'Error while fetching itineraryTypes',
+      };
+    case Constants.SET_SELECTED_ITINERARY_TYPES:
+      return {
+        ...state,
+        selectedItineraryTypes: action.types
+      };
     default:
       return state;
   }

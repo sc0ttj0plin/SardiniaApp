@@ -228,6 +228,42 @@ const apolloMiddleware = client => {
             store.dispatch(actions.setReduxError(e, action));
           });
         }
+        else if (action.type === Constants.GET_ITINERARY_TYPES) {
+          client.query({
+            query: Queries.getItineraryTypes,
+            variables: action.query
+          }).then((resp) => {
+            let dispatch = { type: Constants.GET_ITINERARY_TYPES_SUCCESS, payload: { itineraryTypes: [] } };
+            if (resp.data && resp.data.itineraryTypes.nodes.length > 0)
+              dispatch.payload.itineraryTypes = processEventTypes(resp.data.itineraryTypes.nodes);
+            store.dispatch(dispatch);
+          }).catch((e) => {
+            console.log(e);
+            store.dispatch({
+              type: Constants.GET_ITINERARY_TYPES_FAIL,
+              payload: e
+            });
+            store.dispatch(actions.setReduxError(e, action));
+          });
+        }
+        else if (action.type === Constants.GET_PLACE_TYPES) {
+          client.query({
+            query: Queries.getPlaceTypes,
+            variables: action.query
+          }).then((resp) => {
+            let dispatch = { type: Constants.GET_PLACE_TYPES_SUCCESS, payload: { placeTypes: [] } };
+            if (resp.data && resp.data.placeTypes.nodes.length > 0)
+              dispatch.payload.placeTypes = processEventTypes(resp.data.placeTypes.nodes);
+            store.dispatch(dispatch);
+          }).catch((e) => {
+            console.log(e);
+            store.dispatch({
+              type: Constants.GET_PLACE_TYPES_FAIL,
+              payload: e
+            });
+            store.dispatch(actions.setReduxError(e, action));
+          });
+        }
         else if (action.type === Constants.GET_ITINERARIES) {
           client.query({
             query: Queries.getItineraries,
