@@ -1,14 +1,14 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import {View, TouchableOpacity, StyleSheet, ScrollView, Switch} from "react-native";
-import { useNavigation, useRoute } from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {
   ConnectedHeader,
   CustomText,
   ConnectedScreenErrorBoundary,
   CustomIcon
- } from "../../components";
-import { connect, useStore } from 'react-redux';
-import { bindActionCreators } from 'redux';
+} from "../../components";
+import {connect, useStore} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import _ from 'lodash';
 import Layout from '../../constants/Layout';
 import actions from '../../actions';
@@ -23,6 +23,7 @@ import MapView from "react-native-maps";
    number of components loaded when the page initially mounts.
    Other components are loaded right after the mount */
 const USE_DR = false;
+
 class PlacesFiltersScreen extends Component {
 
   constructor(props) {
@@ -51,7 +52,10 @@ class PlacesFiltersScreen extends Component {
    */
   componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
-    {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
+    {
+      (USE_DR && setTimeout(() => (this.setState({render: true})), 0))
+    }
+    ;
     this._fetchFilters()
   }
 
@@ -65,17 +69,17 @@ class PlacesFiltersScreen extends Component {
      * if(prevProps.xxx !== this.props.xxx)
      *  doStuff();
      */
-    if(prevProps.events.eventTypes !== this.props.events.eventTypes){
-        this.setState({
-            eventFilters: this.props.events.eventTypes
-        })
+    if (prevProps.events.eventTypes !== this.props.events.eventTypes) {
+      this.setState({
+        eventFilters: this.props.events.eventTypes
+      })
     }
-    if(prevProps.itineraries.itineraryTypes !== this.props.itineraries.itineraryTypes){
+    if (prevProps.itineraries.itineraryTypes !== this.props.itineraries.itineraryTypes) {
       this.setState({
         itineraryFilters: this.props.itineraries.itineraryTypes
       })
     }
-    if(prevProps.places.placeTypes !== this.props.places.placeTypes){
+    if (prevProps.places.placeTypes !== this.props.places.placeTypes) {
       this.setState({
         placeFilters: this.props.places.placeTypes
       })
@@ -90,9 +94,9 @@ class PlacesFiltersScreen extends Component {
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
 
-  _isSuccessData  = () => false;    /* e.g. this.props.pois.success; */
-  _isLoadingData  = () => true;   /* e.g. this.props.pois.loading; */
-  _isErrorData    = () => null;    /* e.g. this.props.pois.error; */
+  _isSuccessData = () => false;    /* e.g. this.props.pois.success; */
+  _isLoadingData = () => true;   /* e.g. this.props.pois.loading; */
+  _isErrorData = () => null;    /* e.g. this.props.pois.error; */
 
 
   _fetchFilters = () => {
@@ -102,52 +106,51 @@ class PlacesFiltersScreen extends Component {
   }
 
   _onFilterPress = (item) => {
-    const { selectedFilters } = this.state;
+    const {selectedFilters} = this.state;
     let newFilters = []
     let filterID = parseInt(item.id)
-    if(selectedFilters.indexOf(filterID) == -1){
-        // console.log("selected")
-        newFilters = [...selectedFilters]
-        newFilters.push(filterID)
-    }
-    else{
-        // console.log("not selected")
-        newFilters = selectedFilters.filter(filter => filter != filterID);
+    if (selectedFilters.indexOf(filterID) == -1) {
+      // console.log("selected")
+      newFilters = [...selectedFilters]
+      newFilters.push(filterID)
+    } else {
+      // console.log("not selected")
+      newFilters = selectedFilters.filter(filter => filter != filterID);
     }
 
     // console.log("new filters", newFilters)
     this.setState({
-        selectedFilters: newFilters
+      selectedFilters: newFilters
     })
   }
 
   _onBackPress = () => {
-    const { selectedFilters } = this.state;
-    if(this.props.events.selectedTypes !== selectedFilters){
-        this.props.actions.resetEvents()
-        this.props.actions.setSelectedEventTypes(selectedFilters);
+    const {selectedFilters} = this.state;
+    if (this.props.events.selectedTypes !== selectedFilters) {
+      this.props.actions.resetEvents()
+      this.props.actions.setSelectedEventTypes(selectedFilters);
     }
     this.props.navigation.goBack()
   }
   /********************* Render methods go down here *********************/
   _renderEventFiltersContainer = () => {
-    return(
-        <View style={styles.eventFiltersView}>
-            {this._renderEventFilters()}
-        </View>
+    return (
+      <View style={styles.eventFiltersView}>
+        {this._renderEventFilters()}
+      </View>
     )
   }
 
   _renderItineraryFiltersContainer = () => {
-    return(
-        <View style={styles.eventFiltersView}>
-          {this._renderItineraryFilters()}
-        </View>
+    return (
+      <View style={styles.eventFiltersView}>
+        {this._renderItineraryFilters()}
+      </View>
     )
   }
 
   _renderPlaceFiltersContainer = () => {
-    return(
+    return (
       <View style={styles.eventFiltersView}>
         {this._renderPlaceFilters()}
       </View>
@@ -155,101 +158,116 @@ class PlacesFiltersScreen extends Component {
   }
 
   _renderEventFilters = () => {
-      return this.state.eventFilters.map( filter => {
-          return this._renderEventFilter(filter)
-      })
+    return this.state.eventFilters.map(filter => {
+      return this._renderEventFilter(filter)
+    })
   }
 
   _renderEventFilter = (item) => {
-    const { selectedFilters } = this.state;
+    const {selectedFilters} = this.state;
 
     let filterID = parseInt(item.id)
     const selected = selectedFilters.indexOf(filterID) != -1;
     let opacity = selected ? 0.5 : 1
     // console.log("selected", selected, opacity)
-    return(
-        <TouchableOpacity
-            key={item.id}
-            style={[styles.eventFilter, Constants.styles.shadow, {
-                backgroundColor: selected ? Colors.colorEventsScreen  : "white"
-            }]}
-            onPress={() => this._onFilterPress(item)}
-            activeOpacity={0.7}>
-            <View style={[styles.icon, { backgroundColor: Colors.colorEventsScreen, opacity: !this.state.enableEventFilters ? 0.2 : 1 }]}>
-                <CustomIcon
-                    name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[ENTITY_TYPES.events].iconName}
-                    size={13}
-                    style={styles.cornerIcon}
-                    color={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[ENTITY_TYPES.events].iconColor}
-                />
-            </View>
-            <CustomText style={[styles.eventFilterText,{color: selected ? "white" : "#000000DE", opacity: !this.state.enableEventFilters ? 0.2 : 1}]}>
-              {item.name}
-            </CustomText>
-        </TouchableOpacity>
+    return (
+      <TouchableOpacity
+        key={item.id}
+        style={[styles.eventFilter, Constants.styles.shadow, {
+          backgroundColor: selected ? Colors.colorEventsScreen : "white"
+        }]}
+        onPress={() => this._onFilterPress(item)}
+        activeOpacity={0.7}>
+        <View style={[styles.icon, {
+          backgroundColor: Colors.colorEventsScreen,
+          opacity: !this.state.enableEventFilters ? 0.2 : 1
+        }]}>
+          <CustomIcon
+            name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[ENTITY_TYPES.events].iconName}
+            size={13}
+            style={styles.cornerIcon}
+            color={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[ENTITY_TYPES.events].iconColor}
+          />
+        </View>
+        <CustomText style={[styles.eventFilterText, {
+          color: selected ? "white" : "#000000DE",
+          opacity: !this.state.enableEventFilters ? 0.2 : 1
+        }]}>
+          {item.name}
+        </CustomText>
+      </TouchableOpacity>
     )
   }
 
   _renderItineraryFilters = () => {
-    return this.state.itineraryFilters.map( filter => {
+    return this.state.itineraryFilters.map(filter => {
       return this._renderItineraryFilter(filter)
     })
   }
 
   _renderItineraryFilter = (item) => {
-    const { selectedFilters } = this.state;
+    const {selectedFilters} = this.state;
 
     let filterID = parseInt(item.id)
     const selected = selectedFilters.indexOf(filterID) != -1;
     let opacity = selected ? 0.5 : 1
     // console.log("selected", selected, opacity)
-    return(
-        <TouchableOpacity
-            key={item.id}
-            style={[styles.eventFilter, Constants.styles.shadow, {
-              backgroundColor: selected ? Colors.colorItinerariesScreen  : "white"
-            }]}
-            onPress={() => this._onFilterPress(item)}
-            activeOpacity={0.7}>
-          <View style={[styles.icon, { backgroundColor: Colors.colorItinerariesScreen, opacity: !this.state.enableItineraryFilters ? 0.2 : 1 }]}>
-            <CustomIcon
-                name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[ENTITY_TYPES.itineraries].iconName}
-                size={13}
-                style={styles.cornerIcon}
-                color={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[ENTITY_TYPES.itineraries].iconColor}
-            />
-          </View>
-          <CustomText style={[styles.eventFilterText,{color: selected ? "white" : "#000000DE", opacity: !this.state.enableItineraryFilters ? 0.2 : 1}]}>
-            {item.name}
-          </CustomText>
-        </TouchableOpacity>
+    return (
+      <TouchableOpacity
+        key={item.id}
+        style={[styles.eventFilter, Constants.styles.shadow, {
+          backgroundColor: selected ? Colors.colorItinerariesScreen : "white"
+        }]}
+        onPress={() => this._onFilterPress(item)}
+        activeOpacity={0.7}>
+        <View style={[styles.icon, {
+          backgroundColor: Colors.colorItinerariesScreen,
+          opacity: !this.state.enableItineraryFilters ? 0.2 : 1
+        }]}>
+          <CustomIcon
+            name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[ENTITY_TYPES.itineraries].iconName}
+            size={13}
+            style={styles.cornerIcon}
+            color={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[ENTITY_TYPES.itineraries].iconColor}
+          />
+        </View>
+        <CustomText style={[styles.eventFilterText, {
+          color: selected ? "white" : "#000000DE",
+          opacity: !this.state.enableItineraryFilters ? 0.2 : 1
+        }]}>
+          {item.name}
+        </CustomText>
+      </TouchableOpacity>
     )
   }
 
   _renderPlaceFilters = () => {
-    return this.state.placeFilters.map( filter => {
+    return this.state.placeFilters.map(filter => {
       return this._renderPlaceFilter(filter)
     })
   }
 
   _renderPlaceFilter = (item) => {
-    const { selectedFilters } = this.state;
+    const {selectedFilters} = this.state;
 
     let filterID = parseInt(item.id)
     const selected = selectedFilters.indexOf(filterID) != -1;
     let opacity = selected ? 0.5 : 1
     // console.log("selected", selected, opacity)
-    return(
+    return (
       <TouchableOpacity
         key={item.id}
         style={[styles.eventFilter, Constants.styles.shadow, {
-          backgroundColor: selected ? Colors.colorPlacesScreen  : "white"
+          backgroundColor: selected ? Colors.colorPlacesScreen : "white"
         }]}
         onPress={() => this._onFilterPress(item)}
         activeOpacity={0.7}
         disabled={!this.state.enablePlaceFilters}
       >
-        <View style={[styles.icon, { backgroundColor: Colors.colorPlacesScreen, opacity: !this.state.enablePlaceFilters ? 0.2 : 1 }]}>
+        <View style={[styles.icon, {
+          backgroundColor: Colors.colorPlacesScreen,
+          opacity: !this.state.enablePlaceFilters ? 0.2 : 1
+        }]}>
           <CustomIcon
             name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[ENTITY_TYPES.places].iconName}
             size={13}
@@ -257,7 +275,10 @@ class PlacesFiltersScreen extends Component {
             color={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[ENTITY_TYPES.places].iconColor}
           />
         </View>
-        <CustomText style={[styles.eventFilterText,{color: selected ? "white" : "#000000DE", opacity: !this.state.enablePlaceFilters ? 0.2 : 1}]}>
+        <CustomText style={[styles.eventFilterText, {
+          color: selected ? "white" : "#000000DE",
+          opacity: !this.state.enablePlaceFilters ? 0.2 : 1
+        }]}>
           {item.name}
         </CustomText>
       </TouchableOpacity>
@@ -265,55 +286,55 @@ class PlacesFiltersScreen extends Component {
   }
 
   _renderFilters = (filterType) => {
-    if(filterType === Constants.ENTITY_TYPES.events){
-        return this._renderEventFiltersContainer()
-    }
-    else if(filterType === Constants.ENTITY_TYPES.itineraries){
+    if (filterType === Constants.ENTITY_TYPES.events) {
+      return this._renderEventFiltersContainer()
+    } else if (filterType === Constants.ENTITY_TYPES.itineraries) {
       return this._renderItineraryFiltersContainer()
-    }
-    else if(filterType === Constants.ENTITY_TYPES.places){
-        return this._renderPlaceFiltersContainer()
+    } else if (filterType === Constants.ENTITY_TYPES.places) {
+      return this._renderPlaceFiltersContainer()
     }
   }
 
   _toggleSmartFilters = () => {
-    this.setState(state => ({ useSmartFilters: !state.useSmartFilters }))
+    this.setState(state => ({useSmartFilters: !state.useSmartFilters}))
   }
 
   _toggleEnableEventFilters = () => {
-    const { selectedFilters, eventFilters } = this.state;
+    const {selectedFilters, eventFilters} = this.state;
 
     const newSelectedFilters = selectedFilters.filter(selectedFilter => {
       return !eventFilters.find(eventFilter => eventFilter.id === selectedFilter.toString())
     })
 
-    this.setState(state => ({ enableEventFilters: !state.enableEventFilters, selectedFilters: newSelectedFilters }))
+    this.setState(state => ({enableEventFilters: !state.enableEventFilters, selectedFilters: newSelectedFilters}))
   }
 
   _toggleEnableItineraryFilters = () => {
-    const { selectedFilters, itineraryFilters } = this.state;
+    const {selectedFilters, itineraryFilters} = this.state;
 
     const newSelectedFilters = selectedFilters.filter(selectedFilter => {
       return !itineraryFilters.find(itineraryFilter => itineraryFilter.id === selectedFilter.toString())
     })
 
-    this.setState(state => ({ enableItineraryFilters: !state.enableItineraryFilters, selectedFilters: newSelectedFilters }))
+    this.setState(state => ({
+      enableItineraryFilters: !state.enableItineraryFilters,
+      selectedFilters: newSelectedFilters
+    }))
   }
 
   _toggleEnablePlaceFilters = () => {
-    const { selectedFilters, placeFilters } = this.state;
+    const {selectedFilters, placeFilters} = this.state;
 
     const newSelectedFilters = selectedFilters.filter(selectedFilter => {
       return !placeFilters.find(placeFilter => placeFilter.id === selectedFilter.toString())
     })
 
-    this.setState(state => ({ enablePlaceFilters: !state.enablePlaceFilters, selectedFilters: newSelectedFilters }))
+    this.setState(state => ({enablePlaceFilters: !state.enablePlaceFilters, selectedFilters: newSelectedFilters}))
   }
 
 
-
   _renderFilterSections = () => {
-    const { tabItineraries, tabWhereToGo, tabEvents } = this.props.locale.messages;
+    const {tabItineraries, tabWhereToGo, tabEvents} = this.props.locale.messages;
 
     return (
       <>
@@ -364,7 +385,7 @@ class PlacesFiltersScreen extends Component {
   }
 
   _onMapCheckBoxPress = (value) => {
-    this.setState({ mapType: value })
+    this.setState({mapType: value})
   }
 
   _renderContent = () => {
@@ -377,7 +398,7 @@ class PlacesFiltersScreen extends Component {
       smartFiltersTitle
     } = this.props.locale.messages;
 
-     return (
+    return (
       <ScrollView style={styles.fill}>
         <CustomText style={styles.title}>{mapStyleTitle}</CustomText>
         <CheckBox
@@ -390,7 +411,9 @@ class PlacesFiltersScreen extends Component {
           iconRight
           checked={this.state.mapType === MapView.MAP_TYPES.STANDARD}
           checkedColor={Colors.black}
-          onPress={() => { this._onMapCheckBoxPress(MapView.MAP_TYPES.STANDARD) }}
+          onPress={() => {
+            this._onMapCheckBoxPress(MapView.MAP_TYPES.STANDARD)
+          }}
         />
         <CheckBox
           wrapperStyle={styles.checkboxWrapper}
@@ -402,7 +425,9 @@ class PlacesFiltersScreen extends Component {
           iconRight
           checked={this.state.mapType === MapView.MAP_TYPES.SATELLITE}
           checkedColor={Colors.black}
-          onPress={() => { this._onMapCheckBoxPress(MapView.MAP_TYPES.SATELLITE) }}
+          onPress={() => {
+            this._onMapCheckBoxPress(MapView.MAP_TYPES.SATELLITE)
+          }}
         />
         <CheckBox
           wrapperStyle={styles.checkboxWrapper}
@@ -414,7 +439,9 @@ class PlacesFiltersScreen extends Component {
           iconRight
           checked={this.state.mapType === MapView.MAP_TYPES.TERRAIN}
           checkedColor={Colors.black}
-          onPress={() => { this._onMapCheckBoxPress(MapView.MAP_TYPES.TERRAIN) }}
+          onPress={() => {
+            this._onMapCheckBoxPress(MapView.MAP_TYPES.TERRAIN)
+          }}
         />
         <CustomText style={styles.title}>{filterByTitle}</CustomText>
         <ListItem
@@ -431,12 +458,12 @@ class PlacesFiltersScreen extends Component {
         />
         {!this.state.useSmartFilters && this._renderFilterSections()}
       </ScrollView>
-     )
+    )
   }
 
 
   render() {
-    const { render } = this.state;
+    const {render} = this.state;
     return (
       <ConnectedScreenErrorBoundary>
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
@@ -507,11 +534,11 @@ const styles = StyleSheet.create({
     marginRight: 8
   },
   eventFiltersView: {
-      flex: 1,
-      flexDirection: "row",
-      alignItems: "flex-start",
-      flexWrap: "wrap",
-      paddingLeft: 15
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "flex-start",
+    flexWrap: "wrap",
+    paddingLeft: 15
   },
   checkboxWrapper: {
     justifyContent: 'space-between'
@@ -538,7 +565,7 @@ function PlacesFiltersScreenContainer(props) {
     {...props}
     navigation={navigation}
     route={route}
-    store={store} />;
+    store={store}/>;
 }
 
 
@@ -559,7 +586,7 @@ const mapStateToProps = state => {
 
 
 const mapDispatchToProps = dispatch => {
-  return {...bindActionCreators({ ...actions }, dispatch)};
+  return {...bindActionCreators({...actions}, dispatch)};
 };
 
 
