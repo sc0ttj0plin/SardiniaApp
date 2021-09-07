@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {View, TouchableOpacity, StyleSheet, ScrollView} from "react-native";
+import {View, TouchableOpacity, StyleSheet, ScrollView, Switch} from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import {
   ConnectedHeader,
@@ -15,6 +15,8 @@ import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
 import {ENTITY_TYPES} from "../../constants";
+import {CheckBox, ListItem} from "react-native-elements";
+import MapView from "react-native-maps";
 
 /* Deferred rendering to speedup page inital load:
    deferred rendering delays the rendering reducing the initial
@@ -31,7 +33,11 @@ class PlacesFiltersScreen extends Component {
       eventFilters: props.events.eventsTypes || [],
       itineraryFilters: props.itineraries.itinerariesTypes || [],
       placeFilters: props.places.placesTypes || [],
-      // TODO: to change
+      mapType: MapView.MAP_TYPES.STANDARD,
+      useSmartFilters: true,
+      enableEventFilters: true,
+      enableItineraryFilters: true,
+      enablePlaceFilters: true,
       selectedFilters: props.events.selectedTypes || []
     };
 
@@ -163,12 +169,13 @@ class PlacesFiltersScreen extends Component {
     // console.log("selected", selected, opacity)
     return(
         <TouchableOpacity
+            key={item.id}
             style={[styles.eventFilter, Constants.styles.shadow, {
                 backgroundColor: selected ? Colors.colorEventsScreen  : "white"
             }]}
             onPress={() => this._onFilterPress(item)}
             activeOpacity={0.7}>
-            <View style={[styles.icon, { backgroundColor: Colors.colorEventsScreen }]}>
+            <View style={[styles.icon, { backgroundColor: Colors.colorEventsScreen, opacity: !this.state.enableEventFilters ? 0.2 : 1 }]}>
                 <CustomIcon
                     name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[ENTITY_TYPES.events].iconName}
                     size={13}
@@ -176,7 +183,7 @@ class PlacesFiltersScreen extends Component {
                     color={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[ENTITY_TYPES.events].iconColor}
                 />
             </View>
-            <CustomText style={[styles.eventFilterText,{color: selected ? "white" : "#000000DE"}]}>
+            <CustomText style={[styles.eventFilterText,{color: selected ? "white" : "#000000DE", opacity: !this.state.enableEventFilters ? 0.2 : 1}]}>
               {item.name}
             </CustomText>
         </TouchableOpacity>
@@ -198,12 +205,13 @@ class PlacesFiltersScreen extends Component {
     // console.log("selected", selected, opacity)
     return(
         <TouchableOpacity
+            key={item.id}
             style={[styles.eventFilter, Constants.styles.shadow, {
               backgroundColor: selected ? Colors.colorItinerariesScreen  : "white"
             }]}
             onPress={() => this._onFilterPress(item)}
             activeOpacity={0.7}>
-          <View style={[styles.icon, { backgroundColor: Colors.colorItinerariesScreen }]}>
+          <View style={[styles.icon, { backgroundColor: Colors.colorItinerariesScreen, opacity: !this.state.enableItineraryFilters ? 0.2 : 1 }]}>
             <CustomIcon
                 name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[ENTITY_TYPES.itineraries].iconName}
                 size={13}
@@ -211,7 +219,7 @@ class PlacesFiltersScreen extends Component {
                 color={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[ENTITY_TYPES.itineraries].iconColor}
             />
           </View>
-          <CustomText style={[styles.eventFilterText,{color: selected ? "white" : "#000000DE"}]}>
+          <CustomText style={[styles.eventFilterText,{color: selected ? "white" : "#000000DE", opacity: !this.state.enableItineraryFilters ? 0.2 : 1}]}>
             {item.name}
           </CustomText>
         </TouchableOpacity>
@@ -233,12 +241,15 @@ class PlacesFiltersScreen extends Component {
     // console.log("selected", selected, opacity)
     return(
       <TouchableOpacity
+        key={item.id}
         style={[styles.eventFilter, Constants.styles.shadow, {
           backgroundColor: selected ? Colors.colorPlacesScreen  : "white"
         }]}
         onPress={() => this._onFilterPress(item)}
-        activeOpacity={0.7}>
-        <View style={[styles.icon, { backgroundColor: Colors.colorPlacesScreen }]}>
+        activeOpacity={0.7}
+        disabled={!this.state.enablePlaceFilters}
+      >
+        <View style={[styles.icon, { backgroundColor: Colors.colorPlacesScreen, opacity: !this.state.enablePlaceFilters ? 0.2 : 1 }]}>
           <CustomIcon
             name={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[ENTITY_TYPES.places].iconName}
             size={13}
@@ -246,7 +257,7 @@ class PlacesFiltersScreen extends Component {
             color={Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[ENTITY_TYPES.places].iconColor}
           />
         </View>
-        <CustomText style={[styles.eventFilterText,{color: selected ? "white" : "#000000DE"}]}>
+        <CustomText style={[styles.eventFilterText,{color: selected ? "white" : "#000000DE", opacity: !this.state.enablePlaceFilters ? 0.2 : 1}]}>
           {item.name}
         </CustomText>
       </TouchableOpacity>
@@ -265,20 +276,160 @@ class PlacesFiltersScreen extends Component {
     }
   }
 
-  _renderContent = () => {
+  _toggleSmartFilters = () => {
+    this.setState(state => ({ useSmartFilters: !state.useSmartFilters }))
+  }
+
+  _toggleEnableEventFilters = () => {
+    const { selectedFilters, eventFilters } = this.state;
+
+    const newSelectedFilters = selectedFilters.filter(selectedFilter => {
+      return !eventFilters.find(eventFilter => eventFilter.id === selectedFilter.toString())
+    })
+
+    this.setState(state => ({ enableEventFilters: !state.enableEventFilters, selectedFilters: newSelectedFilters }))
+  }
+
+  _toggleEnableItineraryFilters = () => {
+    const { selectedFilters, itineraryFilters } = this.state;
+
+    const newSelectedFilters = selectedFilters.filter(selectedFilter => {
+      return !itineraryFilters.find(itineraryFilter => itineraryFilter.id === selectedFilter.toString())
+    })
+
+    this.setState(state => ({ enableItineraryFilters: !state.enableItineraryFilters, selectedFilters: newSelectedFilters }))
+  }
+
+  _toggleEnablePlaceFilters = () => {
+    const { selectedFilters, placeFilters } = this.state;
+
+    const newSelectedFilters = selectedFilters.filter(selectedFilter => {
+      return !placeFilters.find(placeFilter => placeFilter.id === selectedFilter.toString())
+    })
+
+    this.setState(state => ({ enablePlaceFilters: !state.enablePlaceFilters, selectedFilters: newSelectedFilters }))
+  }
+
+
+
+  _renderFilterSections = () => {
     const { tabItineraries, tabWhereToGo, tabEvents } = this.props.locale.messages;
+
+    return (
+      <>
+        {/* places */}
+        <ListItem
+          titleStyle={styles.listItemTitle}
+          title={tabWhereToGo}
+          rightElement={
+            <Switch
+              trackColor={{false: Colors.lightGray, true: Colors.black}}
+              thumbColor={Colors.white}
+              value={this.state.enablePlaceFilters}
+              onValueChange={this._toggleEnablePlaceFilters}
+            />
+          }
+        />
+        {this._renderFilters(Constants.ENTITY_TYPES.places)}
+        {/* itineraries */}
+        <ListItem
+          titleStyle={styles.listItemTitle}
+          title={tabItineraries}
+          rightElement={
+            <Switch
+              trackColor={{false: Colors.lightGray, true: Colors.black}}
+              thumbColor={Colors.white}
+              value={this.state.enableItineraryFilters}
+              onValueChange={this._toggleEnableItineraryFilters}
+            />
+          }
+        />
+        {this._renderFilters(Constants.ENTITY_TYPES.itineraries)}
+        {/* events */}
+        <ListItem
+          titleStyle={styles.listItemTitle}
+          title={tabEvents}
+          rightElement={
+            <Switch
+              trackColor={{false: Colors.lightGray, true: Colors.black}}
+              thumbColor={Colors.white}
+              value={this.state.enableEventFilters}
+              onValueChange={this._toggleEnableEventFilters}
+            />
+          }
+        />
+        {this._renderFilters(Constants.ENTITY_TYPES.events)}
+      </>
+    )
+  }
+
+  _onMapCheckBoxPress = (value) => {
+    this.setState({ mapType: value })
+  }
+
+  _renderContent = () => {
+    const {
+      mapStyleTitle,
+      standardMapCheckBoxTitle,
+      satelliteMapCheckBoxTitle,
+      terrainMapCheckBoxTitle,
+      filterByTitle,
+      smartFiltersTitle
+    } = this.props.locale.messages;
 
      return (
       <ScrollView style={styles.fill}>
-        {/* places */}
-        <CustomText style={styles.title}>{tabWhereToGo}</CustomText>
-        {this._renderFilters(Constants.ENTITY_TYPES.places)}
-        {/* itineraries */}
-        <CustomText style={styles.title}>{tabItineraries}</CustomText>
-        {this._renderFilters(Constants.ENTITY_TYPES.itineraries)}
-        {/* events */}
-        <CustomText style={styles.title}>{tabEvents}</CustomText>
-        {this._renderFilters(Constants.ENTITY_TYPES.events)}
+        <CustomText style={styles.title}>{mapStyleTitle}</CustomText>
+        <CheckBox
+          wrapperStyle={styles.checkboxWrapper}
+          containerStyle={styles.checkboxContainer}
+          textStyle={styles.checkboxText}
+          title={standardMapCheckBoxTitle}
+          checkedIcon='dot-circle-o'
+          uncheckedIcon='circle-o'
+          iconRight
+          checked={this.state.mapType === MapView.MAP_TYPES.STANDARD}
+          checkedColor={Colors.black}
+          onPress={() => { this._onMapCheckBoxPress(MapView.MAP_TYPES.STANDARD) }}
+        />
+        <CheckBox
+          wrapperStyle={styles.checkboxWrapper}
+          containerStyle={styles.checkboxContainer}
+          textStyle={styles.checkboxText}
+          title={satelliteMapCheckBoxTitle}
+          checkedIcon='dot-circle-o'
+          uncheckedIcon='circle-o'
+          iconRight
+          checked={this.state.mapType === MapView.MAP_TYPES.SATELLITE}
+          checkedColor={Colors.black}
+          onPress={() => { this._onMapCheckBoxPress(MapView.MAP_TYPES.SATELLITE) }}
+        />
+        <CheckBox
+          wrapperStyle={styles.checkboxWrapper}
+          containerStyle={styles.checkboxContainer}
+          textStyle={styles.checkboxText}
+          title={terrainMapCheckBoxTitle}
+          checkedIcon='dot-circle-o'
+          uncheckedIcon='circle-o'
+          iconRight
+          checked={this.state.mapType === MapView.MAP_TYPES.TERRAIN}
+          checkedColor={Colors.black}
+          onPress={() => { this._onMapCheckBoxPress(MapView.MAP_TYPES.TERRAIN) }}
+        />
+        <CustomText style={styles.title}>{filterByTitle}</CustomText>
+        <ListItem
+          titleStyle={styles.listItemTitle}
+          title={smartFiltersTitle}
+          rightElement={
+            <Switch
+              trackColor={{false: Colors.lightGray, true: Colors.black}}
+              thumbColor={Colors.white}
+              value={this.state.useSmartFilters}
+              onValueChange={this._toggleSmartFilters}
+            />
+          }
+        />
+        {!this.state.useSmartFilters && this._renderFilterSections()}
       </ScrollView>
      )
   }
@@ -325,6 +476,10 @@ const styles = StyleSheet.create({
     fontFamily: "montserrat-bold",
     textTransform: "uppercase"
   },
+  listItemTitle: {
+    fontFamily: "montserrat-bold",
+    fontSize: 20
+  },
   eventFilter: {
     paddingVertical: 7,
     backgroundColor: "white",
@@ -357,6 +512,19 @@ const styles = StyleSheet.create({
       alignItems: "flex-start",
       flexWrap: "wrap",
       paddingLeft: 15
+  },
+  checkboxWrapper: {
+    justifyContent: 'space-between'
+  },
+  checkboxContainer: {
+    backgroundColor: Colors.white,
+    borderWidth: 0,
+    paddingLeft: 0,
+    paddingRight: 0
+  },
+  checkboxText: {
+    fontFamily: "montserrat-regular",
+    fontSize: 15
   }
 });
 
