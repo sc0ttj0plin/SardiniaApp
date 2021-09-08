@@ -16,6 +16,8 @@ import actions from '../../actions';
 import * as Constants from '../../constants';
 import * as utils from '../../helpers/utils';
 import HTML from 'react-native-render-html';
+import Colors from "../../constants/Colors";
+import CustomText from "../../components/others/CustomText";
 
 /**
  * Search working mechanism
@@ -159,6 +161,15 @@ class SearchScreen extends Component {
     )
   }
 
+  _renderListEmptyComponent = () => {
+    return (
+      <View style={styles.emptyListContainer}>
+        <CustomIcon style={styles.emptyListIcon} name="icon-mic" size={100} color={Colors.orange} />
+        <CustomText style={styles.emptyListTitle}>Prova a chiedermi:</CustomText>
+        <CustomText style={styles.emptyListDescription}>“Cosa c’è nei dintorni?”{'\n'}“Parlami della natura in Sardegna”</CustomText>
+      </View>
+    )
+  }
 
   _renderContent = () => {
     const { searchOrAutocomplete } = this.props.others;
@@ -176,7 +187,8 @@ class SearchScreen extends Component {
           keyExtractor={(item, index) => index.toString()}
           data={data}
           renderItem={({item, index}) => this._renderItem(item, index)}
-          style={{}}
+          contentContainerStyle={{ flexGrow: 1 }}
+          ListEmptyComponent={this._renderListEmptyComponent()}
         />
       </AsyncOperationStatusIndicator>
      )
@@ -254,6 +266,31 @@ const styles = StyleSheet.create({
   },
   loadingDotsView2: {
     width: 100
+  },
+  emptyListContainer: {
+    flex: 1,
+    bottom: 0,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  emptyListIcon: {
+    borderWidth: 6,
+    borderColor: Colors.orange,
+    borderRadius: 64,
+    width: 126,
+    height: 126,
+    paddingLeft: 16,
+    paddingTop: 12
+  },
+  emptyListTitle: {
+    marginTop: 30,
+    fontFamily: "montserrat-bold",
+    fontSize: 20,
+    textAlign: "center"
+  },
+  emptyListDescription: {
+    fontSize: 20,
+    textAlign: "center"
   }
 });
 
