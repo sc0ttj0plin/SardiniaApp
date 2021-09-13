@@ -40,7 +40,7 @@ const HEADER_BUTTONS_PER_SCREEN = {
   [Constants.NAVIGATION.NavEvents]: {backButtonVisible: false, searchButtonVisible: true, filterButtonVisible: false}, 
   [Constants.NAVIGATION.NavTabNavigator]: {backButtonVisible: false, searchButtonVisible: true, filterButtonVisible: false}, 
   [Constants.NAVIGATION.NavLanguageScreen1]: {backButtonVisible: false, searchButtonVisible: true, filterButtonVisible: false},
-  [Constants.NAVIGATION.NavSearchScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
+  [Constants.NAVIGATION.NavSearchScreen]: {backButtonVisible: true, searchButtonVisible: false, filterButtonVisible: false},
   [Constants.NAVIGATION.NavFavouritesScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
   [Constants.NAVIGATION.NavFavouritesListScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
   [Constants.NAVIGATION.NavAccomodationsScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
@@ -69,7 +69,7 @@ class ConnectedHeader extends PureComponent {
 
     this.state = {
       routeName,
-      searchbarVisible: routeName == Constants.NAVIGATION.NavSearchScreen ? true : false,
+      searchbarVisible: false,
       backButtonVisible: props.backButtonVisible ? props.backButtonVisible : HEADER_BUTTONS_PER_SCREEN[routeName].backButtonVisible,
       searchButtonVisible: props.searchButtonVisible ? props.searchButtonVisible : HEADER_BUTTONS_PER_SCREEN[routeName].searchButtonVisible,
       filterButtonVisible: props.filterButtonVisible ? props.filterButtonVisible : HEADER_BUTTONS_PER_SCREEN[routeName].filterButtonVisible,

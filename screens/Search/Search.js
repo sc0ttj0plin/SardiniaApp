@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {View, FlatList, TouchableOpacity, StyleSheet} from "react-native";
+import {View, FlatList, TouchableOpacity, StyleSheet, Platform} from "react-native";
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {
   AsyncOperationStatusIndicator,
@@ -18,6 +18,8 @@ import * as utils from '../../helpers/utils';
 import HTML from 'react-native-render-html';
 import Colors from "../../constants/Colors";
 import CustomText from "../../components/others/CustomText";
+import {SearchBar} from "react-native-elements";
+import {Ionicons} from "@expo/vector-icons";
 
 /**
  * Search working mechanism
@@ -166,37 +168,71 @@ class SearchScreen extends Component {
   }
 
   _renderListEmptyComponent = () => {
+    if (this._isLoadingData()) return this._renderLoading()
+
+    if (this._isSuccessData()) {
+      return (
+        <View style={styles.emptyListContainer}>
+          <CustomIcon style={styles.emptyListIcon} name="icon-mic" size={100} color={Colors.orange}/>
+          <CustomText style={styles.emptyListTitle}>Prova a chiedermi:</CustomText>
+          <CustomText style={styles.emptyListDescription}>“Cosa c’è nei dintorni?”{'\n'}“Parlami della natura in
+            Sardegna”</CustomText>
+        </View>
+      )
+    }
+
+    return null
+  }
+
+  _setSearch = (search) => {
+      if (this.props.others.searchOrAutocomplete !== "autocomplete")
+          this.props.actions.switchSearchOrAutocomplete("autocomplete");
+      //Returns: Nodes OR Categories (terms)
+      this.props.actions.autocomplete({
+          queryStr: search,
+          vidsInclude: [Constants.VIDS.poisCategories, Constants.VIDS.pois, Constants.VIDS.inspirersCategories, Constants.VIDS.events],
+          // typesExclude: [Constants.NODE_TYPES.events]
+      });
+      this.setState({ search });
+      this.props.actions.setSearchOrAutocomplete(search);
+  }
+
+  _renderListHeaderComponent = () => {
+    const { insertHere } = this.props.locale.messages;
+
     return (
-      <View style={styles.emptyListContainer}>
-        <CustomIcon style={styles.emptyListIcon} name="icon-mic" size={100} color={Colors.orange}/>
-        <CustomText style={styles.emptyListTitle}>Prova a chiedermi:</CustomText>
-        <CustomText style={styles.emptyListDescription}>“Cosa c’è nei dintorni?”{'\n'}“Parlami della natura in
-          Sardegna”</CustomText>
-      </View>
+      <SearchBar
+        lightTheme={true}
+        ref={ref => (this._searchBarRef = ref)}
+        placeholder={insertHere}
+        onChangeText={this._setSearch}
+        value={this.state.search}
+        placeholderTextColor={Colors.mediumGray}
+        inputContainerStyle={{ fontFamily: 'montserrat-light', fontSize: 40 }}
+        containerStyle={{ backgroundColor: Colors.lightGray, padding: 16, borderBottomColor: Colors.black, borderBottomWidth: 2 }}
+        platform={Platform.OS === 'ios' ? 'ios' : 'android'}
+        searchIcon={<Ionicons name="md-search" size={32} color={Colors.black} />}
+        clearIcon={null}
+        cancelIcon={null}
+      />
     )
   }
 
   _renderContent = () => {
     const {searchOrAutocomplete} = this.props.others;
     const data = searchOrAutocomplete === "autocomplete" ? this.props.searchAutocomplete.autocomplete : this.props.searchAutocomplete.search;
+
     return (
-      <AsyncOperationStatusIndicator
-        loading={this._isLoadingData()}
-        success={this._isSuccessData()}
-        error={this._isErrorData()}
-        retryFun={() => {
-        }}
-        loadingLayout={this._renderLoading()}
-      >
         <FlatList
-          key={1}
-          keyExtractor={(item, index) => index.toString()}
-          data={data}
-          renderItem={({item, index}) => this._renderItem(item, index)}
-          contentContainerStyle={{flexGrow: 1}}
-          ListEmptyComponent={this._renderListEmptyComponent()}
+            key={1}
+            keyExtractor={(item, index) => index.toString()}
+            data={data}
+            renderItem={({item, index}) => this._renderItem(item, index)}
+            contentContainerStyle={{flexGrow: 1}}
+            ListEmptyComponent={this._renderListEmptyComponent()}
+            ListHeaderComponent={this._renderListHeaderComponent()}
+            ListHeaderComponentStyle={{ padding: 16 }}
         />
-      </AsyncOperationStatusIndicator>
     )
   }
 
