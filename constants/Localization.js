@@ -162,6 +162,12 @@ const dict = {
     age: "Età",
     confirm: "Conferma",
     register: "Registrati",
+    signin:"ACCEDI",
+    registeremail:"Registrati tramite email",
+    logingoogle:"Accedi con Google",
+    loginfacebook:"Accedi con Facebook",
+    landingtextlogin:"Sei già registrato? Accedi\naltrimenti",
+    forgotpassword:"Hai dimenticato la password?",
     next: "Avanti",
     sentLink: "Ti abbiamo mandato un link",
     checkInbox: "Controlla la tua mail",
@@ -249,6 +255,9 @@ const dict = {
     login: "Login",
     myPreferences: "My preferences",
     access: "REGISTER",
+    signin:"SIGN IN",
+    landingtextlogin:"If already registered? Log in\notherwise",
+    forgotpassword:"Did you forget your password?",
     completeAccess: "Complete profile",
     loginText:
       "By registering you will be shown contents tailored to your preferences",
@@ -384,6 +393,9 @@ const dict = {
     successfullLogin: "Authentication successful!",
     loggingIn: "Logging in..",
     loginError: "Error loggin in:",
+    registeremail:"Register via email",
+    logingoogle:"Sign in with Google",
+    loginfacebook:"Sign in with Facebook",
     //Parks
     nearParks: "Nearest parkings!",
     discoverParks:

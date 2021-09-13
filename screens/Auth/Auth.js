@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {  Platform, KeyboardAvoidingView, StyleSheet, ActivityIndicator, BackHandler, TouchableOpacity, PixelRatio } from 'react-native';
+import {  Platform, KeyboardAvoidingView, StyleSheet, ActivityIndicator, BackHandler, TouchableOpacity, PixelRatio ,Text} from 'react-native';
 import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native';
 import { 
   ConnectedHeader, 
@@ -18,9 +18,11 @@ import itDbCountries from "world_countries_lists/data/it/countries.json";
 import enDbCountries from "world_countries_lists/data/en/countries.json";
 import * as Validate from '../../helpers/validate';
 import * as profile from "../../helpers/profile";
+import { Ionicons, FontAwesome } from '@expo/vector-icons';
 
 const AUTH_STATES = {
   INIT: "INIT",
+  LOGIN: "LOGIN",
   LINK_SENT: "LINK_SENT",
   LOGIN_REQUEST:"LOGINREQ",
   PROFILE_REMOVE: "PROFILE_REMOVE",
@@ -174,6 +176,10 @@ class Login extends Component {
     }
   }
 
+  _notImplemented = async () => {
+    alert('Not Implemented')
+  }
+
   _setUserData = () => {
     const { username, age, country, sex, } = this.state;
     const { country: countryText, sex: sexText, age: ageText } = this.props.locale.messages;
@@ -253,6 +259,10 @@ class Login extends Component {
       this._goBackScreen();
   }
 
+  _onSkip = () => { 
+    this.setState({ modalVisible: false });
+      this.props.navigation.goBack();
+  }
 
   _onProfileEditPress = () => {
     const {info} = this.props.auth.user;
@@ -263,6 +273,10 @@ class Login extends Component {
       country: info.country,
       sex: info.sex
     });
+  }
+
+  _onLoginPress = () =>{
+    this.setState({ loginStep: AUTH_STATES.LOGIN})
   }
 
   _onProfileRemovePress = () => {
@@ -450,8 +464,57 @@ class Login extends Component {
 
   _renderInit = () => {
     const { isVerifyingEmail } = this.state;
-    const { next } = this.props.locale.messages;
-    return (
+    const { next,signin,landingtextlogin,registeremail,loginfacebook,logingoogle,skip } = this.props.locale.messages;
+    return (<>
+      <View>
+      <TouchableOpacity onPress={this._onLoginPress}><CustomText style={styles.loginText}>{landingtextlogin}</CustomText></TouchableOpacity>
+      
+        <CustomText style={styles.text1}></CustomText>
+        </View>
+
+      <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={styles.screen}>
+        <View style={styles.view0}>
+          <View style={styles.view01}><>          
+          <TouchableOpacity style={styles.defaultBtn} onPress={this._notImplemented}>
+              {isVerifyingEmail ? 
+              <ActivityIndicator animating={isVerifyingEmail} size={"small"} color={Colors.tintColor}/>
+              :
+              <CustomText style={styles.defaultBtnTextbold}><FontAwesome name="at" size={20} iconStyle={{marginRight: 100}} color="grey"/>  {registeremail}</CustomText>
+              }
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.defaultBtn} onPress={this._notImplemented}>
+              {isVerifyingEmail ? 
+              <ActivityIndicator animating={isVerifyingEmail} size={"small"} color={Colors.tintColor}/>
+              :
+              <CustomText style={styles.defaultBtnText}><FontAwesome name="facebook" size={20} iconStyle={{marginRight: 100}} color="grey"/> {loginfacebook}</CustomText>
+              }
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.defaultBtn} onPress={this._notImplemented}>
+              {isVerifyingEmail ? 
+              <ActivityIndicator animating={isVerifyingEmail} size={"small"} color={Colors.tintColor}/>
+              :
+              <CustomText style={styles.defaultBtnText}><FontAwesome name="google" size={20} iconStyle={{marginRight: 100}} color="grey"/>   {logingoogle}</CustomText>
+              }
+            </TouchableOpacity>
+            </>
+          </View>
+          <TouchableOpacity activeOpacity={0.7} style={styles.defaultBlackBtn}  onPress={this._onSkip}>
+                      <CustomText style={styles.buttonWhiteText}>{skip}</CustomText>
+                    </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView></>
+    )
+  }
+
+
+  _renderLogin = () => {
+    const { isVerifyingEmail } = this.state;
+    const { next,signin,forgotpassword } = this.props.locale.messages;
+    return (<>
+      <View>
+      <TouchableOpacity onPress={this._notImplemented}><CustomText style={styles.title}>{signin}</CustomText></TouchableOpacity>
+      <TouchableOpacity onPress={this._notImplemented}><CustomText style={styles.text1}>{forgotpassword}</CustomText></TouchableOpacity></View>
+
       <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={styles.screen}>
         <View style={styles.view0}>
           <View style={styles.view01}>
@@ -471,12 +534,12 @@ class Login extends Component {
               {isVerifyingEmail ? 
               <ActivityIndicator animating={isVerifyingEmail} size={"small"} color={Colors.tintColor}/>
               :
-              <CustomText style={styles.defaultBtnText}>{next}</CustomText>
+              <CustomText style={styles.defaultBtnText}>{signin}</CustomText>
               }
             </TouchableOpacity>
           </View>
         </View>
-      </KeyboardAvoidingView>
+      </KeyboardAvoidingView></>
     )
   }
 
@@ -534,13 +597,14 @@ class Login extends Component {
     const { loginStep } = this.state;
     if (!this.props.auth.success) {
       // Not yet authenticated (input -> sent -> error)
-      const { register } = this.props.locale.messages;
+      //const { register } = this.props.locale.messages;
       return (
         <ConnectedScreenErrorBoundary>
           <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
             <ConnectedHeader onBackPress={this._onBackPress} />
-            <CustomText style={styles.title}>{register}</CustomText>
+            
             {loginStep === AUTH_STATES.INIT && this._renderInit()}
+            {loginStep === AUTH_STATES.LOGIN && this._renderLogin()}
             {loginStep === AUTH_STATES.LINK_SENT && this._renderLinkSent()}
             {loginStep === AUTH_STATES.ERROR && this._renderError()}
             {loginStep === AUTH_STATES.LOGIN_REQUEST && this._renderLinkSent()}
@@ -629,6 +693,15 @@ const styles = StyleSheet.create({
     textAlign: 'center', 
     fontSize: 15, 
     color: "#3E3E3D",
+    marginBottom: 20,
+    marginTop:100,
+  },
+  textbold: { 
+    textAlign: 'center', 
+    fontSize: 15, 
+    fontFamily: "montserrat-bold",
+    fontWeight: 'bold',
+    color: "#3E3E3D",
     marginBottom: 40
   },
   text2: { 
@@ -667,6 +740,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 15,
     marginBottom: 20,
+    marginTop:50,
     fontWeight: "300"
   },
   buttonText: {
@@ -675,7 +749,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textTransform: "uppercase",
   },
+  buttonWhiteText: {
+    color: "white",
+    fontFamily: "montserrat-bold",
+    fontSize: 14,
+    textTransform: "uppercase",
+  },
   button: {
+  
     marginTop: 40,
     paddingHorizontal: 20,
     paddingVertical: 10,
@@ -686,8 +767,31 @@ const styles = StyleSheet.create({
     display: "flex",
     minWidth: "50%",
   },
+
+  awbutton: {
+    marginBottom:10,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 4,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: Colors.lightGray,
+    display: "flex",
+    width: "98%",
+  },
   defaultBtn: {
-    marginTop: 40,
+    marginTop: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 4,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: Colors.lightGray,
+    display: "flex",
+    width: "98%",
+  },
+  defaultBlackBtn: {
+    marginTop: 10,
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 4,
@@ -695,13 +799,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "black",
     display: "flex",
-    minWidth: "50%",
+    width: "60%",
   },
   defaultBtnText: {
-    color: "white",
+    color: "black",
+    fontFamily: "montserrat-regular",
+    fontSize: 14,
+    
+  },
+  defaultBtnTextbold: {
+    color: "black",
     fontFamily: "montserrat-bold",
     fontSize: 14,
-    textTransform: "uppercase",
+    
   },
   buttonsView: {
     flex: 1,

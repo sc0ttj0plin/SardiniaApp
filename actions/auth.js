@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import ExpoConstants from 'expo-constants';
 
 //@passwordless
-export const passwordLessSignup = (email,password) =>
+export const passwordSignup = (email,password) =>
   async (dispatch, getState) => {
     dispatch({ type: Constants.AUTH });
     let token = null;
