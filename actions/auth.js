@@ -5,64 +5,15 @@ import AsyncStorage from '@react-native-community/async-storage';
 import ExpoConstants from 'expo-constants';
 
 //@passwordless
+
+
+
 export const passwordSignup = (email,password) =>
   async (dispatch, getState) => {
     dispatch({ type: Constants.AUTH });
-    let token = null;
-    //Auth Storage is persisted (see store.js)
-    const expoLink = Linking.makeUrl(); //no navigation path, no params
-    //Note: This is added to authorized domains in firebase
-    const proxyUrl = `${ExpoConstants.manifest.extra.firebasePassLessAuthLinkProxy}?redirectUrl=${encodeURIComponent(expoLink)}`;
-
-    var actionCodeSettings = {
-      handleCodeInApp: true,
-      url: proxyUrl,
-    };
-
     try {
-      
-      await firebase
-        .auth()
-        .createUserWithEmailAndPassword(
-          email,
-          password
-        )
-        .then(() => {
-          console.log("User account created & signed in!");
-        })
-        .catch((error) => {
-          if (error.code === "auth/email-already-in-use") {
-            console.log("That email address is already in use!Redirect to login without registration");
-            var login = firebase.auth().signInWithEmailAndPassword(email,password)
-            console.log(login)
-          }
-
-          if (error.code === "auth/invalid-email") {
-            console.log("That email address is invalid!");
-          }
-
-          console.error(error);
-        });
-      AsyncStorage.setItem('email', email); 
-      AsyncStorage.setItem('password', password);//Store email to finish auth later
-    } catch(e) {
-      console.log("Error", e.message);
-      dispatch({ type: Constants.AUTH_FAIL, payload: { message: e.message } });
-    }
-}
-
-//@passwordless
-export const passwordLessLinkHandler = (url) =>
-async (dispatch, getState) => {
-  // const auth = getState().authState;
-  //Auth Storage is persisted (see store.js)
-  const isSignInWithEmailLink = firebase.auth().isSignInWithEmailLink(url);
-  if (isSignInWithEmailLink) {
-    try {
-      const email = await AsyncStorage.getItem('email');
-      const result = await firebase.auth().signInWithEmailLink(email, url);
+      const result = await firebase.auth().signInWithEmailAndPassword(email,password);
       const token = await firebase.auth().currentUser.getIdToken(/* forceRefresh */true);
-      // Get user information if any, the discriminant for a complete profile is a populated user.info object
       if (result.user) {
         let user = result.user;
         let userInfo = await firebase.database().ref(`users/${user.uid}/info`).once('value');
@@ -74,11 +25,8 @@ async (dispatch, getState) => {
     } catch (e) {
       console.log(e.message);
       dispatch({ type: Constants.AUTH_FAIL, payload: { message: e.message } });
-    }
-  }
-}
+    }}
 
-//Login 
 _checkAuthStatus = () => {
   return new Promise((resolve, reject) => {
     try {

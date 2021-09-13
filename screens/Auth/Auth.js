@@ -171,7 +171,7 @@ class Login extends Component {
     if (!Validate.email(email)) {
       alert('Invalid email');
     } else {
-      this.props.actions.passwordLessSignup(email,password);
+      this.props.actions.passwordSignup(email,password);
       this.setState({ loginStep: AUTH_STATES.LOGIN_REQUEST });
     }
   }
@@ -466,7 +466,7 @@ class Login extends Component {
     const { isVerifyingEmail } = this.state;
     const { next,signin,landingtextlogin,registeremail,loginfacebook,logingoogle,skip } = this.props.locale.messages;
     return (<>
-      <View>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <TouchableOpacity onPress={this._onLoginPress}><CustomText style={styles.loginText}>{landingtextlogin}</CustomText></TouchableOpacity>
       
         <CustomText style={styles.text1}></CustomText>
@@ -512,8 +512,8 @@ class Login extends Component {
     const { next,signin,forgotpassword } = this.props.locale.messages;
     return (<>
       <View>
-      <TouchableOpacity onPress={this._notImplemented}><CustomText style={styles.title}>{signin}</CustomText></TouchableOpacity>
-      <TouchableOpacity onPress={this._notImplemented}><CustomText style={styles.text1}>{forgotpassword}</CustomText></TouchableOpacity></View>
+      <CustomText style={styles.title}>{signin}</CustomText>
+      <TouchableOpacity onPress={this._notImplemented}><CustomText style={styles.loginText}>{forgotpassword}</CustomText></TouchableOpacity></View>
 
       <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={styles.screen}>
         <View style={styles.view0}>
@@ -530,11 +530,11 @@ class Login extends Component {
                 <Input autoCapitalize={'none'} secureTextEntry={true} placeholder="Password" onChangeText={(password) => this.setState({password: password})} />
               </Item>
             </Form>
-            <TouchableOpacity style={styles.defaultBtn} onPress={this._validateForm}>
+            <TouchableOpacity style={styles.defaultBlackBtn} onPress={this._validateForm}>
               {isVerifyingEmail ? 
               <ActivityIndicator animating={isVerifyingEmail} size={"small"} color={Colors.tintColor}/>
               :
-              <CustomText style={styles.defaultBtnText}>{signin}</CustomText>
+              <CustomText style={styles.buttonWhiteText}>{signin}</CustomText>
               }
             </TouchableOpacity>
           </View>
@@ -652,7 +652,7 @@ const styles = StyleSheet.create({
   screen: {
     flex:1, 
     backgroundColor: 'white', 
-    marginTop: Layout.statusbarHeight
+    //marginTop: Layout.statusbarHeight
   },
   view0: { 
     flex: 1, 
@@ -661,7 +661,7 @@ const styles = StyleSheet.create({
   view01: {
     width: "90%", 
     alignItems: 'center', 
-    marginTop: 20, 
+    marginTop: 0, 
     justifyContent: 'center' 
   },
   mainView: {
@@ -693,8 +693,8 @@ const styles = StyleSheet.create({
     textAlign: 'center', 
     fontSize: 15, 
     color: "#3E3E3D",
-    marginBottom: 20,
-    marginTop:100,
+    marginBottom: 0,
+    marginTop:0,
   },
   textbold: { 
     textAlign: 'center', 
@@ -741,7 +741,9 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginBottom: 20,
     marginTop:50,
-    fontWeight: "300"
+    //fontWeight: "300",
+    fontFamily: "montserrat-bold",
+    
   },
   buttonText: {
     color: "black",
@@ -791,7 +793,7 @@ const styles = StyleSheet.create({
     width: "98%",
   },
   defaultBlackBtn: {
-    marginTop: 10,
+    marginTop: 40,
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 4,
