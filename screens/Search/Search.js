@@ -135,6 +135,10 @@ class SearchScreen extends Component {
     }
     if (!title)
       return;
+    let termName = null;
+    if (el.node && searchOrAutocomplete === "autocomplete") {
+      termName = el.node.term.name
+    }
     const isNode = el.term === null && el.node !== null; /* is node or category? */
     const elType = isNode ? el.node.type : el.term.vid;
     let entityIconOpts = Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[elType] || {};
@@ -148,11 +152,14 @@ class SearchScreen extends Component {
         }]}>
           <CustomIcon
             name={entityIconOpts.iconName}
-            size={13}
+            size={14}
             color={"white"}
           />
         </View>
-        <HTML baseFontStyle={this._isNavigableItem(el) ? styles.normalText : styles.boldText} html={title}></HTML>
+        <View style={{ flexDirection: 'column' }}>
+          <HTML baseFontStyle={this._isNavigableItem(el) ? styles.normalText : styles.boldText} html={title}></HTML>
+          {termName && <CustomText style={[styles.normalText, { fontSize: 12, textTransform: 'uppercase' }]}>{termName}</CustomText>}
+        </View>
       </TouchableOpacity>
     );
   }
@@ -170,18 +177,17 @@ class SearchScreen extends Component {
   _renderListEmptyComponent = () => {
     if (this._isLoadingData()) return this._renderLoading()
 
-    if (this._isSuccessData()) {
-      return (
-        <View style={styles.emptyListContainer}>
-          <CustomIcon style={styles.emptyListIcon} name="icon-mic" size={100} color={Colors.orange}/>
-          <CustomText style={styles.emptyListTitle}>Prova a chiedermi:</CustomText>
-          <CustomText style={styles.emptyListDescription}>“Cosa c’è nei dintorni?”{'\n'}“Parlami della natura in
-            Sardegna”</CustomText>
-        </View>
-      )
-    }
+    const { searchEmptyListTitle, searchEmptyListDescription } = this.props.locale.messages;
 
-    return null
+    return (
+      <View style={styles.emptyListContainer}>
+        <View style={styles.emptyListIcon}>
+          <CustomIcon name="icon-mic" size={100} color={Colors.orange}/>
+        </View>
+        <CustomText style={styles.emptyListTitle}>{searchEmptyListTitle}</CustomText>
+        <CustomText style={styles.emptyListDescription}>{searchEmptyListDescription}</CustomText>
+      </View>
+    )
   }
 
   _setSearch = (search) => {
@@ -208,12 +214,13 @@ class SearchScreen extends Component {
         onChangeText={this._setSearch}
         value={this.state.search}
         placeholderTextColor={Colors.mediumGray}
-        inputContainerStyle={{ fontFamily: 'montserrat-light', fontSize: 40 }}
-        containerStyle={{ backgroundColor: Colors.lightGray, padding: 16, borderBottomColor: Colors.black, borderBottomWidth: 2 }}
+        inputContainerStyle={{ fontFamily: 'montserrat-light', fontSize: 40, backgroundColor: 'transparent' }}
+        containerStyle={{ backgroundColor: Colors.lightGray, padding: Platform.OS === 'ios' ? 0 : 16, borderBottomColor: Colors.black, borderBottomWidth: 2 }}
         platform={Platform.OS === 'ios' ? 'ios' : 'android'}
         searchIcon={<Ionicons name="md-search" size={32} color={Colors.black} />}
         clearIcon={null}
         cancelIcon={null}
+        cancelButtonProps={{ color: Colors.mediumGray }}
       />
     )
   }
@@ -283,9 +290,9 @@ const styles = StyleSheet.create({
     // marginRight: 20
   },
   icon: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -294,11 +301,13 @@ const styles = StyleSheet.create({
   },
   normalText: {
     fontSize: 15,
-    fontFamily: "montserrat-regular"
+    fontFamily: "montserrat-regular",
+    color: Colors.mediumGray
   },
   boldText: {
     fontSize: 15,
     fontFamily: "montserrat-bold",
+    color: Colors.mediumGray
   },
   loadingDotsView1: {
     width: '100%',
@@ -316,13 +325,14 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   emptyListIcon: {
+    alignItems: "center",
+    justifyContent: "center",
     borderWidth: 6,
     borderColor: Colors.orange,
-    borderRadius: 64,
+    borderRadius: 69,
     width: 126,
     height: 126,
-    paddingLeft: 16,
-    paddingTop: 12
+    paddingLeft: 8
   },
   emptyListTitle: {
     marginTop: 30,
