@@ -276,6 +276,7 @@ export const VIDS = {
   pois: 14,
   inspirersCategories: 46,
   poisCategories: 36,
+  itinerariesCategory: 4,
   accomodations: 20,
 }
 

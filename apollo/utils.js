@@ -74,6 +74,30 @@ export const processEventTypes = function(eventTypes) {
 }
 
 /**
+ * Create an array of place type objects extracting the id and the name
+ * @param {*} placeTypes: types of places
+ */
+export const processPlaceTypes = function(placeTypes) {
+  let placeTypesArr = [];
+  placeTypes.forEach((el, idx) => {
+    placeTypesArr.push({ id: el.tid.toString(), name: el.name });
+  });
+  return placeTypesArr;
+}
+
+/**
+ * Create an array of itinerary type objects extracting the id and the name
+ * @param {*} itineraryTypes: types of itineraries
+ */
+export const processItineraryTypes = function(itineraryTypes) {
+  let itineraryTypesArr = [];
+  itineraryTypes.forEach((el, idx) => {
+    itineraryTypesArr.push({ id: el.tid.toString(), name: el.name });
+  });
+  return itineraryTypesArr;
+}
+
+/**
  * Process a generic entity retrieved from a query normalizing it, replacing image urls, computing distances etc..
  * @param {*} entity: a generic entity
  * @param {*} coords: coordinates for that entity

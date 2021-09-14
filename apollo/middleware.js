@@ -1,8 +1,16 @@
 import _ from 'lodash';
 import * as Constants from '../constants';
 import * as Queries from './queryTemplates';
-import { processCategories, processEventTypes, processEntity, _tmpAddMockPois } from "./utils";
+import {
+  processCategories,
+  processEventTypes,
+  processEntity,
+  _tmpAddMockPois,
+  processPlaceTypes,
+  processItineraryTypes
+} from "./utils";
 import actions from '../actions';
+import {VIDS} from "../constants";
 
 /**
  * Creates the apollo middleware to intercept actions and dispatch success/error actions through redux
@@ -230,12 +238,12 @@ const apolloMiddleware = client => {
         }
         else if (action.type === Constants.GET_ITINERARY_TYPES) {
           client.query({
-            query: Queries.getItineraryTypes,
-            variables: action.query
+            query: Queries.getCategoriesQuery,
+            variables: { vid: VIDS.itinerariesCategory }
           }).then((resp) => {
             let dispatch = { type: Constants.GET_ITINERARY_TYPES_SUCCESS, payload: { itineraryTypes: [] } };
-            if (resp.data && resp.data.itineraryTypes.nodes.length > 0)
-              dispatch.payload.itineraryTypes = processEventTypes(resp.data.itineraryTypes.nodes);
+            if (resp.data && resp.data.terms.length > 0)
+              dispatch.payload.itineraryTypes = processItineraryTypes(resp.data.terms);
             store.dispatch(dispatch);
           }).catch((e) => {
             console.log(e);
@@ -248,12 +256,12 @@ const apolloMiddleware = client => {
         }
         else if (action.type === Constants.GET_PLACE_TYPES) {
           client.query({
-            query: Queries.getPlaceTypes,
-            variables: action.query
+            query: Queries.getCategoriesQuery,
+            variables: { vid: VIDS.poisCategories }
           }).then((resp) => {
             let dispatch = { type: Constants.GET_PLACE_TYPES_SUCCESS, payload: { placeTypes: [] } };
-            if (resp.data && resp.data.placeTypes.nodes.length > 0)
-              dispatch.payload.placeTypes = processEventTypes(resp.data.placeTypes.nodes);
+            if (resp.data && resp.data.terms.length > 0)
+              dispatch.payload.placeTypes = processPlaceTypes(resp.data.terms);
             store.dispatch(dispatch);
           }).catch((e) => {
             console.log(e);
