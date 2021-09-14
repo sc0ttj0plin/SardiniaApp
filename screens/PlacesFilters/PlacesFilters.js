@@ -177,7 +177,9 @@ class PlacesFiltersScreen extends Component {
           backgroundColor: selected ? Colors.colorEventsScreen : "white"
         }]}
         onPress={() => this._onFilterPress(item)}
-        activeOpacity={0.7}>
+        activeOpacity={0.7}
+        disabled={!this.state.enableEventFilters}
+      >
         <View style={[styles.icon, {
           backgroundColor: Colors.colorEventsScreen,
           opacity: !this.state.enableEventFilters ? 0.2 : 1
@@ -219,7 +221,9 @@ class PlacesFiltersScreen extends Component {
           backgroundColor: selected ? Colors.colorItinerariesScreen : "white"
         }]}
         onPress={() => this._onFilterPress(item)}
-        activeOpacity={0.7}>
+        activeOpacity={0.7}
+        disabled={!this.state.enableItineraryFilters}
+      >
         <View style={[styles.icon, {
           backgroundColor: Colors.colorItinerariesScreen,
           opacity: !this.state.enableItineraryFilters ? 0.2 : 1
@@ -538,7 +542,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     flexWrap: "wrap",
-    paddingLeft: 15
+    paddingLeft: 15,
+    paddingBottom: 16
   },
   checkboxWrapper: {
     justifyContent: 'space-between'
