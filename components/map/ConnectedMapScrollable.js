@@ -351,7 +351,6 @@ class ConnectedMapScrollable extends PureComponent {
       const { term, coords, region, types, childUuids, isLoadingCb, animateToMyLocation } = this.props.topComponentCMVTProps;
       const { entitiesType } = this.props;
       return (
-        <>  
         <ClusteredMapViewTop
           term={term} 
           coords={coords}
@@ -369,7 +368,6 @@ class ConnectedMapScrollable extends PureComponent {
           fullscreen={this.props.fullscreen}
           animateToMyLocation={animateToMyLocation}
         />
-        </>
       )
     } else if (this.props.topComponentType === "MapView") {
       const { entitiesType } = this.props;
@@ -452,7 +450,6 @@ class ConnectedMapScrollable extends PureComponent {
     
     if (show)
       return (
-        <>
         <ScrollableContainer 
           entityType={entitiesType}
           topComponent={this._renderTopComponent}
@@ -474,7 +471,6 @@ class ConnectedMapScrollable extends PureComponent {
           isOpen={this._onScrollableOpened}
           isClosable={this.state.scrollableSnap!=1}
         />
-        </>
       )
     return this._renderTopComponent();
   }

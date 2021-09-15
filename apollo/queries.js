@@ -147,6 +147,26 @@ export function apolloQuery(action) {
         // console.log("response", resp)
         return resp.data.nodes;
       })
+  } else if (action.type === Constants.GET_ITINERARY_TYPES) {
+    return apolloClient.query({
+      query: Queries.getItineraryTypes,
+      variables: action.query
+    }).then((resp) => {
+      if(resp.data.nodes[0])
+        processEntity(resp.data.nodes[0]);
+      // console.log("response", resp)
+      return resp.data.nodes;
+    })
+  } else if (action.type === Constants.GET_PLACE_TYPES) {
+    return apolloClient.query({
+      query: Queries.getPlaceTypes,
+      variables: action.query
+    }).then((resp) => {
+      if(resp.data.nodes[0])
+        processEntity(resp.data.nodes[0]);
+      // console.log("response", resp)
+      return resp.data.nodes;
+    })
   } else if (action.type === Constants.GET_NEAREST_NODES_BY_TYPE) {
     return apolloClient.query({
       query: Queries.getNearestByType,

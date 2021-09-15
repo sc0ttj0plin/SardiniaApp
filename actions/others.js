@@ -6,6 +6,8 @@ export const setSearchOrAutocomplete = (payload) => ({ type: Constants.SET_SEARC
 
 export const resetSearchAndAutocompleteStr = () => ({ type: Constants.RESET_SEARCH_AND_AUTOCOMPLETE_STR, });
 
+export const setMapType = (payload) => ({ type: Constants.SET_MAP_TYPE, payload });
+
 //Places
 export const pushCurrentCategoryPlaces = (term) => ({ type: Constants.PUSH_CURRENT_CATEGORY_PLACES, payload: term });
 

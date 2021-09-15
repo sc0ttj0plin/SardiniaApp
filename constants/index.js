@@ -92,10 +92,23 @@ export const CHANGE_LOCALE = 'sardinia/locale/CHANGE_LOCALE';
 export const GET_CLUSTERS = 'sardinia/clusters/LOAD';
 export const GET_CLUSTERS_SUCCESS = 'sardinia/clusters/LOAD_SUCCESS';
 export const GET_CLUSTERS_FAIL = 'sardinia/clusters/LOAD_FAIL';
+
+/* event types */
 export const SET_SELECTED_EVENT_TYPES = 'sardinia/eventtypes/SET';
 export const GET_EVENT_TYPES = 'sardinia/eventtypes/LOAD';
 export const GET_EVENT_TYPES_SUCCESS = 'sardinia/eventtypes/LOAD_SUCCESS';
 export const GET_EVENT_TYPES_FAIL = 'sardinia/eventtypes/LOAD_FAIL';
+/* itinerary types */
+export const SET_SELECTED_ITINERARY_TYPES = 'sardinia/itinerarytypes/SET';
+export const GET_ITINERARY_TYPES = 'sardinia/itinerarytypes/LOAD';
+export const GET_ITINERARY_TYPES_SUCCESS = 'sardinia/itinerarytypes/LOAD_SUCCESS';
+export const GET_ITINERARY_TYPES_FAIL = 'sardinia/itinerarytypes/LOAD_FAIL';
+/* place types */
+export const SET_SELECTED_PLACE_TYPES = 'sardinia/placetypes/SET';
+export const GET_PLACE_TYPES = 'sardinia/placetypes/LOAD';
+export const GET_PLACE_TYPES_SUCCESS = 'sardinia/placetypes/LOAD_SUCCESS';
+export const GET_PLACE_TYPES_FAIL = 'sardinia/placetypes/LOAD_FAIL';
+
 export const GET_ITINERARIES = 'sardinia/itineraries/LOAD';
 export const GET_ITINERARIES_SUCCESS = 'sardinia/itineraries/LOAD_SUCCESS';
 export const GET_ITINERARIES_FAIL = 'sardinia/itineraries/LOAD_FAIL';
@@ -143,6 +156,8 @@ export const UNSET_ERROR = 'sardinia/others/UNSET_ERROR';
 export const FAVOURITES_EDIT = 'sardinia/favourites/FAVOURITES_EDIT'; 
 export const FAVOURITES_EDIT_SUCCESS = 'sardinia/favourites/FAVOURITES_EDIT_SUCCESS'; 
 export const FAVOURITES_EDIT_FAIL = 'sardinia/favourites/FAVOURITES_EDIT_FAIL'; 
+
+export const SET_MAP_TYPE = 'sardinia/map/SET_MAP_TYPE';
 
 // API
 export const FETCH_NUM_MONTHS_BACKWARDS = 1;
@@ -217,6 +232,7 @@ export const NAVIGATION = {
   NavExploreScreen: "ExploreScreen",
   NavVirtualTourScreen: "VirtualTourScreen",
   NavPlaceScreen: "PlaceScreen",
+  NavPlacesFiltersScreen: "PlacesFiltersScreen",
   NavMediaScreen: "MediaScreen",
   NavInspirerScreen: "InspirerScreen",
   NavExtrasScreen: "ExtrasScreen",
@@ -262,6 +278,7 @@ export const VIDS = {
   pois: 14,
   inspirersCategories: 46,
   poisCategories: 36,
+  itinerariesCategory: 4,
   accomodations: 20,
 }
 
@@ -525,7 +542,7 @@ export const VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS = {
   },
   [NODE_TYPES.accomodations]: {
     backgroundTopRightCorner: Colors.colorAccomodationsScreen,
-    iconColor: "white", 
+    iconColor: Colors.colorAccomodationsScreen,
     iconName: 'icon-accomodation-map'
   },
   //Entity types

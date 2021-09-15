@@ -247,7 +247,7 @@ class ScrollableContainer extends PureComponent {
               {topComponent()}
             </Animated.View>
             { extraComponent &&
-              <Animated.View style={[styles.extraComponent, { transform: [{ translateY: this._translateAnimY2 } ]}]}>
+              <Animated.View pointerEvents='box-none' style={[styles.extraComponent, { transform: [{ translateY: this._translateAnimY2 } ]}]}>
                 {extraComponent()}
               </Animated.View>
             }

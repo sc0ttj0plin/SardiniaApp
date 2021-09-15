@@ -1,4 +1,4 @@
-import  { normalizeLanguage } from '../helpers/language';
+import {normalizeLanguage} from '../helpers/language';
 
 const itKey = normalizeLanguage("it");
 const enKey = normalizeLanguage("en-*");
@@ -76,10 +76,10 @@ const dict = {
     favouriteAccomodations: "STRUTTURE RICETTIVE",
     noFavourites: "Nessun preferito",
     canBeOfInterest: "Potrebbe interessarti anche",
-    extrasWildNature: "Natura", 
-    extrasMythIsland: "Mito", 
-    extrasTradition: "Tradizioni", 
-    extrasCentenaryLand: "Centenari", 
+    extrasWildNature: "Natura",
+    extrasMythIsland: "Mito",
+    extrasTradition: "Tradizioni",
+    extrasCentenaryLand: "Centenari",
     extrasLiveTheSea: "Mare",
     extrasStarredPlaces: "Luoghi del cuore",
     extrasCulture: "Cultura",
@@ -104,6 +104,14 @@ const dict = {
     entityIsNotTranslated: "Questa entità non ha una traduzione per la lingua corrente",
     retry: "Riprova",
     cancel: "Annulla",
+    mapStyleTitle: 'STILE MAPPA',
+    standardMapCheckBoxTitle: 'Mappa',
+    satelliteMapCheckBoxTitle: 'Satellite',
+    terrainMapCheckBoxTitle: 'Rilievo',
+    filterByTitle: 'FILTRA PER',
+    smartFiltersTitle: 'Filtri intelligenti',
+    searchEmptyListTitle: "Prova a chiedermi:",
+    searchEmptyListDescription: "“Cosa c’è nei dintorni?”\n“Parlami della natura in Sardegna”",
     //LOGIN
     possibleCauses: "Possibili cause:",
     reusedOldLink: "• È stato usato un link di login scaduto o già utilizzato",
@@ -138,17 +146,17 @@ const dict = {
     lanEnglish: '🇬🇧 Inglese',
     //AUTH
     profile: 'Profilo',
-    username: "Inserisci un nome", 
-    name: "Nome", 
-    surname: "Cognome", 
-    birth: "Data di nascita", 
-    country: "Paese", 
+    username: "Inserisci un nome",
+    name: "Nome",
+    surname: "Cognome",
+    birth: "Data di nascita",
+    country: "Paese",
     sex: "Sesso",
     age: "Età",
     confirm: "Conferma",
     register: "Registrati",
     next: "Avanti",
-    sentLink: "Ti abbiamo mandato un link", 
+    sentLink: "Ti abbiamo mandato un link",
     checkInbox: "Controlla la tua mail",
     logoutMsg: "Vuoi disconnettere il tuo account?",
     logoutBtn: "Disconnetti",
@@ -161,11 +169,11 @@ const dict = {
     loggingIn: "Login in corso..",
     loginError: "Errore di login:",
     //Parks
-    nearParks: "Parcheggi nelle vicinanze!", 
+    nearParks: "Parcheggi nelle vicinanze!",
     discoverParks: "Scopri i parcheggi liberi più vicini a te attraverso uno dei servizi convenzionati.",
     findParkBtn: "TROVA UN PARCHEGGIO",
     //Update
-    updateInProgressTitle: "Aggiornamento in corso", 
+    updateInProgressTitle: "Aggiornamento in corso",
     updateInProgressDescription: "Attendere il riavvio dell'applicazione",
     //Networking
     disconnected: "Verificare la connessione",
@@ -173,14 +181,14 @@ const dict = {
     retry: "Riprova",
     cancel: "Cancel",
     //LINKING
-    loadingLinkingContentTitle: "Caricamento del contenuto", 
+    loadingLinkingContentTitle: "Caricamento del contenuto",
     loadingLinkingContentDescription: "Stiamo cercando il contenuto richiesto",
-    loadingLinkingContentTitleError: "Errore nel caricamento del contenuto", 
+    loadingLinkingContentTitleError: "Errore nel caricamento del contenuto",
     loadingLinkingContentDescriptionError: "C'è stato un'errore nella ricerca del contenuto",
     //App Location Tracking background
     notificationTitle: "L'app Sardinia ti avvisa",
     notificationBody: "Sei vicino ad un punto di interesse!",
-    //Redux error 
+    //Redux error
     reduxErrorTitle: "Ops, qualcosa è andato storto",
     reduxErrorBody: "L'applicazione ha riscontrato un'errore.",
     //Generic Screen error
@@ -255,10 +263,10 @@ const dict = {
     favouriteAccomodations: "ACCOMODATIONS",
     noFavourites: "There are no favourites",
     canBeOfInterest: "You can be interested also to",
-    extrasWildNature: "Nature", 
-    extrasMythIsland: "The Island of the Myth", 
-    extrasTradition: "Tradition", 
-    extrasCentenaryLand: "The Island of the Centenaries", 
+    extrasWildNature: "Nature",
+    extrasMythIsland: "The Island of the Myth",
+    extrasTradition: "Tradition",
+    extrasCentenaryLand: "The Island of the Centenaries",
     extrasLiveTheSea: "Sea",
     extrasCulture: "Culture",
     extrasStarredPlaces: "Places of the Hearth",
@@ -283,6 +291,14 @@ const dict = {
     entityIsNotTranslated: "This entity hasn't got a translation for the current language",
     retry: "Retry",
     cancel: "Cancel",
+    mapStyleTitle: 'MAP STYLE',
+    standardMapCheckBoxTitle: 'Standard',
+    satelliteMapCheckBoxTitle: 'Satellite',
+    terrainMapCheckBoxTitle: 'Terrain',
+    filterByTitle: 'FILTER BY',
+    smartFiltersTitle: 'Smart filters',
+    searchEmptyListTitle: "Try asking me:",
+    searchEmptyListDescription: "“What's nearby?”\n“Tell me about nature in Sardinia”",
     //LOGIN
     possibleCauses: "Possible causes:",
     reusedOldLink: "• The login link has already been used or is expired",
@@ -317,17 +333,17 @@ const dict = {
     lanEnglish: '🇬🇧 English',
     //AUTH
     profile: 'Profile',
-    username: "Username", 
-    name: "Name", 
-    surname: "Surname", 
-    birth: "Birth date", 
-    country: "Country", 
+    username: "Username",
+    name: "Name",
+    surname: "Surname",
+    birth: "Birth date",
+    country: "Country",
     sex: "Sex",
     age: "Age",
     confirm: "Confirm",
     register: "Register",
     next: "Next",
-    sentLink: "We've sent you a link", 
+    sentLink: "We've sent you a link",
     checkInbox: "Check your inbox",
     logoutMsg: "Do you want to logout from your account?",
     logoutBtn: "Logout",
@@ -340,7 +356,7 @@ const dict = {
     loggingIn: "Logging in..",
     loginError: "Error loggin in:",
     //Parks
-    nearParks: "Nearest parkings!", 
+    nearParks: "Nearest parkings!",
     discoverParks: "Discover the nearest free parkings provided by one of the affiliated services.",
     findParkBtn: "FIND A PARK",
     //Update
@@ -352,14 +368,14 @@ const dict = {
     retry: "Retry",
     cancel: "Cancel",
     //LINKING
-    loadingLinkingContentTitle: "Loading content", 
+    loadingLinkingContentTitle: "Loading content",
     loadingLinkingContentDescription: "We are searching for the requested content",
-    loadingLinkingContentTitleError: "Loading content error", 
+    loadingLinkingContentTitleError: "Loading content error",
     loadingLinkingContentDescriptionError: "We had troubles loading the linked content",
     //App Location Tracking background
     notificationTitle: "Sardinia App Location",
     notificationBody: "Sardinia App is tracking your location",
-    //Redux error 
+    //Redux error
     reduxErrorTitle: "Ops, something has gone wrong",
     reduxErrorBody: "The application has encountered an error.",
     //Generic Screen error

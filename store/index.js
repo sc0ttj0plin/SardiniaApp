@@ -14,6 +14,7 @@ import poisReducer from '../reducers/pois';
 import preferencesReducer from '../reducers/preferences';
 import accomodationsReducer from '../reducers/accomodations';
 import searchAutocompleteReducer from '../reducers/searchAutocomplete';
+import placesReducer from "../reducers/places";
 import apolloMiddleware from '../apollo/middleware';
 import AsyncStorage from '@react-native-community/async-storage';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'; //2lvl objects
@@ -57,6 +58,7 @@ const rootReducer = combineReducers({
     poisState: poisReducer,
     accomodationsState: accomodationsReducer,
     searchAutocompleteState: searchAutocompleteReducer,
+    placesState: placesReducer
   }
 );
 
@@ -75,4 +77,4 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 //Create the apollo client, export 
 export const apolloClient = makeApolloClient();
 export const store = createStore(persistedReducer, applyMiddleware(thunk, axiosMiddleware(restClient, axiosMiddlewareOptions), apolloMiddleware(apolloClient)));
-export const persistor = persistStore(store);
+export const persistor = persistStore(store);

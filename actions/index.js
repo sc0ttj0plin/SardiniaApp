@@ -13,6 +13,7 @@ import * as searchAutocompleteActions from './searchAutocomplete';
 import * as preferencesActions from './preferences';
 import * as analyticsActions from './analytics';
 import * as authActions from './auth';
+import * as places from './places';
 
 const allActions = { 
    ...categoriesActions,
@@ -30,5 +31,6 @@ const allActions = {
    ...preferencesActions,
    ...analyticsActions,
    ...authActions,
+   ...places
  }
 export default allActions;
