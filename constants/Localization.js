@@ -104,6 +104,8 @@ const dict = {
     entityIsNotTranslated: "Questa entità non ha una traduzione per la lingua corrente",
     retry: "Riprova",
     cancel: "Annulla",
+    searchEmptyListTitle: "Prova a chiedermi:",
+    searchEmptyListDescription: "“Cosa c’è nei dintorni?”\n“Parlami della natura in Sardegna”",
     //LOGIN
     possibleCauses: "Possibili cause:",
     reusedOldLink: "• È stato usato un link di login scaduto o già utilizzato",
@@ -283,6 +285,8 @@ const dict = {
     entityIsNotTranslated: "This entity hasn't got a translation for the current language",
     retry: "Retry",
     cancel: "Cancel",
+    searchEmptyListTitle: "Try asking me:",
+    searchEmptyListDescription: "“What's nearby?”\n“Tell me about nature in Sardinia”",
     //LOGIN
     possibleCauses: "Possible causes:",
     reusedOldLink: "• The login link has already been used or is expired",
