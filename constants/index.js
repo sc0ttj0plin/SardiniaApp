@@ -157,6 +157,8 @@ export const FAVOURITES_EDIT = 'sardinia/favourites/FAVOURITES_EDIT';
 export const FAVOURITES_EDIT_SUCCESS = 'sardinia/favourites/FAVOURITES_EDIT_SUCCESS'; 
 export const FAVOURITES_EDIT_FAIL = 'sardinia/favourites/FAVOURITES_EDIT_FAIL'; 
 
+export const SET_MAP_TYPE = 'sardinia/map/SET_MAP_TYPE';
+
 // API
 export const FETCH_NUM_MONTHS_BACKWARDS = 1;
 export const FETCH_NUM_MONTHS_FORWARD = 0;

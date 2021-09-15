@@ -1,4 +1,5 @@
 import * as Constants from '../constants';
+import MapView from "react-native-maps";
 
 const INITIAL_STATE = {
   searchOrAutocomplete: "autocomplete",
@@ -20,6 +21,7 @@ const INITIAL_STATE = {
   //global redux error
   reduxError: null, //the error object
   reduxErrorSourceAction: null, //the action that caused the error (retry)
+  mapType: MapView.MAP_TYPES.STANDARD,
 }
 
 
@@ -174,6 +176,11 @@ export default function reducer(state = INITIAL_STATE, action) {
         ...state,
         reduxError: null,
         reduxErrorSourceAction: null,
+      }
+    case Constants.SET_MAP_TYPE:
+      return {
+        ...state,
+        mapType: action.payload
       }
     default:
       return state;

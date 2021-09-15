@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import {View, StyleSheet, PixelRatio, Button} from "react-native";
+import {View, StyleSheet, PixelRatio} from "react-native";
 import { useNavigation, useRoute, useIsFocused} from '@react-navigation/native';
 import Animated from 'react-native-reanimated';
 import { 
@@ -20,6 +20,7 @@ import Layout from '../../constants/Layout';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
+import {Button} from "react-native-elements";
 const { Value, event, interpolate } = Animated;
 
 /**
@@ -347,7 +348,6 @@ class PlacesScreen extends PureComponent {
 
     return (
         <>
-          <Button title="Open filters" onPress={() => { this.props.navigation.navigate(Constants.NAVIGATION.NavPlacesFiltersScreen) }} />
           <ConnectedMapScrollable
             // entities type (used to discriminate the rendering function, places, accomodations, events, itineraries)
             entitiesType={entitiesType}
@@ -355,7 +355,7 @@ class PlacesScreen extends PureComponent {
             scrollableProps={scrollableProps}
             // Extra component: if scrollableRenderExtraComponent is undefined, must specify extra component props
             // scrollableRenderExtraComponent={this._renderFiltersList}
-            scrollableExtraComponentProps={extraComponentProps}
+            // scrollableExtraComponentProps={extraComponentProps}
             // Header text component: if scrollableHeaderTextComponent is undefined, must specify scrollableHeaderText
             scrollableHeaderTextComponent={this._renderHeaderText}
             // scrollableHeaderText={() => <Text>Header Text</Text>}

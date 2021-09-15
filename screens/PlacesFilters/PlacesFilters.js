@@ -34,7 +34,7 @@ class PlacesFiltersScreen extends Component {
       eventFilters: props.events.eventsTypes || [],
       itineraryFilters: props.itineraries.itinerariesTypes || [],
       placeFilters: props.places.placesTypes || [],
-      mapType: MapView.MAP_TYPES.STANDARD,
+      mapType: props.others.mapType,
       useSmartFilters: true,
       enableEventFilters: true,
       enableItineraryFilters: true,
@@ -125,11 +125,12 @@ class PlacesFiltersScreen extends Component {
   }
 
   _onBackPress = () => {
-    const {selectedFilters} = this.state;
+    const {selectedFilters, mapType} = this.state;
     if (this.props.events.selectedTypes !== selectedFilters) {
       this.props.actions.resetEvents()
       this.props.actions.setSelectedEventTypes(selectedFilters);
     }
+    this.props.actions.setMapType(mapType);
     this.props.navigation.goBack()
   }
   /********************* Render methods go down here *********************/
