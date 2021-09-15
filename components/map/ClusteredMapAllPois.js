@@ -543,14 +543,27 @@ class ClusteredMapViewTop extends PureComponent {
     }
   }
 
+  _openFilterScreen = () => {
+    this.props.navigation.navigate(Constants.NAVIGATION.NavPlacesFiltersScreen)
+  }
+
   render() {
+    const { filter } = this.props.locale.messages;
     var {initRegion, pois, clusters, itineraries, events, selectedCluster} = this.state;
-    var {paddingBottom = 65} = this.props;
+    var {paddingBottom = 65, others} = this.props;
+    let { mapType } = others;
 
     var bottom = paddingBottom - (this.props.fullscreen ? 30 : 0); 
 
     return (
       <>
+        <Button
+          buttonStyle={styles.filterButton}
+          titleStyle={styles.filterButtonTitle}
+          containerStyle={styles.filterButtonContainer}
+          title={filter}
+          onPress={this._openFilterScreen}
+        />
         <MapView
           ref={ref => this._mapRef = ref}
           mapPadding={{
@@ -563,7 +576,7 @@ class ClusteredMapViewTop extends PureComponent {
           style={[styles.fill]}
           showsUserLocation={ true }
           initialRegion={initRegion}
-          mapType='standard'
+          mapType={mapType}
           showsIndoorLevelPicker={true}
           showsCompass={false}
           onPress={this._clearClusterSelection}
@@ -666,8 +679,24 @@ const styles = StyleSheet.create({
   buttonGoToMyLocation: {
     width: "100%",
     height: "100%"
+  },
+  filterButton: {
+    marginTop: 16,
+    backgroundColor: Colors.black,
+    height: 32,
+    borderRadius: 16,
+    alignSelf: 'center',
+    paddingHorizontal: 25,
+    paddingVertical: 7,
+    position: 'absolute'
+  },
+  filterButtonTitle: {
+    fontSize: 14,
+    fontFamily: 'montserrat-bold'
+  },
+  filterButtonContainer: {
+    zIndex: 2
   }
-  
 });
 
 
