@@ -110,6 +110,10 @@ class ClusteredMapViewTop extends PureComponent {
   }
 
   _animateMapToRegion = (coords, zoom, duration = 200, delay = 0) => {
+    if (!coords) {
+      console.warn("Can't animate map coords is null");
+      return;
+    }
     var camera = {center: coords}
     if(zoom) {
       camera.zoom = zoom;
@@ -392,7 +396,8 @@ class ClusteredMapViewTop extends PureComponent {
       return null;
   }
 
-  _getEventEntityCoords = (entity, isEvent) => {
+  _getEventEntityCoords = (entity, isEvent = false) => {
+    const { lan } = this.props.locale;
     if(isEvent){
       const coordinates = _.get(entity, ["itinerary", 0], null);
       // console.log("coordinates", coordinates)
@@ -402,9 +407,10 @@ class ClusteredMapViewTop extends PureComponent {
         return null;
     }
     else{
-      const coordinates = _.get(entity, "coords", null);
+      const coordinates = _.get(entity, ["stages", lan, 0, "poi", "georef", "coordinates"], null)
+      // console.log("coordinates", coordinates)
       if(coordinates)
-        return { latitude: parseFloat(coordinates.latitude), longitude: parseFloat(coordinates.longitude) };
+        return { latitude: parseFloat(coordinates[1]), longitude: parseFloat(coordinates[0]) };
       else
         return null;
     }
@@ -501,7 +507,7 @@ class ClusteredMapViewTop extends PureComponent {
       this._disableRegionChangeCallback = true;
 
       if(Platform.OS == "ios") {
-        const coords = this._getEventEntityCoords(entity);
+        const coords = this._getEventEntityCoords(entity, entity.type === NODE_TYPES.events);
         this._animateMapToRegion(coords);
       }
       setTimeout(() => this._disableRegionChangeCallback = false, 1000);
