@@ -17,6 +17,12 @@ import { Ionicons } from '@expo/vector-icons';
 import CustomText from "../others/CustomText";
 import Colors from '../../constants/Colors';
 import CustomIcon from '../others/CustomIcon';
+import moment from "moment";
+import {
+  FETCH_NUM_MONTHS_BACKWARDS,
+  FETCH_NUM_MONTHS_FORWARD, NODE_TYPES, VIDS,
+  VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS
+} from "../../constants";
 
 /**
  * Definitions:
@@ -37,9 +43,13 @@ class ClusteredMapViewTop extends PureComponent {
     this.state = {
       initRegion: region,
       clusters: [],
+      itineraries: [],
+      events: [],
       nearPois, /* to calculate the smallest enclosing polygon and zoom to it */
       types: typesForQuery,
       selectedCluster: null, /* currently selected cluster/poi */
+      selectedEntity: null,
+      tracksViewChanges: false,
       isCoordsInBound
     };
 
@@ -49,7 +59,7 @@ class ClusteredMapViewTop extends PureComponent {
 
   componentDidMount() {
     if ( this.props.others.geolocation.coords) {
-      this._onUpdateCoords(this.props.others.geolocation, this.props.others.geolocationSource);
+      // this._onUpdateCoords(this.props.others.geolocation, this.props.others.geolocationSource);
     }
   }
   
@@ -100,6 +110,10 @@ class ClusteredMapViewTop extends PureComponent {
   }
 
   _animateMapToRegion = (coords, zoom, duration = 200, delay = 0) => {
+    if (!coords) {
+      console.warn("Can't animate map coords is null");
+      return;
+    }
     var camera = {center: coords}
     if(zoom) {
       camera.zoom = zoom;
@@ -120,6 +134,8 @@ class ClusteredMapViewTop extends PureComponent {
       term = props.others.placesTerms[props.others.placesTerms.length - 1];
     } else if (props.entityType === Constants.ENTITY_TYPES.accomodations) {
       term = props.others.accomodationsTerms[props.others.accomodationsTerms.length - 1];
+    } else if (props.entityType === Constants.ENTITY_TYPES.allPois) {
+      term = props.others.placesTerms[props.others.placesTerms.length - 1];
     } else {
       console.error("[ClusteredMapViewTop]: not a known entity");
     }
@@ -150,14 +166,32 @@ class ClusteredMapViewTop extends PureComponent {
     }
     uuidString += "}";
 
-    apolloQuery(actions.getClusters({
+    const clustersPromise = apolloQuery(actions.getClusters({
       polygon: regionString,
       cats: uuidString,
       dbscan_eps: dEps,
       types,
-    })).then((clusters) => {
+    }))
+
+    // TODO: move this to componentDidMount, itineraries never change
+    const itinerariesPromise = apolloQuery(actions.getItineraries())
+
+    const date = moment("2021-03-05").format("YYYY-MM-DD"); // TODO: remove date
+
+    const lbUb = this._getDateIntervals(date);
+
+    const eventsQuery = {
+      start: Math.floor(lbUb.lb / 1000),
+      end: Math.floor(lbUb.ub /1000),
+      types: null,
+    };
+
+    const eventsPromise = apolloQuery(actions.getEvents(eventsQuery, lbUb))
+
+    Promise.all([clustersPromise, itinerariesPromise, eventsPromise]).then(values => {
+      const [clusters, itineraries, events] = values;
       if(!this._panTimeout)
-        this.setState({ clusters });
+        this.setState({ clusters, itineraries, events });
       this.props.isLoadingCb && this.props.isLoadingCb(false);
     }).catch(e => {
       console.error(e);
@@ -179,7 +213,7 @@ class ClusteredMapViewTop extends PureComponent {
       if(Platform.OS == "ios")
         this._animateMapToRegion({latitude: item.centroid.coordinates[1], longitude: item.centroid.coordinates[0]});
       setTimeout(() => this._disableRegionChangeCallback = false, 1000);
-      this.setState({ selectedCluster: item });
+      this.setState({ selectedCluster: item, selectedEntity: null });
       if(this.props.onSelectedEntity)
         this.props.onSelectedEntity(item);
       //this.props.actions.setCurrentMapEntity(item);
@@ -231,10 +265,19 @@ class ClusteredMapViewTop extends PureComponent {
    * When user presses on map clears the selected cluster
    */
   _clearClusterSelection = () => {
-    if(this.props.onSelectedEntity)
-      this.props.onSelectedEntity(null);
-    if(this.state.selectedCluster)
-      this.setState({ selectedCluster: null });
+    if (this.props.onSelectedEntity) {
+      this.setState({
+        selectedCluster: null,
+        selectedEntity: null,
+        tracksViewChanges: true
+      }, () => {
+        this.setState({
+          tracksViewChanges: false
+        })
+        if(this.props.onSelectedEntity)
+          this.props.onSelectedEntity(null);
+      });
+    }
   }
 
 
@@ -266,6 +309,29 @@ class ClusteredMapViewTop extends PureComponent {
     return (
       <View style={{width: 5, flex: 1}}></View>
     )
+  }
+
+  /**
+   * Creates the upper and lower time bounds for the query adding and removing months
+   * @param {*} dateString: "2020-11-14"
+   * @returns { "lb": "2019-08-31T22:00:00.000Z", "ub": "2019-10-31T22:59:59.999Z" }
+   * TODO: remove .add/.subtract(1,"year")
+   */
+  _getDateIntervals = (dateString) => {
+    //specify N months "around" today's month
+    if (dateString)
+      return ({
+        lb: moment(dateString).startOf('month').subtract(1, "year").subtract(FETCH_NUM_MONTHS_BACKWARDS, 'month'),
+        // lb: moment(dateString).startOf('month').subtract(FETCH_NUM_MONTHS_BACKWARDS, 'month'),
+        ub: moment(dateString).endOf('month').subtract(1, "year").add(FETCH_NUM_MONTHS_FORWARD, 'month')
+        // ub: moment(dateString).endOf('month').add(FETCH_NUM_MONTHS_FORWARD, 'month')
+      });
+    return ({
+      // lb: moment().startOf('month').subtract(FETCH_NUM_MONTHS_BACKWARDS, 'month'),
+      lb: moment().startOf('month').subtract(1, "year").subtract(FETCH_NUM_MONTHS_BACKWARDS, 'month'),
+      // ub: moment().endOf('month').add(FETCH_NUM_MONTHS_FORWARD, 'month')
+      ub: moment().endOf('month').subtract(1, "year").add(FETCH_NUM_MONTHS_FORWARD, 'month')
+    });
   }
 
   /**
@@ -321,6 +387,97 @@ class ClusteredMapViewTop extends PureComponent {
       return null;
   }
 
+  _getItineraryEntityCoords = (entity) => {
+    const { lan } = this.props.locale;
+    const coordinates = _.get(entity, ["stages", lan, 0, "poi", "georef", "coordinates"], null)
+    if(coordinates)
+      return { latitude: parseFloat(coordinates[1]), longitude: parseFloat(coordinates[0]) };
+    else
+      return null;
+  }
+
+  _getEventEntityCoords = (entity, isEvent = false) => {
+    const { lan } = this.props.locale;
+    if(isEvent){
+      const coordinates = _.get(entity, ["itinerary", 0], null);
+      // console.log("coordinates", coordinates)
+      if(coordinates)
+        return { latitude: parseFloat(coordinates.lat), longitude: parseFloat(coordinates.lon) };
+      else
+        return null;
+    }
+    else{
+      const coordinates = _.get(entity, ["stages", lan, 0, "poi", "georef", "coordinates"], null)
+      // console.log("coordinates", coordinates)
+      if(coordinates)
+        return { latitude: parseFloat(coordinates[1]), longitude: parseFloat(coordinates[0]) };
+      else
+        return null;
+    }
+  }
+
+  _renderItineraries = (itineraries) => {
+    if (!itineraries) return null;
+    const { selectedEntity } = this.state;
+    return itineraries.map(itinerary => {
+      const selected = itinerary == selectedEntity;
+
+      return (
+          <Marker.Animated
+              key={itinerary.uuid + (selected ? '_selected' : '')}
+              coordinate={this._getItineraryEntityCoords(itinerary)}
+              onPress={() => this._selectMarker(itinerary)}
+              tracksViewChanges={false}
+              style={styles.markerEntityAnimated}>
+            <View style={[styles.markerEntityContainer, { backgroundColor: selected ? Colors.colorItinerariesScreenTransparent : "transparent"}]}>
+              <View
+                  style={[styles.markerEntity, {
+                    backgroundColor: Colors.colorItinerariesScreen,
+                  }]}>
+                <CustomIcon
+                    name={VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[NODE_TYPES.itineraries].iconName}
+                    size={17}
+                    color={Colors.white}
+                    style={styles.markerEntityIcon}
+                />
+              </View>
+            </View>
+          </Marker.Animated>
+      );
+    })
+  }
+
+  _renderEvents = (events) => {
+    if (!events) return null;
+    const { selectedEntity } = this.state;
+    return events.map(event => {
+      const selected = event == selectedEntity;
+
+      return (
+          <Marker.Animated
+              key={event.uuid + (selected ? '_selected' : '')}
+              coordinate={this._getEventEntityCoords(event, true)}
+              onPress={() => this._selectMarker(event)}
+              tracksViewChanges={false}
+              style={styles.markerEntityAnimated}>
+            <View style={[styles.markerEntityContainer, { backgroundColor: selected ? Colors.colorEventsScreenTransparent : "transparent"}]}>
+              <View
+                  style={[styles.markerEntity, {
+                    backgroundColor: Colors.colorEventsScreen,
+                  }]}>
+                <CustomIcon
+                    name={VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[NODE_TYPES.events].iconName}
+                    size={17}
+                    color={Colors.white}
+                    style={styles.markerEntityIcon}
+                />
+              </View>
+            </View>
+          </Marker.Animated>
+      );
+    })
+  }
+
   /**
    * Renders selected poi (changes appereance)
    * @param {*} selectedPoi 
@@ -344,8 +501,55 @@ class ClusteredMapViewTop extends PureComponent {
       return null;
   }
 
+  _selectMarker = (entity) => {
+    // console.log("enter en", entity)
+    if(entity) {
+      this._disableRegionChangeCallback = true;
+
+      if(Platform.OS == "ios") {
+        const coords = this._getEventEntityCoords(entity, entity.type === NODE_TYPES.events);
+        this._animateMapToRegion(coords);
+      }
+      setTimeout(() => this._disableRegionChangeCallback = false, 1000);
+
+      this.setState({ selectedEntity: null }, () => {
+        this.setState({
+          selectedCluster: null,
+          selectedEntity: entity,
+          tracksViewChanges: true
+        }, () => {
+
+          this.setState({
+            tracksViewChanges: false
+          })
+
+          if(this.props.onSelectedEntity){
+            this.props.onSelectedEntity(entity);
+          }
+        });
+      })
+    } else {
+      this.setState({
+        selectedEntity: null,
+        selectedCluster: null,
+        tracksViewChanges: true
+      }, () => {
+        this.setState({
+          tracksViewChanges: false
+        })
+        if(this.props.onSelectedEntity)
+          this.props.onSelectedEntity(null);
+      });
+    }
+  }
+
+  _openFilterScreen = () => {
+    this.props.navigation.navigate(Constants.NAVIGATION.NavPlacesFiltersScreen)
+  }
+
   render() {
-    var {initRegion, pois, clusters, selectedCluster} = this.state;
+    const { filter } = this.props.locale.messages;
+    var {initRegion, pois, clusters, itineraries, events, selectedCluster} = this.state;
     var {paddingBottom = 65, others} = this.props;
     let { mapType } = others;
 
@@ -353,6 +557,13 @@ class ClusteredMapViewTop extends PureComponent {
 
     return (
       <>
+        <Button
+          buttonStyle={styles.filterButton}
+          titleStyle={styles.filterButtonTitle}
+          containerStyle={styles.filterButtonContainer}
+          title={filter}
+          onPress={this._openFilterScreen}
+        />
         <MapView
           ref={ref => this._mapRef = ref}
           mapPadding={{
@@ -372,6 +583,8 @@ class ClusteredMapViewTop extends PureComponent {
           //onPanDrag={this._onPanDrag}
           onRegionChangeComplete={this._onRegionChangeComplete}
           >
+          {this._renderItineraries(itineraries)}
+          {this._renderEvents(events)}
           {this._renderClustersOrPoi(clusters)}
           {this._renderSelectedPoi(selectedCluster)}
         </MapView>
@@ -430,6 +643,28 @@ const styles = StyleSheet.create({
   markerText: {
     fontSize: 16
   },
+  markerEntity: {
+    width: "100%",
+    height: "100%",
+    backgroundColor: "blue",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 21
+  },
+  markerEntityContainer: {
+    width: 42,
+    height: 42,
+    padding: 6,
+    borderRadius: 21,
+  },
+  markerEntityAnimated: {
+    width: 42,
+    height: 42,
+    zIndex: 1,
+  },
+  markerEntityIcon: {
+  },
   buttonGoToMyLocationContainer:{
     position: "absolute",
     bottom: 95,
@@ -445,6 +680,23 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%"
   },
+  filterButton: {
+    marginTop: 16,
+    backgroundColor: Colors.black,
+    height: 32,
+    borderRadius: 16,
+    alignSelf: 'center',
+    paddingHorizontal: 25,
+    paddingVertical: 7,
+    position: 'absolute'
+  },
+  filterButtonTitle: {
+    fontSize: 14,
+    fontFamily: 'montserrat-bold'
+  },
+  filterButtonContainer: {
+    zIndex: 2
+  }
 });
 
 

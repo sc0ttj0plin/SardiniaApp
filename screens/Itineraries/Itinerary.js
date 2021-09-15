@@ -70,14 +70,14 @@ class ItineraryScreen extends Component {
     if (mustFetch)
       this.props.actions.getItinerariesById({ uuids: [uuid] });
     else 
-      this._parseEntity(this.props.itineraries.dataById[uuid]);
+      this._parseEntity(this.props.itineraries.dataById[uuid] || this.props.route.params.item);
     this._analytics(Constants.ANALYTICS_TYPES.userCompleteEntityAccess);
   }
 
   componentDidUpdate(prevProps) {
     const { uuid } = this.state;
     if (prevProps.itineraries.dataById !== this.props.itineraries.dataById)
-      this._parseEntity(this.props.itineraries.dataById[uuid]);
+      this._parseEntity(this.props.itineraries.dataById[uuid] || this.props.route.params.item);
   }
 
   componentWillUnmount() {

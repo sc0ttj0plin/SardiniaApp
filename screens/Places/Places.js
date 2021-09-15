@@ -2,9 +2,9 @@ import React, { PureComponent } from "react";
 import {View, StyleSheet, PixelRatio} from "react-native";
 import { useNavigation, useRoute, useIsFocused} from '@react-navigation/native';
 import Animated from 'react-native-reanimated';
-import { 
-  CategoryListItem, 
-  ConnectedHeader, 
+import {
+  CategoryListItem,
+  ConnectedHeader,
   EntityItem,
   ConnectedAuthHandler,
   SectionTitle,
@@ -29,7 +29,7 @@ const { Value, event, interpolate } = Animated;
  * NearToYou:       near to the user's location (all categories) rendered in the top header
  *                    called at mount + when user changes position (_fetchNearestPois)
  * Categories&Pois: List of Categories and Pois that are in the list
- *                    called when the user reaches the end of the category tree 
+ *                    called when the user reaches the end of the category tree
  *                    using current selected category + user location (_loadMorePois)
  */
 
@@ -75,7 +75,7 @@ class PlacesScreen extends PureComponent {
     //If it's the first mount gets pois categories ("art and archeology...")
     this.props.actions.getCategories({ vid: Constants.VIDS.poisCategories });
     this.props.actions.setMainScreenMounted(true); /* tell that the main screen has mounted (used by ConnectedSplashLoader) */
-    if (this.props.others.geolocation.coords) 
+    if (this.props.others.geolocation.coords)
       this._onUpdateCoords(this.props.others.geolocation.coords);
   }
 
@@ -87,7 +87,7 @@ class PlacesScreen extends PureComponent {
     // If currently selected categories (terms) differ from the previous ones fetch other pois for those categories
     if(prevProps.others.placesTerms !== this.props.others.placesTerms) {
       /* update also the header pois based on current cat */
-      // this.setState({ nearPois: [] }, () => this._fetchNearestPois(this.state.coords)); 
+      // this.setState({ nearPois: [] }, () => this._fetchNearestPois(this.state.coords));
       this.setState({ isEntitiesLoading: false });
       this._loadMorePois();
     }
@@ -100,13 +100,13 @@ class PlacesScreen extends PureComponent {
 
 
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
-  
+
   _isSuccessData  = () => this.props.categories.success;
   _isLoadingData  = () => this.props.categories.loading || this.state.isCMVTLoading || this.state.isEntitiesLoading || this.state.isNearEntitiesLoading;
-  _isErrorData    = () => this.props.categories.error;  
+  _isErrorData    = () => this.props.categories.error;
 
   /**
-   * Get current term (category) and its child uuids, 
+   * Get current term (category) and its child uuids,
    *   if fallbackToCategories is true fallbacks to initial categories
    */
   _getCurrentTerm = (fallbackToCategories=false) => {
@@ -127,7 +127,7 @@ class PlacesScreen extends PureComponent {
     // const { coords, term } = this.state;
     const { coords } = this.state;
     if(!coords || coords.latitude !== newCoords.latitude || coords.longitude !== newCoords.longitude) {
-      let isCordsInBound = coordsInBound(newCoords); 
+      let isCordsInBound = coordsInBound(newCoords);
       // Are coordinates within sardinia's area? fetch the updated pois list
       if (isCordsInBound) {
         this.setState({ nearPois: [], isCordsInBound, coords: newCoords, isNearEntitiesLoading: true }, () => {
@@ -135,7 +135,7 @@ class PlacesScreen extends PureComponent {
             this.setState({ isNearEntitiesLoading: false });
           });
         });
-        
+
       }
     }
     // Update list of pois if we are at the bottom of the category tree
@@ -165,8 +165,8 @@ class PlacesScreen extends PureComponent {
 
 
   /**
-   * Get more pois when the user changes position and/or 
-   * we reach the end of the category tree . 
+   * Get more pois when the user changes position and/or
+   * we reach the end of the category tree .
    * Pois are loaded in order of distance from the user and are "categorized"
    * to load pois in the bottom scrollable container list (not header)
    * uuids controls the category of the pois
@@ -187,7 +187,7 @@ class PlacesScreen extends PureComponent {
         })).then((pois) => {
           if (pois && pois.length > 0)
             this.setState({ pois: [...statePois, ...pois], isEntitiesLoading: false });
-          else 
+          else
             this.setState({ isEntitiesLoading: false });
         }).catch(e => {
           console.error(e);
@@ -231,7 +231,7 @@ class PlacesScreen extends PureComponent {
   /**
    * On category pop we reset current pois
    */
-  _backButtonPress = () => { 
+  _backButtonPress = () => {
     /* update also the header pois based on current cat */
     //this.setState({ pois: [], nearPois: [] });
     this.setState({ pois: [] });
@@ -256,7 +256,7 @@ class PlacesScreen extends PureComponent {
     const termName = _.get(item, "term.name", "");
     if (title)
       return (
-        <EntityItem 
+        <EntityItem
           index={index}
           keyItem={item.nid}
           extraStyle={ horizontal ? {
@@ -275,13 +275,13 @@ class PlacesScreen extends PureComponent {
           animated={true}
         />
       )
-    else 
+    else
       return null;
   }
 
   /* Renders categories list */
   _renderCategoryListItem = (item, index, length) => item.name ? <CategoryListItem onPress={() => this._selectCategory(item)} image={item.image} title={item.name}/> : null;
-    
+
 
   /* Render content */
   _renderContent = () => {
@@ -296,12 +296,12 @@ class PlacesScreen extends PureComponent {
       scrollableData = pois;
       renderScrollableListItem = ({ item, index }) => this._renderPoiListItem(item, index);
     } else {
-      //initially term is null so we get terms from redux, then term is populated with nested terms (categories) 
+      //initially term is null so we get terms from redux, then term is populated with nested terms (categories)
       scrollableData = term;
       renderScrollableListItem = ({ item, index }) => this._renderCategoryListItem(item, index, scrollableData.length);
     }
 
-    const entitiesType = Constants.ENTITY_TYPES.places;
+    const entitiesType = Constants.ENTITY_TYPES.allPois;
 
     const scrollableProps = {
       show: true,
@@ -313,9 +313,9 @@ class PlacesScreen extends PureComponent {
     }
 
     // ClusteredMapViewTopProps (CMVT)
-    const CMVTProps = { 
-      term, 
-      coords, 
+    const CMVTProps = {
+      term,
+      coords,
       region,
       types: [Constants.NODE_TYPES.places],
       childUuids,
@@ -327,15 +327,16 @@ class PlacesScreen extends PureComponent {
       data: term,
       keyExtractor: item => item.uuid,
       onPress: this._selectCategory,
-      iconProps: { 
+      iconProps: {
         name: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].iconName,
         backgroundColor: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].backgroundColor,
         color: Constants.VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[entitiesType].iconColor,
       }
     }
 
-    const mapEntityWidgetProps = { 
-      coords: this.state.coords 
+    const mapEntityWidgetProps = {
+      isAccomodationItem: false,
+      coords: this.state.coords
     };
 
     const extraModalProps = {
@@ -347,32 +348,30 @@ class PlacesScreen extends PureComponent {
     }
 
     return (
-        <>
-          <ConnectedMapScrollable
-            // entities type (used to discriminate the rendering function, places, accomodations, events, itineraries)
-            entitiesType={entitiesType}
-            // Scrollable container props
-            scrollableProps={scrollableProps}
-            // Extra component: if scrollableRenderExtraComponent is undefined, must specify extra component props
-            // scrollableRenderExtraComponent={this._renderFiltersList}
-            // scrollableExtraComponentProps={extraComponentProps}
-            // Header text component: if scrollableHeaderTextComponent is undefined, must specify scrollableHeaderText
-            scrollableHeaderTextComponent={this._renderHeaderText}
-            // scrollableHeaderText={() => <Text>Header Text</Text>}
-            // Top component (ClusteredMapViewTop or MapView or Custom)
-            topComponentType="ClusteredMapViewTop" //or MapView or Custom (if Custom must implement topComponentRender)
-            topComponentCMVTProps={CMVTProps}
-            // Map entity widget (in modal): if renderMapEntityWidget is undefined, must specify mapEntityWidgetProps and mapEntityWidgetOnPress
-            // e.g. this.state.selectedEntity can now be used in renderMapEntityWidget
-            // mapEntityWidgetOnPress={(entity) => this.setState({ selectedEntity: entity })}
-            // renderMapEntityWidget={this._renderEntityWidget}
-            mapEntityWidgetProps={mapEntityWidgetProps}
-            // Extra modal content: if renderExtraModalComponent is undefined, must specify mapEntityWidgetProps
-            // renderExtraModalComponent={this._renderNearToYou}
-            extraModalProps={extraModalProps}
-            onBackPress={this._backButtonPress}
-          />
-      </>
+      <ConnectedMapScrollable
+        // entities type (used to discriminate the rendering function, places, accomodations, events, itineraries)
+        entitiesType={entitiesType}
+        // Scrollable container props
+        scrollableProps={scrollableProps}
+        // Extra component: if scrollableRenderExtraComponent is undefined, must specify extra component props
+        // scrollableRenderExtraComponent={this._renderFiltersList}
+        // scrollableExtraComponentProps={extraComponentProps}
+        // Header text component: if scrollableHeaderTextComponent is undefined, must specify scrollableHeaderText
+        scrollableHeaderTextComponent={this._renderHeaderText}
+        // scrollableHeaderText={() => <Text>Header Text</Text>}
+        // Top component (ClusteredMapViewTop or MapView or Custom)
+        topComponentType="ClusteredMapAllPois" //or MapView or Custom (if Custom must implement topComponentRender)
+        topComponentCMVTProps={CMVTProps}
+        // Map entity widget (in modal): if renderMapEntityWidget is undefined, must specify mapEntityWidgetProps and mapEntityWidgetOnPress
+        // e.g. this.state.selectedEntity can now be used in renderMapEntityWidget
+        // mapEntityWidgetOnPress={(entity) => this.setState({ selectedEntity: entity })}
+        // renderMapEntityWidget={this._renderEntityWidget}
+        mapEntityWidgetProps={mapEntityWidgetProps}
+        // Extra modal content: if renderExtraModalComponent is undefined, must specify mapEntityWidgetProps
+        // renderExtraModalComponent={this._renderNearToYou}
+        extraModalProps={extraModalProps}
+        onBackPress={this._backButtonPress}
+      />
     )
   }
 
@@ -382,18 +381,17 @@ class PlacesScreen extends PureComponent {
     return (
       <ConnectedScreenErrorBoundary>
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
-          <ConnectedHeader 
+          <ConnectedHeader
             onBackPress={this._backButtonPress}
-            iconTintColor={Colors.colorPlacesScreen}  
+            iconTintColor={Colors.colorPlacesScreen}
             backButtonVisible={this.props.others.placesTerms.length > 0}
-          /> 
+          />
           <ConnectedAuthHandler loginOptional={true} timeout={Constants.SPLASH_LOADING_DURATION + 1500} />
           {render && this._renderContent()}
-        </View> 
+        </View>
       </ConnectedScreenErrorBoundary>
     )
   }
-  
 }
 
 
@@ -429,9 +427,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   categorySelectorBtn: {
-    height: 32, 
-    paddingVertical: 7, 
-    backgroundColor: "white", 
+    height: 32,
+    paddingVertical: 7,
+    backgroundColor: "white",
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
@@ -444,9 +442,9 @@ const styles = StyleSheet.create({
     fontSize: 14
   },
   filtersList: {
-    width: "100%", 
+    width: "100%",
     height: 40,
-    zIndex: 0, 
+    zIndex: 0,
     // backgroundColor: "red"
   },
   icon: {
@@ -474,7 +472,7 @@ function PlacesScreenContainer(props) {
   const store = useStore();
   const isFocused = useIsFocused();
 
-  return <PlacesScreen 
+  return <PlacesScreen
     {...props}
     navigation={navigation}
     route={route}

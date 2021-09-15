@@ -73,14 +73,14 @@ class EventScreen extends Component {
     if (mustFetch)
       this.props.actions.getEventsById({ uuids :[uuid] });
     else
-      this._parseEntity(this.props.events.eventsById[uuid]);
+      this._parseEntity(this.props.events.eventsById[uuid] || this.props.route.params.item);
     this._analytics(Constants.ANALYTICS_TYPES.userCompleteEntityAccess);
   }
 
   componentDidUpdate(prevProps) {
     const { uuid } = this.state;
     if (prevProps.events.eventsById !== this.props.events.eventsById)
-      this._parseEntity(this.props.events.eventsById[uuid]);
+      this._parseEntity(this.props.events.eventsById[uuid] || this.props.route.params.item);
   }
 
   componentWillUnmount() {
