@@ -541,7 +541,7 @@ export const VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS = {
   },
   [NODE_TYPES.accomodations]: {
     backgroundTopRightCorner: Colors.colorAccomodationsScreen,
-    iconColor: "white", 
+    iconColor: Colors.colorAccomodationsScreen,
     iconName: 'icon-accomodation-map'
   },
   //Entity types
