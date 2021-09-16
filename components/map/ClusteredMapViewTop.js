@@ -358,13 +358,14 @@ class ClusteredMapViewTop extends PureComponent {
 
     return (
       <>
-        <Button
-          buttonStyle={styles.filterButton}
-          titleStyle={styles.filterButtonTitle}
-          containerStyle={styles.filterButtonContainer}
-          title={filter}
-          onPress={this._openFilterScreen}
-        />
+        <View pointerEvents="box-none" style={styles.filterButtonContainer}>
+          <Button
+            buttonStyle={styles.filterButton}
+            titleStyle={styles.filterButtonTitle}
+            title={filter}
+            onPress={this._openFilterScreen}
+          />
+        </View>
         <MapView
           ref={ref => this._mapRef = ref}
           mapPadding={{
@@ -462,17 +463,18 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.black,
     height: 32,
     borderRadius: 16,
-    alignSelf: 'center',
     paddingHorizontal: 25,
     paddingVertical: 7,
-    position: 'absolute'
   },
   filterButtonTitle: {
     fontSize: 14,
     fontFamily: 'montserrat-bold'
   },
   filterButtonContainer: {
-    zIndex: 2
+    zIndex: 2,
+    width: '100%',
+    position: 'absolute',
+    alignItems: 'center'
   }
 });
 
