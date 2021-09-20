@@ -26,7 +26,8 @@ const AUTH_STATES = {
   LINK_SENT: "LINK_SENT",
   LOGIN_REQUEST:"LOGINREQ",
   PROFILE_REMOVE: "PROFILE_REMOVE",
-  PROFILE_EDIT: "PROFILE_EDIT",
+  PROFILE_EDIT_FIRST: "PROFILE_EDIT_FIRST",
+  PROFILE_EDIT_LAST: "PROFILE_EDIT_LAST",
   PROFILE_SHOW: "PROFILE_SHOW",
   COMPLETED: "COMPLETED",
   ERROR: "ERROR"
@@ -43,6 +44,8 @@ class Login extends Component {
       loginStep: AUTH_STATES.INIT, 
       isVerifyingEmail: false,
       username: "",
+      name:"",
+      surname:"",
       password:"",
       usernameError: false,
       age: "",
@@ -51,7 +54,8 @@ class Login extends Component {
       countryError: false,
       sex: "",
       sexError: false,
-      countries: []
+      countries: [],
+      firstForm:true,
     };
     this._fontScale = PixelRatio.getFontScale();
 
@@ -180,8 +184,16 @@ class Login extends Component {
     alert('Not Implemented')
   }
 
+
+  _setRegisterLast = () => {
+    this.setState({ 
+      firstForm: false,
+    });
+
+  }
+
   _setUserData = () => {
-    const { username, age, country, sex, } = this.state;
+    const { name,surname,email,password, age, country, sex, } = this.state;
     const { country: countryText, sex: sexText, age: ageText } = this.props.locale.messages;
     let usernameError = false
     let ageError = false 
@@ -202,7 +214,7 @@ class Login extends Component {
     }
 
     if(!usernameError && !ageError && !countryError && !sexError){
-      const userData = { username, age: age, country, sex, updateDate: (new Date()).getTime() };
+      const userData = { name,surname,email, age: age, country, sex, updateDate: (new Date()).getTime() };
       this.props.actions.editUser(userData);
       this.props.actions.reportAction({ 
         analyticsActionType: Constants.ANALYTICS_TYPES.userUpdatesProfile,
@@ -275,6 +287,14 @@ class Login extends Component {
     });
   }
 
+  _onRegisterPress = () =>{
+    this.setState({ loginStep: AUTH_STATES.PROFILE_EDIT_FIRST})
+  }
+
+  _onLastStep = () =>{
+    this.setState({ loginStep: AUTH_STATES.PROFILE_EDIT_LAST})
+  }
+
   _onLoginPress = () =>{
     this.setState({ loginStep: AUTH_STATES.LOGIN})
   }
@@ -295,6 +315,8 @@ class Login extends Component {
       })
     }
   }
+
+  
 
   _renderAuthOutcome = () => {
     const { successfullLogin, loggingIn, loginError } = this.props.locale.messages;
@@ -385,6 +407,102 @@ class Login extends Component {
       </View>
     );
   }
+
+
+  _renderRegisterWithEmail = () => {
+    console.log("register")
+    var { username,name,surname, age, country, sex, confirm, register } = this.props.locale.messages;
+    const {usernameError, ageError, countryError, sexError,firstForm} = this.state;
+    
+      return (<><><View>
+        <CustomText style={styles.title}>{register}</CustomText>
+       </View></><View style={styles.mainView}>
+
+          <View style={styles.view0}>
+            {firstForm ? (
+            <View style={styles.view1s}>
+              {/* <CustomText style={styles.text0}>{fillInformation}</CustomText>  */}
+              <Form>
+                <Item style={[styles.item1, usernameError ? styles.itemError : {}]} regular>
+                  <Input placeholder={name} style={{ fontFamily: "montserrat-regular" }} value={this.state.name} onChangeText={(text) => this.setState("surname", text)} />
+                </Item>
+                <Item style={[styles.item1, usernameError ? styles.itemError : {}]} regular>
+                  <Input placeholder={surname} style={{ fontFamily: "montserrat-regular" }} value={this.state.surname} onChangeText={(text) => this.setState("name", text)} />
+                </Item>
+                <Item style={styles.item1} regular>
+
+                  <Input autoCapitalize={'none'} placeholder="Email" onChangeText={(email) => this.setState({ email: email.toLowerCase() })} />
+                </Item>
+                <Item style={styles.item1} regular>
+
+                  <Input autoCapitalize={'none'} secureTextEntry={true} placeholder="Password" onChangeText={(password) => this.setState({ password: password })} />
+                </Item>
+
+
+                
+              </Form>
+            </View>
+            ):(
+            <View style={styles.view1s}>
+
+            <Item style={[styles.item1, ageError ? styles.itemError : {}]} regular>
+                  {/* <Input placeholder={birth} onChangeText={(text) => this.setState({birth: text})} /> */}
+                  <Picker
+                    mode="dialog"
+                    style={{ width: "100%", fontFamily: "montserrat-regular" }}
+                    placeholder={age}
+                    textStyle={{ fontFamily: "montserrat-regular" }}
+                    placeholderStyle={{ color: "#bfc6ea", fontFamily: "montserrat-regular" }}
+                    selectedValue={this.state.age}
+                    onValueChange={(value) => this.setState({ age: value, ageError: false })}>
+                    <Picker.Item label={age} value={age} />
+                    {this.state.ages.map(age => {
+                      return <Picker.Item label={age.label} value={age.value} />;
+                    })}
+                  </Picker>
+                </Item>
+                <Item style={[styles.item1, countryError ? styles.itemError : {}]} regular>
+                  <Picker
+                    mode={"dialog"}
+                    style={{ width: "100%", fontFamily: "montserrat-regular" }}
+                    placeholder={country}
+                    textStyle={{ fontFamily: "montserrat-regular" }}
+                    placeholderStyle={{ color: "#bfc6ea", fontFamily: "montserrat-regular" }}
+                    selectedValue={this.state.country}
+                    onValueChange={(value) => this.setState({ country: value, countryError: false })}>
+                    <Picker.Item label={country} value={country} />
+                    {this.state.countries.map(country => {
+                      return <Picker.Item label={country.name} value={country.name} />;
+                    })}
+                  </Picker>
+                </Item>
+                <Item style={[styles.item1, sexError ? styles.itemError : {}]} regular>
+                  {/* <Input placeholder={sex} onChangeText={(text) => this.setState({sex: text})} /> */}
+                  <Picker
+                    mode={"dialog"}
+                    style={{ width: "100%", fontFamily: "montserrat-regular" }}
+                    placeholder={sex}
+                    textStyle={{ fontFamily: "montserrat-regular" }}
+                    placeholderStyle={{ color: "#bfc6ea", fontFamily: "montserrat-regular" }}
+                    selectedValue={this.state.sex}
+                    onValueChange={(value) => this.setState({ sex: value, sexError: false })}>
+                    <Picker.Item label={sex} value={sex} />
+                    {this.state.sexs.map(sex => {
+                      return <Picker.Item label={sex.label} value={sex.value} />;
+                    })}
+                  </Picker>
+                </Item>
+            </View>)}
+            
+            <TouchableOpacity style={styles.defaultBtn} onPress={() => this._setRegisterLast()}>
+              <CustomText style={styles.defaultBtnText}>{confirm}</CustomText>
+            </TouchableOpacity>
+          </View>
+        </View></>
+    )
+  }
+
+
   
   _renderProfileEdit = () => {
     var { username, age, country, sex, confirm, fillInformation } = this.props.locale.messages;
@@ -475,7 +593,7 @@ class Login extends Component {
       <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={styles.screen}>
         <View style={styles.view0}>
           <View style={styles.view01}><>          
-          <TouchableOpacity style={styles.defaultBtn} onPress={this._notImplemented}>
+          <TouchableOpacity style={styles.defaultBtn} onPress={this._onRegisterPress}>
               {isVerifyingEmail ? 
               <ActivityIndicator animating={isVerifyingEmail} size={"small"} color={Colors.tintColor}/>
               :
@@ -513,7 +631,7 @@ class Login extends Component {
     return (<>
       <View>
       <CustomText style={styles.title}>{signin}</CustomText>
-      <TouchableOpacity onPress={this._notImplemented}><CustomText style={styles.loginText}>{forgotpassword}</CustomText></TouchableOpacity></View>
+      <TouchableOpacity ><CustomText style={styles.loginText}>{forgotpassword}</CustomText></TouchableOpacity></View>
 
       <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={styles.screen}>
         <View style={styles.view0}>
@@ -608,6 +726,7 @@ class Login extends Component {
             {loginStep === AUTH_STATES.LINK_SENT && this._renderLinkSent()}
             {loginStep === AUTH_STATES.ERROR && this._renderError()}
             {loginStep === AUTH_STATES.LOGIN_REQUEST && this._renderLinkSent()}
+            {loginStep === AUTH_STATES.PROFILE_EDIT_FIRST && this._renderRegisterWithEmail()}
           </View>
         </ConnectedScreenErrorBoundary>
       )
@@ -623,6 +742,7 @@ class Login extends Component {
             {loginStep === AUTH_STATES.PROFILE_SHOW && this._renderProfileShow()}
             {loginStep === AUTH_STATES.ERROR && this._renderError()}
             {loginStep === AUTH_STATES.LOGOUT && this._renderLogout()}
+            
           </View>
         </ConnectedScreenErrorBoundary>
       );
