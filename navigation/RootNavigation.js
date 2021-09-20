@@ -9,6 +9,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {useRoute} from '@react-navigation/native';
 import PlacesScreen from '../screens/Places/Places';
 import PlaceScreen from '../screens/Places/Place';
+import PlacesFiltersScreen from '../screens/PlacesFilters/PlacesFilters';
 // import InspirersScreen from '../screens/Inspirers/Inspirers';
 import EventsScreen from '../screens/Events/Events';
 import EventScreen from '../screens/Events/Event';
@@ -48,8 +49,7 @@ const {
   NavItineraryScreen, NavEventsScreen, NavEventScreen, NavItineraryStagesMapScreen,NavEventsMapScreen, NavEventsSubset, NavExploreScreen, 
   NavVirtualTourScreen, NavPlaceScreen, NavInspirerScreen, NavPreferencesScreen, NavTutorialScreen,
   NavExtrasScreen, NavExtraScreen, NavTabNavigator, NavSearchScreen, NavSearchStackScreen, 
-  NavMainStackScreen, NavMediaScreen, NavFavouritesScreen, NavFavouritesListScreen, NavFavouritesStackScreen, NavFiltersScreen ,NavSettingScreen,NavInfoStackScreen, 
-  NavInfoScreen,NavInfoDetailsScreen,NavPrivacyScreen,
+  NavMainStackScreen, NavMediaScreen, NavFavouritesScreen, NavFavouritesListScreen, NavFavouritesStackScreen, NavFiltersScreen, NavPlacesFiltersScreen
 } = Constants.NAVIGATION;
 
 // Reference used for components that lack navigation access
@@ -205,6 +205,7 @@ function MainStackScreen() {
       {/* Inner screens */}
       {/* Places */}
       <MainStack.Screen name={NavPlaceScreen} component={PlaceScreen}/>
+      <MainStack.Screen name={NavPlacesFiltersScreen} component={PlacesFiltersScreen} />
       {/* Events */}
       <MainStack.Screen name={NavEventScreen} component={EventScreen} />
       <MainStack.Screen name={NavEventsSubset} component={EventsSubset} />

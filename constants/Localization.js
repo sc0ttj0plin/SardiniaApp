@@ -110,6 +110,14 @@ const dict = {
       "Questa entità non ha una traduzione per la lingua corrente",
     retry: "Riprova",
     cancel: "Annulla",
+    mapStyleTitle: 'STILE MAPPA',
+    standardMapCheckBoxTitle: 'Mappa',
+    satelliteMapCheckBoxTitle: 'Satellite',
+    terrainMapCheckBoxTitle: 'Rilievo',
+    filterByTitle: 'FILTRA PER',
+    smartFiltersTitle: 'Filtri intelligenti',
+    searchEmptyListTitle: "Prova a chiedermi:",
+    searchEmptyListDescription: "“Cosa c’è nei dintorni?”\n“Parlami della natura in Sardegna”",
     //LOGIN
     possibleCauses: "Possibili cause:",
     reusedOldLink: "• È stato usato un link di login scaduto o già utilizzato",
@@ -152,7 +160,7 @@ const dict = {
     lanItalian: "🇮🇹 Italiano",
     lanEnglish: "🇬🇧 Inglese",
     //AUTH
-    profile: "Profilo",
+    profile: 'Profilo',
     username: "Inserisci un nome",
     name: "Nome",
     surname: "Cognome",
@@ -185,8 +193,7 @@ const dict = {
     gotohome: "Puoi Tornare alla Home",
     //Parks
     nearParks: "Parcheggi nelle vicinanze!",
-    discoverParks:
-      "Scopri i parcheggi liberi più vicini a te attraverso uno dei servizi convenzionati.",
+    discoverParks: "Scopri i parcheggi liberi più vicini a te attraverso uno dei servizi convenzionati.",
     findParkBtn: "TROVA UN PARCHEGGIO",
     //Update
     updateInProgressTitle: "Aggiornamento in corso",
@@ -201,8 +208,7 @@ const dict = {
     loadingLinkingContentTitle: "Caricamento del contenuto",
     loadingLinkingContentDescription: "Stiamo cercando il contenuto richiesto",
     loadingLinkingContentTitleError: "Errore nel caricamento del contenuto",
-    loadingLinkingContentDescriptionError:
-      "C'è stato un'errore nella ricerca del contenuto",
+    loadingLinkingContentDescriptionError: "C'è stato un'errore nella ricerca del contenuto",
     //App Location Tracking background
     notificationTitle: "L'app Sardinia ti avvisa",
     notificationBody: "Sei vicino ad un punto di interesse!",
@@ -330,6 +336,14 @@ const dict = {
       "This entity hasn't got a translation for the current language",
     retry: "Retry",
     cancel: "Cancel",
+    mapStyleTitle: 'MAP STYLE',
+    standardMapCheckBoxTitle: 'Standard',
+    satelliteMapCheckBoxTitle: 'Satellite',
+    terrainMapCheckBoxTitle: 'Terrain',
+    filterByTitle: 'FILTER BY',
+    smartFiltersTitle: 'Smart filters',
+    searchEmptyListTitle: "Try asking me:",
+    searchEmptyListDescription: "“What's nearby?”\n“Tell me about nature in Sardinia”",
     //LOGIN
     possibleCauses: "Possible causes:",
     reusedOldLink: "• The login link has already been used or is expired",
@@ -368,7 +382,7 @@ const dict = {
     lanItalian: "🇮🇹 Italian",
     lanEnglish: "🇬🇧 English",
     //AUTH
-    profile: "Profile",
+    profile: 'Profile',
     username: "Username",
     name: "Name",
     surname: "Surname",
@@ -398,8 +412,7 @@ const dict = {
     loginfacebook:"Sign in with Facebook",
     //Parks
     nearParks: "Nearest parkings!",
-    discoverParks:
-      "Discover the nearest free parkings provided by one of the affiliated services.",
+    discoverParks: "Discover the nearest free parkings provided by one of the affiliated services.",
     findParkBtn: "FIND A PARK",
     //Update
     updateInProgressTitle: "Update in progress",
@@ -412,11 +425,9 @@ const dict = {
     cancel: "Cancel",
     //LINKING
     loadingLinkingContentTitle: "Loading content",
-    loadingLinkingContentDescription:
-      "We are searching for the requested content",
+    loadingLinkingContentDescription: "We are searching for the requested content",
     loadingLinkingContentTitleError: "Loading content error",
-    loadingLinkingContentDescriptionError:
-      "We had troubles loading the linked content",
+    loadingLinkingContentDescriptionError: "We had troubles loading the linked content",
     //App Location Tracking background
     notificationTitle: "Sardinia App Location",
     notificationBody: "Sardinia App is tracking your location",

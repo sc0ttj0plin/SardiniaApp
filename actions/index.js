@@ -14,6 +14,7 @@ import * as preferencesActions from './preferences';
 import * as analyticsActions from './analytics';
 import * as authActions from './auth';
 import * as settingsActions from "./settings";
+import * as places from './places';
 
 const allActions = { 
    ...categoriesActions,
@@ -32,5 +33,6 @@ const allActions = {
    ...analyticsActions,
    ...authActions,
    ...settingsActions,
+   ...places
  }
 export default allActions;

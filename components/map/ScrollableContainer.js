@@ -272,34 +272,33 @@ class ScrollableContainer extends PureComponent {
             >
               {extraComponent()}
             </Animated.View>
-          )}
-          {this._renderTopComponentLoading(this.props.topComponentIsLoading)}
-          <BottomSheet
-            componentType="FlatList"
-            key={
-              numColumns
-            } /* NOTE always set a key to refresh only this component and avoid unmounting */
-            snapPoints={snapPoints}
-            renderContent={this._renderContent}
-            initialSnap={snapPoints.length - 1}
-            renderHeader={this._renderHandle}
-            ref={(ref) => (this._scrollable = ref)}
-            onSettle={(index) => this._onSettle(index)}
-            enabledContentGestureInteraction={false}
-            callbackNode={this._translateAnim}
-            springConfig={{ toss: 0.05 }}
-            contentContainerStyle={[
-              styles.contentContainerStyle,
-              {
-                flex: data && data.length == 0 ? 1 : null,
-              },
-            ]}
-            onCloseStart={this._onCloseStart}
-            onCloseEnd={this._onCloseEnd}
-            onOpenEnd={this._onOpenEnd}
-            enabledBottomInitialAnimation={true}
-          />
-          
+            { extraComponent &&
+              <Animated.View pointerEvents='box-none' style={[styles.extraComponent, { transform: [{ translateY: this._translateAnimY2 } ]}]}>
+                {extraComponent()}
+              </Animated.View>
+            }
+            {this._renderTopComponentLoading(this.props.topComponentIsLoading)}
+            <BottomSheet
+              componentType="FlatList"
+              key={numColumns} /* NOTE always set a key to refresh only this component and avoid unmounting */
+              snapPoints={snapPoints}
+              renderContent={this._renderContent}
+              initialSnap={snapPoints.length-1}
+              renderHeader={this._renderHandle}
+              ref={(ref)=>this._scrollable = ref}
+              onSettle = {(index) => this._onSettle(index)}
+              enabledContentGestureInteraction = {false}
+              callbackNode={this._translateAnim}
+              springConfig={{toss: 0.05}}
+              contentContainerStyle={[styles.contentContainerStyle, {
+                flex:  data && data.length == 0 ? 1 : null
+              }]}
+              onCloseStart={this._onCloseStart}
+              onCloseEnd={this._onCloseEnd}
+              onOpenEnd={this._onOpenEnd}
+              enabledBottomInitialAnimation={true}
+            />
+            
         </View>
       );
     else 

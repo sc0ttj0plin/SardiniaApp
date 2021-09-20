@@ -15,6 +15,7 @@ import preferencesReducer from '../reducers/preferences';
 import accomodationsReducer from '../reducers/accomodations';
 import searchAutocompleteReducer from '../reducers/searchAutocomplete';
 import settingReducer from '../reducers/settings';
+import placesReducer from "../reducers/places";
 import apolloMiddleware from '../apollo/middleware';
 import AsyncStorage from '@react-native-community/async-storage';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'; //2lvl objects
@@ -59,6 +60,7 @@ const rootReducer = combineReducers({
   accomodationsState: accomodationsReducer,
   searchAutocompleteState: searchAutocompleteReducer,
   settingsState: settingReducer,
+  placesState: placesReducer
 });
 
 const persistConfig = {

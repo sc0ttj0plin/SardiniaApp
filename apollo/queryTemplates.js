@@ -76,6 +76,9 @@ query ($queryStr: String, $vidsInclude: [Int!], $typesExclude: [String!]) {
         nid
         uuid
         title: legacy(path: "title_field")
+        term {
+          name
+        }
       }
   }
 }
@@ -720,4 +723,4 @@ query ($uuids: [String!]) {
     }
   }
 }
-`;
+`;

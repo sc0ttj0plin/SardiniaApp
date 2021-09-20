@@ -346,7 +346,8 @@ class ClusteredMapViewTop extends PureComponent {
 
   render() {
     var {initRegion, pois, clusters, selectedCluster} = this.state;
-    var {paddingBottom = 65} = this.props;
+    var {paddingBottom = 65, others} = this.props;
+    let { mapType } = others;
 
     var bottom = paddingBottom - (this.props.fullscreen ? 30 : 0); 
 
@@ -364,7 +365,7 @@ class ClusteredMapViewTop extends PureComponent {
           style={[styles.fill]}
           showsUserLocation={ true }
           initialRegion={initRegion}
-          mapType='standard'
+          mapType={mapType}
           showsIndoorLevelPicker={true}
           showsCompass={false}
           onPress={this._clearClusterSelection}
@@ -443,8 +444,7 @@ const styles = StyleSheet.create({
   buttonGoToMyLocation: {
     width: "100%",
     height: "100%"
-  }
-  
+  },
 });
 
 
