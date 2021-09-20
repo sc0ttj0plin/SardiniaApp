@@ -121,7 +121,8 @@
     "rn-placeholder": "^3.0.1",
     "toggle-switch-react-native": "^3.2.0",
     "url-parse": "^1.4.7",
-    "world_countries_lists": "^2.1.0"
+    "world_countries_lists": "^2.1.0",
+    "@react-native-community/datetimepicker": "3.0.0"
   },
   "devDependencies": {
     "babel-preset-expo": "^8.3.0",

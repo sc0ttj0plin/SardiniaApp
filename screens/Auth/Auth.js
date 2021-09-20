@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {  Platform, KeyboardAvoidingView, StyleSheet, ActivityIndicator, BackHandler, TouchableOpacity, PixelRatio ,Text} from 'react-native';
+import {  Platform, KeyboardAvoidingView,TouchableWithoutFeedback, Keyboard, StyleSheet, ActivityIndicator, BackHandler, TouchableOpacity, PixelRatio ,Text} from 'react-native';
 import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native';
 import { 
   ConnectedHeader, 
@@ -19,6 +19,7 @@ import enDbCountries from "world_countries_lists/data/en/countries.json";
 import * as Validate from '../../helpers/validate';
 import * as profile from "../../helpers/profile";
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const AUTH_STATES = {
   INIT: "INIT",
@@ -56,6 +57,9 @@ class Login extends Component {
       sexError: false,
       countries: [],
       firstForm:true,
+      date:new Date(1598051730000),
+      mode:"date",
+      show:false
     };
     this._fontScale = PixelRatio.getFontScale();
 
@@ -193,25 +197,34 @@ class Login extends Component {
   }
 
   _setUserData = () => {
-    const { name,surname,email,password, age, country, sex, } = this.state;
+    const { name,surname,email,password, age, country, sex,firstform } = this.state;
     const { country: countryText, sex: sexText, age: ageText } = this.props.locale.messages;
     let usernameError = false
     let ageError = false 
     let countryError = false 
     let sexError = false
-
-    if(!Validate.username(username)){
-      usernameError = true;
+    if (firstform){
+      if(!Validate.email(email)){
+        emailError = true;
+      }
+      if(!Validate.name(name)){
+        nameError = true;
+      }
+      if(!Validate.name(surname)){
+        surnameError = true;
+      }
+    }else{
+      if(!country || country == countryText){
+        countryError = true;
+      }
+      if(!sex || sex == sexText){
+        sexError = true;
+      }
     }
-    if(!age || age == ageText){
-      ageError = true;
-    }
-    if(!country || country == countryText){
-      countryError = true;
-    }
-    if(!sex || sex == sexText){
-      sexError = true;
-    }
+    
+    // if(!age || age == ageText){
+    //   ageError = true;
+    // }
 
     if(!usernameError && !ageError && !countryError && !sexError){
       const userData = { name,surname,email, age: age, country, sex, updateDate: (new Date()).getTime() };
@@ -411,8 +424,24 @@ class Login extends Component {
 
   _renderRegisterWithEmail = () => {
     console.log("register")
-    var { username,name,surname, age, country, sex, confirm, register } = this.props.locale.messages;
-    const {usernameError, ageError, countryError, sexError,firstForm} = this.state;
+    
+
+    const onChange = (event, selectedDate) => {
+      const currentDate = selectedDate || date;
+      setShow(Platform.OS === 'ios');
+      this.setState({ age: currentDate })
+    };
+
+    const showMode = (currentMode) => {
+      setShow(true);
+      setMode(currentMode);
+    };
+
+    const showDatepicker = () => {
+      showMode('date');
+    };
+    var { username,name,surname, age, country, sex, confirm, register,birth } = this.props.locale.messages;
+    const {usernameError, ageError, countryError, sexError,firstForm,date,mode,show} = this.state;
     
       return (<><><View>
         <CustomText style={styles.title}>{register}</CustomText>
@@ -446,20 +475,20 @@ class Login extends Component {
             <View style={styles.view1s}>
 
             <Item style={[styles.item1, ageError ? styles.itemError : {}]} regular>
-                  {/* <Input placeholder={birth} onChangeText={(text) => this.setState({birth: text})} /> */}
-                  <Picker
-                    mode="dialog"
-                    style={{ width: "100%", fontFamily: "montserrat-regular" }}
-                    placeholder={age}
-                    textStyle={{ fontFamily: "montserrat-regular" }}
-                    placeholderStyle={{ color: "#bfc6ea", fontFamily: "montserrat-regular" }}
-                    selectedValue={this.state.age}
-                    onValueChange={(value) => this.setState({ age: value, ageError: false })}>
-                    <Picker.Item label={age} value={age} />
-                    {this.state.ages.map(age => {
-                      return <Picker.Item label={age.label} value={age.value} />;
-                    })}
-                  </Picker>
+                  <Input placeholder={birth} onChangeText={(text) => this.setState({birth: text})} />
+                  {/* {show && (
+                    <DateTimePicker
+                    testID="dateTimePicker"
+                    value={date}
+                    mode={mode}
+                    is24Hour={true}
+                    display="default"
+                    onChange={onChange}
+                  />
+                )}
+                
+                <Input autoCapitalize={'none'} isReadOnly={true} placeholder={birth} value={1} onFocus={(value) => {
+                  this.setState({ show: true })}} /> */}
                 </Item>
                 <Item style={[styles.item1, countryError ? styles.itemError : {}]} regular>
                   <Picker
