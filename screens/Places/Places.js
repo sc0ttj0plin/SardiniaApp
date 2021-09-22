@@ -21,7 +21,6 @@ import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
 const { Value, event, interpolate } = Animated;
-import { GeoInfo } from "../../helpers/geocoding";
 
 /**
  * Map:             Clusters + pois that update with user map's interaction
@@ -291,9 +290,6 @@ class PlacesScreen extends PureComponent {
     const { term, childUuids } = this._getCurrentTerm(true);
     const { nearToYou } = this.props.locale.messages;
     const { pois, snapIndex, coords, region, nearPois  } = this.state;
-    //console.log(this.state);
-    console.log(nearPois);
-    GeoInfo(41.89, 12.49);
     const isPoiList = this._isPoiList();
     let scrollableData = [];
     let renderScrollableListItem = null;

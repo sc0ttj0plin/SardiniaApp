@@ -57,6 +57,7 @@ class Login extends Component {
       sexError: false,
       countries: [],
       firstForm:true,
+      validationError:false,
       date:new Date(1598051730000),
       mode:"date",
       show:false
@@ -190,23 +191,26 @@ class Login extends Component {
 
 
   _setRegisterLast = () => {
-    this.setState({ 
-      firstForm: false,
-    });
+    this._validate();
+    
+
+    
 
   }
 
   _validate = () => {
-    const { name,surname,email,password, age, country, sex,firstform } = this.state;
+    const { name,surname,email,password, age, date, country, sex,firstForm } = this.state;
     const { country: countryText, sex: sexText, age: ageText } = this.props.locale.messages;
     let nameError = false
     let emailError = false
     let surnameError = false
     let ageError = false 
+    let passwordError = false
     let countryError = false 
     let sexError = false
     let dateError = false
-    if (firstform){
+    console.log(firstForm)
+    if (firstForm){
       if(!Validate.email(email)){
         emailError = true;
       }
@@ -219,7 +223,11 @@ class Login extends Component {
       if(!Validate.password(password)){
         passwordError = true;
       }
-    }
+      if(!nameError && !surnameError && !emailError && !passwordError){
+        this.setState({ 
+          firstForm: false,
+        });
+      }
     else {
       if(!Validate.date(date)){
         dateError = true;
@@ -232,7 +240,7 @@ class Login extends Component {
         sexError = true;
       }
 
-    }
+    }}
     
     this.setState({
       ageError, 
@@ -477,24 +485,8 @@ class Login extends Component {
 
   _renderRegisterWithEmail = () => {
     console.log("register")
-    
-
-    const onChange = (event, selectedDate) => {
-      const currentDate = selectedDate || date;
-      setShow(Platform.OS === 'ios');
-      this.setState({ age: currentDate })
-    };
-
-    const showMode = (currentMode) => {
-      setShow(true);
-      setMode(currentMode);
-    };
-
-    const showDatepicker = () => {
-      showMode('date');
-    };
     var { username,name,surname, age, country, sex, confirm, register,birth,next } = this.props.locale.messages;
-    const {usernameError, ageError, countryError, sexError,firstForm,date,mode,show} = this.state;
+    const {nameError,surnameError,emailError, passwordError, ageError, countryError, sexError,firstForm} = this.state;
     
       return (
         <>
@@ -513,7 +505,7 @@ class Login extends Component {
                       <Item
                         style={[
                           styles.item1,
-                          usernameError ? styles.itemError : {},
+                          nameError ? styles.itemError : {},
                         ]}
                         regular
                       >
@@ -522,14 +514,14 @@ class Login extends Component {
                           style={{ fontFamily: "montserrat-regular" }}
                           value={this.state.name}
                           onChangeText={(text) =>
-                            this.setState("surname", text)
+                            this.setState({name: text})
                           }
                         />
                       </Item>
                       <Item
                         style={[
                           styles.item1,
-                          usernameError ? styles.itemError : {},
+                          surnameError ? styles.itemError : {},
                         ]}
                         regular
                       >
@@ -537,10 +529,13 @@ class Login extends Component {
                           placeholder={surname}
                           style={{ fontFamily: "montserrat-regular" }}
                           value={this.state.surname}
-                          onChangeText={(text) => this.setState("name", text)}
+                          onChangeText={(text) => this.setState({surname: text})}
                         />
                       </Item>
-                      <Item style={styles.item1} regular>
+                      <Item style={[
+                          styles.item1,
+                          emailError ? styles.itemError : {},
+                        ]}regular>
                         <Input
                           autoCapitalize={"none"}
                           placeholder="Email"
@@ -549,7 +544,10 @@ class Login extends Component {
                           }
                         />
                       </Item>
-                      <Item style={styles.item1} regular>
+                      <Item style={[
+                          styles.item1,
+                          passwordError ? styles.itemError : {},
+                        ]} regular>
                         <Input
                           autoCapitalize={"none"}
                           secureTextEntry={true}
