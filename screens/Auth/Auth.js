@@ -19,7 +19,7 @@ import enDbCountries from "world_countries_lists/data/en/countries.json";
 import * as Validate from '../../helpers/validate';
 import * as profile from "../../helpers/profile";
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { MaskedTextInput,MaskedText } from "react-native-mask-text";
 
 const AUTH_STATES = {
   INIT: "INIT",
@@ -195,6 +195,59 @@ class Login extends Component {
     });
 
   }
+
+  _validate = () => {
+    const { name,surname,email,password, age, country, sex,firstform } = this.state;
+    const { country: countryText, sex: sexText, age: ageText } = this.props.locale.messages;
+    let nameError = false
+    let emailError = false
+    let surnameError = false
+    let ageError = false 
+    let countryError = false 
+    let sexError = false
+    let dateError = false
+    if (firstform){
+      if(!Validate.email(email)){
+        emailError = true;
+      }
+      if(!Validate.name(name)){
+        nameError = true;
+      }
+      if(!Validate.name(surname)){
+        surnameError = true;
+      }
+      if(!Validate.password(password)){
+        passwordError = true;
+      }
+    }
+    else {
+      if(!Validate.date(date)){
+        dateError = true;
+      }
+
+      if(!country || country == countryText){
+        countryError = true;
+      }
+      if(!sex || sex == sexText){
+        sexError = true;
+      }
+
+    }
+    
+    this.setState({
+      ageError, 
+      countryError, 
+      sexError,
+      nameError,
+      emailError,
+      passwordError,
+      surnameError,
+      dateError
+    })
+
+
+  }
+
 
   _setUserData = () => {
     const { name,surname,email,password, age, country, sex,firstform } = this.state;
@@ -440,95 +493,178 @@ class Login extends Component {
     const showDatepicker = () => {
       showMode('date');
     };
-    var { username,name,surname, age, country, sex, confirm, register,birth } = this.props.locale.messages;
+    var { username,name,surname, age, country, sex, confirm, register,birth,next } = this.props.locale.messages;
     const {usernameError, ageError, countryError, sexError,firstForm,date,mode,show} = this.state;
     
-      return (<><><View>
-        <CustomText style={styles.title}>{register}</CustomText>
-       </View></><View style={styles.mainView}>
-
-          <View style={styles.view0}>
-            {firstForm ? (
-            <View style={styles.view1s}>
-              {/* <CustomText style={styles.text0}>{fillInformation}</CustomText>  */}
-              <Form>
-                <Item style={[styles.item1, usernameError ? styles.itemError : {}]} regular>
-                  <Input placeholder={name} style={{ fontFamily: "montserrat-regular" }} value={this.state.name} onChangeText={(text) => this.setState("surname", text)} />
-                </Item>
-                <Item style={[styles.item1, usernameError ? styles.itemError : {}]} regular>
-                  <Input placeholder={surname} style={{ fontFamily: "montserrat-regular" }} value={this.state.surname} onChangeText={(text) => this.setState("name", text)} />
-                </Item>
-                <Item style={styles.item1} regular>
-
-                  <Input autoCapitalize={'none'} placeholder="Email" onChangeText={(email) => this.setState({ email: email.toLowerCase() })} />
-                </Item>
-                <Item style={styles.item1} regular>
-
-                  <Input autoCapitalize={'none'} secureTextEntry={true} placeholder="Password" onChangeText={(password) => this.setState({ password: password })} />
-                </Item>
-
-
-                
-              </Form>
+      return (
+        <>
+          <>
+            <View>
+              <CustomText style={styles.title}>{register}</CustomText>
             </View>
-            ):(
-            <View style={styles.view1s}>
+          </>
+          <View style={styles.mainView}>
+            <View style={styles.view0}>
+              {firstForm ? (
+                <>
+                  <View style={styles.view1s}>
+                    {/* <CustomText style={styles.text0}>{fillInformation}</CustomText>  */}
+                    <Form>
+                      <Item
+                        style={[
+                          styles.item1,
+                          usernameError ? styles.itemError : {},
+                        ]}
+                        regular
+                      >
+                        <Input
+                          placeholder={name}
+                          style={{ fontFamily: "montserrat-regular" }}
+                          value={this.state.name}
+                          onChangeText={(text) =>
+                            this.setState("surname", text)
+                          }
+                        />
+                      </Item>
+                      <Item
+                        style={[
+                          styles.item1,
+                          usernameError ? styles.itemError : {},
+                        ]}
+                        regular
+                      >
+                        <Input
+                          placeholder={surname}
+                          style={{ fontFamily: "montserrat-regular" }}
+                          value={this.state.surname}
+                          onChangeText={(text) => this.setState("name", text)}
+                        />
+                      </Item>
+                      <Item style={styles.item1} regular>
+                        <Input
+                          autoCapitalize={"none"}
+                          placeholder="Email"
+                          onChangeText={(email) =>
+                            this.setState({ email: email.toLowerCase() })
+                          }
+                        />
+                      </Item>
+                      <Item style={styles.item1} regular>
+                        <Input
+                          autoCapitalize={"none"}
+                          secureTextEntry={true}
+                          placeholder="Password"
+                          onChangeText={(password) =>
+                            this.setState({ password: password })
+                          }
+                        />
+                      </Item>
+                    </Form>
+                  </View>
+                  <TouchableOpacity
+                    style={styles.defaultBtn}
+                    onPress={() => this._setRegisterLast()}
+                  >
+                    <CustomText style={styles.defaultBtnText}>
+                      {next}
+                    </CustomText>
+                  </TouchableOpacity>
+                </>
+              ) : (
+                <View style={styles.view1s}>
+                  <Item
+                    style={[styles.item1, ageError ? styles.itemError : {}]}
+                    regular
+                  >
+                    <MaskedTextInput
+                      mask="99/99/9999"
+                      keyboardType="numeric"
+                      style={[styles.item1, ageError ? styles.itemError : {}]}
+                      onChangeText={(text, rawText) => {
+                        console.log(text);
+                        console.log(rawText);
+                        (text) => this.setState({ birth: text });
+                      }}
+                      style={styles.input}
+                    />
+                  </Item>
+                  <Item
+                    style={[styles.item1, countryError ? styles.itemError : {}]}
+                    regular
+                  >
+                    <Picker
+                      mode={"dialog"}
+                      style={{
+                        width: "100%",
+                        fontFamily: "montserrat-regular",
+                      }}
+                      placeholder={country}
+                      textStyle={{ fontFamily: "montserrat-regular" }}
+                      placeholderStyle={{
+                        color: "#bfc6ea",
+                        fontFamily: "montserrat-regular",
+                      }}
+                      selectedValue={this.state.country}
+                      onValueChange={(value) =>
+                        this.setState({ country: value, countryError: false })
+                      }
+                    >
+                      <Picker.Item label={country} value={country} />
+                      {this.state.countries.map((country) => {
+                        return (
+                          <Picker.Item
+                            label={country.name}
+                            value={country.name}
+                          />
+                        );
+                      })}
+                    </Picker>
+                  </Item>
+                  <Item
+                    style={[styles.item1, sexError ? styles.itemError : {}]}
+                    regular
+                  >
+                    {/* <Input placeholder={sex} onChangeText={(text) => this.setState({sex: text})} /> */}
+                    <Picker
+                      mode={"dialog"}
+                      style={{
+                        width: "100%",
+                        fontFamily: "montserrat-regular",
+                      }}
+                      placeholder={sex}
+                      textStyle={{ fontFamily: "montserrat-regular" }}
+                      placeholderStyle={{
+                        color: "#bfc6ea",
+                        fontFamily: "montserrat-regular",
+                      }}
+                      selectedValue={this.state.sex}
+                      onValueChange={(value) =>
+                        this.setState({ sex: value, sexError: false })
+                      }
+                    >
+                      <Picker.Item label={sex} value={sex} />
+                      {this.state.sexs.map((sex) => {
+                        return (
+                          <Picker.Item label={sex.label} value={sex.value} />
+                        );
+                      })}
+                    </Picker>
+                  </Item>
+                </View>
+              )}
 
-            <Item style={[styles.item1, ageError ? styles.itemError : {}]} regular>
-                  <Input placeholder={birth} onChangeText={(text) => this.setState({birth: text})} />
-                  {/* {show && (
-                    <DateTimePicker
-                    testID="dateTimePicker"
-                    value={date}
-                    mode={mode}
-                    is24Hour={true}
-                    display="default"
-                    onChange={onChange}
-                  />
-                )}
-                
-                <Input autoCapitalize={'none'} isReadOnly={true} placeholder={birth} value={1} onFocus={(value) => {
-                  this.setState({ show: true })}} /> */}
-                </Item>
-                <Item style={[styles.item1, countryError ? styles.itemError : {}]} regular>
-                  <Picker
-                    mode={"dialog"}
-                    style={{ width: "100%", fontFamily: "montserrat-regular" }}
-                    placeholder={country}
-                    textStyle={{ fontFamily: "montserrat-regular" }}
-                    placeholderStyle={{ color: "#bfc6ea", fontFamily: "montserrat-regular" }}
-                    selectedValue={this.state.country}
-                    onValueChange={(value) => this.setState({ country: value, countryError: false })}>
-                    <Picker.Item label={country} value={country} />
-                    {this.state.countries.map(country => {
-                      return <Picker.Item label={country.name} value={country.name} />;
-                    })}
-                  </Picker>
-                </Item>
-                <Item style={[styles.item1, sexError ? styles.itemError : {}]} regular>
-                  {/* <Input placeholder={sex} onChangeText={(text) => this.setState({sex: text})} /> */}
-                  <Picker
-                    mode={"dialog"}
-                    style={{ width: "100%", fontFamily: "montserrat-regular" }}
-                    placeholder={sex}
-                    textStyle={{ fontFamily: "montserrat-regular" }}
-                    placeholderStyle={{ color: "#bfc6ea", fontFamily: "montserrat-regular" }}
-                    selectedValue={this.state.sex}
-                    onValueChange={(value) => this.setState({ sex: value, sexError: false })}>
-                    <Picker.Item label={sex} value={sex} />
-                    {this.state.sexs.map(sex => {
-                      return <Picker.Item label={sex.label} value={sex.value} />;
-                    })}
-                  </Picker>
-                </Item>
-            </View>)}
-            
-            <TouchableOpacity style={styles.defaultBtn} onPress={() => this._setRegisterLast()}>
-              <CustomText style={styles.defaultBtnText}>{confirm}</CustomText>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.defaultBtn}
+                onPress={() => this._setRegisterLast()}
+              >
+                <CustomText style={styles.defaultBtnText}>
+                  {register}
+                </CustomText>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View></>
-    )
+        </>
+      );
   }
 
 
@@ -1092,7 +1228,13 @@ const styles = StyleSheet.create({
   userSex: {
     fontFamily: "montserrat-bold",
     fontSize: 15
-  }
+  },
+  input: {
+    width: '100%',
+    margin: 12,
+    borderWidth: 0,
+  },
+
 });
 
 
