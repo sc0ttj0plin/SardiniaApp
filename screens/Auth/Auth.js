@@ -222,15 +222,17 @@ class Login extends Component {
     console.log("dentro seconda parte di reg");
     console.log(date)
     if (!Validate.date(date)) {
-      
+      alert('Invalid birthdate');
       dateError = true;
     }
 
     if (!country || country == countryText) {
       countryError = true;
+      alert('Invalid country');
     }
     if (!sex || sex == sexText) {
       sexError = true;
+      alert('Invalid sex');
     }
 
     this.setState({
@@ -261,18 +263,22 @@ class Login extends Component {
       if (!Validate.email(email)) {
         emailError = true;
         validationError = true;
+        alert('Invalid email');
       }
       if (!Validate.name(name)) {
         nameError = true;
         validationError = true;
+        alert('Invalid name');
       }
       if (!Validate.name(surname)) {
         surnameError = true;
         validationError = true;
+        alert('Invalid surname');
       }
       if (!Validate.password(password)) {
         passwordError = true;
         validationError = true;
+        alert('Invalid password');
       }
       if (!nameError && !surnameError && !emailError && !passwordError) {
         this.setState({
@@ -621,7 +627,6 @@ class Login extends Component {
       emailError,
       passwordError,
       dateError,
-      ageError,
       countryError,
       sexError,
       firstForm,
