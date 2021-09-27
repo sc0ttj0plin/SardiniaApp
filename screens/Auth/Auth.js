@@ -241,9 +241,9 @@ class Login extends Component {
       dateError,
     });
 
-    // if (!countryError && !dateError && !sexError) {
-    //   this._setUserData();
-    // }
+    if (!countryError && !dateError && !sexError) {
+    this._setUserData();
+    }
   };
 
   _validateFirst = () => {
@@ -316,20 +316,9 @@ class Login extends Component {
       date,
       country,
       sex,
-      firstForm,
-      dateError,
-      countryError,
-      sexError,
     } = this.state;
-    const {
-      country: countryText,
-      sex: sexText,
-      age: ageText,
-    } = this.props.locale.messages;
-    let validationError = this.state;
 
-    if (!validationError) {
-      this.props.actions.registerAndSignup(email, password);
+      await this.props.actions.registerAndSignup(email, password);
       this.setState({ loginStep: AUTH_STATES.LOGIN_REQUEST });
 
       const userData = {
@@ -337,7 +326,6 @@ class Login extends Component {
         surname,
         email,
         date,
-        age: age,
         country,
         sex,
         updateDate: new Date().getTime(),
@@ -348,14 +336,8 @@ class Login extends Component {
         meta: userData,
       });
       this.setState({ loginStep: AUTH_STATES.PROFILE_SHOW });
-    } else {
-      this.setState({
-        dateError,
-        countryError,
-        sexError,
-      });
+  
     }
-  };
 
   _removeProfile = () => {
     const { username, age, country, sex } = this.state;
