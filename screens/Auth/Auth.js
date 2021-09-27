@@ -99,7 +99,7 @@ class Login extends Component {
     if (this.props.auth.error) {
       console.log(this.props.auth.error);
       this.setState({ loginStep: AUTH_STATES.ERROR });
-    } else if (this.props.auth.success && this.props.auth.user) {
+    } else if (this.props.auth.success && this.props.auth.user) {//1
       if (this.props.auth.user.info) {
         const { info } = this.props.auth.user;
         this.setState({
@@ -134,6 +134,8 @@ class Login extends Component {
   _loginStateChanged = async () => {
     if (this.props.auth.user && this.props.auth.user.info) {
       const { info } = this.props.auth.user;
+      console.log(info)
+      console.log("appena loggato info")
       console.log(info.updateDate);
       this.setState({
         loginStep: AUTH_STATES.PROFILE_SHOW,
@@ -143,7 +145,7 @@ class Login extends Component {
         sex: info.sex,
       });
     } else if (this.props.auth.success) {
-      this.setState({ loginStep: AUTH_STATES.PROFILE_EDIT });
+      this.setState({ loginStep: AUTH_STATES.PROFILE_EDIT });//check if profile edit is ok
     } else if (this.props.auth.error) {
       console.log("AUTH_STATES.ERROR");
       this.setState({ loginStep: AUTH_STATES.ERROR });
@@ -210,8 +212,25 @@ class Login extends Component {
     this._validateRegister();
   };
 
-  _validateRegister = () => {
-    const { date, country, sex } = this.state;
+  _validateRegister = async () => {
+    //const { date, country, sex,password,email } = this.state;
+    const {name,surname,
+      email,password,age,date,country,sex,} = this.state;//profile
+    const userData = {
+        name,
+        surname,
+        email,
+        date,
+        country,
+        sex,
+        updateDate: new Date().getTime(),
+      };//profile
+      console.log(userData)
+      // this.props.actions.editUser(userData);
+      // this.props.actions.reportAction({
+      //   analyticsActionType: Constants.ANALYTICS_TYPES.userUpdatesProfile,
+      //   meta: userData,
+      // });
     const {
       country: countryText,
       sex: sexText,
@@ -242,7 +261,9 @@ class Login extends Component {
     });
 
     if (!countryError && !dateError && !sexError) {
-    this._setUserData();
+    
+      this.props.actions.registerAndSignup(email, password,userData);
+      this.setState({ loginStep: AUTH_STATES.LOGIN_REQUEST});
     }
   };
 
@@ -305,7 +326,7 @@ class Login extends Component {
     }
   }*/
 
-  _setUserData = async () => {
+  _setUserData = () => {
     console.log("dentro rec");
     const {
       name,
@@ -318,8 +339,7 @@ class Login extends Component {
       sex,
     } = this.state;
 
-      await this.props.actions.registerAndSignup(email, password);
-      this.setState({ loginStep: AUTH_STATES.LOGIN_REQUEST });
+      
 
       const userData = {
         name,
@@ -330,12 +350,13 @@ class Login extends Component {
         sex,
         updateDate: new Date().getTime(),
       };
+      console.log(userdata)
       this.props.actions.editUser(userData);
       this.props.actions.reportAction({
         analyticsActionType: Constants.ANALYTICS_TYPES.userUpdatesProfile,
         meta: userData,
       });
-      this.setState({ loginStep: AUTH_STATES.PROFILE_SHOW });
+      this.setState({ loginStep: AUTH_STATES.PROFILE_SHOW});
   
     }
 
@@ -503,6 +524,8 @@ class Login extends Component {
   };
 
   _renderProfileShow = () => {
+    console.log("dentro profile show")
+    console.log(this.props.auth.user.info)
     if (!this.props.auth.user.info) return;
 
     const {

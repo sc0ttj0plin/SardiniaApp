@@ -4,10 +4,6 @@ import * as Linking from 'expo-linking';
 import AsyncStorage from '@react-native-community/async-storage';
 import ExpoConstants from 'expo-constants';
 
-//@passwordless
-
-
-
 export const passwordSignup = (email,password) =>
   async (dispatch, getState) => {
     dispatch({ type: Constants.AUTH });
@@ -27,30 +23,16 @@ export const passwordSignup = (email,password) =>
       dispatch({ type: Constants.AUTH_FAIL, payload: { message: e.message } });
     }}
 
-_checkAuthStatus = () => {
-  return new Promise((resolve, reject) => {
-    try {
-      firebase.auth().onAuthStateChanged(user => {
-        if (user) {
-          resolve(user);
-        }
-        else reject();
-      });
-    } catch {
-      reject();
-    } 
-  });
-}
-
 //register and login
 
-export const registerAndSignup = (email,password) =>
+export const registerAndSignup = (email,password,el) =>
   async (dispatch, getState) => {
     dispatch({ type: Constants.AUTH });
     try {
       const result = await firebase.auth().createUserWithEmailAndPassword(email,password);
       const token = await firebase.auth().currentUser.getIdToken(/* forceRefresh */true);
       if (result.user) {
+        console.log(result.user)
         let user = result.user;
         let userInfo = await firebase.database().ref(`users/${user.uid}/info`).once('value');
         await AsyncStorage.setItem('firebaseUid', user.uid);
@@ -61,7 +43,21 @@ export const registerAndSignup = (email,password) =>
     } catch (e) {
       console.log(e.message);
       dispatch({ type: Constants.AUTH_FAIL, payload: { message: e.message } });
-    }}
+    }
+    try {
+      dispatch({ type: Constants.USER_EDIT });
+      const user = firebase.auth().currentUser;
+      let ref = await firebase.database().ref(`users/${user.uid}/info`);
+      await ref.set({ ...el });
+      dispatch({ type: Constants.USER_EDIT_SUCCESS, payload: {userInfo: {...el}}});
+      console.log("update usert ok")
+    } catch(e) { 
+      dispatch({ type: Constants.USER_EDIT_FAIL });
+      console.log(e.message); 
+    }
+  
+  
+  }
 
 _checkAuthStatus = () => {
   return new Promise((resolve, reject) => {
@@ -98,6 +94,7 @@ async (dispatch, getState) => {
 
 //
 export const editUser = (el) =>
+console.log(el);
   async (dispatch) => {
     try {
       dispatch({ type: Constants.USER_EDIT });
@@ -105,6 +102,7 @@ export const editUser = (el) =>
       let ref = await firebase.database().ref(`users/${user.uid}/info`);
       await ref.set({ ...el });
       dispatch({ type: Constants.USER_EDIT_SUCCESS, payload: {userInfo: {...el}}});
+      console.log("update usert ok")
     } catch(e) { 
       dispatch({ type: Constants.USER_EDIT_FAIL });
       console.log(e.message); 
