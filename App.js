@@ -26,7 +26,7 @@ enableScreens();
 export default class App extends Component {
 
   constructor(props){
-    super(props);
+    super(props);//test
     this.state = {
       isSplashReady: false,
       isAppReady: false,
