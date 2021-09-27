@@ -47,7 +47,7 @@ export function date (value) {
     pattern = new RegExp(VALIDATORS.date);
     let validation = pattern.exec(value);
     if(validation !== null){
-        return true;
+        return true;//no age check
     }
     else
         return false

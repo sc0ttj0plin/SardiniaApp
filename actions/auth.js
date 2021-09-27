@@ -42,6 +42,42 @@ _checkAuthStatus = () => {
   });
 }
 
+//register and login
+
+export const registerAndSignup = (email,password) =>
+  async (dispatch, getState) => {
+    dispatch({ type: Constants.AUTH });
+    try {
+      const result = await firebase.auth().createUserWithEmailAndPassword(email,password);
+      const token = await firebase.auth().currentUser.getIdToken(/* forceRefresh */true);
+      if (result.user) {
+        let user = result.user;
+        let userInfo = await firebase.database().ref(`users/${user.uid}/info`).once('value');
+        await AsyncStorage.setItem('firebaseUid', user.uid);
+        user.info = userInfo.val();
+        dispatch({ type: Constants.AUTH_SUCCESS, payload: { user: user, token } });
+      } else
+        dispatch({ type: Constants.AUTH_FAIL, payload: { message: 'Errore nel login!' } });
+    } catch (e) {
+      console.log(e.message);
+      dispatch({ type: Constants.AUTH_FAIL, payload: { message: e.message } });
+    }}
+
+_checkAuthStatus = () => {
+  return new Promise((resolve, reject) => {
+    try {
+      firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+          resolve(user);
+        }
+        else reject();
+      });
+    } catch {
+      reject();
+    } 
+  });
+}
+
 
 //@passwordless
 export const passwordLessLogin = () => 

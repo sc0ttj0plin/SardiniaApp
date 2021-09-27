@@ -27,6 +27,7 @@ const AUTH_STATES = {
   LINK_SENT: "LINK_SENT",
   LOGIN_REQUEST:"LOGINREQ",
   PROFILE_REMOVE: "PROFILE_REMOVE",
+  USER_REGISTER:"USER_REGISTER",
   PROFILE_EDIT_FIRST: "PROFILE_EDIT_FIRST",
   PROFILE_EDIT_LAST: "PROFILE_EDIT_LAST",
   PROFILE_SHOW: "PROFILE_SHOW",
@@ -191,17 +192,16 @@ class Login extends Component {
 
 
   _setRegisterLast = () => {
-    this._validate();
-    
-
-    
+    this._validate(); 
 
   }
 
   _validate = () => {
+    this.setState({validationError:false})
     const { name,surname,email,password, age, date, country, sex,firstForm } = this.state;
     const { country: countryText, sex: sexText, age: ageText } = this.props.locale.messages;
     let nameError = false
+    let validationError = false
     let emailError = false
     let surnameError = false
     let ageError = false 
@@ -209,19 +209,22 @@ class Login extends Component {
     let countryError = false 
     let sexError = false
     let dateError = false
-    console.log(firstForm)
     if (firstForm){
       if(!Validate.email(email)){
         emailError = true;
+        validationError=true;
       }
       if(!Validate.name(name)){
         nameError = true;
+        validationError=true;
       }
       if(!Validate.name(surname)){
         surnameError = true;
+        validationError=true;
       }
       if(!Validate.password(password)){
         passwordError = true;
+        validationError=true;
       }
       if(!nameError && !surnameError && !emailError && !passwordError){
         this.setState({ 
@@ -231,13 +234,16 @@ class Login extends Component {
     else {
       if(!Validate.date(date)){
         dateError = true;
+        validationError=true;
       }
 
       if(!country || country == countryText){
         countryError = true;
+        validationError=true;
       }
       if(!sex || sex == sexText){
         sexError = true;
+        validationError=true;
       }
 
     }}
@@ -250,44 +256,32 @@ class Login extends Component {
       emailError,
       passwordError,
       surnameError,
-      dateError
+      dateError,
+      validationError
     })
 
 
   }
-
-
-  _setUserData = () => {
-    const { name,surname,email,password, age, country, sex,firstform } = this.state;
-    const { country: countryText, sex: sexText, age: ageText } = this.props.locale.messages;
-    let usernameError = false
-    let ageError = false 
-    let countryError = false 
-    let sexError = false
-    if (firstform){
-      if(!Validate.email(email)){
-        emailError = true;
-      }
-      if(!Validate.name(name)){
-        nameError = true;
-      }
-      if(!Validate.name(surname)){
-        surnameError = true;
-      }
-    }else{
-      if(!country || country == countryText){
-        countryError = true;
-      }
-      if(!sex || sex == sexText){
-        sexError = true;
-      }
+/*async () => {
+    const { email,password } = this.state;
+    if (!Validate.email(email)) {
+      alert('Invalid email');
+    } else {
+      this.props.actions.passwordSignup(email,password);
+      this.setState({ loginStep: AUTH_STATES.LOGIN_REQUEST });
     }
-    
-    // if(!age || age == ageText){
-    //   ageError = true;
-    // }
+  }*/
 
-    if(!usernameError && !ageError && !countryError && !sexError){
+  _setUserData = async () => {
+    const { name,surname,email,password, age, date, country, sex,firstForm } = this.state;
+    const { country: countryText, sex: sexText, age: ageText } = this.props.locale.messages;
+    let validationError = this.state;
+
+    if(!validationError){
+      this.props.actions.registerAndSignup(email,password);
+      this.setState({ loginStep: AUTH_STATES.LOGIN_REQUEST });
+      
+
       const userData = { name,surname,email, age: age, country, sex, updateDate: (new Date()).getTime() };
       this.props.actions.editUser(userData);
       this.props.actions.reportAction({ 
@@ -362,8 +356,12 @@ class Login extends Component {
   }
 
   _onRegisterPress = () =>{
-    this.setState({ loginStep: AUTH_STATES.PROFILE_EDIT_FIRST})
+    this.setState({ loginStep: AUTH_STATES.USER_REGISTER})
   }
+
+  /*_onRegisterPress = () =>{
+    this.setState({ loginStep: AUTH_STATES.PROFILE_EDIT_FIRST})
+  }*/
 
   _onLastStep = () =>{
     this.setState({ loginStep: AUTH_STATES.PROFILE_EDIT_LAST})
@@ -576,6 +574,7 @@ class Login extends Component {
                   >
                     <MaskedTextInput
                       mask="99/99/9999"
+                      placeholder={birth}
                       keyboardType="numeric"
                       style={[styles.item1, ageError ? styles.itemError : {}]}
                       onChangeText={(text, rawText) => {
@@ -653,7 +652,7 @@ class Login extends Component {
 
               <TouchableOpacity
                 style={styles.defaultBtn}
-                onPress={() => this._setRegisterLast()}
+                onPress={() => this._onRegisterPress()}
               >
                 <CustomText style={styles.defaultBtnText}>
                   {register}
