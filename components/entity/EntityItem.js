@@ -14,7 +14,7 @@ export default class EntityItem extends PureComponent {
 
   
   render() {
-    const { onPress, keyItem, title, subtitle, image, distance, size, extraStyle, style, animated = false, borderRadius = 8, mediaType} = this.props;
+    const { onPress, keyItem, title, subtitle, image, distance, size, extraStyle, style, animated = false, borderRadius = 8, mediaType, backgroundTopRightCorner, iconColor} = this.props;
     return (
         <ScrollableContainerTouchableOpacity 
             key={keyItem}  
@@ -41,14 +41,14 @@ export default class EntityItem extends PureComponent {
 
                 {this.entityIconOpts && (
                   <View style={[styles.corner, {
-                    borderTopColor: this.entityIconOpts.backgroundTopRightCorner,
+                    borderTopColor: backgroundTopRightCorner || this.entityIconOpts.backgroundTopRightCorner,
                     borderTopRightRadius: borderRadius
                   }]}>
                     <CustomIcon
                         name={this.entityIconOpts.iconName}
                         size={15}
                         style={styles.cornerIcon}
-                        color={this.entityIconOpts.iconColor}
+                        color={iconColor || this.entityIconOpts.iconColor}
                     />
                   </View>
                 )}

@@ -10,6 +10,8 @@ import {Button, Icon} from "react-native-elements";
 import Colors from "../../constants/Colors";
 import * as Constants from "../../constants";
 import {EntityItem} from "./index";
+import {useNavigation, useRoute} from "@react-navigation/native";
+import {VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS} from "../../constants";
 
 class EntityScrollableList extends PureComponent {
 
@@ -18,29 +20,68 @@ class EntityScrollableList extends PureComponent {
   }
 
   _renderItem = ({item, index}) => {
-    const {onItemPress} = this.props;
     const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
     const termName = _.get(item, "term.name", "")
 
-    return (
-      <>
-        <EntityItem
+    const isAccomodations = item.type === Constants.NODE_TYPES.accomodations;
+
+    if (isAccomodations) {
+      return (
+        <AccomodationItem
           index={index}
           keyItem={item.nid}
-          backgroundTopLeftCorner={"white"}
-          iconColor={Colors.colorPlacesScreen}
-          listType={Constants.ENTITY_TYPES.places}
-          onPress={() => onItemPress(item)}
+          horizontal
+          sizeMargins={20}
           title={title}
-          subtitle={termName}
-          image={item.image}
+          extraStyle={styles.item}
+          term={termName}
+          stars={item.stars}
+          location={item.location}
           distance={item.distanceStr}
-          horizontal={true}
-          animated={true}
+          onPress={() => this._openItem(item)}
         />
-        <View style={{width: 10, flex: 1}}></View>
-      </>
+      )
+    }
+
+    return (
+      <EntityItem
+        index={index}
+        keyItem={item.nid}
+        backgroundTopRightCorner={VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[item.type].backgroundTopRightCorner}
+        iconColor={'white'}
+        listType={item.type}
+        onPress={() => this._openItem(item)}
+        title={title}
+        extraStyle={styles.item}
+        subtitle={termName}
+        image={item.image}
+        distance={item.distanceStr}
+        horizontal={true}
+        animated={true}
+      />
     )
+  }
+
+  _openItem = (item) => {
+    switch (item.type) {
+      case Constants.NODE_TYPES.places:
+        this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, {item, mustFetch: true});
+        break;
+      case Constants.NODE_TYPES.events:
+        this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, {item, mustFetch: true});
+        break;
+      case Constants.NODE_TYPES.itineraries:
+        this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, {item, mustFetch: true})
+        break;
+      case Constants.NODE_TYPES.inspirers:
+        this.props.navigation.navigate(Constants.NAVIGATION.NavInspirerScreen, {item, mustFetch: true})
+        break;
+      case Constants.NODE_TYPES.accomodations:
+        this.props.navigation.navigate(Constants.NAVIGATION.NavAccomodationScreen, {item, mustFetch: true})
+        break;
+      default:
+        break;
+    }
   }
 
   render() {
@@ -48,6 +89,7 @@ class EntityScrollableList extends PureComponent {
       title,
       listTitle,
       data,
+      actionButtonTitle,
       onActionButtonPress,
       backgroundColor
     } = this.props;
@@ -84,7 +126,7 @@ class EntityScrollableList extends PureComponent {
             style={styles.actionButton}
             buttonStyle={styles.actionButtonContainer}
             titleStyle={styles.actionButtonTitle}
-            title="Scopri cosa fare"
+            title={actionButtonTitle}
             icon={
               <Icon
                 containerStyle={styles.actionButtonIcon}
@@ -115,7 +157,6 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     display: "flex",
     flexDirection: "column",
-    marginTop: 32,
   },
   title: {
     fontSize: 20,
@@ -149,7 +190,14 @@ const styles = StyleSheet.create({
   },
   actionButtonIcon: {
     marginRight: -6
+  },
+  item: {
+    marginRight: 10
   }
 });
 
-export default EntityScrollableList
+export default (props) => {
+  const navigation = useNavigation();
+
+  return <EntityScrollableList {...props} navigation={navigation} />;
+}
