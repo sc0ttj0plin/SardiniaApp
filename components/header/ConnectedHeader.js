@@ -16,6 +16,7 @@ import * as utils from '../../helpers/utils';
 //backButtonVisible == true: shows backButton, if set to false shows drawer menù icon
 const HEADER_BUTTONS_PER_SCREEN = {
   [Constants.NAVIGATION.NavPlacesScreen]: {backButtonVisible: false, searchButtonVisible: true, filterButtonVisible: false},
+  [Constants.NAVIGATION.NavOldPlacesScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
   [Constants.NAVIGATION.NavPlacesFiltersScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false},
   [Constants.NAVIGATION.NavInspirersScreen]: {backButtonVisible: false, searchButtonVisible: true, filterButtonVisible: false},
   [Constants.NAVIGATION.NavMapScreen]: {backButtonVisible: true, searchButtonVisible: true, filterButtonVisible: false}, 
