@@ -8,6 +8,7 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {useRoute} from '@react-navigation/native';
 import PlacesScreen from '../screens/Places/Places';
+import OldPlacesScreen from '../screens/Places/OldPlaces';
 import PlaceScreen from '../screens/Places/Place';
 import PlacesFiltersScreen from '../screens/PlacesFilters/PlacesFilters';
 // import InspirersScreen from '../screens/Inspirers/Inspirers';
@@ -40,7 +41,7 @@ import { ConnectedText, ConnectedLanguageList, TabBar, CustomDrawer, ConnectedAu
 import Colors from '../constants/Colors';
 import * as Constants from '../constants';
 const {
-  NavPlacesScreen, NavInspirersScreen ,NavMapScreen, NavLoadingScreen, NavLoginScreen, NavLogoutScreen, NavAuthScreen,
+  NavPlacesScreen, NavOldPlacesScreen, NavInspirersScreen ,NavMapScreen, NavLoadingScreen, NavLoginScreen, NavLogoutScreen, NavAuthScreen,
   NavItinerariesScreen, NavAccomodationsScreen, NavAccomodationScreen, NavAccomodationsStackScreen, NavGalleryStackScreen, NavGalleryScreen, NavGalleryMapScreen, NavGalleryMapStackScreen,
   NavItineraryScreen, NavEventsScreen, NavEventScreen, NavItineraryStagesMapScreen,NavEventsMapScreen, NavEventsSubset, NavExploreScreen, 
   NavVirtualTourScreen, NavPlaceScreen, NavInspirerScreen, NavPreferencesScreen, NavTutorialScreen,
@@ -176,6 +177,7 @@ function MainStackScreen() {
       <MainStack.Screen name={NavTabNavigator} component={TabNavigator} />
       {/* Inner screens */}
       {/* Places */}
+      <MainStack.Screen name={NavOldPlacesScreen} component={OldPlacesScreen}/>
       <MainStack.Screen name={NavPlaceScreen} component={PlaceScreen}/>
       <MainStack.Screen name={NavPlacesFiltersScreen} component={PlacesFiltersScreen} />
       {/* Events */}

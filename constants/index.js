@@ -218,6 +218,7 @@ export const ANALYTICS_TYPES = {
 export const NAVIGATION = {
   NavDrawerNavigator: "RootNavigation",
   NavPlacesScreen: "PlacesScreen",
+  NavOldPlacesScreen: "OldPlacesScreen",
   NavInspirersScreen: "InspirersScreen",
   NavMapScreen: "MapScreen",
   NavExperiencesScreen: "ExperiencesScreen",
