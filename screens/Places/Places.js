@@ -21,6 +21,9 @@ import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
 import {Button} from "react-native-elements";
+import EntityScrollableList from "../../components/entity/EntityScrollableList";
+import {VIDS} from "../../constants";
+import {VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS} from "../../constants";
 const { Value, event, interpolate } = Animated;
 
 /**
@@ -59,6 +62,8 @@ class PlacesScreen extends PureComponent {
       isEntitiesLoading: false, /* entities scrollable */
       isNearEntitiesLoading: false, /* near entities in modal */
       isCMVTLoading: true, /* clustered map view top loading  */
+
+      scrollableData: []
     };
 
     this._pageLayoutHeight = Layout.window.height;
@@ -77,6 +82,8 @@ class PlacesScreen extends PureComponent {
     this.props.actions.setMainScreenMounted(true); /* tell that the main screen has mounted (used by ConnectedSplashLoader) */
     if (this.props.others.geolocation.coords)
       this._onUpdateCoords(this.props.others.geolocation.coords);
+
+    this._fetchData();
   }
 
   /**
@@ -282,24 +289,99 @@ class PlacesScreen extends PureComponent {
   /* Renders categories list */
   _renderCategoryListItem = (item, index, length) => item.name ? <CategoryListItem onPress={() => this._selectCategory(item)} image={item.image} title={item.name}/> : null;
 
+  _fetchData = async () => {
+    try {
+      const placesData = apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.places, offset: 0, limit: 5}))
+      const inspirersData = apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.inspirers, offset: 0, limit: 5}))
+      const itinerariesData = apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.itineraries, offset: 0, limit: 5}))
+      const accomodationsData = apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.accomodations, offset: 0, limit: 5}))
+      const eventsData = apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.events, offset: 0, limit: 5}))
+
+      const scrollableData = (await Promise.all([placesData, inspirersData, itinerariesData, eventsData, accomodationsData])).map(data => ({
+        data,
+        type: data.length > 0 ? data[0].type : null
+      }));
+
+      this.setState({ scrollableData })
+    } catch(error){
+      console.log(error)
+    }
+  }
+
+  _getEntityScrollableItemExtras = (type) => {
+    const extras = {
+      [Constants.NODE_TYPES.places]: {
+        title: this.props.locale.messages.startTrip,
+        actionButtonTitle: this.props.locale.messages.findOutWhereToGo,
+      },
+      [Constants.NODE_TYPES.inspirers]: {
+        title: this.props.locale.messages.getInspired,
+        actionButtonTitle: this.props.locale.messages.findOutWhatToDo,
+      },
+      [Constants.NODE_TYPES.itineraries]: {
+        title: this.props.locale.messages.thematicRoutes,
+        actionButtonTitle: this.props.locale.messages.discoverAllTheItineraries,
+      },
+      [Constants.NODE_TYPES.events]: {
+        title: this.props.locale.messages.whatToDoToday,
+        actionButtonTitle: this.props.locale.messages.checkTheCalendar,
+      },
+      [Constants.NODE_TYPES.accomodations]: {
+        title: this.props.locale.messages.chooseAccomodation,
+        actionButtonTitle: this.props.locale.messages.checkTheAccommodationFacilities,
+      },
+    };
+
+    return extras[type]
+  }
+
+  _entityScrollableItemOnActionButtonPress = (type) => {
+    switch (type) {
+      case Constants.NODE_TYPES.places:
+        this.props.navigation.navigate(Constants.NAVIGATION.NavOldPlacesScreen);
+        break;
+      case Constants.NODE_TYPES.events:
+        this.props.navigation.navigate(Constants.NAVIGATION.NavEventsScreen);
+        break;
+      case Constants.NODE_TYPES.itineraries:
+        this.props.navigation.navigate(Constants.NAVIGATION.NavItinerariesScreen);
+        break;
+      case Constants.NODE_TYPES.inspirers:
+        this.props.navigation.navigate(Constants.NAVIGATION.NavInspirersScreen);
+        break;
+      case Constants.NODE_TYPES.accomodations:
+        this.props.navigation.navigate(Constants.NAVIGATION.NavAccomodationsScreen);
+        break;
+      default:
+        break;
+    }
+  }
+
+  _renderEntityListItem = (item, index) => {
+    const { locale } = this.props;
+
+    const extras = this._getEntityScrollableItemExtras(item.type)
+
+    return (
+      <EntityScrollableList
+        title={extras.title}
+        actionButtonTitle={extras.actionButtonTitle}
+        onActionButtonPress={() => { this._entityScrollableItemOnActionButtonPress(item.type) }}
+        backgroundColor={`${VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[item.type].backgroundTopRightCorner}19` /* 10% opacity */}
+        data={item.data}
+        locale={locale}
+      />
+    )
+  }
 
   /* Render content */
   _renderContent = () => {
     const { term, childUuids } = this._getCurrentTerm(true);
     const { nearToYou } = this.props.locale.messages;
-    const { pois, snapIndex, coords, region, nearPois  } = this.state;
-    const isPoiList = this._isPoiList();
-    let scrollableData = [];
-    let renderScrollableListItem = null;
-    //if no more nested categories renders pois (scrollable)
-    if (isPoiList) {
-      scrollableData = pois;
-      renderScrollableListItem = ({ item, index }) => this._renderPoiListItem(item, index);
-    } else {
-      //initially term is null so we get terms from redux, then term is populated with nested terms (categories)
-      scrollableData = term;
-      renderScrollableListItem = ({ item, index }) => this._renderCategoryListItem(item, index, scrollableData.length);
-    }
+    const { coords, region, nearPois  } = this.state;
+
+    const scrollableData = this.state.scrollableData
+    const renderScrollableListItem = ({ item, index }) => this._renderEntityListItem(item, index);
 
     const entitiesType = Constants.ENTITY_TYPES.allPois;
 
@@ -307,7 +389,6 @@ class PlacesScreen extends PureComponent {
       show: true,
       data: scrollableData,
       scrollableTopComponentIsLoading: this._isLoadingData(),
-      onEndReached: this._loadMorePois,
       renderItem: renderScrollableListItem,
       keyExtractor: item => item.uuid,
     }
@@ -464,7 +545,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 16, borderTopLeftRadius: 16
   },
 });
-
 
 function PlacesScreenContainer(props) {
   const navigation = useNavigation();

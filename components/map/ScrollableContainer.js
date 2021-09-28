@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
   },
   contentContainerStyle: {
     backgroundColor: 'white',
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10, // TODO: do we need this?
     paddingBottom: 10
   },
   header: {
