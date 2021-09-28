@@ -14,20 +14,28 @@ export default class EntityItem extends PureComponent {
 
   
   render() {
-    const { onPress, keyItem, title, subtitle, image, distance, size, extraStyle, style, animated = false, borderRadius = 8, mediaType, backgroundTopRightCorner, iconColor} = this.props;
+    const { onPress, keyItem, title, subtitle, image, distance, size, extraStyle, style, animated = false, borderRadius = 8, mediaType, backgroundTopRightCorner, iconColor, horizontal} = this.props;
     return (
         <ScrollableContainerTouchableOpacity 
             key={keyItem}  
             onPress={onPress}
             onLayout={this._onLayout}
             activeOpacity={0.7}
-            style={[styles.item, style, size && {
-              width: size.width,
-              height: size.height,
-              marginLeft: size.marginLeft,
-              marginRight: size.marginRight,
-              marginBottom: size.marginBottom,
-            }, extraStyle, /*styles.shadow*/]}
+            style={[
+              styles.item,
+              style,
+              size && {
+                width: size.width,
+                height: size.height,
+                marginLeft: size.marginLeft,
+                marginRight: size.marginRight,
+                marginBottom: size.marginBottom,
+              },
+              {
+                marginBottom: horizontal ? 10 : 0,
+              },
+              extraStyle
+            ]}
         >
             <GeoRefHListItem
                 title={title}
