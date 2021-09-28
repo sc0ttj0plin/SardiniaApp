@@ -21,10 +21,7 @@ class ConnectedEntityWidgetInModal extends PureComponent {
   constructor(props) { 
     super(props);
 
-    var { entity, entityType, coords } = props;
-
-    /* Only for entityType == 'places' and 'accomodations', for 'event' or 'itinerary' we already have data in props.entity, owt we need to load it */
-    this._isClusteredEntity = (entityType === Constants.ENTITY_TYPES.places || entityType === Constants.ENTITY_TYPES.accomodations); 
+    var { entity } = props;
 
     this.state = {
       entity,
@@ -44,11 +41,16 @@ class ConnectedEntityWidgetInModal extends PureComponent {
     }
   }
 
+  _isClusteredEntity = () => {
+    const { entity } = this.props;
+    return entity !== null && entity.cluster !== undefined;
+  }
+
   _parseEntity = (entity) => {
     const {coords, lan} = this.props;
 
     if(entity) {
-      if (this._isClusteredEntity) 
+      if (this._isClusteredEntity())
         this._fetchEntity();
       else {
         if(this.props.getCoordsFun) {
@@ -71,14 +73,14 @@ class ConnectedEntityWidgetInModal extends PureComponent {
   _fetchEntity = () => {
     // If is cluster (pois + accomodation) we don't have any data and we must fetch details, else we already have data and we show directly
     if(this.props.entity) {
-      if (this._isClusteredEntity) {
+      if (this._isClusteredEntity()) {
         // Get real entity from the cluster object (i.e. inside terms_objs[0])
         let query, params;
         const entity = this.props.entity.terms_objs[0];
         if (this.props.entityType === Constants.ENTITY_TYPES.accomodations) {
           query = actions.getAccomodationsById;
           params = { uuids: [entity.uuid] };
-        } else if (this.props.entityType === Constants.ENTITY_TYPES.places) {
+        } else if (this.props.entityType === Constants.ENTITY_TYPES.places || this.props.entityType === Constants.ENTITY_TYPES.allPois) {
           query = actions.getPoi;
           params = { uuid: entity.uuid };
         }
@@ -119,6 +121,15 @@ class ConnectedEntityWidgetInModal extends PureComponent {
         break;
       case Constants.ENTITY_TYPES.accomodations:
         this.props.navigation.navigate(Constants.NAVIGATION.NavAccomodationScreen, { item: entity, mustFetch: entity.loaded ? false : true })
+        break;
+      case Constants.ENTITY_TYPES.allPois:
+        if (entity.type === Constants.NODE_TYPES.places) {
+          this.props.navigation.navigate(Constants.NAVIGATION.NavPlaceScreen, { item: entity, mustFetch: entity.loaded ? false : true } );
+        } else if (entity.type === Constants.NODE_TYPES.itineraries) {
+          this.props.navigation.navigate(Constants.NAVIGATION.NavItineraryScreen, { item: entity });
+        } else if (entity.type === Constants.NODE_TYPES.events) {
+          this.props.navigation.navigate(Constants.NAVIGATION.NavEventScreen, { item: entity });
+        }
         break;
       default:
         break;
@@ -184,6 +195,7 @@ class ConnectedEntityWidgetInModal extends PureComponent {
       case Constants.ENTITY_TYPES.places:
       case Constants.ENTITY_TYPES.events:
       case Constants.ENTITY_TYPES.itineraries:
+      case Constants.ENTITY_TYPES.allPois:
         return this._renderPoi();
       case Constants.ENTITY_TYPES.accomodations:
         return this._renderAccomodation();

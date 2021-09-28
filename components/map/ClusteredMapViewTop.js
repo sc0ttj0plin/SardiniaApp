@@ -342,10 +342,6 @@ class ClusteredMapViewTop extends PureComponent {
       return null;
   }
 
-  _openFilterScreen = () => {
-    this.props.navigation.navigate(Constants.NAVIGATION.NavPlacesFiltersScreen)
-  }
-
   render() {
     const {filter} = this.props.locale.messages;
     var {initRegion, pois, clusters, selectedCluster} = this.state;

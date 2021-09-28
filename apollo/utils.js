@@ -112,10 +112,12 @@ export const processEntity = function(entity, coords=null) {
   if (entity.description) 
     normalizeLanguage(entity.description);
 
-  if (entity.image)
-      // entity.image = entity.image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST_621x);
-      entity.image = entity.image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST_621x);
-      
+  if (entity.image) {
+    // entity.image = entity.image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST_621x);
+    entity.image = entity.image.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST_621x);
+    entity.image = entity.image.replace('private://', IMAGE_REPLACE_DST_621x);
+  }
+
   if (entity.image350x)
     entity.image350x = entity.image350x.replace(IMAGE_REPLACE_SRC, IMAGE_REPLACE_DST_350x);
 
