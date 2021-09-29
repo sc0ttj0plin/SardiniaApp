@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   PixelRatio,
   Text,
+  Alert
 } from "react-native";
 import {
   useNavigation,
@@ -48,6 +49,8 @@ const AUTH_STATES = {
   PROFILE_SHOW: "PROFILE_SHOW",
   COMPLETED: "COMPLETED",
   ERROR: "ERROR",
+  PASSWORD_RESET_REQUEST: "PASSWORD_RESET_REQUEST",
+  PASSWORD_RESET_REQUEST_DONE: "PASSWORD_RESET_REQUEST_DONE",
 };
 
 class Login extends Component {
@@ -99,7 +102,8 @@ class Login extends Component {
     if (this.props.auth.error) {
       console.log(this.props.auth.error);
       this.setState({ loginStep: AUTH_STATES.ERROR });
-    } else if (this.props.auth.success && this.props.auth.user) {//1
+    } else if (this.props.auth.success && this.props.auth.user) {
+      //1
       if (this.props.auth.user.info) {
         const { info } = this.props.auth.user;
         this.setState({
@@ -134,9 +138,6 @@ class Login extends Component {
   _loginStateChanged = async () => {
     if (this.props.auth.user && this.props.auth.user.info) {
       const { info } = this.props.auth.user;
-      console.log(info)
-      console.log("appena loggato info")
-      console.log(info.updateDate);
       this.setState({
         loginStep: AUTH_STATES.PROFILE_SHOW,
         username: info.username,
@@ -145,7 +146,7 @@ class Login extends Component {
         sex: info.sex,
       });
     } else if (this.props.auth.success) {
-      this.setState({ loginStep: AUTH_STATES.PROFILE_EDIT });//check if profile edit is ok
+      this.setState({ loginStep: AUTH_STATES.PROFILE_EDIT }); //check if profile edit is ok
     } else if (this.props.auth.error) {
       console.log("AUTH_STATES.ERROR");
       this.setState({ loginStep: AUTH_STATES.ERROR });
@@ -200,6 +201,23 @@ class Login extends Component {
     }
   };
 
+  _resetPasswordForm = async () => {
+    const { email } = this.state;
+    if (!Validate.email(email)) {
+      alert("Invalid email");
+    } else {
+      this.props.actions.passwordReset(email);
+      Alert.alert(
+        'Title',
+        'Msg',
+        [
+          {text: 'OK', onPress: () => this._onBackPress()},
+        ],
+        {cancelable: false},
+      );
+    }
+  };
+
   _notImplemented = async () => {
     alert("Not Implemented");
   };
@@ -214,44 +232,46 @@ class Login extends Component {
 
   _validateRegister = async () => {
     //const { date, country, sex,password,email } = this.state;
-    const {name,surname,
-      email,password,age,date,country,sex,} = this.state;//profile
-    const userData = {
-        name,
-        surname,
-        email,
-        date,
-        country,
-        sex,
-        updateDate: new Date().getTime(),
-      };//profile
-      console.log(userData)
-      // this.props.actions.editUser(userData);
-      // this.props.actions.reportAction({
-      //   analyticsActionType: Constants.ANALYTICS_TYPES.userUpdatesProfile,
-      //   meta: userData,
-      // });
     const {
-      country: countryText,
-      sex: sexText,
-    } = this.props.locale.messages;
+      name,
+      surname,
+      email,
+      password,
+      age,
+      date,
+      country,
+      sex,
+    } = this.state; //profile
+    const userData = {
+      name,
+      surname,
+      email,
+      date,
+      country,
+      sex,
+      updateDate: new Date().getTime(),
+    }; //profile
+    // this.props.actions.editUser(userData);
+    // this.props.actions.reportAction({
+    //   analyticsActionType: Constants.ANALYTICS_TYPES.userUpdatesProfile,
+    //   meta: userData,
+    // });
+    const { country: countryText, sex: sexText } = this.props.locale.messages;
     let countryError = false;
     let sexError = false;
     let dateError = false;
-    console.log("dentro seconda parte di reg");
-    console.log(date)
     if (!Validate.date(date)) {
-      alert('Invalid birthdate');
+      alert("Invalid birthdate");
       dateError = true;
     }
 
     if (!country || country == countryText) {
       countryError = true;
-      alert('Invalid country');
+      alert("Invalid country");
     }
     if (!sex || sex == sexText) {
       sexError = true;
-      alert('Invalid sex');
+      alert("Invalid sex");
     }
 
     this.setState({
@@ -261,20 +281,13 @@ class Login extends Component {
     });
 
     if (!countryError && !dateError && !sexError) {
-    
-      this.props.actions.registerAndSignup(email, password,userData);
-      this.setState({ loginStep: AUTH_STATES.LOGIN_REQUEST});
+      this.props.actions.registerAndSignup(email, password, userData);
+      this.setState({ loginStep: AUTH_STATES.LOGIN_REQUEST });
     }
   };
 
   _validateFirst = () => {
-    const {
-      name,
-      surname,
-      email,
-      password,
-      firstForm,
-    } = this.state;
+    const { name, surname, email, password, firstForm } = this.state;
     let nameError = false;
     let validationError = false;
     let emailError = false;
@@ -284,22 +297,22 @@ class Login extends Component {
       if (!Validate.email(email)) {
         emailError = true;
         validationError = true;
-        alert('Invalid email');
+        alert("Invalid email");
       }
       if (!Validate.name(name)) {
         nameError = true;
         validationError = true;
-        alert('Invalid name');
+        alert("Invalid name");
       }
       if (!Validate.name(surname)) {
         surnameError = true;
         validationError = true;
-        alert('Invalid surname');
+        alert("Invalid surname");
       }
       if (!Validate.password(password)) {
         passwordError = true;
         validationError = true;
-        alert('Invalid password');
+        alert("Invalid password");
       }
       if (!nameError && !surnameError && !emailError && !passwordError) {
         this.setState({
@@ -316,18 +329,8 @@ class Login extends Component {
       validationError,
     });
   };
-  /*async () => {
-    const { email,password } = this.state;
-    if (!Validate.email(email)) {
-      alert('Invalid email');
-    } else {
-      this.props.actions.passwordSignup(email,password);
-      this.setState({ loginStep: AUTH_STATES.LOGIN_REQUEST });
-    }
-  }*/
 
   _setUserData = () => {
-    console.log("dentro rec");
     const {
       name,
       surname,
@@ -339,26 +342,22 @@ class Login extends Component {
       sex,
     } = this.state;
 
-      
-
-      const userData = {
-        name,
-        surname,
-        email,
-        date,
-        country,
-        sex,
-        updateDate: new Date().getTime(),
-      };
-      console.log(userdata)
-      this.props.actions.editUser(userData);
-      this.props.actions.reportAction({
-        analyticsActionType: Constants.ANALYTICS_TYPES.userUpdatesProfile,
-        meta: userData,
-      });
-      this.setState({ loginStep: AUTH_STATES.PROFILE_SHOW});
-  
-    }
+    const userData = {
+      name,
+      surname,
+      email,
+      date,
+      country,
+      sex,
+      updateDate: new Date().getTime(),
+    };
+    this.props.actions.editUser(userData);
+    this.props.actions.reportAction({
+      analyticsActionType: Constants.ANALYTICS_TYPES.userUpdatesProfile,
+      meta: userData,
+    });
+    this.setState({ loginStep: AUTH_STATES.PROFILE_SHOW });
+  };
 
   _removeProfile = () => {
     const { username, age, country, sex } = this.state;
@@ -428,9 +427,9 @@ class Login extends Component {
     this.setState({ loginStep: AUTH_STATES.PROFILE_EDIT_FIRST });
   };
 
-  /*_onRegisterPress = () =>{
-    this.setState({ loginStep: AUTH_STATES.PROFILE_EDIT_FIRST})
-  }*/
+  _onPasswordResetPress = () =>{
+    this.setState({ loginStep: AUTH_STATES.PASSWORD_RESET_REQUEST})
+  }
 
   _onLastStep = () => {
     this.setState({ loginStep: AUTH_STATES.PROFILE_EDIT_LAST });
@@ -524,8 +523,6 @@ class Login extends Component {
   };
 
   _renderProfileShow = () => {
-    console.log("dentro profile show")
-    console.log(this.props.auth.user.info)
     if (!this.props.auth.user.info) return;
 
     const {
@@ -613,7 +610,6 @@ class Login extends Component {
   };
 
   _renderRegisterWithEmail = () => {
-    //console.log("register")
     var {
       username,
       name,
@@ -727,7 +723,9 @@ class Login extends Component {
                       placeholder={birth}
                       keyboardType="numeric"
                       //style={[styles.item1, dateError ? styles.itemError : {}]}
-                      onChangeText={(text) => {this.setState({date: text})}}
+                      onChangeText={(text) => {
+                        this.setState({ date: text });
+                      }}
                       style={styles.input}
                     />
                   </Item>
@@ -1047,7 +1045,8 @@ class Login extends Component {
       <>
         <View>
           <CustomText style={styles.title}>{signin}</CustomText>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={this._onPasswordResetPress}
+            >
             <CustomText style={styles.loginText}>{forgotpassword}</CustomText>
           </TouchableOpacity>
         </View>
@@ -1094,6 +1093,63 @@ class Login extends Component {
                 ) : (
                   <CustomText style={styles.buttonWhiteText}>
                     {signin}
+                  </CustomText>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </>
+    );
+  };
+
+  _renderPasswordReset = () => {
+    const { isVerifyingEmail } = this.state;
+    const {
+      confirm,
+      forgotpassword,
+      forgotpasswordtext,
+      resetpassword,
+    } = this.props.locale.messages;
+    return (
+      <>
+        <View>
+          <CustomText style={styles.title}>{resetpassword}</CustomText>
+          <CustomText style={styles.loginText}>{forgotpassword}</CustomText>
+          <CustomText style={styles.loginText}>{forgotpasswordtext}</CustomText>
+        </View>
+
+        <KeyboardAvoidingView
+          behavior={Platform.OS == "ios" ? "padding" : "height"}
+          style={styles.screen}
+        >
+          <View style={styles.view0}>
+            <View style={styles.view01}>
+              <Form>
+                <Item style={styles.item} regular>
+                  <View style={{ marginLeft: 20, marginRight: 10 }}></View>
+                  <Input
+                    autoCapitalize={"none"}
+                    placeholder="Email"
+                    onChangeText={(email) =>
+                      this.setState({ email: email.toLowerCase() })
+                    }
+                  />
+                </Item>
+              </Form>
+              <TouchableOpacity
+                style={styles.defaultBlackBtn}
+                onPress={this._resetPasswordForm}
+              >
+                {isVerifyingEmail ? (
+                  <ActivityIndicator
+                    animating={isVerifyingEmail}
+                    size={"small"}
+                    color={Colors.tintColor}
+                  />
+                ) : (
+                  <CustomText style={styles.buttonWhiteText}>
+                    {confirm}
                   </CustomText>
                 )}
               </TouchableOpacity>
@@ -1165,8 +1221,8 @@ class Login extends Component {
             {loginStep === AUTH_STATES.LINK_SENT && this._renderLinkSent()}
             {loginStep === AUTH_STATES.ERROR && this._renderError()}
             {loginStep === AUTH_STATES.LOGIN_REQUEST && this._renderLinkSent()}
-            {loginStep === AUTH_STATES.PROFILE_EDIT_FIRST &&
-              this._renderRegisterWithEmail()}
+            {loginStep === AUTH_STATES.PROFILE_EDIT_FIRST && this._renderRegisterWithEmail()}
+            {loginStep === AUTH_STATES.PASSWORD_RESET_REQUEST && this._renderPasswordReset()}
           </View>
         </ConnectedScreenErrorBoundary>
       );
@@ -1185,6 +1241,7 @@ class Login extends Component {
               this._renderProfileShow()}
             {loginStep === AUTH_STATES.ERROR && this._renderError()}
             {loginStep === AUTH_STATES.LOGOUT && this._renderLogout()}
+            
           </View>
         </ConnectedScreenErrorBoundary>
       );

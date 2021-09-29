@@ -25,6 +25,31 @@ export const passwordSignup = (email,password) =>
 
 //register and login
 
+export const passwordReset = (email) => 
+  async (dispatch) => {
+    try  {
+      console.log('Reset Password');
+      console.log(email)
+      await firebase.auth().sendPasswordResetEmail(email)
+    } catch(e) {
+      console.log("Reset Password", e.message);
+    }
+    dispatch({ type: Constants.LOGOUT_SUCCESS });
+  }
+
+
+// export const passwordReset = (email) =>{
+//   async (dispatch) => {
+//     try  {
+//       const reset = await firebase.auth().sendPasswordResetEmail(email)
+//       console.log(reset);
+//     } catch(e) {
+//       console.log("Reset error", e.message);
+//     }
+//     //ignoring the logout outcome, since we remove the token there's no need to validate it
+//     dispatch({ type: Constants.LOGOUT_SUCCESS });
+//   }}
+
 export const registerAndSignup = (email,password,el) =>
   async (dispatch, getState) => {
     dispatch({ type: Constants.AUTH });

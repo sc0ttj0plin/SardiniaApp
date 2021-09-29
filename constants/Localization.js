@@ -167,7 +167,9 @@ const dict = {
     logingoogle:"Accedi con Google",
     loginfacebook:"Accedi con Facebook",
     landingtextlogin:"Sei già registrato? Accedi\naltrimenti",
+    resetpassword: "Reset Password",
     forgotpassword:"Hai dimenticato la password?",
+    forgotpasswordtext:"Hai dimenticato la password? Conferma il tuo indirizzo email e ti invieremo un link per resecare la password.",
     next: "Avanti",
     sentLink: "Ti abbiamo mandato un link",
     checkInbox: "Controlla la tua mail",
@@ -257,7 +259,10 @@ const dict = {
     access: "REGISTER",
     signin:"SIGN IN",
     landingtextlogin:"If already registered? Log in\notherwise",
+    resetpassword: "Reset Password",
     forgotpassword:"Did you forget your password?",
+    forgotpasswordtext:"Did you forget your password? Confirm your email address and I'll send you\n a link to reset your password.",
+
     completeAccess: "Complete profile",
     loginText:
       "By registering you will be shown contents tailored to your preferences",
