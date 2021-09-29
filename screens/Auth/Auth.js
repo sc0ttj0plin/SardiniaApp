@@ -537,30 +537,32 @@ class Login extends Component {
       privacy,
     } = this.props.locale.messages;
     const { user } = this.props.auth;
+    console.log(user.info)
 
     return (
       <View style={styles.mainView}>
         <View style={styles.view0}>
           <View style={[styles.view1s, styles.userInformations]}>
             <CustomText style={[styles.userName]}>
-              {user.info.username}
+              {user.info.name} {user.info.surname}
             </CustomText>
             <CustomText style={styles.userEmail}>{user.email}</CustomText>
-            <CustomText style={styles.userInformationsText}>
+            {/* <CustomText style={styles.userInformationsText}>
               {informations}
-            </CustomText>
+            </CustomText> */}
             <View style={styles.informationsRow}>
               <CustomText style={styles.informationsRowText}>
                 {ageText}
-              </CustomText>
+              </CustomText></View>
+              <View style={styles.informationsRow}>
               <CustomText style={styles.userAge}>
-                {profile.ageToString(user.info.age)}
-              </CustomText>
-            </View>
+                {user.info.date}
+              </CustomText></View>
+            
             <View style={styles.informationsRow}>
               <CustomText style={styles.informationsRowText}>
                 {countryText}
-              </CustomText>
+              </CustomText></View><View style={styles.informationsRow}>
               <CustomText style={styles.userLocation}>
                 {user.info.country}
               </CustomText>
@@ -568,23 +570,22 @@ class Login extends Component {
             <View style={styles.informationsRow}>
               <CustomText style={styles.informationsRowText}>
                 {sexText}
-              </CustomText>
+              </CustomText></View><View style={styles.informationsRow}>
               <CustomText style={styles.userSex}>
                 {this._sexToString(user.info.sex)}
               </CustomText>
             </View>
           </View>
-          <View style={styles.buttonsView}>
+          <View style={styles.buttonsView, { marginTop: 20 }}>
+            
             <TouchableOpacity
-              style={[styles.button]}
-              onPress={this._onProfileEditPress}
+              style={[styles.defaultBlackBtn]}
+              onPress={this._onLogoutPress}
             >
-              <CustomText style={styles.buttonText}>
-                {editProfileBtn}
-              </CustomText>
+              <CustomText style={styles.buttonWhiteText}>{logoutBtn}</CustomText>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.button, { marginTop: 10 }]}
+              style={[styles.button, { marginTop: 10} ]}
               onPress={this._onProfileRemovePress}
             >
               <CustomText style={styles.buttonText}>
@@ -592,11 +593,14 @@ class Login extends Component {
               </CustomText>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.defaultBtn, { marginTop: 10 }]}
-              onPress={this._onLogoutPress}
+              style={[styles.button, { marginTop: 10} ]}
+              onPress={this._onProfileEditPress}
             >
-              <CustomText style={styles.defaultBtnText}>{logoutBtn}</CustomText>
+              <CustomText style={styles.buttonText}>
+                {editProfileBtn}
+              </CustomText>
             </TouchableOpacity>
+           
             <TouchableOpacity
               style={[styles.button]}
               onPress={() => this.props.navigation.navigate("PrivacyScreen")}
@@ -1417,7 +1421,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "black",
     display: "flex",
-    width: "60%",
+    // width: "60%",
   },
   defaultBtnText: {
     color: "black",
@@ -1432,7 +1436,7 @@ const styles = StyleSheet.create({
   buttonsView: {
     flex: 1,
     justifyContent: "flex-end",
-    paddingBottom: "20%",
+    
   },
   bottomText: {
     fontSize: 14,
