@@ -112,12 +112,12 @@ class Login extends Component {
           age: info.age,
           country: info.country,
           sex: info.sex,
-        });
-      } else {
-        this.setState({
-          loginStep: AUTH_STATES.PROFILE_EDIT,
-        });
-      }
+        });}
+      // } else {
+      //   this.setState({
+      //     loginStep: AUTH_STATES.PROFILE_EDIT,
+      //   });
+      // }
     } else {
       this.setState({ loginStep: AUTH_STATES.INIT });
     }
@@ -146,7 +146,7 @@ class Login extends Component {
         sex: info.sex,
       });
     } else if (this.props.auth.success) {
-      this.setState({ loginStep: AUTH_STATES.PROFILE_EDIT }); //check if profile edit is ok
+      this.setState({ loginStep: AUTH_STATES.PROFILE_SHOW }); //check if profile edit is ok
     } else if (this.props.auth.error) {
       console.log("AUTH_STATES.ERROR");
       this.setState({ loginStep: AUTH_STATES.ERROR });
@@ -418,6 +418,7 @@ class Login extends Component {
       loginStep: AUTH_STATES.PROFILE_EDIT,
       username: info.username,
       age: info.age,
+      date: info.date,
       country: info.country,
       sex: info.sex,
     });
