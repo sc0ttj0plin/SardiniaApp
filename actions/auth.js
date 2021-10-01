@@ -62,24 +62,26 @@ export const registerAndSignup = (email,password,el) =>
         let userInfo = await firebase.database().ref(`users/${user.uid}/info`).once('value');
         await AsyncStorage.setItem('firebaseUid', user.uid);
         user.info = userInfo.val();
-        dispatch({ type: Constants.AUTH_SUCCESS, payload: { user: user, token } });
+        
+        try {
+          //dispatch({ type: Constants.USER_EDIT });
+          const user = firebase.auth().currentUser;
+          let ref = await firebase.database().ref(`users/${user.uid}/info`);
+          await ref.set(el);
+          //dispatch({ type: Constants.USER_EDIT_SUCCESS, payload: {userInfo: el}});
+          console.log("update usert ok")
+          dispatch({ type: Constants.AUTH_SUCCESS, payload: { user: user, token ,userInfo: el} });
+        } catch(e) { 
+          dispatch({ type: Constants.USER_EDIT_FAIL });
+          console.log(e.message); 
+        }
       } else
         dispatch({ type: Constants.AUTH_FAIL, payload: { message: 'Errore nel login!' } });
     } catch (e) {
       console.log(e.message);
       dispatch({ type: Constants.AUTH_FAIL, payload: { message: e.message } });
     }
-    try {
-      dispatch({ type: Constants.USER_EDIT });
-      const user = firebase.auth().currentUser;
-      let ref = await firebase.database().ref(`users/${user.uid}/info`);
-      await ref.set({ ...el });
-      dispatch({ type: Constants.USER_EDIT_SUCCESS, payload: {userInfo: {...el}}});
-      console.log("update usert ok")
-    } catch(e) { 
-      dispatch({ type: Constants.USER_EDIT_FAIL });
-      console.log(e.message); 
-    }
+    
   
   
   }
@@ -120,19 +122,19 @@ async (dispatch, getState) => {
 //
 export const editUser = (el) =>
 console.log(el);
-  async (dispatch) => {
-    try {
-      dispatch({ type: Constants.USER_EDIT });
-      const user = firebase.auth().currentUser;
-      let ref = await firebase.database().ref(`users/${user.uid}/info`);
-      await ref.set({ ...el });
-      dispatch({ type: Constants.USER_EDIT_SUCCESS, payload: {userInfo: {...el}}});
-      console.log("update usert ok")
-    } catch(e) { 
-      dispatch({ type: Constants.USER_EDIT_FAIL });
-      console.log(e.message); 
-    }
-  }  
+async (dispatch) => {
+  try {
+    dispatch({ type: Constants.USER_EDIT });
+    const user = firebase.auth().currentUser;
+    let ref = await firebase.database().ref(`users/${user.uid}/info`);
+    ref.set({ ...el });
+    dispatch({ type: Constants.USER_EDIT_SUCCESS, payload: {userInfo: 1}});
+  } catch(e) { 
+    dispatch({ type: Constants.USER_EDIT_FAIL });
+    console.log(e.message); 
+  }
+}  
+
 
 export const logout = () => 
   async (dispatch) => {

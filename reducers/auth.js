@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { createIconSetFromFontello } from 'react-native-vector-icons';
 import * as Constants from '../constants';
 
 //for this reducer the initial state is simply an array
@@ -13,6 +14,7 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
   //To avoid resetting the whole reducer state, we must propagate it! (single reducer = single store piece!)
+  console.log(action);
   switch (action.type) {
     case Constants.AUTH_RESET:
       return INITIAL_STATE;
@@ -35,6 +37,8 @@ export default (state = INITIAL_STATE, action) => {
       };
     case Constants.USER_EDIT_SUCCESS:
       var state = {...state};
+      console.log('print state into reducers')
+      console.log(action.payload)
       state.user.info = action.payload.userInfo;
       return state;
     case Constants.AUTH_FAIL:
