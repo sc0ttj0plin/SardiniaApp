@@ -50,7 +50,8 @@ const {
   NavItineraryScreen, NavEventsScreen, NavEventScreen, NavItineraryStagesMapScreen,NavEventsMapScreen, NavEventsSubset, NavExploreScreen, 
   NavVirtualTourScreen, NavPlaceScreen, NavInspirerScreen, NavPreferencesScreen, NavTutorialScreen,
   NavExtrasScreen, NavExtraScreen, NavTabNavigator, NavSearchScreen, NavSearchStackScreen, 
-  NavMainStackScreen, NavMediaScreen, NavFavouritesScreen, NavFavouritesListScreen, NavFavouritesStackScreen, NavFiltersScreen, NavPlacesFiltersScreen
+  NavMainStackScreen, NavMediaScreen, NavFavouritesScreen, NavFavouritesListScreen, NavFavouritesStackScreen, NavFiltersScreen, NavPlacesFiltersScreen,NavSettingScreen,NavInfoStackScreen, 
+  NavInfoScreen,NavInfoDetailsScreen,NavPrivacyScreen,
 } = Constants.NAVIGATION;
 
 // Reference used for components that lack navigation access
