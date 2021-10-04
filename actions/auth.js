@@ -4,10 +4,6 @@ import * as Linking from 'expo-linking';
 import AsyncStorage from '@react-native-community/async-storage';
 import ExpoConstants from 'expo-constants';
 
-//@passwordless
-
-
-
 export const passwordSignup = (email,password) =>
   async (dispatch, getState) => {
     dispatch({ type: Constants.AUTH });
@@ -27,6 +23,53 @@ export const passwordSignup = (email,password) =>
       dispatch({ type: Constants.AUTH_FAIL, payload: { message: e.message } });
     }}
 
+//register and login
+
+export const passwordReset = (email) => 
+  async (dispatch) => {
+    try  {
+      console.log('Reset Password');
+      console.log(email)
+      await firebase.auth().sendPasswordResetEmail(email)
+    } catch(e) {
+      console.log("Reset Password", e.message);
+    }
+    dispatch({ type: Constants.LOGOUT_SUCCESS });
+  }
+
+export const registerAndSignup = (email,password,el) =>
+  async (dispatch, getState) => {
+    dispatch({ type: Constants.AUTH });
+    try {
+      const result = await firebase.auth().createUserWithEmailAndPassword(email,password);
+      const token = await firebase.auth().currentUser.getIdToken(/* forceRefresh */true);
+      if (result.user) {
+        console.log(result.user)
+        let user = result.user;
+        let userInfo = await firebase.database().ref(`users/${user.uid}/info`).once('value');
+        await AsyncStorage.setItem('firebaseUid', user.uid);
+        user.info = userInfo.val();
+        try {
+          const user = firebase.auth().currentUser;
+          let ref = await firebase.database().ref(`users/${user.uid}/info`);
+          await ref.set(el);
+          console.log("update usert ok")
+          dispatch({ type: Constants.AUTH_SUCCESS, payload: { user: user, token ,userInfo: el} });
+        } catch(e) { 
+          dispatch({ type: Constants.USER_EDIT_FAIL });
+          console.log(e.message); 
+        }
+      } else
+        dispatch({ type: Constants.AUTH_FAIL, payload: { message: 'Errore nel login!' } });
+    } catch (e) {
+      console.log(e.message);
+      dispatch({ type: Constants.AUTH_FAIL, payload: { message: e.message } });
+    }
+    
+  
+  
+  }
+
 _checkAuthStatus = () => {
   return new Promise((resolve, reject) => {
     try {
@@ -42,38 +85,19 @@ _checkAuthStatus = () => {
   });
 }
 
-
-//@passwordless
-export const passwordLessLogin = () => 
-async (dispatch, getState) => {
-  dispatch({ type: Constants.AUTH });
-  try  {
-    let user = await _checkAuthStatus();
-    let userInfo = await firebase.database().ref(`users/${user.uid}/info`).once('value');
-    user.info = userInfo.val();
-    const token = await firebase.auth().currentUser.getIdToken(/* forceRefresh */ true);
-    await AsyncStorage.setItem('firebaseUid', user.uid);
-    dispatch({ type: Constants.AUTH_SUCCESS, payload: { user, token } });
- } catch(error) {
-    console.log("passwordLessLogin", error.message);
-    dispatch({ type: Constants.AUTH_FAIL, payload: { message: error.message } });
-  }
-}
-
-//
 export const editUser = (el) =>
-  async (dispatch) => {
-    try {
-      dispatch({ type: Constants.USER_EDIT });
-      const user = firebase.auth().currentUser;
-      let ref = await firebase.database().ref(`users/${user.uid}/info`);
-      await ref.set({ ...el });
-      dispatch({ type: Constants.USER_EDIT_SUCCESS, payload: {userInfo: {...el}}});
-    } catch(e) { 
-      dispatch({ type: Constants.USER_EDIT_FAIL });
-      console.log(e.message); 
-    }
-  }  
+async (dispatch) => {
+  try {
+    let user =await firebase.auth().currentUser;
+    let ref = await firebase.database().ref(`users/${user.uid}/info`);
+    await ref.set({ ...el });
+    dispatch({ type: Constants.USER_EDIT_SUCCESS, payload: {userInfo: {...el} }});
+  } catch(e) { 
+    dispatch({ type: Constants.USER_EDIT_FAIL });
+    console.log(e.message); 
+  }
+}  
+
 
 export const logout = () => 
   async (dispatch) => {

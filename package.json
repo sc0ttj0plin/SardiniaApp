@@ -28,6 +28,7 @@
     "@expo/samples": "~3.0.3",
     "@expo/vector-icons": "^10.2.1",
     "@react-native-community/async-storage": "~1.12.0",
+    "@react-native-community/datetimepicker": "3.0.0",
     "@react-native-community/masked-view": "0.1.10",
     "@react-native-community/netinfo": "^5.9.9",
     "@react-navigation/bottom-tabs": "^5.11.2",
@@ -91,6 +92,7 @@
     "react-native-map-clustering": "^3.3.7",
     "react-native-maps": "0.27.1",
     "react-native-maps-directions": "^1.8.0",
+    "react-native-mask-text": "^0.4.0",
     "react-native-modalize": "^2.0.8",
     "react-native-paper": "^4.9.2",
     "react-native-pose": "^0.9.1",
@@ -121,8 +123,7 @@
     "rn-placeholder": "^3.0.1",
     "toggle-switch-react-native": "^3.2.0",
     "url-parse": "^1.4.7",
-    "world_countries_lists": "^2.1.0",
-    "@react-native-community/datetimepicker": "3.0.0"
+    "world_countries_lists": "^2.1.0"
   },
   "devDependencies": {
     "babel-preset-expo": "^8.3.0",

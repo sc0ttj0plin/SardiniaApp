@@ -22,7 +22,6 @@ import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
 import {Button} from "react-native-elements";
 const { Value, event, interpolate } = Animated;
-import { GeoInfo } from "../../helpers/geocoding";
 
 /**
  * Map:             Clusters + pois that update with user map's interaction
@@ -292,7 +291,6 @@ class PlacesScreen extends PureComponent {
     const { term, childUuids } = this._getCurrentTerm(true);
     const { nearToYou } = this.props.locale.messages;
     const { pois, snapIndex, coords, region, nearPois  } = this.state;
-    
     const isPoiList = this._isPoiList();
     let scrollableData = [];
     let renderScrollableListItem = null;
