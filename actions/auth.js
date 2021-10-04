@@ -86,14 +86,12 @@ _checkAuthStatus = () => {
 }
 
 export const editUser = (el) =>
-console.log(el);
 async (dispatch) => {
   try {
-    dispatch({ type: Constants.USER_EDIT });
-    const user = firebase.auth().currentUser;
+    let user =await firebase.auth().currentUser;
     let ref = await firebase.database().ref(`users/${user.uid}/info`);
-    ref.set({ ...el });
-    dispatch({ type: Constants.USER_EDIT_SUCCESS, payload: {userInfo: { ...el }}});
+    await ref.set({ ...el });
+    dispatch({ type: Constants.USER_EDIT_SUCCESS, payload: {userInfo: {...el} }});
   } catch(e) { 
     dispatch({ type: Constants.USER_EDIT_FAIL });
     console.log(e.message); 

@@ -334,6 +334,7 @@ class Login extends Component {
 
     _setUserData = () => {
         const {name, surname, date, country, sex,} = this.state;
+        
         const {country: countryText, sex: sexText, date: dateText} = this.props.locale.messages;
         let nameError = false
         let surnameError = false
@@ -348,6 +349,7 @@ class Login extends Component {
             surnameError = true;
         }
         if (!Validate.date(date)) {
+          
             dateError = true;
         }
         if (!country || country == countryText) {
@@ -358,7 +360,17 @@ class Login extends Component {
         }
 
         if (!nameError && !nameError && !dateError && !countryError && !sexError) {
-            const userData = {name, surname, date: date,username:name, age: 0, country, sex, updateDate: (new Date()).getTime()};
+          
+          const updateDate = new Date;
+          const userData = {
+            name,
+            surname,
+            date,
+            country,
+            sex,
+            updateDate: updateDate.getTime(),
+        };
+        
             this.props.actions.editUser(userData);
             this.props.actions.reportAction({
                 analyticsActionType: Constants.ANALYTICS_TYPES.userUpdatesProfile,
@@ -860,7 +872,7 @@ class Login extends Component {
                                 <Input 
                                     placeholder={name}
                                     style={{fontFamily: "montserrat-regular"}}
-                                    value={userInfo.name}
+                                    //value={userInfo.name}
                                     onChangeText={(text) => this.setState({name: text})}
                                 />
                             </Item>
@@ -874,7 +886,7 @@ class Login extends Component {
                                 <Input
                                     placeholder={surname}
                                     style={{fontFamily: "montserrat-regular"}}
-                                    value={userInfo.surname}
+                                    //value={userInfo.surname}
                                     onChangeText={(text) =>
                                         this.setState({surname: text})
                                     }
@@ -887,7 +899,7 @@ class Login extends Component {
                                 <MaskedTextInput
                                     mask="99/99/9999"
                                     placeholder={birth}
-                                    value={userInfo.date}
+                                    //value={userInfo.date}
                                     keyboardType="numeric"
                                     onChangeText={(text) => {
                                         this.setState({date: text});
@@ -908,7 +920,7 @@ class Login extends Component {
                                         color: "#bfc6ea",
                                         fontFamily: "montserrat-regular",
                                     }}
-                                    selectedValue={userInfo.country}
+                                    selectedValue={this.state.country}
                                     onValueChange={(value) =>
                                         this.setState({country: value, countryError: false})
                                     }
@@ -935,7 +947,7 @@ class Login extends Component {
                                         color: "#bfc6ea",
                                         fontFamily: "montserrat-regular",
                                     }}
-                                    selectedValue={userInfo.sex}
+                                    selectedValue={this.state.sex}
                                     onValueChange={(value) =>
                                         this.setState({sex: value, sexError: false})
                                     }

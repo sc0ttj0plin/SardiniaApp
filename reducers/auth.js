@@ -35,9 +35,12 @@ export default (state = INITIAL_STATE, action) => {
         success: true
       };
     case Constants.USER_EDIT_SUCCESS:
-      var state = {...state};
-      state.user.info = action.payload.userInfo;
-      return state;
+      console.log(action.payload.userInfo)
+      return { 
+      
+        ...state, 
+        userInfo: action.payload.userInfo, 
+      };
     case Constants.AUTH_FAIL:
       console.log("Error in auth", action.payload.message);
       return { 
