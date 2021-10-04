@@ -100,15 +100,12 @@ class Login extends Component {
             ),
             sexs: this._generateSex(),
         });
-        console.log(this.props.auth);
         if (this.props.auth.error) {
             console.log('log error')
-            console.log(this.props.auth.error);
             this.setState({loginStep: AUTH_STATES.ERROR});
         } else if (this.props.auth.success && this.props.auth.user) {
             if (this.props.auth.userInfo) {
                 const {userInfo} = this.props.auth;
-                console.log(this.props.auth.userInfo)
                 this.setState({
                     loginStep: AUTH_STATES.PROFILE_SHOW,
                     name: userInfo.name,
@@ -143,7 +140,6 @@ class Login extends Component {
     _loginStateChanged = async () => {
         if (this.props.auth.user && this.props.auth.userInfo) {
           const {userInfo} = this.props.auth;
-                console.log(this.props.auth.userInfo)
                 this.setState({
                     loginStep: AUTH_STATES.PROFILE_SHOW,
                     name: userInfo.name,
@@ -153,7 +149,7 @@ class Login extends Component {
                     sex: userInfo.sex
                 })
         } else if (this.props.auth.success) {
-            this.setState({loginStep: AUTH_STATES.PROFILE_SHOW}); //check if profile edit is ok
+            this.setState({loginStep: AUTH_STATES.PROFILE_EDIT});
         } else if (this.props.auth.error) {
             console.log("AUTH_STATES.ERROR");
             this.setState({loginStep: AUTH_STATES.ERROR});
@@ -238,7 +234,6 @@ class Login extends Component {
     };
 
     _validateRegister = async () => {
-        //const { date, country, sex,password,email } = this.state;
         const {
             name,
             surname,
@@ -248,7 +243,7 @@ class Login extends Component {
             date,
             country,
             sex,
-        } = this.state; //profile
+        } = this.state;
         const userData = {
             name,
             surname,
@@ -257,12 +252,7 @@ class Login extends Component {
             country,
             sex,
             updateDate: new Date().getTime(),
-        }; //profile
-        // this.props.actions.editUser(userData);
-        // this.props.actions.reportAction({
-        //   analyticsActionType: Constants.ANALYTICS_TYPES.userUpdatesProfile,
-        //   meta: userData,
-        // });
+        };
         const {country: countryText, sex: sexText} = this.props.locale.messages;
         let countryError = false;
         let sexError = false;
@@ -368,7 +358,6 @@ class Login extends Component {
         }
 
         if (!nameError && !nameError && !dateError && !countryError && !sexError) {
-            console.log('ciao')
             const userData = {name, surname, date: date,username:name, age: 0, country, sex, updateDate: (new Date()).getTime()};
             this.props.actions.editUser(userData);
             this.props.actions.reportAction({
@@ -445,7 +434,6 @@ class Login extends Component {
      
 
         const {userInfo} = this.props.auth;
-                console.log(this.props.auth.userInfo)
                 this.setState({
                     loginStep: AUTH_STATES.PROFILE_EDIT,
                     name: userInfo.name,
@@ -557,8 +545,6 @@ class Login extends Component {
     };
 
     _renderProfileShow = () => {
-        //if (!this.props.auth.userInfo) return;
-
         const {
             editProfileBtn,
             logoutBtn,
@@ -761,7 +747,6 @@ class Login extends Component {
                                             mask="99/99/9999"
                                             placeholder={birth}
                                             keyboardType="numeric"
-                                            //style={[styles.item1, dateError ? styles.itemError : {}]}
                                             onChangeText={(text) => {
                                                 this.setState({date: text});
                                             }}
@@ -923,7 +908,6 @@ class Login extends Component {
                                         color: "#bfc6ea",
                                         fontFamily: "montserrat-regular",
                                     }}
-                                    //value= {userInfo.country}
                                     selectedValue={userInfo.country}
                                     onValueChange={(value) =>
                                         this.setState({country: value, countryError: false})
@@ -1257,8 +1241,6 @@ class Login extends Component {
     render() {
         const {loginStep} = this.state;
         if (!this.props.auth.success) {
-            // Not yet authenticated (input -> sent -> error)
-            //const { register } = this.props.locale.messages;
             return (
                 <ConnectedScreenErrorBoundary>
                     <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
