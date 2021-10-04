@@ -252,25 +252,11 @@ class ScrollableContainer extends PureComponent {
       data,
       onEndReached = ()=>{} } = this.props;
 
-    if (snapPoints && snapPoints.length > 0)
+      if (snapPoints && snapPoints.length > 0)
       return (
-        <View style={[styles.fill, { backgroundColor: "white", zIndex: -1 }]}>
-          <Animated.View
-            style={[
-              styles.fill,
-              { transform: [{ translateY: this._translateAnimY }] },
-            ]}
-          >
-            {topComponent()}
-          </Animated.View>
-          {extraComponent && (
-            <Animated.View
-              style={[
-                styles.extraComponent,
-                { transform: [{ translateY: this._translateAnimY2 }] },
-              ]}
-            >
-              {extraComponent()}
+          <View style={[styles.fill, {backgroundColor: "white", zIndex: -1,}]}>
+            <Animated.View style={[styles.fill, { transform: [{ translateY: this._translateAnimY } ]}]}>
+              {topComponent()}
             </Animated.View>
             { extraComponent &&
               <Animated.View pointerEvents='box-none' style={[styles.extraComponent, { transform: [{ translateY: this._translateAnimY2 } ]}]}>
@@ -300,7 +286,7 @@ class ScrollableContainer extends PureComponent {
             />
             
         </View>
-      );
+      )
     else 
       return null;
 
