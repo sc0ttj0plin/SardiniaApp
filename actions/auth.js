@@ -37,19 +37,6 @@ export const passwordReset = (email) =>
     dispatch({ type: Constants.LOGOUT_SUCCESS });
   }
 
-
-// export const passwordReset = (email) =>{
-//   async (dispatch) => {
-//     try  {
-//       const reset = await firebase.auth().sendPasswordResetEmail(email)
-//       console.log(reset);
-//     } catch(e) {
-//       console.log("Reset error", e.message);
-//     }
-//     //ignoring the logout outcome, since we remove the token there's no need to validate it
-//     dispatch({ type: Constants.LOGOUT_SUCCESS });
-//   }}
-
 export const registerAndSignup = (email,password,el) =>
   async (dispatch, getState) => {
     dispatch({ type: Constants.AUTH });
@@ -62,13 +49,10 @@ export const registerAndSignup = (email,password,el) =>
         let userInfo = await firebase.database().ref(`users/${user.uid}/info`).once('value');
         await AsyncStorage.setItem('firebaseUid', user.uid);
         user.info = userInfo.val();
-        
         try {
-          //dispatch({ type: Constants.USER_EDIT });
           const user = firebase.auth().currentUser;
           let ref = await firebase.database().ref(`users/${user.uid}/info`);
           await ref.set(el);
-          //dispatch({ type: Constants.USER_EDIT_SUCCESS, payload: {userInfo: el}});
           console.log("update usert ok")
           dispatch({ type: Constants.AUTH_SUCCESS, payload: { user: user, token ,userInfo: el} });
         } catch(e) { 
@@ -101,25 +85,6 @@ _checkAuthStatus = () => {
   });
 }
 
-
-//@passwordless
-export const passwordLessLogin = () => 
-async (dispatch, getState) => {
-  dispatch({ type: Constants.AUTH });
-  try  {
-    let user = await _checkAuthStatus();
-    let userInfo = await firebase.database().ref(`users/${user.uid}/info`).once('value');
-    user.info = userInfo.val();
-    const token = await firebase.auth().currentUser.getIdToken(/* forceRefresh */ true);
-    await AsyncStorage.setItem('firebaseUid', user.uid);
-    dispatch({ type: Constants.AUTH_SUCCESS, payload: { user, token } });
- } catch(error) {
-    console.log("passwordLessLogin", error.message);
-    dispatch({ type: Constants.AUTH_FAIL, payload: { message: error.message } });
-  }
-}
-
-//
 export const editUser = (el) =>
 console.log(el);
 async (dispatch) => {
@@ -128,7 +93,7 @@ async (dispatch) => {
     const user = firebase.auth().currentUser;
     let ref = await firebase.database().ref(`users/${user.uid}/info`);
     ref.set({ ...el });
-    dispatch({ type: Constants.USER_EDIT_SUCCESS, payload: {userInfo: 1}});
+    dispatch({ type: Constants.USER_EDIT_SUCCESS, payload: {userInfo: { ...el }}});
   } catch(e) { 
     dispatch({ type: Constants.USER_EDIT_FAIL });
     console.log(e.message); 
