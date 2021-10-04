@@ -385,7 +385,6 @@ class PlacesScreen extends PureComponent {
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
           <ConnectedHeader 
             onBackPress={this._backButtonPress}
-            iconTintColor={Colors.colorPlacesScreen}  
             backButtonVisible={this.props.others.placesTerms.length > 0}
           /> 
           <ConnectedAuthHandler loginOptional={true} timeout={Constants.SPLASH_LOADING_DURATION + 1500} />
