@@ -11,11 +11,13 @@ export const passwordSignup = (email,password) =>
       const result = await firebase.auth().signInWithEmailAndPassword(email,password);
       const token = await firebase.auth().currentUser.getIdToken(/* forceRefresh */true);
       if (result.user) {
+        console.log(result)
         let user = result.user;
         let userInfo = await firebase.database().ref(`users/${user.uid}/info`).once('value');
+        console.log(userInfo)
         await AsyncStorage.setItem('firebaseUid', user.uid);
         user.info = userInfo.val();
-        dispatch({ type: Constants.AUTH_SUCCESS, payload: { user: user, token } });
+        dispatch({ type: Constants.AUTH_SUCCESS, payload: { user: user, token, userInfo: userInfo } });
       } else
         dispatch({ type: Constants.AUTH_FAIL, payload: { message: 'Errore nel login!' } });
     } catch (e) {

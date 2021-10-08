@@ -85,7 +85,11 @@ class Login extends Component {
             this
         );
     }
-
+    componentDidUpdate(prevProps) {
+        if (this.props.auth !== prevProps.auth) this._loginStateChanged();
+        //if (this.props.auth.userInfo !== prevProps.auth.userInfo) this._loginStateChanged();
+       
+    }
     componentDidMount() {
         BackHandler.addEventListener(
             "hardwareBackPress",
@@ -107,13 +111,14 @@ class Login extends Component {
             if (this.props.auth.userInfo) {
                 const {userInfo} = this.props.auth;
                 this.setState({
-                    loginStep: AUTH_STATES.PROFILE_SHOW,
                     name: userInfo.name,
                     surname: userInfo.surname,
                     date: userInfo.date,
                     country: userInfo.country,
                     sex: userInfo.sex
                 })
+                this.setState({
+                    loginStep: AUTH_STATES.PROFILE_SHOW,})
             } else {
                 this.setState({
                     loginStep: AUTH_STATES.PROFILE_EDIT,
@@ -124,10 +129,6 @@ class Login extends Component {
         }
     }
 
-
-    componentDidUpdate(prevProps) {
-        if (this.props.auth !== prevProps.auth) this._loginStateChanged();
-    }
 
     _onHardwareBackButtonClick = () => {
         if (this.props.isFocused) {
@@ -140,6 +141,8 @@ class Login extends Component {
     _loginStateChanged = async () => {
         if (this.props.auth.user && this.props.auth.userInfo) {
           const {userInfo} = this.props.auth;
+          console.log(userInfo);
+          console.log('dentro login state changed')
                 this.setState({
                     loginStep: AUTH_STATES.PROFILE_SHOW,
                     name: userInfo.name,
@@ -200,7 +203,7 @@ class Login extends Component {
             alert("Invalid email");
         } else {
             this.props.actions.passwordSignup(email, password);
-            this.setState({loginStep: AUTH_STATES.LOGIN_REQUEST});
+            this.setState({loginStep: AUTH_STATES.PROFILE_SHOW});
         }
     };
 
@@ -284,7 +287,7 @@ class Login extends Component {
                 meta: userData
             });
 
-            this.setState({loginStep: AUTH_STATES.LOGIN_REQUEST});
+            this.setState({loginStep: AUTH_STATES.PROFILE_SHOW});
         }
     };
 
@@ -557,6 +560,18 @@ class Login extends Component {
     };
 
     _renderProfileShow = () => {
+        let userInfo = {}
+        if(!this.props.auth.user.info){
+            console.log(this.props.auth.user.info)
+            userInfo = this.props.auth.userInfo;
+        }
+            
+        else{
+            userInfo = this.props.auth.user.info;
+        }
+        console.log('detail profile')
+        console.log(userInfo)
+
         const {
             editProfileBtn,
             logoutBtn,
@@ -569,7 +584,7 @@ class Login extends Component {
             privacy,
         } = this.props.locale.messages;
         const {user} = this.props.auth;
-        const {userInfo} = this.props.auth;
+
         
 
         return (
@@ -579,7 +594,7 @@ class Login extends Component {
                         <CustomText style={[styles.userName]}>
                             {userInfo.name} {userInfo.surname}
                         </CustomText>
-                        <CustomText style={styles.userEmail}>{user.email}</CustomText>
+                        <CustomText style={styles.userEmail}>{userInfo.email}</CustomText>
                         {/* <CustomText style={styles.userInformationsText}>
               {informations}
             </CustomText> */}
@@ -1260,9 +1275,7 @@ class Login extends Component {
 
                         {loginStep === AUTH_STATES.INIT && this._renderInit()}
                         {loginStep === AUTH_STATES.LOGIN && this._renderLogin()}
-                        {loginStep === AUTH_STATES.LINK_SENT && this._renderLinkSent()}
                         {loginStep === AUTH_STATES.ERROR && this._renderError()}
-                        {loginStep === AUTH_STATES.LOGIN_REQUEST && this._renderLinkSent()}
                         {loginStep === AUTH_STATES.PROFILE_EDIT_FIRST && this._renderRegisterWithEmail()}
                         {loginStep === AUTH_STATES.PASSWORD_RESET_REQUEST && this._renderPasswordReset()}
                     </View>

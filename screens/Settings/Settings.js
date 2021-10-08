@@ -97,7 +97,7 @@ class SettingsScreen extends Component {
     //Deferred rendering to make the page load faster and render right after
     {
       USE_DR && setTimeout(() => this.setState({ render: true }), 0);
-      this.getfixLocationState();
+      //this.getfixLocationState();
     }
   }
 
@@ -107,7 +107,7 @@ class SettingsScreen extends Component {
    */
   componentDidUpdate(prevProps) {
     console.log("didupdate");
-    this.getfixLocationState();
+    //this.getfixLocationState();
     /**
      * Is the former props different from the newly propagated prop (redux)? perform some action
      * if(prevProps.xxx !== this.props.xxx)
