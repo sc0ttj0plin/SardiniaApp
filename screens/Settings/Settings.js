@@ -3,6 +3,8 @@ import {
     View, Text, FlatList, ActivityIndicator, TouchableOpacity,
     StyleSheet, BackHandler, Platform, ScrollView,Alert
 } from "react-native";
+import * as TaskManager from 'expo-task-manager';
+
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {
     // CategoryListItem,
@@ -61,6 +63,7 @@ import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
 import * as IntentLauncher from "expo-intent-launcher";
 import Constants from "expo-constants";
+import LocationCheck from "../../components/others/LocationCheck";
 
 
 /* Deferred rendering to speedup page inital load:
@@ -82,9 +85,9 @@ class SettingsScreen extends Component {
 
     this.state = {
       render: USE_DR ? false : true,
+      gps_background:'',
+      gps_foreground:''
     };
-
-    console.log(props.setting);
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
@@ -93,11 +96,14 @@ class SettingsScreen extends Component {
    * Use this function to perform data fetching
    * e.g. this.props.actions.getPois();
    */
-  componentDidMount() {
+  async componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {
       USE_DR && setTimeout(() => this.setState({ render: true }), 0);
-      this.getfixLocationState();
+      const { status } = await Permissions.askAsync(Permissions.LOCATION);
+      this.setState({gps_background:status})
+      console.log(status+'component did mount')
+
     }
   }
 
@@ -105,14 +111,35 @@ class SettingsScreen extends Component {
    * Use this function to update state based on external props
    * or to post-process data once it changes
    */
-  componentDidUpdate(prevProps) {
-    console.log("didupdate");
-    this.getfixLocationState();
+  async componentDidUpdate(prevProps) {
     /**
      * Is the former props different from the newly propagated prop (redux)? perform some action
      * if(prevProps.xxx !== this.props.xxx)
      *  doStuff();
      */
+    console.log('didupdate')
+    console.log(this.props.setting)
+    console.log('didupdate')
+
+     if (this.props.setting.gpsbackground !== prevProps.setting.gpsbackground){
+        console.log('cambiate')
+        console.log()
+        const { status } = await Permissions.askAsync(Permissions.LOCATION);
+        if (status==='granted' && this.props.setting.gpsbackground===true){
+        this.props.actions.toggleSettings({
+          type: "gpsbackground",
+          value: true,
+        });}
+        else{
+          this.props.actions.toggleSettings({
+            type: "gpsbackground",
+            value: false,
+          });
+        }
+
+
+     }
+     
   }
 
   /**
@@ -138,10 +165,32 @@ class SettingsScreen extends Component {
   _isLoadingData = () => true; /* e.g. this.props.pois.loading; */
   _isErrorData = () => null; /* e.g. this.props.pois.error; */
 
+
+
+  _getLocationAsync = async () => {
+    //let settingres = await this.requestLocationPermission();
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      alert('The request was denied');
+      this.requestLocationPermission()
+    }else{
+      try{
+        let location = await Location.getCurrentPositionAsync({});
+        console.log('test')
+        this.requestLocationPermission()
+        // do something with location
+      }catch(e){
+        alert('We could not find your position. Please make sure your location service provider is on');
+        console.log('Error while trying to get location: ', e);
+      }
+    }
+  }
+
+
   requestLocationPermission = async () => {
     Alert.alert(
       "alert Message",
-      "Inserire messaggio per cambiare impostazioni GPS",
+      "Inserire messaggio di  per cambiare impostazioni GPS",
       [
         {
           text: "Apri Impostazioni",
@@ -159,12 +208,9 @@ class SettingsScreen extends Component {
       Permissions.LOCATION
     );
     console.log(status);
-    if (status === "granted") {
-      this.props.actions.toggleSettings({
-        type: "gpsbackground",
-        value: true,
-      });
-      return Location.getCurrentPositionAsync({ enableHighAccuracy: true });
+    if (status === "granted" && this.props.setting.gps_background===true) {
+      return
+      
     } else {
       if (this.props.setting.gpsbackground === true) {
         this.props.actions.toggleSettings({
@@ -181,22 +227,41 @@ class SettingsScreen extends Component {
     }
   };
 
-  goToSettings = () => {
+  goToSettings = async () => {
     if (Platform.OS == "ios") {
       Linking.openURL("app-settings:");
+      navigation.goback();
     } else {
-      IntentLauncher.startActivityAsync(
+      let setting = await IntentLauncher.startActivityAsync(
         IntentLauncher.ACTION_APPLICATION_DETAILS_SETTINGS,
         { data: "package:" + pkg }
       );
+      console.log(setting)
+      navigation.goback();
     }
   };
 
   handleInputChange = (value, name) => {
-    console.log(name + value);
     switch (name) {
       case "gpsbackground":
-        this.requestLocationPermission();
+        if (value === true) {
+          Location.startLocationUpdatesAsync(AppConstants.GEOLOCATION.geolocationBackgroundTaskName, {
+            accuracy: Location.Accuracy.Balanced,
+            distanceInterval: AppConstants.GEOLOCATION.startLocationUpdatesAsyncOpts.distanceInterval, 
+            timeInterval: AppConstants.GEOLOCATION.startLocationUpdatesAsyncOpts.timeInterval,
+            foregroundService: {
+              notificationTitle: AppConstants.GEOLOCATION.startLocationUpdatesAsyncOpts.foregroundService.notificationTitle,
+              notificationBody: AppConstants.GEOLOCATION.startLocationUpdatesAsyncOpts.foregroundService.notificationBody,
+            },
+          });
+        }else{
+          Location.hasStartedLocationUpdatesAsync(AppConstants.GEOLOCATION.geolocationBackgroundTaskName).then((value) => {
+            if (value) {
+              Location.stopLocationUpdatesAsync(AppConstants.GEOLOCATION.geolocationBackgroundTaskName);
+            }
+          });
+        }
+
         break;
       case "gpsopenapp":
         if (value === false) {
@@ -237,20 +302,17 @@ class SettingsScreen extends Component {
     //const { nearpoi } = this.state;
 
     return (
-      <AsyncOperationStatusIndicator
+      <><AsyncOperationStatusIndicator
         loading={this._isLoadingData()}
         success={this._isSuccessData()}
         error={this._isErrorData()}
-        retryFun={() => {}}
-        loadingLayout={
-          <LoadingLayoutEntitiesFlatlist
-            horizontal={false}
-            numColumns={1}
-            itemStyle={styles.itemFlatlist}
-            style={styles.listStyle}
-            bodyContainerStyle={styles.listContainer}
-          />
-        }
+        retryFun={() => { } }
+        loadingLayout={<LoadingLayoutEntitiesFlatlist
+          horizontal={false}
+          numColumns={1}
+          itemStyle={styles.itemFlatlist}
+          style={styles.listStyle}
+          bodyContainerStyle={styles.listContainer} />}
       >
         <CustomText style={styles.title}>{notificationsetting}</CustomText>
         <CustomSwitch
@@ -308,7 +370,7 @@ class SettingsScreen extends Component {
           parentkey={"virtualenclosure"}
           handleInputChange={this.handleInputChange}
         ></CustomSwitch>
-      </AsyncOperationStatusIndicator>
+      </AsyncOperationStatusIndicator></>
     );
   };
 
