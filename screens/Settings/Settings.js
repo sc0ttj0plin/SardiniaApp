@@ -103,6 +103,17 @@ class SettingsScreen extends Component {
       const { status } = await Permissions.askAsync(Permissions.LOCATION);
       this.setState({gps_background:status})
       console.log(status+'component did mount')
+      TaskManager.defineTask(AppConstants.GEOLOCATION.geolocationBackgroundTaskName, ({ data, error }) => {
+        if (error) {
+          console.error(error.message)
+          return;
+        }
+        if (data) {
+          const { locations } = data; //array of locations
+          //send locations to backend
+          console.log("backgroundTask", locations);
+        }
+      });
 
     }
   }
