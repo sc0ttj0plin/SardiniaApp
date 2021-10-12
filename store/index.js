@@ -4,6 +4,7 @@ import restReducer from '../reducers/rest';
 import localeReducer from '../reducers/locale';
 import othersReducer from '../reducers/others';
 import favouritesReducer from '../reducers/favourites';
+import privacyReducer from '../reducers/privacy';
 import categoriesReducer from '../reducers/categories';
 import eventsReducer from '../reducers/events';
 import inspirersReducer from '../reducers/inspirers';
@@ -49,6 +50,7 @@ const rootReducer = combineReducers({
   localeState: localeReducer,
   othersState: othersReducer,
   favouritesState: favouritesReducer,
+  privacyState: privacyReducer,
   //Graphql states
   categoriesState: categoriesReducer,
   preferencesState: preferencesReducer,
