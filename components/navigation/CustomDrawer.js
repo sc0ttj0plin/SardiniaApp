@@ -40,7 +40,7 @@ class Header extends Component {
   render() {
     const { user } = this.props.auth;
     const email = user && user.email;
-    const {name,surname} = this.props.auth.userInfo
+    const {name,surname} = this.props.auth.userInfo  || this.props.auth.user.info
     return (
       <View style={[styles.drawerContent, styles.header]}>
           {email && <CustomText numberOfLines={1} ellipsizeMode='tail' style={styles.email}>{email}</CustomText> }
