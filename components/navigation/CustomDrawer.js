@@ -40,11 +40,11 @@ class Header extends Component {
   render() {
     const { user } = this.props.auth;
     const email = user && user.email;
-    const username = user && user.info && user.info.username;
+    const {name,surname} = this.props.auth.userInfo  || this.props.auth.user.info
     return (
       <View style={[styles.drawerContent, styles.header]}>
           {email && <CustomText numberOfLines={1} ellipsizeMode='tail' style={styles.email}>{email}</CustomText> }
-          {username && <CustomText numberOfLines={1} ellipsizeMode='tail' style={styles.username}>{username}</CustomText>}
+          {name && <CustomText numberOfLines={1} ellipsizeMode='tail' style={styles.username}>{surname} {name}</CustomText>}
       </View>
     );
   }
