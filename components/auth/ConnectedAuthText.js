@@ -22,8 +22,7 @@ class ConnectedAuthText extends PureComponent {
 
     var label = loginLabel;
     if (auth.success) {
-        label = profileLabel;
-      
+      label = profileLabel
     }
     return <CustomText style={[textStyle]}>{label}</CustomText>;
   }
