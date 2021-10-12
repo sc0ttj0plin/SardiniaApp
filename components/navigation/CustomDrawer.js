@@ -39,8 +39,11 @@ CustomDrawer.Line = class Line extends Component {
 class Header extends Component {
   render() {
     const { user } = this.props.auth;
-    const email = user && user.email;
-    const {name,surname} = this.props.auth.userInfo  || this.props.auth.user.info
+    
+    let email = user && user.email;
+    let name = user && user.info && user.info.name 
+    let surname = user && user.info && user.info.surname;
+    
     return (
       <View style={[styles.drawerContent, styles.header]}>
           {email && <CustomText numberOfLines={1} ellipsizeMode='tail' style={styles.email}>{email}</CustomText> }

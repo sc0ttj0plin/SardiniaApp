@@ -3,6 +3,7 @@ import * as Constants from '../constants';
 import * as Linking from 'expo-linking';
 import AsyncStorage from '@react-native-community/async-storage';
 import ExpoConstants from 'expo-constants';
+import { INITIAL_STATE } from '../reducers/favourites';
 
 export const passwordSignup = (email,password) =>
   async (dispatch, getState) => {
@@ -106,7 +107,13 @@ export const logout = () =>
     try  {
       console.log('Logout..');
       await AsyncStorage.removeItem('email');
+      await AsyncStorage.removeItem('favouritesState');
       const user = firebase.auth().currentUser;
+      let initialFavs =  INITIAL_STATE;
+      dispatch({
+        type: Constants.INIT_FAVOURITES,
+        payload: initialFavs,
+      });
       await firebase.auth().signOut();
     } catch(e) {
       console.log("Logout error", e.message);
@@ -123,7 +130,13 @@ export const removeUser = () =>
       await AsyncStorage.removeItem('email');
       const user = firebase.auth().currentUser;
       await firebase.database().ref(`users/${user.uid}/info`).remove();
+      await firebase.database().ref(`users/${user.uid}/favourites`).remove();
       await firebase.auth().currentUser.delete();
+      let initialFavs = ref.val() || INITIAL_STATE;
+      dispatch({
+        type: Constants.INIT_FAVOURITES,
+        payload: initialFavs,
+      });
     } catch(e) {
       console.log("Logout error", e.message);
     }

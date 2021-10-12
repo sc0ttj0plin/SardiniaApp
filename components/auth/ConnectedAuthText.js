@@ -22,10 +22,7 @@ class ConnectedAuthText extends PureComponent {
 
     var label = loginLabel;
     if (auth.success) {
-      if (auth.user && auth.userInfo && auth.userInfo.name)
-        label = profileLabel;
-      else if (auth.user)
-        label = completeAccess;
+      label = profileLabel
     }
     return <CustomText style={[textStyle]}>{label}</CustomText>;
   }
