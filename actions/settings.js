@@ -12,15 +12,17 @@ export const initSettings = () => async (dispatch, getState) => {
     const user = firebase.auth().currentUser;
     const settings = getState().settingsState;
     const lastSyncedLocal = settings.lastSynced;
-    console.log(settings);
+    console.log(user);
     // if authenticated: get remote ts, apply sync
     if (user) {
       console.log(settings);
       let refLastSynced = await firebase
         .database()
         .ref(`users/${user.uid}/settings/lastSynced`);
+        console.log(refLastSynced)
       let refLastSyncedRemote = await refLastSynced.once("value");
       refLastSyncedRemote = refLastSyncedRemote.val() || 0;
+      console.log(refLastSyncedRemote)
 
       // If last sync in remote happened before last sync in local -> update remote from local
       if (refLastSyncedRemote < lastSyncedLocal) {

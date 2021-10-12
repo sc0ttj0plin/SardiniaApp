@@ -144,9 +144,9 @@ class SettingsScreen extends Component {
     }
   }
 
-  componentWillMount() {
-    this._getLocationAsync();
-  }
+  // componentWillMount() {
+  //   this._getLocationAsync();
+  // }
 
   /**
    * Use this function to unsubscribe or clear any event hooks
@@ -268,16 +268,6 @@ class SettingsScreen extends Component {
       value: value,
     });
     //this.setState({ [name]: value });
-  };
-
-  checkPermissionRender = async () => {
-    const { status } = await Permissions.askAsync(Permissions.LOCATION);
-    if (status === "granted") {
-      return Promise.resolve("true");
-    } else {
-      this.goToSettings();
-      return Promise.resolve("false");
-    }
   };
 
   /********************* Render methods go down here *********************/

@@ -569,8 +569,6 @@ class Login extends Component {
         else{
             userInfo = this.props.auth.user.info;
         }
-        console.log('detail profile')
-        console.log(userInfo)
 
         const {
             editProfileBtn,
