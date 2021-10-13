@@ -68,20 +68,15 @@ import Constants from "expo-constants";
    number of components loaded when the page initially mounts.
    Other components are loaded right after the mount */
 const USE_DR = false;
-
-const pkg = Constants.manifest.releaseChannel
-  ? Constants.manifest.android.package
-  : "host.exp.exponent";
-
 class PrivacyScreen extends Component {
   constructor(props) {
     super(props);
-
     /* Get props from navigation */
     //let { someNavProps } = props.route.params;
-
+    
     this.state = {
       render: USE_DR ? false : true,
+      isSelected: this.props.privacy.privacyValue,
     };
   }
 
@@ -94,6 +89,7 @@ class PrivacyScreen extends Component {
   componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {
+      //const {privacyValue} = this.props.privacy
       USE_DR && setTimeout(() => this.setState({ render: true }), 0);
     }
   }
@@ -134,11 +130,22 @@ class PrivacyScreen extends Component {
   _isErrorData = () => null; /* e.g. this.props.pois.error; */
 
 
+  _changeValue = (value) => {
+    this.setState({
+      isSelected: !this.state.isSelected
+  }, () => console.log(this.state.isSelected+ ' changevalue'));
+  }
+
+  _submitValue = (value) => { 
+    console.log('value submit'+value)
+    this.props.actions.togglePrivacy(value)
+  }
+
   /********************* Render methods go down here *********************/
   _renderContent = () => {
     const { privacy, privacytext,submit } = this.props.locale.messages;
-    //const { nearpoi } = this.state;
-
+    const {privacyValue} = this.props.privacy
+    
     return (
       <AsyncOperationStatusIndicator
         loading={this._isLoadingData()}
@@ -158,13 +165,18 @@ class PrivacyScreen extends Component {
         <CustomText style={styles.title}>{privacy}</CustomText>
         <ScrollView>
           <CustomText style={styles.container}>{privacytext}</CustomText>
-        </ScrollView>
+        </ScrollView><View style={{flexDirection: 'row'}}>
+        <CheckBox
+        style={[styles.checkbox]}
+          value={this.state.isSelected}
+          onChange={() => this._changeValue()}
+        />
         <TouchableOpacity
           style={[styles.button]}
-          onPress={() => this.props.navigation.goBack(null)}//firebase?
+          onPress={() => this._submitValue(this.state.isSelected)}
         >
           <CustomText style={styles.buttonText}>{submit}</CustomText>
-        </TouchableOpacity>
+        </TouchableOpacity></View>
       </AsyncOperationStatusIndicator>
     );
   };
@@ -183,7 +195,7 @@ class PrivacyScreen extends Component {
 
 
 PrivacyScreen.navigationOptions = {
-    title: 'Settings',
+    title: 'Privacy',
 };
 
 
@@ -198,8 +210,20 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
   },
+  checkbox: {
+    marginTop: 22,
+    marginBottom: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    borderRadius: 4,
+    justifyContent: "center",
+    alignItems: "center",
+    display: "flex",
+    
+  },
   button: {
-    marginTop: 40,
+    marginTop: 20,
+    marginBottom: 20,
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 4,
@@ -207,7 +231,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: Colors.lightGray,
     display: "flex",
-    minWidth: "50%",
+    minWidth: "80%",
   },
   title: {
     textAlign: "center",
@@ -247,6 +271,7 @@ const mapStateToProps = state => {
         locale: state.localeState,
         //favourites
         favourites: state.favouritesState,
+        privacy: state.privacyState,
         //graphql
         categories: state.categoriesState,
         events: state.eventsState,

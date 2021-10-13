@@ -122,6 +122,7 @@ class ConnectedSplashLoader extends Component {
       // Initializes favourites
       this.props.actions.initFavourites();
       this.props.actions.initSettings();
+      this.props.actions.initialPrivacy();
     }
   }
 
@@ -150,7 +151,7 @@ class ConnectedSplashLoader extends Component {
    */
   _initWithFeedback = async () => {
     this.setState({ canShowModals: true });
-    console.log("initialization with feedback aa");
+    console.log("initialization with feedback");
     // Updates
     !__DEV__ && await this._checkUpdates();
     // Linking: supported links: auth + entity references (shows loading linked entity modal)

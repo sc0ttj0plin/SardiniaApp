@@ -69,7 +69,7 @@ const persistConfig = {
   key: "root",
   storage: AsyncStorage,
   stateReconciler: autoMergeLevel2, //Store up to two level nesting
-  whitelist: ["authState"], //only store whitelisted reducers
+  whitelist: ["authState","privacyState"], //only store whitelisted reducers
 };
 
 

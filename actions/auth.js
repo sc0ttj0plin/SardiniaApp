@@ -131,6 +131,7 @@ export const removeUser = () =>
       const user = firebase.auth().currentUser;
       await firebase.database().ref(`users/${user.uid}/info`).remove();
       await firebase.database().ref(`users/${user.uid}/favourites`).remove();
+      await firebase.database().ref(`users/${user.uid}/privacy`).remove();
       await firebase.auth().currentUser.delete();
       let initialFavs = ref.val() || INITIAL_STATE;
       dispatch({

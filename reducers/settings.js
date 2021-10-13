@@ -19,7 +19,6 @@ export default function reducer(state = INITIAL_STATE, action) {
     case Constants.INIT_SETTING:
       return action.payload;
     case Constants.TOGGLE_SETTING:
-      console.log("aggiornamento stato")
       const settObj = { [action.payload.type]: action.payload.value };
       console.log(settObj)
       let newState = { 
@@ -29,8 +28,6 @@ export default function reducer(state = INITIAL_STATE, action) {
           ...settObj
         
       }
-      console.log(newState)
-      console.log("newState");
       return newState;
       // return { ...state, [action.payload.uuid]: action.payload.val }
     default:

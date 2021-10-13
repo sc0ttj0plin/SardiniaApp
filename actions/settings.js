@@ -6,9 +6,9 @@ import _ from "lodash";
 import { INITIAL_STATE } from "../reducers/settings";
 
 export const initSettings = () => async (dispatch, getState) => {
-  console.log("initsettingaction")
+  console.log("initsettingaction");
   try {
-     console.log("initsettingaction dentro try ");
+    console.log("initsettingaction dentro try ");
     const user = firebase.auth().currentUser;
     const settings = getState().settingsState;
     const lastSyncedLocal = settings.lastSynced;
@@ -19,10 +19,10 @@ export const initSettings = () => async (dispatch, getState) => {
       let refLastSynced = await firebase
         .database()
         .ref(`users/${user.uid}/settings/lastSynced`);
-        console.log(refLastSynced)
+      console.log(refLastSynced);
       let refLastSyncedRemote = await refLastSynced.once("value");
       refLastSyncedRemote = refLastSyncedRemote.val() || 0;
-      console.log(refLastSyncedRemote)
+      console.log(refLastSyncedRemote);
 
       // If last sync in remote happened before last sync in local -> update remote from local
       if (refLastSyncedRemote < lastSyncedLocal) {
@@ -38,8 +38,8 @@ export const initSettings = () => async (dispatch, getState) => {
           .database()
           .ref(`users/${user.uid}/settings`)
           .once("value");
-          console.log(ref.val());
-          console.log(ref);
+        console.log(ref.val());
+        console.log(ref);
         let initialSett = ref.val() || INITIAL_STATE;
         console.log(initialSett);
         dispatch({
@@ -60,16 +60,16 @@ export const toggleSettings = (payload) => async (dispatch, getState) => {
   const user = firebase.auth().currentUser;
   const lastSynced = Date.now();
   const settings = getState().settingsState;
-  console.log("wait")
-  console.log(payload)
+  console.log("wait");
+  console.log(payload);
   let settValFinal = payload;
-  console.log(settValFinal)
+  console.log(settValFinal);
   // Optimistic rendering
   dispatch({
     type: Constants.TOGGLE_SETTING,
     payload: {
       type: payload.type,
-      uuid: payload.uuid||null,
+      uuid: payload.uuid || null,
       value: payload.value,
       lastSynced,
       settValFinal,
@@ -81,21 +81,23 @@ export const toggleSettings = (payload) => async (dispatch, getState) => {
       let refLastSynced = await firebase
         .database()
         .ref(`users/${user.uid}/settings/lastSynced`);
-        console.log(refLastSynced)
+      console.log(refLastSynced);
       let refSett = await firebase
         .database()
         .ref(`users/${user.uid}/settings/${payload.type}/`);
-        console.log(refSett)
+      console.log(refSett);
       let settValRemote = await refSett.once("value");
-      console.log(settValRemote)
+      console.log(settValRemote);
       settValFinal = !settValRemote.val();
       await refSett.set(settValFinal); // toggle remote value (Note: !null == true, !undefined==true)
       console.log(await refSett.once("value"));
       await refLastSynced.set(lastSynced);
-      console.log(await firebase
-        .database()
-        .ref(`users/${user.uid}/settings`)
-        .once("value"));
+      console.log(
+        await firebase
+          .database()
+          .ref(`users/${user.uid}/settings`)
+          .once("value")
+      );
     }
     // In any case set to local: set timestamp to local only + favs to local
     // If we got the value from firebase use it, else fetch it from local redux store
