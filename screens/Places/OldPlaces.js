@@ -20,6 +20,8 @@ import Layout from '../../constants/Layout';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
+import * as Location from "expo-location";
+import {_onRegionChanged, _renderHeaderText} from "./utils";
 const { Value, event, interpolate } = Animated;
 
 /**
@@ -236,15 +238,6 @@ class PlacesScreen extends PureComponent {
 
   /********************* Render methods go down here *********************/
 
-  _renderHeaderText = () => {
-    const { whereToGo, explore } = this.props.locale.messages;
-    const { term } = this._getCurrentTerm();
-    const categoryTitle = term ? `${explore} ${term.name}` : whereToGo;
-    return (
-      <SectionTitle text={categoryTitle} numberOfLines={1} textStyle={{fontSize: 20 }} style={{ paddingBottom: 15 }}/>
-    );
-  }
-
   /* Renders an entity in Header (horizontal=true) and inside the Scrollable (horizontal=false) */
   _renderPoiListItem = (item, index, horizontal) => {
     const title = _.get(item.title, [this.props.locale.lan, 0, "value"], null);
@@ -351,7 +344,7 @@ class PlacesScreen extends PureComponent {
         // scrollableRenderExtraComponent={this._renderFiltersList}
         // scrollableExtraComponentProps={extraComponentProps}
         // Header text component: if scrollableHeaderTextComponent is undefined, must specify scrollableHeaderText
-        scrollableHeaderTextComponent={this._renderHeaderText}
+        scrollableHeaderTextComponent={() => _renderHeaderText(this)}
         // scrollableHeaderText={() => <Text>Header Text</Text>}
         // Top component (ClusteredMapViewTop or MapView or Custom)
         topComponentType="ClusteredMapViewTop" //or MapView or Custom (if Custom must implement topComponentRender)
@@ -365,6 +358,7 @@ class PlacesScreen extends PureComponent {
         // renderExtraModalComponent={this._renderNearToYou}
         extraModalProps={extraModalProps}
         onBackPress={this._backButtonPress}
+        onRegionChanged={(region) => {_onRegionChanged(region, this)}}
       />
     )
   }

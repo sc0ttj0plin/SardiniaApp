@@ -201,6 +201,10 @@ class ClusteredMapViewTop extends PureComponent {
    * @param {*} region: region boundaries that describe current view
    */
   _onRegionChangeComplete = (region) => {
+    console.log("_onRegionChangeComplete: ", region)
+    if (this.props.onRegionChanged) {
+      this.props.onRegionChanged(region);
+    }
     if (this.props._onMapRegionChanged)
       this.props._onMapRegionChanged();
 

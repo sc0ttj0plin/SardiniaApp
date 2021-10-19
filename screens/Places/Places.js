@@ -25,6 +25,7 @@ import EntityScrollableList from "../../components/entity/EntityScrollableList";
 import {VIDS} from "../../constants";
 import {VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS} from "../../constants";
 const { Value, event, interpolate } = Animated;
+import {_onRegionChanged, _renderHeaderText} from "./utils";
 
 /**
  * Map:             Clusters + pois that update with user map's interaction
@@ -63,7 +64,9 @@ class PlacesScreen extends PureComponent {
       isNearEntitiesLoading: false, /* near entities in modal */
       isCMVTLoading: true, /* clustered map view top loading  */
 
-      scrollableData: []
+      scrollableData: [],
+
+      actualCity: null,
     };
 
     this._pageLayoutHeight = Layout.window.height;
@@ -133,6 +136,7 @@ class PlacesScreen extends PureComponent {
    * @param {*} newCoords: the new user's coordinates
    */
   _onUpdateCoords(newCoords) {
+    console.log("_onUpdateCoords: ", newCoords)
     // const { coords, term } = this.state;
     const { coords } = this.state;
     if(!coords || coords.latitude !== newCoords.latitude || coords.longitude !== newCoords.longitude) {
@@ -158,6 +162,7 @@ class PlacesScreen extends PureComponent {
    * @param {*} coords: the coordinates for which to load new pois
    */
   _fetchNearestPois = (coords) => {
+    console.log("_fetchNearestPois: ", coords)
     const { nearPois } = this.state;
     return apolloQuery(actions.getNearestPois({
       limit: Constants.PAGINATION.poisLimit,
@@ -249,15 +254,6 @@ class PlacesScreen extends PureComponent {
   }
 
   /********************* Render methods go down here *********************/
-
-  _renderHeaderText = () => {
-    const { whereToGo, explore } = this.props.locale.messages;
-    const { term } = this._getCurrentTerm();
-    const categoryTitle = term ? `${explore} ${term.name}` : whereToGo;
-    return (
-      <SectionTitle text={categoryTitle} numberOfLines={1} textStyle={{fontSize: 20 }} style={{ paddingBottom: 15 }}/>
-    );
-  }
 
   /* Renders an entity in Header (horizontal=true) and inside the Scrollable (horizontal=false) */
   _renderPoiListItem = (item, index, horizontal) => {
@@ -440,7 +436,7 @@ class PlacesScreen extends PureComponent {
         // scrollableRenderExtraComponent={this._renderFiltersList}
         // scrollableExtraComponentProps={extraComponentProps}
         // Header text component: if scrollableHeaderTextComponent is undefined, must specify scrollableHeaderText
-        scrollableHeaderTextComponent={this._renderHeaderText}
+        scrollableHeaderTextComponent={() => _renderHeaderText(this)}
         // scrollableHeaderText={() => <Text>Header Text</Text>}
         // Top component (ClusteredMapViewTop or MapView or Custom)
         topComponentType="ClusteredMapAllPois" //or MapView or Custom (if Custom must implement topComponentRender)
@@ -454,6 +450,7 @@ class PlacesScreen extends PureComponent {
         // renderExtraModalComponent={this._renderNearToYou}
         extraModalProps={extraModalProps}
         onBackPress={this._backButtonPress}
+        onRegionChanged={(region) => {_onRegionChanged(region, this)}}
       />
     )
   }
