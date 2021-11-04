@@ -10,7 +10,7 @@ import AnimatedImage from "../others/AnimatedImage";
 /**
  * List item element that represents a category
  */
-class CategoryListItem extends PureComponent { 
+class CategoryListItem extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -36,16 +36,16 @@ class CategoryListItem extends PureComponent {
     );
   }
 
-  render() { 
+  render() {
     var image = this.props.image;
 
 
 
     return (
-      <ScrollableContainerTouchableOpacity onPress={this.props.onPress} activeOpacity={0.7} style={[styles.container, this.props.style]} > 
+      <ScrollableContainerTouchableOpacity onPress={this.props.onPress} activeOpacity={0.7} style={[styles.container, this.props.style]} >
        <ShimmerWrapper shimmerStyle={styles.shimmer} />
        <View style={[styles.fill]}>
-        <AnimatedImage 
+        <AnimatedImage
             image={image}
             style={styles.image}
             animated={true}>
@@ -57,7 +57,7 @@ class CategoryListItem extends PureComponent {
     }
 }
 
-const styles = StyleSheet.create({ 
+const styles = StyleSheet.create({
     fill: {
       width: "100%",
       height: "100%",

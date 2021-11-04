@@ -6,9 +6,9 @@ import ShimmerWrapper from "../loading/ShimmerWrapper";
 import AnimatedImage from "../others/AnimatedImage";
 
 /**
- * Similar to PoiItemsList but with geographical information 
+ * Similar to PoiItemsList but with geographical information
  */
-class GeoRefHListItem extends PureComponent{ 
+class GeoRefHListItem extends PureComponent{
   constructor(props){
     super(props);
   }
@@ -25,7 +25,7 @@ class GeoRefHListItem extends PureComponent{
         <ShimmerWrapper shimmerStyle={styles.shimmer} />
         <View style={[styles.image]}>
           <AnimatedImage animated={animated} image={this.props.image} style={[styles.image]} />
-          {mediaType === "virtualTour" && 
+          {mediaType === "virtualTour" &&
           (<View style={styles.mediaOverlay}>
             <CustomText style={styles.mediaOverlayText}>3D</CustomText>
           </View>)
@@ -40,7 +40,7 @@ class GeoRefHListItem extends PureComponent{
             ellipsizeMode='tail'
             style={styles.title}>{title}
             </CustomText>
-              <CustomText 
+              <CustomText
               numberOfLines={1}
               ellipsizeMode='tail'
               style={styles.place}>{subtitle}
@@ -52,7 +52,7 @@ class GeoRefHListItem extends PureComponent{
     }
 }
 
-const styles = StyleSheet.create({  
+const styles = StyleSheet.create({
     container: {
       backgroundColor: "white",
       alignItems: "flex-start",
