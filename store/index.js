@@ -18,7 +18,7 @@ import searchAutocompleteReducer from '../reducers/searchAutocomplete';
 import settingReducer from '../reducers/settings';
 import placesReducer from "../reducers/places";
 import apolloMiddleware from '../apollo/middleware';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'; //2lvl objects
 import makeApolloClient from '../apollo/client';
 import restClient from '../rest/client';
@@ -33,7 +33,7 @@ const axiosMiddlewareOptions = {
         //Redux persist-saved token
         const token = userToken;
         // console.log(token)
-        if (token) 
+        if (token)
           req.headers.common['Authorization'] = 'Bearer ' + token;
         return req;
       }
@@ -77,7 +77,7 @@ const persistConfig = {
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 
-//Create the apollo client, export 
+//Create the apollo client, export
 export const apolloClient = makeApolloClient();
 export const store = createStore(persistedReducer, applyMiddleware(thunk, axiosMiddleware(restClient, axiosMiddlewareOptions), apolloMiddleware(apolloClient)));
 export const persistor = persistStore(store);

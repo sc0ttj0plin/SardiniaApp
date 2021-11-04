@@ -22,7 +22,7 @@ import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
 import * as Location from "expo-location";
 import {_onRegionChanged, _renderHeaderText} from "./utils";
-const { Value, event, interpolate } = Animated;
+const { Value, event, interpolateNode } = Animated;
 
 /**
  * Map:             Clusters + pois that update with user map's interaction

@@ -7,7 +7,7 @@ import * as Location from 'expo-location';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import NetInfo from "@react-native-community/netinfo";
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import _ from 'lodash';
 import ExpoConstants from 'expo-constants';
 import * as firebase from 'firebase';
@@ -29,7 +29,7 @@ const USE_DR = false;
 const LINKING_DEFAULT_URL = "https://www.sardegnaturismo.it/it/luoghi/est/tortoli?test=1&test1=2"; /* NOTE: use with _initLinkingAsync */
 const SHOW_MODALS_DELAY = 5000;
 const defaultColors = [ Colors.blue, Colors.yellow, Colors.green, Colors.red ];
-const { Value, Clock, eq, clockRunning, not, cond, startClock, timing, interpolate, and, set, block } = Animated;
+const { Value, Clock, eq, clockRunning, not, cond, startClock, timing, interpolateNode, and, set, block } = Animated;
 
 /**
  * Splash screen
@@ -40,7 +40,7 @@ class ConnectedSplashLoader extends Component {
     super(props);
 
     /* Get props from navigation */
-    //let { someNavProps } = props.route.params; 
+    //let { someNavProps } = props.route.params;
     this.state = {
       render: USE_DR ? false : true,
       show: true,
@@ -62,16 +62,16 @@ class ConnectedSplashLoader extends Component {
 
     // Linking variables
     this._linkingUrl = null;
-    this._linkingModalBtnOpts = { 
-      show: true, 
+    this._linkingModalBtnOpts = {
+      show: true,
       left: { label: props.locale.messages.retry, onPress: () => this._loadLinkingEntity(this._linkingUrl) },
       right: { label: props.locale.messages.cancel, onPress: () => this.setState({ showLinking: false }) },
     };
 
     //Network
     this._unsubscribeNetInfo = null;
-    this._networkingModalBtnOpts = { 
-      show: true, 
+    this._networkingModalBtnOpts = {
+      show: true,
       left: { label: props.locale.messages.retry, onPress: this._onNetworkRetryPressed },
       right: null,
     };
@@ -109,10 +109,10 @@ class ConnectedSplashLoader extends Component {
     // Since the main screen mounts while splash is still showing
     if (prevProps.others.mainScreenDidMount !== this.props.others.mainScreenDidMount) {
       // When the component has mounted we surely have navigation object available and we can perform any action after the loading timeout
-      setTimeout(() => { 
+      setTimeout(() => {
         this.props.actions.setMainScreenIsShown(true);
         this._initWithFeedback()
-      }, 
+      },
         Constants.SPLASH_EXPO_DURATION + Constants.SPLASH_LOADING_DURATION + Constants.MODALS_SHOW_DELAY
       );
     }
@@ -140,10 +140,10 @@ class ConnectedSplashLoader extends Component {
    */
   _initWithoutFeedback = async () => {
     console.log("initialization without feedback");
-    // Auth 
+    // Auth
     await this._initFirebaseAppAndAttemptLogin();
     // Geolocation (asks for permissions)
-    await this._initGeolocation(); 
+    await this._initGeolocation();
   }
 
   /**
@@ -155,7 +155,7 @@ class ConnectedSplashLoader extends Component {
     // Updates
     !__DEV__ && await this._checkUpdates();
     // Linking: supported links: auth + entity references (shows loading linked entity modal)
-    this._initLinkingAsync(); 
+    this._initLinkingAsync();
     //this._initLinkingAsync(LINKING_DEFAULT_URL);
     // Network checker
     this._initNetworkChecker();
@@ -163,7 +163,7 @@ class ConnectedSplashLoader extends Component {
     this._initNotifications();
   }
 
-  /******************************** SPLASH LOGIC ********************************/ 
+  /******************************** SPLASH LOGIC ********************************/
   /**
    * Initializes: geolocation
    */
@@ -174,8 +174,8 @@ class ConnectedSplashLoader extends Component {
 
   /**
    * Runs the loading dots timing on the UI thread
-   * @param {*} clock 
-   * @param {*} duration 
+   * @param {*} clock
+   * @param {*} duration
    */
   _runTiming = (clock, duration = Constants.SPLASH_LOADING_DISAPPEAR_DURATION) => {
     const fromValue = 1;
@@ -204,23 +204,23 @@ class ConnectedSplashLoader extends Component {
     ];
   }
 
-  /******************************** LOGIN LOGIC ********************************/ 
+  /******************************** LOGIN LOGIC ********************************/
   _initFirebaseAppAndAttemptLogin = async () => {
     // Initialize app is synchronous
     if (firebase.apps.length === 0)
       firebase.initializeApp(ExpoConstants.manifest.extra.firebase);
     // If an email has been stored, attempt login using exiting user info
     const email = await AsyncStorage.getItem('email');
-    if (email) 
+    if (email)
       this.props.actions.passwordLessLogin();
   }
 
-  /******************************** GEOLOCATION LOGIC ********************************/ 
+  /******************************** GEOLOCATION LOGIC ********************************/
   /**
    * Initializes geolocation service
    */
   _initGeolocation = async () => {
-    const { status } = await Location.requestPermissionsAsync();
+    const { status } = await Location.requestForegroundPermissionsAsync();
     if (status === 'granted') {
       //Foreground location
       //  Initial position
@@ -235,7 +235,7 @@ class ConnectedSplashLoader extends Component {
     }
   }
 
-  /******************************** NOTIFICATIONS LOGIC ********************************/ 
+  /******************************** NOTIFICATIONS LOGIC ********************************/
   _initNotifications = () => {
     /* NOTIFICATION SUPPORT: not yet integrated
       try {
@@ -262,7 +262,7 @@ class ConnectedSplashLoader extends Component {
   */
 
 
-  /******************************** UPDATE LOGIC ********************************/ 
+  /******************************** UPDATE LOGIC ********************************/
   /**
    * Starts the update check
    */
@@ -281,8 +281,8 @@ class ConnectedSplashLoader extends Component {
 
   _reloadApp = () => setTimeout(async () => await Updates.reloadAsync(), Constants.RESTART_DELAY);
 
-  /******************************** LINKING LOGIC ********************************/ 
-  
+  /******************************** LINKING LOGIC ********************************/
+
   /**
    * Initializes the linking logic: app is closed or app is opened
    * @param {*} forceUrl forces an initial url (used for testing)
@@ -295,7 +295,7 @@ class ConnectedSplashLoader extends Component {
       console.log("Linking.getInitialURL", closedAppUrl)
       this._parseLinkingUrl(closedAppUrl);
     }
-    //or app is opened 
+    //or app is opened
     Linking.addEventListener('url', ({ url: openedAppUrl }) => {
       const url = forceUrl || openedAppUrl;
       console.log("Linking.addEventListener", url);
@@ -347,11 +347,11 @@ class ConnectedSplashLoader extends Component {
         }
       }).catch(e => {
         this.setState({ linkingSuccess: false, linkingLoading: false, linkingError: e.message });
-      }); 
+      });
     }
   }
 
-  /******************************** NETWORKING LOGIC ********************************/ 
+  /******************************** NETWORKING LOGIC ********************************/
   _initNetworkChecker = () => {
     // Subscribe
     this._unsubscribeNetInfo = NetInfo.addEventListener(state => {
@@ -373,7 +373,7 @@ class ConnectedSplashLoader extends Component {
     const { opacity } = this.state;
     return (
       <Animated.View style={[styles.loadingGif, {opacity}]} >
-        <Image 
+        <Image
           source={require("../../assets/images/splash_mare.png")}
           resizeMode="cover"
           onLoad={this._onSplashLoad}
@@ -406,17 +406,17 @@ class ConnectedSplashLoader extends Component {
     const { disconnected, pleaseConnect } = this.props.locale.messages;
     return this._renderModal(true, disconnected, pleaseConnect, false, this._networkingModalBtnOpts);
   }
-  
+
 
   /**
    * @param {*} visible make the modal visible or not
    * @param {*} modalTitle title of the modal
    * @param {*} modalDescription description text
    * @param {*} showLoadingDots show loading dots or not
-   * @param {*} btnOpts action button options, object like: 
+   * @param {*} btnOpts action button options, object like:
    *  {
-   *    show: true, 
-   *    left: { label: "leftTitle", onPress: function }, 
+   *    show: true,
+   *    left: { label: "leftTitle", onPress: function },
    *    right: { label: "rightTitle", onPress: function }
    *  }
    */
@@ -431,21 +431,21 @@ class ConnectedSplashLoader extends Component {
           <View style={styles.modalWindow}>
             <Text style={styles.modalTitle}>{modalTitle}</Text>
             <Text style={styles.modalDescription}>{modalDescription}</Text>
-            {showLoadingDots && 
+            {showLoadingDots &&
             <View style={styles.contentLoadingDots}>
               <View style={styles.loadingDotsView2}>
                 <LoadingDots isLoading={true} />
               </View>
             </View>}
-            {btnOpts.show && 
+            {btnOpts.show &&
             <View style={styles.modalButtons}>
-              {btnOpts.left && 
+              {btnOpts.left &&
                 <TouchableOpacity activeOpacity={0.7} style={[styles.modalBtn, styles.firstBtn, Constants.styles.shadow]} onPress={btnOpts.left.onPress}>
                   <CustomText style={[styles.modalBtnText]}>{btnOpts.left.label}</CustomText>
                 </TouchableOpacity>
               }
               <View style={styles.buttonsSeparator} />
-              {btnOpts.right && 
+              {btnOpts.right &&
                 <TouchableOpacity activeOpacity={0.7} style={[styles.modalBtn, styles.secondBtn, Constants.styles.shadow]} onPress={btnOpts.right.onPress}>
                   <CustomText style={[styles.modalBtnText, styles.skipButtonText]}>{btnOpts.right.label}</CustomText>
                 </TouchableOpacity>
@@ -470,7 +470,7 @@ class ConnectedSplashLoader extends Component {
       </>
     )
   }
-  
+
 }
 
 
@@ -514,19 +514,19 @@ const styles = StyleSheet.create({
   },
   // UPDATE
   modalView: {
-    flex: 1, 
-    width: '100%', 
-    height: '100%', 
-    zIndex: 1, 
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    zIndex: 1,
     position: 'absolute',
-    left: 0, 
+    left: 0,
     backgroundColor: "rgba(0,0,0,0.7)",
     alignItems: "center",
     justifyContent: "center",
   },
-  modalWindow: { 
+  modalWindow: {
     padding: 28.5,
-    backgroundColor: "white", 
+    backgroundColor: "white",
     zIndex: 2,
     flexDirection: "column",
     borderRadius: 4,
@@ -559,7 +559,7 @@ const styles = StyleSheet.create({
     display: "flex",
     paddingHorizontal: 10,
     paddingVertical: 5,
-    marginHorizontal: 10, 
+    marginHorizontal: 10,
   },
   modalBtnText: {
     color: "white",
@@ -583,7 +583,7 @@ function ConnectedSplashLoaderContainer(props) {
   // const route = useRoute();
   const store = useStore();
 
-  return <ConnectedSplashLoader 
+  return <ConnectedSplashLoader
     {...props}
     // navigation={navigation}
     // route={route}

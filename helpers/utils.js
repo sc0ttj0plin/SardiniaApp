@@ -8,7 +8,7 @@ import Url from 'url-parse';
 import * as Device from 'expo-device';
 import ExpoConstants from 'expo-constants';
 import * as firebase from 'firebase';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 // import * as Crypto from 'expo-crypto';
 import md5 from 'md5';
 
@@ -22,7 +22,7 @@ export const searchParser = (queryStr) => {
  * @param {*} array: array of objects: [{ findKey: x, }]
  * @param {*} findKey: key used for comparison array[i][findKey]
  * @param {*} match: match array[i][key] with "match"
- * @param {*} returnKey: 
+ * @param {*} returnKey:
  */
 export const greedyArrayFinder = (array, findKey, match, returnKey, notFoundReturnVal=null) => {
   for(let i = 0; i < array.length; i++) {
@@ -63,10 +63,10 @@ export const getCoordinates = (entity, locale='it') => {
   // // Events steps (array)
   // if (entity.steps && entity.steps[locale])
   //   return entity.steps[locale].map(c => ({ latitude: c.georef.coordinates[1], longitude: c.georef.coordinates[0] }));
-  // Generic 
+  // Generic
   if (entity && entity.georef)
     return ({ latitude: entity.georef.coordinates[1], longitude: entity.georef.coordinates[0] });
-  else 
+  else
     return null;
 }
 
@@ -79,12 +79,12 @@ export const linkingOpenNavigator = (title, coords) => {
     ios: `${scheme}${label}@${latLng}`,
     android: `${scheme}${latLng}(${label})`
   });
-  Linking.openURL(url); 
+  Linking.openURL(url);
 }
 export const linkingCallNumber = phone => {
   let phoneNumber = `tel:${phone}`;
   Linking.canOpenURL(phoneNumber).then(supported => {
-    if (!supported) 
+    if (!supported)
       Alert.alert('Phone number is not available');
     else
       return Linking.openURL(phoneNumber);
@@ -98,7 +98,7 @@ export const linkingOpenUrl = url => Linking.openURL(url);
  * @param {*} entity: A db entity to parse having "fields" fields
  * @param {*} fields the fields to extract e.g. ["coordinates", "image", ...]
  * @param {*} path the path where to search the final value of the field (might recurse)
- * @param {*} defaultVal a default value to assign to the output field variable if it doesn't exist 
+ * @param {*} defaultVal a default value to assign to the output field variable if it doesn't exist
  * @param {*} replaceObj apply replace to the output value  { "fieldName": { s: "sourceText", d: "destinationText" } }
  */
 export const getEntityInfo = (entity, fields=[], path=[Constants.DEFAULT_LANGUAGE, 0, "value"], defaultVal=null, replaceObj={}) => {
@@ -108,7 +108,7 @@ export const getEntityInfo = (entity, fields=[], path=[Constants.DEFAULT_LANGUAG
         let value = _.get(entity[el], path, defaultVal);
         if (replaceObj[el] && typeof(value) === 'string')
           acc[el] = value.replace(replaceObj[el].s, replaceObj[el].d);
-        else 
+        else
           acc[el] = value;
       }
       return acc;
@@ -143,7 +143,7 @@ export const getSampleVideoIndex = (uuid) => {
  */
 export const getGalleryImages = (entity) => {
   if(entity && entity.gallery){
-    return entity.gallery.map((item) => { 
+    return entity.gallery.map((item) => {
       var image = {
         title_field: item.title_field,
         key: item.uid,
@@ -169,7 +169,7 @@ export const shuffleArray = (array) => {
 
 /**
  * Get user token as a device id (an artifical token for when we don't have authentication tokens)
- * NOTE: Skipping osName, osVersion, osBuildId, osInternalBuildId, osBuildFingerprint, platformApiLevel 
+ * NOTE: Skipping osName, osVersion, osBuildId, osInternalBuildId, osBuildFingerprint, platformApiLevel
  *        as when the system upgrades we might lose the "unique" device id
  */
 export const getUserTokenFromDeviceSpecs = () => {
@@ -182,10 +182,10 @@ export const getUserTokenFromDeviceSpecs = () => {
 
 /**
  * Retrieves the unique device token using either device or auth information.
- * It's important to note that firebase initialization takes too much for the user 
- * to wait for it to complete, so we "sacrifice" one execution app to have the token 
+ * It's important to note that firebase initialization takes too much for the user
+ * to wait for it to complete, so we "sacrifice" one execution app to have the token
  * loaded from the async storage at the next execution after logging in
- * @returns userToken object { 
+ * @returns userToken object {
  *  userFirebaseToken: firebase uid
  *  userDeviceToken: device token
  * }
@@ -194,7 +194,7 @@ export const getUserTokenFromDeviceSpecs = () => {
 export const getUserToken = async () => {
   // If not logged in get
   const userFirebaseToken = await AsyncStorage.getItem('firebaseUid') || null;
-  const userDeviceToken = getUserTokenFromDeviceSpecs(); 
+  const userDeviceToken = getUserTokenFromDeviceSpecs();
   return { userDeviceToken, userFirebaseToken };
 }
 

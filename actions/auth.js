@@ -1,7 +1,7 @@
 import * as firebase from 'firebase';
 import * as Constants from '../constants';
 import * as Linking from 'expo-linking';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import ExpoConstants from 'expo-constants';
 import { INITIAL_STATE } from '../reducers/favourites';
 
@@ -28,7 +28,7 @@ export const passwordSignup = (email,password) =>
 
 //register and login
 
-export const passwordReset = (email) => 
+export const passwordReset = (email) =>
   async (dispatch) => {
     try  {
       console.log('Reset Password');
@@ -58,9 +58,9 @@ export const registerAndSignup = (email,password,el) =>
           await ref.set(el);
           console.log("update usert ok")
           dispatch({ type: Constants.AUTH_SUCCESS, payload: { user: user, token ,userInfo: el} });
-        } catch(e) { 
+        } catch(e) {
           dispatch({ type: Constants.USER_EDIT_FAIL });
-          console.log(e.message); 
+          console.log(e.message);
         }
       } else
         dispatch({ type: Constants.AUTH_FAIL, payload: { message: 'Errore nel login!' } });
@@ -68,9 +68,9 @@ export const registerAndSignup = (email,password,el) =>
       console.log(e.message);
       dispatch({ type: Constants.AUTH_FAIL, payload: { message: e.message } });
     }
-    
-  
-  
+
+
+
   }
 
 _checkAuthStatus = () => {
@@ -84,7 +84,7 @@ _checkAuthStatus = () => {
       });
     } catch {
       reject();
-    } 
+    }
   });
 }
 
@@ -95,14 +95,14 @@ async (dispatch) => {
     let ref = await firebase.database().ref(`users/${user.uid}/info`);
     await ref.set({ ...el });
     dispatch({ type: Constants.USER_EDIT_SUCCESS, payload: {userInfo: {...el} }});
-  } catch(e) { 
+  } catch(e) {
     dispatch({ type: Constants.USER_EDIT_FAIL });
-    console.log(e.message); 
+    console.log(e.message);
   }
-}  
+}
 
 
-export const logout = () => 
+export const logout = () =>
   async (dispatch) => {
     try  {
       console.log('Logout..');
@@ -123,7 +123,7 @@ export const logout = () =>
   }
 
 
-export const removeUser = () => 
+export const removeUser = () =>
   async (dispatch) => {
     try  {
       console.log('Remove User..');

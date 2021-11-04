@@ -20,7 +20,7 @@ const {
   cond,
   startClock,
   timing,
-  interpolate,
+  interpolateNode,
   and,
   set,
   block
@@ -83,22 +83,22 @@ function LoadingDots({ dots = 4, colors = defaultColors, size = 20, borderRadius
           runTiming(clock)
       );
       if(i == 0)
-        scaleAnimation = interpolate(timing, {
+        scaleAnimation = interpolateNode(timing, {
           inputRange: [0, 0.125, 0.25, 1],
           outputRange: [fromValue, toValue, fromValue, fromValue],
         });
       if(i == 1)
-        scaleAnimation = interpolate(timing, {
+        scaleAnimation = interpolateNode(timing, {
           inputRange: [0, 0.25, 0.375, 0.5 ,1],
           outputRange: [fromValue, fromValue, toValue, fromValue, fromValue],
         });
       if(i == 2)
-        scaleAnimation = interpolate(timing, {
+        scaleAnimation = interpolateNode(timing, {
           inputRange: [0, 0.5, 0.625, 0.75, 1],
           outputRange: [fromValue, fromValue, toValue, fromValue, fromValue],
         });
       if(i == 3)
-        scaleAnimation = interpolate(timing, {
+        scaleAnimation = interpolateNode(timing, {
           inputRange: [0, 0.75, 0.875, 1],
           outputRange: [fromValue, fromValue, toValue, fromValue],
         });
@@ -121,7 +121,7 @@ function LoadingDots({ dots = 4, colors = defaultColors, size = 20, borderRadius
     }
   }, [isLoading]);
 
-  
+
   return show && (
     <Animated.View style={[styles.loading]}>
       {animations.map((animation, index) => (

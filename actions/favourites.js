@@ -1,6 +1,6 @@
 import * as firebase from 'firebase';
 import * as Constants from '../constants';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import _ from 'lodash';
 
 import { INITIAL_STATE } from '../reducers/favourites';
@@ -15,7 +15,7 @@ export const initFavourites = () =>  async (dispatch, getState) => {
       let refLastSynced = await firebase.database().ref(`users/${user.uid}/favourites/lastSynced`);
       let refLastSyncedRemote = await refLastSynced.once('value');
       refLastSyncedRemote = refLastSyncedRemote.val() || 0;
-      
+
       // If last sync in remote happened before last sync in local -> update remote from local
       if (refLastSyncedRemote < lastSyncedLocal) {
         console.log("[favourites] sync favs from local to remote!");
@@ -53,7 +53,7 @@ export const toggleFavourite = (payload) => async (dispatch, getState) => {
   });
   try {
     if (user) {
-      // if is logged: reference is firebase, set timestamp to firebase + local + favs to firebase + local 
+      // if is logged: reference is firebase, set timestamp to firebase + local + favs to firebase + local
       let refLastSynced = await firebase.database().ref(`users/${user.uid}/favourites/lastSynced`);
       let refFav = await firebase.database().ref(`users/${user.uid}/favourites/${payload.type}/${payload.uuid}`);
       let favValRemote = await refFav.once('value');

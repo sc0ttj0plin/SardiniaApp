@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { View, StyleSheet, Animated } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import ExpoConstants from 'expo-constants';
-import { 
-  AsyncOperationStatusIndicator, 
-  ConnectedHeader, 
+import {
+  AsyncOperationStatusIndicator,
+  ConnectedHeader,
   EntityAbstract,
   EntityDescription,
   EntityGallery,
@@ -14,7 +14,7 @@ import {
   EntityWhyVisit,
   EntityAccomodations,
   TopMedia,
-  ConnectedFab, 
+  ConnectedFab,
   EntityVirtualTour,
   ConnectedScreenErrorBoundary,
   LoadingLayoutEntityDetail
@@ -51,12 +51,12 @@ class PlaceScreen extends Component {
       mustFetch,
       nestingCounter,
       entity: { term: {} },
-      abstract: null, 
-      title: null, 
-      description: null, 
-      whyVisit: null, 
-      coordinates: null, 
-      socialUrl: null, 
+      abstract: null,
+      title: null,
+      description: null,
+      whyVisit: null,
+      coordinates: null,
+      socialUrl: null,
       sampleVideoUrl: null,
       gallery: [],
       relatedEntities: [],
@@ -67,7 +67,7 @@ class PlaceScreen extends Component {
     };
 
     this._toast = null;
-      
+
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
@@ -91,7 +91,7 @@ class PlaceScreen extends Component {
       this._parseEntity(this.props.pois.data[uuid]);
     }
   }
-  
+
   componentWillUnmount() {
 
   }
@@ -101,8 +101,8 @@ class PlaceScreen extends Component {
     const { coordinates } = this.state;
     if (coordinates)
       try {
-        const relatedEntities = await apolloQuery(actions.getNearestNodesByType({ 
-          type: Constants.NODE_TYPES.places, 
+        const relatedEntities = await apolloQuery(actions.getNearestNodesByType({
+          type: Constants.NODE_TYPES.places,
           limit: Constants.PAGINATION.poisAccomodationsLimit,
           offset: 0,
           x: coordinates.longitude,
@@ -119,8 +119,8 @@ class PlaceScreen extends Component {
     const { coordinates } = this.state;
     if (coordinates)
       try {
-        const nearAccomodations = await apolloQuery(actions.getNearestNodesByType({ 
-          type: Constants.NODE_TYPES.accomodations, 
+        const nearAccomodations = await apolloQuery(actions.getNearestNodesByType({
+          type: Constants.NODE_TYPES.accomodations,
           limit: Constants.PAGINATION.poisAccomodationsLimit,
           offset: 0,
           x: coordinates.longitude,
@@ -134,7 +134,7 @@ class PlaceScreen extends Component {
         console.log(error);
       }
   }
-  
+
   _parseEntity = (entity) => {
     if(!entity || !entity.uuid)
       return;
@@ -161,12 +161,12 @@ class PlaceScreen extends Component {
       return;
 
     //Compute region of nearest pois and send to accomodations screen
-    this.props.navigation.navigate(Constants.NAVIGATION.NavAccomodationsScreen, { 
-      region: this.state.nearAccomodationsRegion, 
+    this.props.navigation.navigate(Constants.NAVIGATION.NavAccomodationsScreen, {
+      region: this.state.nearAccomodationsRegion,
       sourceEntity: this.state.entity,
-      sourceEntityCoordinates: { 
-        longitude: this.state.entity.georef.coordinates[0], 
-        latitude: this.state.entity.georef.coordinates[1] 
+      sourceEntityCoordinates: {
+        longitude: this.state.entity.georef.coordinates[0],
+        latitude: this.state.entity.georef.coordinates[1]
       },
     });
   }
@@ -190,7 +190,7 @@ class PlaceScreen extends Component {
 
   /**
    * function called on scrollView scroll
-   * @param {*} nativeEvent 
+   * @param {*} nativeEvent
    */
   _onScroll = ({nativeEvent}) => {
     if(isCloseToBottom(nativeEvent))
@@ -204,13 +204,13 @@ class PlaceScreen extends Component {
     return (
       <EntityRelatedList
         horizontal={true}
-        data={relatedList ? relatedList : []} 
+        data={relatedList ? relatedList : []}
         extraData={this.props.locale}
         keyExtractor={item => item.nid.toString()}
         contentContainerStyle={styles.listContainerHeader}
         showsHorizontalScrollIndicator={false}
         locale={this.props.locale}
-        onPressItem={(item) => 
+        onPressItem={(item) =>
           openRelatedEntity(item.type, this.props.navigation, "push", { item, mustFetch: true, nestingCounter: this.state.nestingCounter + 1 })
         }
         listType={listType}
@@ -220,43 +220,43 @@ class PlaceScreen extends Component {
     )
   }
 
-  
+
   _renderFab = (uuid, title, coordinates, shareLink) => {
     return (
       <View style={styles.fab}>
-        <ConnectedFab 
+        <ConnectedFab
           color={Colors.blue}
           uuid={uuid}
           title={title}
           type={Constants.ENTITY_TYPES.places}
-          coordinates={coordinates} 
+          coordinates={coordinates}
           shareLink={shareLink}
           direction="down"
-        /> 
+        />
       </View>
     )
   }
 
   _renderContent = () => {
-    const { 
+    const {
       loaded,
-      uuid, 
-      entity, 
-      abstract, 
-      title, 
-      description, 
-      whyVisit, 
-      coordinates, 
-      socialUrl, 
-      sampleVideoUrl, 
+      uuid,
+      entity,
+      abstract,
+      title,
+      description,
+      whyVisit,
+      coordinates,
+      socialUrl,
+      sampleVideoUrl,
       sampleVrUrl,
-      gallery, 
-      relatedEntities, 
+      gallery,
+      relatedEntities,
       nearAccomodations } = this.state;
     const { locale, favourites, } = this.props;
-    const { 
-      whyVisit: whyVisitTitle, 
-      gallery: galleryTitle, 
+    const {
+      whyVisit: whyVisitTitle,
+      gallery: galleryTitle,
       description: descriptionTitle,
       canBeOfInterest,
       showMap,
@@ -266,19 +266,19 @@ class PlaceScreen extends Component {
       inputRange: [0, 600],
       outputRange: ['0deg', '360deg']
     });
-    
+
 
      return (
        <View style={styles.fill}>
          <Toast ref={(toast) => this._toast = toast} positionValue={220} opacity={0.7} />
-         <Animated.ScrollView 
+         <Animated.ScrollView
             onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }],{useNativeDriver: true, listener: event => this._onScroll(event)})}
             scrollEventThrottle={1000}
             style={[styles.fill]}
           >
           <TopMedia urlVideo={sampleVideoUrl} urlImage={entity.image} uuid={this.state.uuid} entityType={Constants.NODE_TYPES.places}/>
-          {this._renderFab(entity.uuid, title, coordinates, socialUrl)}   
-          <View style={[styles.headerContainer]}> 
+          {this._renderFab(entity.uuid, title, coordinates, socialUrl)}
+          <View style={[styles.headerContainer]}>
             <EntityHeader title={title} term={entity.term ? entity.term.name : ""} borderColor={Colors.blue}/>
           </View>
           <View style={[styles.container]}>
@@ -299,12 +299,12 @@ class PlaceScreen extends Component {
 
             </AsyncOperationStatusIndicator>
             <View style={styles.separator}/>
-            {this.state.nestingCounter < Constants.SCREENS.maxRelatedNestingNavigation 
+            {this.state.nestingCounter < Constants.SCREENS.maxRelatedNestingNavigation
               && this._renderRelatedList(canBeOfInterest, relatedEntities, Constants.ENTITY_TYPES.places)}
-            <EntityAccomodations 
-              data={nearAccomodations} 
-              locale={locale} 
-              showMapBtnText={showMap} 
+            <EntityAccomodations
+              data={nearAccomodations}
+              locale={locale}
+              showMapBtnText={showMap}
               openMap={this._openAccomodationsMap}
               horizontal/>
           </View>
@@ -324,7 +324,7 @@ class PlaceScreen extends Component {
       </ConnectedScreenErrorBoundary>
     )
   }
-  
+
 }
 
 
@@ -357,10 +357,10 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "white",
     borderTopLeftRadius: 0,
-    borderTopRightRadius: 30, 
+    borderTopRightRadius: 30,
     marginTop: -30
   },
-  container: { 
+  container: {
     backgroundColor: "white",
     textAlign: "center"
   },
@@ -388,7 +388,7 @@ function PlaceScreenContainer(props) {
   const route = useRoute();
   const store = useStore();
 
-  return <PlaceScreen 
+  return <PlaceScreen
     {...props}
     navigation={navigation}
     route={route}

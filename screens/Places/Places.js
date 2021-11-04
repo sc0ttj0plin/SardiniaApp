@@ -24,7 +24,7 @@ import {Button} from "react-native-elements";
 import EntityScrollableList from "../../components/entity/EntityScrollableList";
 import {VIDS} from "../../constants";
 import {VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS} from "../../constants";
-const { Value, event, interpolate } = Animated;
+const { Value, event, interpolateNode } = Animated;
 import {_onRegionChanged, _renderHeaderText} from "./utils";
 
 /**
@@ -88,7 +88,7 @@ class PlacesScreen extends PureComponent {
 
     this._fetchData();
   }
-  
+
 
   /**
    * Update component based on prev props
@@ -101,7 +101,7 @@ class PlacesScreen extends PureComponent {
       // this.setState({ nearPois: [] }, () => this._fetchNearestPois(this.state.coords));
       this.setState({ isEntitiesLoading: false });
       this._loadMorePois();
-      
+
     }
 
     if (prevProps.others.geolocation !== this.props.others.geolocation && this.props.others.geolocation.coords) {
