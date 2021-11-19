@@ -381,8 +381,8 @@ class AccomodationsScreen extends Component {
 
         // Extra component: if scrollableRenderExtraComponent is undefined, must specify extra component props
         // scrollableRenderExtraComponent={this._renderFiltersList}
-        scrollableExtraComponentProps={extraComponentProps}
-        
+        // scrollableExtraComponentProps={extraComponentProps}
+
         // Header text component: if scrollableHeaderTextComponent is undefined, must specify scrollableHeaderText
         scrollableHeaderTextComponent={this._renderHeaderText}
         // scrollableHeaderText={() => <Text>Header Text</Text>}

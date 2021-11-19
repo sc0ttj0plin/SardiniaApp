@@ -8,7 +8,7 @@ import actions from '../../actions';
 import Colors from '../../constants/Colors';
 import * as Constants from '../../constants';
 import CustomText from "../others/CustomText";
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationEvents, useNavigation, useRoute } from '@react-navigation/native';
 import { bindActionCreators } from 'redux';
 
@@ -39,12 +39,15 @@ CustomDrawer.Line = class Line extends Component {
 class Header extends Component {
   render() {
     const { user } = this.props.auth;
-    const email = user && user.email;
-    const username = user && user.info && user.info.username;
+
+    let email = user && user.email;
+    let name = user && user.info && user.info.name
+    let surname = user && user.info && user.info.surname;
+
     return (
       <View style={[styles.drawerContent, styles.header]}>
           {email && <CustomText numberOfLines={1} ellipsizeMode='tail' style={styles.email}>{email}</CustomText> }
-          {username && <CustomText numberOfLines={1} ellipsizeMode='tail' style={styles.username}>{username}</CustomText>}
+          {name && <CustomText numberOfLines={1} ellipsizeMode='tail' style={styles.username}>{surname} {name}</CustomText>}
       </View>
     );
   }
@@ -55,7 +58,7 @@ function HeaderContainer(props) {
   const route = useRoute();
   const store = useStore();
 
-  return <Header 
+  return <Header
     {...props}
     navigation={navigation}
     route={route}
@@ -128,12 +131,12 @@ const styles = StyleSheet.create({
     minHeight: 50
   },
   username: {
-    fontSize: 18, 
+    fontSize: 18,
     fontWeight: 'bold'
   },
   email: {
-    marginTop: 3, 
-    fontSize: 14, 
+    marginTop: 3,
+    fontSize: 14,
     color: Colors.mediumGray
   },
   mixedBottomLineItem: {

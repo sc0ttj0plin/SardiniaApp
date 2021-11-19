@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import {View, StyleSheet, PixelRatio} from "react-native";
+import { View, StyleSheet, PixelRatio } from "react-native";
 import { useNavigation, useRoute, useIsFocused} from '@react-navigation/native';
 import Animated from 'react-native-reanimated';
 import {
@@ -10,7 +10,7 @@ import {
   SectionTitle,
   ConnectedMapScrollable,
   ConnectedScreenErrorBoundary
- } from "../../components";
+} from "../../components";
 import { coordsInBound } from '../../helpers/maps';
 import { connect, useStore } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -20,12 +20,9 @@ import Layout from '../../constants/Layout';
 import actions from '../../actions';
 import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
-import {Button} from "react-native-elements";
-import EntityScrollableList from "../../components/entity/EntityScrollableList";
-import {VIDS} from "../../constants";
-import {VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS} from "../../constants";
-const { Value, event, interpolateNode } = Animated;
+import * as Location from "expo-location";
 import {_onRegionChanged, _renderHeaderText} from "./utils";
+const { Value, event, interpolateNode } = Animated;
 
 /**
  * Map:             Clusters + pois that update with user map's interaction
@@ -63,10 +60,6 @@ class PlacesScreen extends PureComponent {
       isEntitiesLoading: false, /* entities scrollable */
       isNearEntitiesLoading: false, /* near entities in modal */
       isCMVTLoading: true, /* clustered map view top loading  */
-
-      scrollableData: [],
-
-      actualCity: null,
     };
 
     this._pageLayoutHeight = Layout.window.height;
@@ -85,10 +78,7 @@ class PlacesScreen extends PureComponent {
     this.props.actions.setMainScreenMounted(true); /* tell that the main screen has mounted (used by ConnectedSplashLoader) */
     if (this.props.others.geolocation.coords)
       this._onUpdateCoords(this.props.others.geolocation.coords);
-
-    this._fetchData();
   }
-
 
   /**
    * Update component based on prev props
@@ -101,7 +91,6 @@ class PlacesScreen extends PureComponent {
       // this.setState({ nearPois: [] }, () => this._fetchNearestPois(this.state.coords));
       this.setState({ isEntitiesLoading: false });
       this._loadMorePois();
-
     }
 
     if (prevProps.others.geolocation !== this.props.others.geolocation && this.props.others.geolocation.coords) {
@@ -136,7 +125,6 @@ class PlacesScreen extends PureComponent {
    * @param {*} newCoords: the new user's coordinates
    */
   _onUpdateCoords(newCoords) {
-    console.log("_onUpdateCoords: ", newCoords)
     // const { coords, term } = this.state;
     const { coords } = this.state;
     if(!coords || coords.latitude !== newCoords.latitude || coords.longitude !== newCoords.longitude) {
@@ -162,7 +150,6 @@ class PlacesScreen extends PureComponent {
    * @param {*} coords: the coordinates for which to load new pois
    */
   _fetchNearestPois = (coords) => {
-    console.log("_fetchNearestPois: ", coords)
     const { nearPois } = this.state;
     return apolloQuery(actions.getNearestPois({
       limit: Constants.PAGINATION.poisLimit,
@@ -246,11 +233,7 @@ class PlacesScreen extends PureComponent {
    * On category pop we reset current pois
    */
   _backButtonPress = () => {
-    /* update also the header pois based on current cat */
-    //this.setState({ pois: [], nearPois: [] });
-    this.setState({ pois: [] });
-    this.props.actions.popCurrentCategoryPlaces();
-    this.props.actions.setCurrentMapEntity(undefined);
+    this.props.navigation.goBack();
   }
 
   /********************* Render methods go down here *********************/
@@ -287,106 +270,32 @@ class PlacesScreen extends PureComponent {
   /* Renders categories list */
   _renderCategoryListItem = (item, index, length) => item.name ? <CategoryListItem onPress={() => this._selectCategory(item)} image={item.image} title={item.name}/> : null;
 
-  _fetchData = async () => {
-    try {
-      const placesData = apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.places, offset: 0, limit: 5}))
-      const inspirersData = apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.inspirers, offset: 0, limit: 5}))
-      const itinerariesData = apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.itineraries, offset: 0, limit: 5}))
-      const accomodationsData = apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.accomodations, offset: 0, limit: 5}))
-      const eventsData = apolloQuery(actions.getNodes({ type: Constants.NODE_TYPES.events, offset: 0, limit: 5}))
-
-      const scrollableData = (await Promise.all([placesData, inspirersData, itinerariesData, eventsData, accomodationsData])).map(data => ({
-        data,
-        type: data.length > 0 ? data[0].type : null
-      }));
-
-      this.setState({ scrollableData })
-    } catch(error){
-      console.log(error)
-    }
-  }
-
-  _getEntityScrollableItemExtras = (type) => {
-    const extras = {
-      [Constants.NODE_TYPES.places]: {
-        title: this.props.locale.messages.startTrip,
-        actionButtonTitle: this.props.locale.messages.findOutWhereToGo,
-      },
-      [Constants.NODE_TYPES.inspirers]: {
-        title: this.props.locale.messages.getInspired,
-        actionButtonTitle: this.props.locale.messages.findOutWhatToDo,
-      },
-      [Constants.NODE_TYPES.itineraries]: {
-        title: this.props.locale.messages.thematicRoutes,
-        actionButtonTitle: this.props.locale.messages.discoverAllTheItineraries,
-      },
-      [Constants.NODE_TYPES.events]: {
-        title: this.props.locale.messages.whatToDoToday,
-        actionButtonTitle: this.props.locale.messages.checkTheCalendar,
-      },
-      [Constants.NODE_TYPES.accomodations]: {
-        title: this.props.locale.messages.chooseAccomodation,
-        actionButtonTitle: this.props.locale.messages.checkTheAccommodationFacilities,
-      },
-    };
-
-    return extras[type]
-  }
-
-  _entityScrollableItemOnActionButtonPress = (type) => {
-    switch (type) {
-      case Constants.NODE_TYPES.places:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavOldPlacesScreen);
-        break;
-      case Constants.NODE_TYPES.events:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavEventsScreen);
-        break;
-      case Constants.NODE_TYPES.itineraries:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavItinerariesScreen);
-        break;
-      case Constants.NODE_TYPES.inspirers:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavInspirersScreen);
-        break;
-      case Constants.NODE_TYPES.accomodations:
-        this.props.navigation.navigate(Constants.NAVIGATION.NavAccomodationsScreen);
-        break;
-      default:
-        break;
-    }
-  }
-
-  _renderEntityListItem = (item, index) => {
-    const { locale } = this.props;
-
-    const extras = this._getEntityScrollableItemExtras(item.type)
-
-    return (
-      <EntityScrollableList
-        title={extras.title}
-        actionButtonTitle={extras.actionButtonTitle}
-        onActionButtonPress={() => { this._entityScrollableItemOnActionButtonPress(item.type) }}
-        backgroundColor={`${VIDS_AND_NODE_TYPES_ENTITY_TYPES_ICON_OPTS[item.type].backgroundTopRightCorner}19` /* 10% opacity */}
-        data={item.data}
-        locale={locale}
-      />
-    )
-  }
 
   /* Render content */
   _renderContent = () => {
     const { term, childUuids } = this._getCurrentTerm(true);
     const { nearToYou } = this.props.locale.messages;
-    const { coords, region, nearPois  } = this.state;
+    const { pois, snapIndex, coords, region, nearPois  } = this.state;
+    const isPoiList = this._isPoiList();
+    let scrollableData = [];
+    let renderScrollableListItem = null;
+    //if no more nested categories renders pois (scrollable)
+    if (isPoiList) {
+      scrollableData = pois;
+      renderScrollableListItem = ({ item, index }) => this._renderPoiListItem(item, index);
+    } else {
+      //initially term is null so we get terms from redux, then term is populated with nested terms (categories)
+      scrollableData = term;
+      renderScrollableListItem = ({ item, index }) => this._renderCategoryListItem(item, index, scrollableData.length);
+    }
 
-    const scrollableData = this.state.scrollableData
-    const renderScrollableListItem = ({ item, index }) => this._renderEntityListItem(item, index);
-
-    const entitiesType = Constants.ENTITY_TYPES.allPois;
+    const entitiesType = Constants.ENTITY_TYPES.places;
 
     const scrollableProps = {
       show: true,
       data: scrollableData,
       scrollableTopComponentIsLoading: this._isLoadingData(),
+      onEndReached: this._loadMorePois,
       renderItem: renderScrollableListItem,
       keyExtractor: item => item.uuid,
     }
@@ -414,7 +323,6 @@ class PlacesScreen extends PureComponent {
     }
 
     const mapEntityWidgetProps = {
-      isAccomodationItem: false,
       coords: this.state.coords
     };
 
@@ -439,7 +347,7 @@ class PlacesScreen extends PureComponent {
         scrollableHeaderTextComponent={() => _renderHeaderText(this)}
         // scrollableHeaderText={() => <Text>Header Text</Text>}
         // Top component (ClusteredMapViewTop or MapView or Custom)
-        topComponentType="ClusteredMapAllPois" //or MapView or Custom (if Custom must implement topComponentRender)
+        topComponentType="ClusteredMapViewTop" //or MapView or Custom (if Custom must implement topComponentRender)
         topComponentCMVTProps={CMVTProps}
         // Map entity widget (in modal): if renderMapEntityWidget is undefined, must specify mapEntityWidgetProps and mapEntityWidgetOnPress
         // e.g. this.state.selectedEntity can now be used in renderMapEntityWidget
@@ -463,6 +371,7 @@ class PlacesScreen extends PureComponent {
         <View style={[styles.fill, {paddingTop: Layout.statusbarHeight}]}>
           <ConnectedHeader
             onBackPress={this._backButtonPress}
+            iconTintColor={Colors.colorPlacesScreen}
             backButtonVisible={this.props.others.placesTerms.length > 0}
           />
           <ConnectedAuthHandler loginOptional={true} timeout={Constants.SPLASH_LOADING_DURATION + 1500} />
@@ -471,6 +380,7 @@ class PlacesScreen extends PureComponent {
       </ConnectedScreenErrorBoundary>
     )
   }
+
 }
 
 
@@ -543,6 +453,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 16, borderTopLeftRadius: 16
   },
 });
+
 
 function PlacesScreenContainer(props) {
   const navigation = useNavigation();

@@ -8,6 +8,7 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {useRoute} from '@react-navigation/native';
 import PlacesScreen from '../screens/Places/Places';
+import OldPlacesScreen from '../screens/Places/OldPlaces';
 import PlaceScreen from '../screens/Places/Place';
 import PlacesFiltersScreen from '../screens/PlacesFilters/PlacesFilters';
 // import InspirersScreen from '../screens/Inspirers/Inspirers';
@@ -34,18 +35,23 @@ import TutorialScreen from "../screens/Tutorial/Tutorial"
 import FiltersScreen from '../screens/Filters/Filters';
 import GalleryScreen from '../screens/Gallery/Gallery';
 import GalleryMapScreen from '../screens/Gallery/Map';
+import SettingsScreen from '../screens/Settings/Settings';
+import InfoScreen from "../screens/Info/Info";
+import InfoDetailsScreen from '../screens/Info/InfoDetails';
+import PrivacyScreen from '../screens/Privacy/Privacy';
 
 import { ConnectedText, ConnectedLanguageList, TabBar, CustomDrawer, ConnectedAuthText, TabBarIcon } from '../components';
 // import VirtualTourScreen from '../screens/Others/VirtualTourScreen';
 import Colors from '../constants/Colors';
 import * as Constants from '../constants';
 const {
-  NavPlacesScreen, NavInspirersScreen ,NavMapScreen, NavLoadingScreen, NavLoginScreen, NavLogoutScreen, NavAuthScreen,
+  NavPlacesScreen, NavOldPlacesScreen, NavInspirersScreen ,NavMapScreen, NavLoadingScreen, NavLoginScreen, NavLogoutScreen, NavAuthScreen,
   NavItinerariesScreen, NavAccomodationsScreen, NavAccomodationScreen, NavAccomodationsStackScreen, NavGalleryStackScreen, NavGalleryScreen, NavGalleryMapScreen, NavGalleryMapStackScreen,
   NavItineraryScreen, NavEventsScreen, NavEventScreen, NavItineraryStagesMapScreen,NavEventsMapScreen, NavEventsSubset, NavExploreScreen, 
   NavVirtualTourScreen, NavPlaceScreen, NavInspirerScreen, NavPreferencesScreen, NavTutorialScreen,
   NavExtrasScreen, NavExtraScreen, NavTabNavigator, NavSearchScreen, NavSearchStackScreen, 
-  NavMainStackScreen, NavMediaScreen, NavFavouritesScreen, NavFavouritesListScreen, NavFavouritesStackScreen, NavFiltersScreen, NavPlacesFiltersScreen
+  NavMainStackScreen, NavMediaScreen, NavFavouritesScreen, NavFavouritesListScreen, NavFavouritesStackScreen, NavFiltersScreen, NavPlacesFiltersScreen,NavSettingScreen,NavInfoStackScreen, 
+  NavInfoScreen,NavInfoDetailsScreen,NavPrivacyScreen,
 } = Constants.NAVIGATION;
 
 // Reference used for components that lack navigation access
@@ -140,23 +146,47 @@ const placesNavigationOptions = {
  * Tab navigator (level: 2, parent: MainStack)
  * To prevent Tabs from showing on level 2 onwards we decouple them from their stacks and place on the same level of MainStack
  */
-const BottomTabNavigator = createBottomTabNavigator();
+const BottomTabNavigator = createStackNavigator();
  
 function TabNavigator() {
   return (
-    <BottomTabNavigator.Navigator 
+    <BottomTabNavigator.Navigator
+      headerMode="none"
       lazy={true}
-      barStyle={{backgroundColor: Colors.tabBar}}
-      activeColor={Colors.tintColor}
-      tabBarPosition="bottom" 
+      //barStyle={{ backgroundColor: Colors.tabBar }}
+      //activeColor={Colors.tintColor}
+      tabBarPosition="bottom"
       swipeEnabled={false}
-      tabBar={props => <TabBar {...props} navOptions={[placesNavigationOptions, inspirersNavigationOptions, extrasNavigationOptions, itinerariesNavigationOptions, eventsNavigationOptions]}/>}
-      animationEnabled={true}>
-      <BottomTabNavigator.Screen name={NavPlacesScreen} component={PlacesScreen} options={placesNavigationOptions}/>
-      <BottomTabNavigator.Screen name={NavInspirersScreen} component={InspirersScreen} options={inspirersNavigationOptions} />
-      <BottomTabNavigator.Screen name={NavExtrasScreen} component={ExtrasScreen} options={extrasNavigationOptions}/>
-      <BottomTabNavigator.Screen name={NavItinerariesScreen} component={ItinerariesScreen} options={itinerariesNavigationOptions} />
-      <BottomTabNavigator.Screen name={NavEventsScreen} component={EventsScreen} options={eventsNavigationOptions}/>
+      options={(navigation) => ({
+        // tabBarIcon: ,
+        tabBarVisible: false,
+      })}
+    >
+      <BottomTabNavigator.Screen
+        name={NavPlacesScreen}
+        component={PlacesScreen}
+        options={placesNavigationOptions}
+      />
+      <BottomTabNavigator.Screen
+        name={NavInspirersScreen}
+        component={InspirersScreen}
+        options={inspirersNavigationOptions}
+      />
+      <BottomTabNavigator.Screen
+        name={NavExtrasScreen}
+        component={ExtrasScreen}
+        options={extrasNavigationOptions}
+      />
+      <BottomTabNavigator.Screen
+        name={NavItinerariesScreen}
+        component={ItinerariesScreen}
+        options={itinerariesNavigationOptions}
+      />
+      <BottomTabNavigator.Screen
+        name={NavEventsScreen}
+        component={EventsScreen}
+        options={eventsNavigationOptions}
+      />
     </BottomTabNavigator.Navigator>
   );
 }
@@ -169,13 +199,14 @@ var MainStack = createStackNavigator();
 function MainStackScreen() {
   return (
     <>
-    <MainStack.Navigator headerMode="none" initialRouteName={TabNavigator}>
+    <MainStack.Navigator headerMode="none">
       {/* Loading */}
       {/* <MainStack.Screen name={NavLoadingScreen} component={LoadingScreen} /> */}
       {/* TabNavigator */}
       <MainStack.Screen name={NavTabNavigator} component={TabNavigator} />
       {/* Inner screens */}
       {/* Places */}
+      <MainStack.Screen name={NavOldPlacesScreen} component={OldPlacesScreen}/>
       <MainStack.Screen name={NavPlaceScreen} component={PlaceScreen}/>
       <MainStack.Screen name={NavPlacesFiltersScreen} component={PlacesFiltersScreen} />
       {/* Events */}
@@ -195,6 +226,9 @@ function MainStackScreen() {
       {/* Accomodation */}
       <MainStack.Screen name={NavAccomodationsScreen} component={AccomodationsScreen}/>
       <MainStack.Screen name={NavAccomodationScreen} component={AccomodationScreen}/>
+      <MainStack.Screen name={NavInfoDetailsScreen} component={InfoDetailsScreen}/>
+      {/*Privacy*/}
+      <MainStack.Screen name={NavPrivacyScreen} component={PrivacyScreen}/>
 
     </MainStack.Navigator>
     </>
@@ -230,7 +264,7 @@ function FavouritesStackScreen() {
       <FavouritesStack.Screen name={NavMediaScreen} component={MediaScreen}/>
       {/* Accomodation */}
       <FavouritesStack.Screen name={NavAccomodationsScreen} component={AccomodationsScreen}/>
-      <FavouritesStack.Screen name={NavAccomodationScreen} component={AccomodationScreen}/>
+      <FavouritesStack.Screen name={NavPrivacyScreen} component={PrivacyScreen}/>
     </FavouritesStack.Navigator>
   )
 }
@@ -324,6 +358,21 @@ function GalleryStackScreen() {
   );
 }
 
+/**
+ * Info Stack (level: 1, parent DrawerNavigator)
+ */
+
+var InfoStack = createStackNavigator();
+
+function InfoStackScreen() {
+  return (
+    <InfoStack.Navigator headerMode="none" initialRouteName={NavInfoStackScreen}>
+      <InfoStack.Screen name={NavInfoScreen} component={InfoScreen} />
+      <InfoStack.Screen name={NavInfoDetailsScreen} component={InfoDetailsScreen}/>
+    </InfoStack.Navigator>
+  );
+}
+
 
 let ConnectedTextTabName = () => <ConnectedText languageKey="drawerTab" textStyle={{ color: "black" }}/>;
 let ConnectedTextSearch = () => <ConnectedText languageKey="drawerSearch" textStyle={{ color: "black" }} />;
@@ -334,7 +383,10 @@ let ConnectedTextTutorial = () => <ConnectedText languageKey="tutorial" textStyl
 let ConnectedTextGalleryMap = () => <ConnectedText languageKey="galleryMap" textStyle={{ color: "black" }} />;
 let ConnectedTextVideoGallery = () => <ConnectedText languageKey="videoAnd3D" textStyle={{ color: "black" }} />;
 let ConnectedTextLoginLogout = () => <ConnectedAuthText textStyle={{ color: "black" }} />;
-
+let ConnectedTextSetting = () => <ConnectedText languageKey="setting" textStyle={{ color: "black" }} />;
+let ConnectedTextPrivacy = () => <ConnectedText languageKey="privacy" textStyle={{ color: "black" }} />;
+let ConnectedTextInfo = () => (<ConnectedText languageKey="info" textStyle={{ color: "black" }} />);
+let ConnectedTextAlert = () => (<ConnectedText languageKey="alert" textStyle={{ color: "black" }} />);
 /**
  * Drawer navigator (level: 0)
  */
@@ -351,17 +403,96 @@ function CustomDrawerContent(props) {
       {/* <DrawerItemList state={newState} {...rest}/> */}
       <CustomDrawer.Header />
       <CustomDrawer.Line />
-      <CustomDrawer.Item {...props} routeIndex={0} label={ConnectedTextTabName} screenName={Constants.NAVIGATION.NavMainStackScreen} iconOpts={{name: 'map-marker', size: 20, color: Colors.mediumGray}} />
-      <CustomDrawer.Item {...props} routeIndex={1} label={ConnectedTextSearch} screenName={Constants.NAVIGATION.NavSearchStackScreen} iconOpts={{name: 'search', size: 20, color: Colors.mediumGray}} />
-      <CustomDrawer.Item {...props} routeIndex={2} label={ConnectedTextAccomodations} screenName={Constants.NAVIGATION.NavAccomodationsStackScreen} iconOpts={{name: 'home', size: 20, color: Colors.mediumGray}} />
-      <CustomDrawer.Item {...props} routeIndex={3} label={ConnectedTextPreferences} screenName={Constants.NAVIGATION.NavPreferencesScreen} iconOpts={{name: 'thumbs-up', size: 20, color: Colors.mediumGray}} />
-      <CustomDrawer.Item {...props} routeIndex={3} label={ConnectedTextTutorial} screenName={Constants.NAVIGATION.NavTutorialScreen} iconOpts={{name: 'book', size: 20, color: Colors.mediumGray}} />
+      <CustomDrawer.Item
+        {...props}
+        routeIndex={0}
+        label={ConnectedTextTabName}
+        screenName={Constants.NAVIGATION.NavMainStackScreen}
+        iconOpts={{ name: "home", size: 20, color: Colors.mediumGray }}
+      />
+      <CustomDrawer.Item
+        {...props}
+        routeIndex={1}
+        label={ConnectedTextSearch}
+        screenName={Constants.NAVIGATION.NavSearchStackScreen}
+        iconOpts={{ name: "search", size: 20, color: Colors.mediumGray }}
+      />
+      <CustomDrawer.Item
+        {...props}
+        routeIndex={2}
+        label={ConnectedTextAccomodations}
+        screenName={Constants.NAVIGATION.NavAccomodationsStackScreen}
+        iconOpts={{
+          name: "suitcase-rolling",
+          size: 20,
+          color: Colors.mediumGray,
+        }}
+      />
+      <CustomDrawer.Item
+        {...props}
+        routeIndex={2}
+        label={ConnectedTextInfo}
+        screenName={Constants.NAVIGATION.NavInfoScreen}
+        iconOpts={{ name: "info", size: 20, color: Colors.mediumGray }}
+      />
+      <CustomDrawer.Item
+        {...props}
+        routeIndex={3}
+        label={ConnectedTextPreferences}
+        screenName={Constants.NAVIGATION.NavPreferencesScreen}
+        iconOpts={{ name: "heart", size: 20, color: Colors.mediumGray }}
+      />
+      <CustomDrawer.Item
+        {...props}
+        routeIndex={3}
+        label={ConnectedTextTutorial}
+        screenName={Constants.NAVIGATION.NavTutorialScreen}
+        iconOpts={{ name: "book", size: 20, color: Colors.mediumGray }}
+      />
       <CustomDrawer.Separator />
-      <CustomDrawer.Item {...props} routeIndex={4} label={ConnectedTextFavourites} screenName={Constants.NAVIGATION.NavFavouritesStackScreen} iconOpts={{name: 'heart', size: 20, color: Colors.mediumGray}} />
-      <CustomDrawer.Item {...props} routeIndex={5} label={ConnectedTextGalleryMap} screenName={Constants.NAVIGATION.NavGalleryMapStackScreen} iconOpts={{name: 'image', size: 20, color: Colors.mediumGray}} />
-      <CustomDrawer.Item {...props} routeIndex={5} label={ConnectedTextVideoGallery} screenName={Constants.NAVIGATION.NavGalleryStackScreen} iconOpts={{name: 'film', size: 20, color: Colors.mediumGray}} />
+      <CustomDrawer.Item
+        {...props}
+        routeIndex={4}
+        label={ConnectedTextFavourites}
+        screenName={Constants.NAVIGATION.NavFavouritesStackScreen}
+        iconOpts={{ name: "heart", size: 20, color: Colors.mediumGray }}
+      />
+      <CustomDrawer.Item
+        {...props}
+        routeIndex={5}
+        label={ConnectedTextGalleryMap}
+        screenName={Constants.NAVIGATION.NavGalleryMapStackScreen}
+        iconOpts={{ name: "image", size: 20, color: Colors.mediumGray }}
+      />
+      <CustomDrawer.Item
+        {...props}
+        routeIndex={5}
+        label={ConnectedTextVideoGallery}
+        screenName={Constants.NAVIGATION.NavGalleryStackScreen}
+        iconOpts={{ name: "video", size: 20, color: Colors.mediumGray }}
+      />
+      <CustomDrawer.Item
+        {...props}
+        routeIndex={5}
+        label={ConnectedTextAlert}
+        screenName={Constants.NAVIGATION.NavInfoScreen}
+        iconOpts={{ name: "exclamation-triangle", size: 20, color: Colors.mediumGray }}
+      />
       <CustomDrawer.Separator />
-      <CustomDrawer.Item {...props} routeIndex={6} label={ConnectedTextLoginLogout} screenName={Constants.NAVIGATION.NavAuthScreen} iconOpts={{name: 'user', size: 20, color: Colors.mediumGray}} />
+      <CustomDrawer.Item
+        {...props}
+        routeIndex={6}
+        label={ConnectedTextLoginLogout}
+        screenName={Constants.NAVIGATION.NavAuthScreen}
+        iconOpts={{ name: "user", size: 20, color: Colors.mediumGray }}
+      />
+      <CustomDrawer.Item
+        {...props}
+        routeIndex={7}
+        label={ConnectedTextSetting}
+        screenName={Constants.NAVIGATION.NavSettingScreen}
+        iconOpts={{ name: "cog", size: 20, color: Colors.mediumGray }}
+      />
       <ConnectedLanguageList />
     </DrawerContentScrollView>
   );
@@ -398,6 +529,8 @@ function DrawerNavigator() {
       <Drawer.Screen name={NavGalleryStackScreen} component={GalleryStackScreen} options={{unmountOnBlur:true}} />
       <Drawer.Screen name={NavPreferencesScreen} component={PreferencesScreen} options={{unmountOnBlur:true}} />
       <Drawer.Screen name={NavTutorialScreen} component={TutorialScreen} options={{unmountOnBlur:true}} />
+      <Drawer.Screen name={NavSettingScreen} component={SettingsScreen} options={{unmountOnBlur:true}} />
+      <Drawer.Screen name={NavInfoScreen} component={InfoStackScreen} options={{unmountOnBlur:true}} />
       {/* The login screen is not shown in the navigation */}
       <Drawer.Screen name={NavAuthScreen} component={AuthScreen} options={{unmountOnBlur:true}} />
     </Drawer.Navigator>

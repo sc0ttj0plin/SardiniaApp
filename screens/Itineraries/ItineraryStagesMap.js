@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { View, StyleSheet, Animated } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
-import { 
-  ConnectedHeader, 
-  CustomText, 
+import {
+  ConnectedHeader,
+  CustomText,
   EntityItem,
   ConnectedScreenErrorBoundary,
   SectionTitle,
@@ -19,8 +19,8 @@ import Colors from '../../constants/Colors';
 import { distance, distanceToString, coordsInBound } from '../../helpers/maps';
 import { useSafeArea } from 'react-native-safe-area-context';
 
-/* Deferred rendering to speedup page inital load: 
-   deferred rendering delays the rendering reducing the initial 
+/* Deferred rendering to speedup page inital load:
+   deferred rendering delays the rendering reducing the initial
    number of components loaded when the page initially mounts.
    Other components are loaded right after the mount */
 const USE_DR = false;
@@ -47,7 +47,7 @@ class ItineraryStagesMapScreen extends Component {
       tracksViewChanges: false,
       windowWidth: Layout.window.width
     };
-      
+
   }
 
   /********************* React.[Component|PureComponent] methods go down here *********************/
@@ -55,13 +55,13 @@ class ItineraryStagesMapScreen extends Component {
   componentDidMount() {
     //Deferred rendering to make the page load faster and render right after
     {(USE_DR && setTimeout(() => (this.setState({ render: true })), 0))};
-    
+
     // Detect when scrolling has stopped then animate!
     this.animation.addListener(({ value }) => {
-      let index = Math.floor(value / Layout.map.card.width + 0.3); 
+      let index = Math.floor(value / Layout.map.card.width + 0.3);
         if (index >= this.state.markers.length)
           index = this.state.markers.length - 1;
-        if (index <= 0) 
+        if (index <= 0)
           index = 0;
       if(!this.disableSelectDuringScrolling ) {
         clearTimeout(this.regionTimeout);
@@ -83,7 +83,7 @@ class ItineraryStagesMapScreen extends Component {
 
   componentWillMount() {
     this.index = 0;
-    this.animation = new Animated.Value(0); 
+    this.animation = new Animated.Value(0);
   }
 
   componentDidUpdate(prevProps) {
@@ -94,10 +94,10 @@ class ItineraryStagesMapScreen extends Component {
     }
   }
 
-  
+
   /********************* Non React.[Component|PureComponent] methods go down here *********************/
 
-  _onLayout = (event) => { 
+  _onLayout = (event) => {
     this.setState({windowWidth: event.nativeEvent.layout.width});
   }
 
@@ -105,7 +105,7 @@ class ItineraryStagesMapScreen extends Component {
     // const { coords, term } = this.state;
     const { coords } = this.state;
     if(!coords || coords.latitude !== newCoords.latitude || coords.longitude !== newCoords.longitude) {
-      let isCordsInBound = coordsInBound(newCoords); 
+      let isCordsInBound = coordsInBound(newCoords);
       // Are coordinates within sardinia's area? fetch the updated pois list
       if (isCordsInBound) {
         this.setState({ isCordsInBound, coords: newCoords, isNearEntitiesLoading: true });
@@ -157,7 +157,7 @@ class ItineraryStagesMapScreen extends Component {
     distanceStr = distanceToString(distance(coords.latitude, coords.longitude, stage.coords.latitude, stage.coords.longitude));
 
     return(
-      <EntityItem 
+      <EntityItem
         keyItem={stage.nid}
         listType={Constants.ENTITY_TYPES.itineraries}
         onPress={() => this._openEntity(stage)}
@@ -225,7 +225,7 @@ class ItineraryStagesMapScreen extends Component {
             var backgroundColor = index == this.state.selectedIndex ? bgColorTransparent : "transparent";
             return (
               <MapView.Marker
-                key={index} 
+                key={index}
                 coordinate={coordinates}
                 tracksViewChanges={this.state.tracksViewChanges}
                 onPress={() => this._handleMarkerPress(index)}
@@ -269,7 +269,7 @@ class ItineraryStagesMapScreen extends Component {
       </ConnectedScreenErrorBoundary>
     )
   }
-  
+
 }
 
 
@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
   },
   text:{
     transform: [
-      { rotateZ: "45deg" },  
+      { rotateZ: "45deg" },
     ],
     alignSelf: 'center'
   },
@@ -340,7 +340,7 @@ function ItineraryScreenContainer(props) {
   const store = useStore();
   const insets = useSafeArea();
 
-  return <ItineraryStagesMapScreen 
+  return <ItineraryStagesMapScreen
     {...props}
     navigation={navigation}
     route={route}

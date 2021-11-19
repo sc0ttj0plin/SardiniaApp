@@ -13,7 +13,7 @@ const {
   cond,
   startClock,
   timing,
-  interpolate,
+  interpolateNode,
   and,
   set,
   block
@@ -72,7 +72,7 @@ function runTiming(clock) {
 /**
  * List item element that represents a category
  */
-class AnimatedImage extends PureComponent { 
+class AnimatedImage extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -88,7 +88,7 @@ class AnimatedImage extends PureComponent {
             this.animation,
             runTiming(clock)
         );
-        this.scaleAnimated = interpolate(this.timing, {
+        this.scaleAnimated = interpolateNode(this.timing, {
             inputRange: [0, 1],
             outputRange: [1, 1.3],
         });
@@ -96,12 +96,12 @@ class AnimatedImage extends PureComponent {
   }
 
 
-  render() { 
+  render() {
     var image = this.props.image;
 
     return (
-        <Animated.Image 
-            source={{ uri: image }} 
+        <Animated.Image
+            source={{ uri: image }}
             style={[this.props.style, {
               transform: [{
                 scale: this.scaleAnimated
@@ -111,7 +111,7 @@ class AnimatedImage extends PureComponent {
     )}
 }
 
-const styles = StyleSheet.create({ 
+const styles = StyleSheet.create({
     fill: {
       width: "100%",
       height: "100%",

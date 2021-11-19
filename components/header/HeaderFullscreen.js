@@ -13,7 +13,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 /**
  * Header used in full screen components (video, virtual tour, gallery) that only shows a back button controller
  */
-class HeaderFullscreen extends PureComponent {  
+class HeaderFullscreen extends PureComponent {
 
   constructor(props) {
     super(props);
@@ -65,8 +65,8 @@ class HeaderFullscreen extends PureComponent {
             <LinearGradient style={[styles.lineargradient, {paddingTop: paddingTop}]}
                     colors={['rgba(0,0,0,0.9)', 'rgba(0,0,0,0.4)']}>
                 <View style={[styles.container]}>
-                    
-                    {text && 
+
+                    {text &&
                     <CustomText style={styles.pageIndex}>{text}</CustomText>
                     }
                     <View style={[styles.leftButtonContainer]}>

@@ -101,6 +101,7 @@ export default class App extends Component {
 
 
   render() {
+    
     if(this.state.isLoadingComplete) {
       return (
         <Provider store={store}>

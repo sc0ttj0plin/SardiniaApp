@@ -129,6 +129,8 @@ export const SET_FAVOURITE = 'sardinia/favourites/SET_FAVOURITE';
 export const UNSET_FAVOURITE = 'sardinia/favourites/UNSET_FAVOURITE';
 export const TOGGLE_FAVOURITE = 'sardinia/favourites/TOGGLE_FAVOURITE';
 export const INIT_FAVOURITES = 'sardinia/favourites/INIT_FAVOURITES';
+export const TOGGLE_PRIVACY = 'sardinia/privacy/TOGGLE_PRIVACY';
+export const INIT_PRIVACY = 'sardinia/privacy/INIT_PRIVACY';
 export const PUSH_CURRENT_CATEGORY_PLACES = 'sardinia/places/PUSH_CURRENT_CATEGORY_PLACES';
 export const POP_CURRENT_CATEGORY_PLACES = 'sardinia/places/POP_CURRENT_CATEGORY_PLACES';
 export const RESET_CURRENT_CATEGORY_PLACES = 'sardinia/places/RESET_CURRENT_CATEGORY_PLACES';
@@ -156,6 +158,16 @@ export const UNSET_ERROR = 'sardinia/others/UNSET_ERROR';
 export const FAVOURITES_EDIT = 'sardinia/favourites/FAVOURITES_EDIT'; 
 export const FAVOURITES_EDIT_SUCCESS = 'sardinia/favourites/FAVOURITES_EDIT_SUCCESS'; 
 export const FAVOURITES_EDIT_FAIL = 'sardinia/favourites/FAVOURITES_EDIT_FAIL'; 
+export const PRIVACY_EDIT = 'sardinia/privacy/PRIVACY_EDIT'; 
+export const PRIVACY_EDIT_SUCCESS = 'sardinia/privacy/PRIVACY_EDIT_SUCCESS'; 
+export const PRIVACY_EDIT_FAIL = 'sardinia/privacy/PRIVACY_EDIT_FAIL'; 
+export const SETTINGS_EDIT = "sardinia/settings/SETTINGS_EDIT"; 
+export const SETTINGS_EDIT_SUCCESS = "sardinia/settings/SETTINGS_EDIT_SUCCESS"; 
+export const SETTINGS_EDIT_FAIL = "sardinia/settings/SETTINGS_EDIT_FAIL";
+export const SET_SETTING = "sardinia/settings/SET_SETTING";
+export const UNSET_SETTING = "sardinia/settings/UNSET_SETTING";
+export const TOGGLE_SETTING = "sardinia/settings/TOGGLE_SETTING";
+export const INIT_SETTING = "sardinia/settings/INIT_SETTING";
 
 export const SET_MAP_TYPE = 'sardinia/map/SET_MAP_TYPE';
 
@@ -216,58 +228,64 @@ export const ANALYTICS_TYPES = {
 
 // NAVIGATION
 export const NAVIGATION = {
-  NavDrawerNavigator: "RootNavigation",
-  NavPlacesScreen: "PlacesScreen",
-  NavInspirersScreen: "InspirersScreen",
-  NavMapScreen: "MapScreen",
-  NavExperiencesScreen: "ExperiencesScreen",
-  NavItinerariesStack: "ItinerariesStack",
-  NavEventsStack: "EventsStack",
-  NavItinerariesScreen: "ExperiencesItinerariesScreen",
-  NavItineraryScreen: "ItineraryScreen",
-  NavItineraryStagesMapScreen: "ItineraryStagesMapScreen",
-  NavEventsScreen: "ExperiencesEventsScreen",
-  NavEventScreen: "EventScreen",
-  NavEventsMapScreen: "EventsMapScreen",
-  NavExploreScreen: "ExploreScreen",
-  NavVirtualTourScreen: "VirtualTourScreen",
-  NavPlaceScreen: "PlaceScreen",
-  NavPlacesFiltersScreen: "PlacesFiltersScreen",
-  NavMediaScreen: "MediaScreen",
-  NavInspirerScreen: "InspirerScreen",
-  NavExtrasScreen: "ExtrasScreen",
-  NavExperiences: "Experiences",
-  NavInspirers: "Inspirers",
-  NavPreferencesStack: "PreferencesStackScreen",
-  NavPreferencesScreen: "PreferencesScreen",
-  NavTutorialScreen: "TutorialScreen",
-  NavLoginScreen: "LoginScreen",
-  NavLogoutScreen: "LogoutScreen",
-  NavAuthScreen: "AuthScreen",
-  NavGalleryMapScreen: "GalleryMapScreen",
-  NavGalleryScreen: "GalleryScreen",
-  NavGalleryStackScreen: "GalleryStackScreen",
-  NavGalleryMapStackScreen: "NavGalleryMapStackScreen",
-  NavExplore: "Explore",
-  NavEvents: "Events",
-  NavExtrasScreen: "Extras",
-  NavExtraScreen: "Extra",
-  NavItineraries: "Itineraries",
-  NavTabNavigator: "TabNavigator",
-  NavLanguageScreen1: "LanguageScreen1",
-  NavSearchScreen: "SearchScreen",
-  NavSearchStackScreen: "SearchStackScreen",
-  NavMainStackScreen: "MainStackScreen",
-  NavFavouritesScreen: "FavouritesScreen",
-  NavFavouritesListScreen: "FavouritesListScreen",
-  NavFavouritesStackScreen: "FavouritesStackScreen",
-  NavEventsSubset: "EventsSubsetScreen",
-  NavAccomodationsScreen: "AccomodationsScreen",
-  NavAccomodationScreen: "AccomodationScreen",
-  NavAccomodationsStackScreen: "AccomodationsStackScreen",
-  NavFiltersScreen: "Filters",
-  NavBoilerPlate: "Boilerplate",
-}
+         NavDrawerNavigator: "RootNavigation",
+         NavPlacesScreen: "PlacesScreen",
+         NavOldPlacesScreen: "OldPlacesScreen",
+         NavInspirersScreen: "InspirersScreen",
+         NavMapScreen: "MapScreen",
+         NavExperiencesScreen: "ExperiencesScreen",
+         NavItinerariesStack: "ItinerariesStack",
+         NavEventsStack: "EventsStack",
+         NavItinerariesScreen: "ExperiencesItinerariesScreen",
+         NavItineraryScreen: "ItineraryScreen",
+         NavItineraryStagesMapScreen: "ItineraryStagesMapScreen",
+         NavEventsScreen: "ExperiencesEventsScreen",
+         NavEventScreen: "EventScreen",
+         NavEventsMapScreen: "EventsMapScreen",
+         NavExploreScreen: "ExploreScreen",
+         NavVirtualTourScreen: "VirtualTourScreen",
+         NavPlaceScreen: "PlaceScreen",
+         NavPlacesFiltersScreen: "PlacesFiltersScreen",
+         NavMediaScreen: "MediaScreen",
+         NavInspirerScreen: "InspirerScreen",
+         NavExtrasScreen: "ExtrasScreen",
+         NavExperiences: "Experiences",
+         NavInspirers: "Inspirers",
+         NavPreferencesStack: "PreferencesStackScreen",
+         NavPreferencesScreen: "PreferencesScreen",
+         NavTutorialScreen: "TutorialScreen",
+         NavLoginScreen: "LoginScreen",
+         NavLogoutScreen: "LogoutScreen",
+         NavAuthScreen: "AuthScreen",
+         NavGalleryMapScreen: "GalleryMapScreen",
+         NavGalleryScreen: "GalleryScreen",
+         NavGalleryStackScreen: "GalleryStackScreen",
+         NavGalleryMapStackScreen: "NavGalleryMapStackScreen",
+         NavExplore: "Explore",
+         NavEvents: "Events",
+         NavExtrasScreen: "Extras",
+         NavExtraScreen: "Extra",
+         NavItineraries: "Itineraries",
+         NavTabNavigator: "TabNavigator",
+         NavLanguageScreen1: "LanguageScreen1",
+         NavSearchScreen: "SearchScreen",
+         NavSearchStackScreen: "SearchStackScreen",
+         NavSettingScreen: "SettingScreen",
+         NavMainStackScreen: "MainStackScreen",
+         NavFavouritesScreen: "FavouritesScreen",
+         NavFavouritesListScreen: "FavouritesListScreen",
+         NavFavouritesStackScreen: "FavouritesStackScreen",
+         NavEventsSubset: "EventsSubsetScreen",
+         NavAccomodationsScreen: "AccomodationsScreen",
+         NavAccomodationScreen: "AccomodationScreen",
+         NavAccomodationsStackScreen: "AccomodationsStackScreen",
+         NavFiltersScreen: "Filters",
+         NavInfoStackScreen: "InfoStackScreen",
+         NavInfoScreen: "InfoScreen",
+         NavInfoDetailsScreen: "InfoDetailsScreen",
+         NavPrivacyScreen: "PrivacyScreen",
+         NavBoilerPlate: "Boilerplate",
+       };
 
 /**
  * (backend) Categories of Nodes: 
@@ -376,8 +394,8 @@ export const SCREENS = {
 /* COMPONENTS CONFIGURATIONS */
 export const COMPONENTS = {
   header: {
-    height: 55,
-    bottomLineHeight: 3
+    height: 64,
+    bottomLineHeight: 8
   }
 }
 

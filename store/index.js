@@ -4,6 +4,7 @@ import restReducer from '../reducers/rest';
 import localeReducer from '../reducers/locale';
 import othersReducer from '../reducers/others';
 import favouritesReducer from '../reducers/favourites';
+import privacyReducer from '../reducers/privacy';
 import categoriesReducer from '../reducers/categories';
 import eventsReducer from '../reducers/events';
 import inspirersReducer from '../reducers/inspirers';
@@ -14,9 +15,10 @@ import poisReducer from '../reducers/pois';
 import preferencesReducer from '../reducers/preferences';
 import accomodationsReducer from '../reducers/accomodations';
 import searchAutocompleteReducer from '../reducers/searchAutocomplete';
+import settingReducer from '../reducers/settings';
 import placesReducer from "../reducers/places";
 import apolloMiddleware from '../apollo/middleware';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'; //2lvl objects
 import makeApolloClient from '../apollo/client';
 import restClient from '../rest/client';
@@ -31,7 +33,7 @@ const axiosMiddlewareOptions = {
         //Redux persist-saved token
         const token = userToken;
         // console.log(token)
-        if (token) 
+        if (token)
           req.headers.common['Authorization'] = 'Bearer ' + token;
         return req;
       }
@@ -42,31 +44,32 @@ const axiosMiddlewareOptions = {
 
 
 
-const rootReducer = combineReducers({ 
-    restState: restReducer,
-    authState: authReducer,
-    localeState: localeReducer,
-    othersState: othersReducer,
-    favouritesState: favouritesReducer,
-    //Graphql states
-    categoriesState: categoriesReducer,
-    preferencesState: preferencesReducer,
-    eventsState: eventsReducer,
-    inspirersState: inspirersReducer,
-    itinerariesState: itinerariesReducer,
-    nodesState: nodesReducer,
-    poisState: poisReducer,
-    accomodationsState: accomodationsReducer,
-    searchAutocompleteState: searchAutocompleteReducer,
-    placesState: placesReducer
-  }
-);
+const rootReducer = combineReducers({
+  restState: restReducer,
+  authState: authReducer,
+  localeState: localeReducer,
+  othersState: othersReducer,
+  favouritesState: favouritesReducer,
+  privacyState: privacyReducer,
+  //Graphql states
+  categoriesState: categoriesReducer,
+  preferencesState: preferencesReducer,
+  eventsState: eventsReducer,
+  inspirersState: inspirersReducer,
+  itinerariesState: itinerariesReducer,
+  nodesState: nodesReducer,
+  poisState: poisReducer,
+  accomodationsState: accomodationsReducer,
+  searchAutocompleteState: searchAutocompleteReducer,
+  settingsState: settingReducer,
+  placesState: placesReducer
+});
 
 const persistConfig = {
-  key: 'root',
+  key: "root",
   storage: AsyncStorage,
   stateReconciler: autoMergeLevel2, //Store up to two level nesting
-  whitelist: ['favouritesState', 'authState'], //only store whitelisted reducers
+  whitelist: ["authState","privacyState"], //only store whitelisted reducers
 };
 
 
@@ -74,7 +77,7 @@ const persistConfig = {
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 
-//Create the apollo client, export 
+//Create the apollo client, export
 export const apolloClient = makeApolloClient();
 export const store = createStore(persistedReducer, applyMiddleware(thunk, axiosMiddleware(restClient, axiosMiddlewareOptions), apolloMiddleware(apolloClient)));
-export const persistor = persistStore(store);
+export const persistor = persistStore(store);

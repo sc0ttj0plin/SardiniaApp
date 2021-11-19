@@ -251,6 +251,7 @@ class InspirersScreen extends Component {
 
 
   render() {
+    console.log(this.props.categories)
     const { render } = this.state;
     return (
       <ConnectedScreenErrorBoundary>

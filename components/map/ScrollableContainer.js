@@ -17,7 +17,7 @@ import AsyncOperationStatusIndicator from '../loading/AsyncOperationStatusIndica
 import LoadingLayoutVerticalItemsFlatlist from '../layouts/LoadingLayoutVerticalItemsFlatlist';
 
 
-const { Value, event, interpolate } = Animated;
+const { Value, event, interpolateNode } = Animated;
 import { call, useCode } from 'react-native-reanimated';
 
 const { StatusBarManager } = NativeModules;
@@ -25,7 +25,7 @@ const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
 
 
 /**
- * ScrollableContainer 
+ * ScrollableContainer
  */
 class ScrollableContainer extends PureComponent {
   constructor(props){
@@ -36,7 +36,7 @@ class ScrollableContainer extends PureComponent {
       scrollToTop: true
     }
     this._scrollable = {}
-    //Drag 
+    //Drag
     this._dragX = new Value(0);
     this._dragY = new Value(0);
     this._handleBorderRadius = new Value(32)
@@ -44,28 +44,28 @@ class ScrollableContainer extends PureComponent {
     this._handleBorderRadiusMin = 0;
     //Topmost component translation animations when scrolling
     this._translateAnim = new Value(1);
-    
-    this._translateAnimY = interpolate(this._translateAnim, {
+
+    this._translateAnimY = interpolateNode(this._translateAnim, {
       inputRange: [0, 0.5, 1],
       outputRange: [-Layout.window.height/2.5, 0, 0],
     });
 
-    this._translateAnimY2 = interpolate(this._translateAnim, {
+    this._translateAnimY2 = interpolateNode(this._translateAnim, {
       inputRange: [0, 0.6, 1],
       outputRange: [-45, 10, 10],
     });
 
-    this._translateCloseButton = interpolate(this._translateAnim, {
+    this._translateCloseButton = interpolateNode(this._translateAnim, {
       inputRange: [0, 0.01, 1],
       outputRange: [1, 0, 0],
     });
 
-    this._borderRadius = interpolate(this._translateAnim, {
+    this._borderRadius = interpolateNode(this._translateAnim, {
       inputRange: [0, 1],
       outputRange: [1, 32], //TODO: border radius must be greater than 1 (values below 1, eg. 0.1, break view)
     });
 
-    this._translateHeader = interpolate(this._translateAnim, {
+    this._translateHeader = interpolateNode(this._translateAnim, {
       inputRange: [0, 0.8, 1],
       outputRange: [-50, 0, 0], //TODO: border radius must be greater than 1 (values below 1, eg. 0.1, break view)
     });
@@ -82,7 +82,7 @@ class ScrollableContainer extends PureComponent {
   componentDidMount() {
     const { initialSnapIndex } = this.props;
 
-    //set correct scrollable index when mounting view for the first 
+    //set correct scrollable index when mounting view for the first
     if(initialSnapIndex) {
       this._initScrollableIndexTimer = setInterval( () => {
         if(this._scrollable && this._scrollable.snapTo) {
@@ -102,7 +102,7 @@ class ScrollableContainer extends PureComponent {
     if(this.props.snapTo && prevProps.snapTo != this.props.snapTo){
       this._scrollable.snapTo(this.props.snapTo);
     }
-        
+
     //console.log(prevSnap, currentSnap);
 
     if(prevProps.data !== this.props.data){
@@ -151,7 +151,7 @@ class ScrollableContainer extends PureComponent {
   }
 
   _closePressed = () => {
-    const { 
+    const {
       closeSnapIndex = this.props.snapPoints.length - 1
     } = this.props;
     //this._onSettle(closeSnapIndex);
@@ -168,14 +168,15 @@ class ScrollableContainer extends PureComponent {
     return (
       <Animated.View onStartShouldSetResponder={this.props.onPressedHeader} style={[styles.header, { borderTopRightRadius: this._borderRadius}]}>
         <View style={[styles.panelHandle]} />
-        <Animated.View style={[styles.xView, {marginTop: 15}, 
+        <Animated.View style={[styles.xView, {marginTop: 15},
           { transform: [{ scale: this._translateCloseButton } ]}
           ]}>
             <ScrollableContainerTouchableOpacity  onPress={this._closePressed}>
               <Feather name={'x'} size={30} color={Colors.grayHandle} />
-          </ScrollableContainerTouchableOpacity> 
+          </ScrollableContainerTouchableOpacity>
         </Animated.View>
         <HeaderTextComponent></HeaderTextComponent>
+
       </Animated.View>);
   }
 
@@ -186,38 +187,49 @@ class ScrollableContainer extends PureComponent {
       renderItem,
       ListHeaderComponent,
       onEndReached = ()=>{} } = this.props;
+      console.log(renderItem)
+      return (
+        <>
 
-      return (<AsyncOperationStatusIndicator
-        loading={true}
-        success={this.state.data && this.state.data.length>0}
-        error={false}
-        loadingLayout={
-          <LoadingLayoutVerticalItemsFlatlist 
-            numColumns={numColumns}
-            key={"shimmer-layout" + numColumns} 
-            itemStyle={styles.itemFlatlist} 
-            style={styles.listStyleLL} 
-            bodyContainerStyle={styles.listContainer}/>}>
+          <AsyncOperationStatusIndicator
+            loading={true}
+            success={this.state.data && this.state.data.length > 0}
+            error={false}
+            loadingLayout={
+              <>
+                <LoadingLayoutVerticalItemsFlatlist
+                  numColumns={numColumns}
+                  key={"shimmer-layout" + numColumns}
+                  itemStyle={styles.itemFlatlist}
+                  style={styles.listStyleLL}
+                  bodyContainerStyle={styles.listContainer}
+                />
+              </>
+            }
+          >
             <FlatList
-            style={{backgroundColor: "white", height: "100%"}}
-            data={this.state.data || []}
-            keyExtractor={keyExtractor}
-            renderItem={renderItem}
-            ListHeaderComponent={ListHeaderComponent || null}
-            onEndReached = {({distanceFromEnd})=> onEndReached()}
-            ref={(ref) => this._scrollableInner = ref}
-            onEndReachedThreshold={0.5} 
-            initialNumToRender={8}
-            maxToRenderPerBatch={2}
-            numColumns={numColumns || 1}
-            contentContainerStyle={styles.contentContainerStyle}/>
-      </AsyncOperationStatusIndicator>);
+              style={{ backgroundColor: "white", height: "100%" }}
+              data={this.state.data || []}
+              keyExtractor={keyExtractor}
+              renderItem={renderItem}
+              ListHeaderComponent={ListHeaderComponent || null}
+              onEndReached={({ distanceFromEnd }) => onEndReached()}
+              ref={(ref) => (this._scrollableInner = ref)}
+              onEndReachedThreshold={0.5}
+              initialNumToRender={8}
+              maxToRenderPerBatch={2}
+              numColumns={numColumns || 1}
+              contentContainerStyle={styles.contentContainerStyle}
+            />
+          </AsyncOperationStatusIndicator>
+        </>
+      );
   }
 
   _renderTopComponentLoading = (state) => {
     if (this.props.renderTopComponentLoading)
       return this.props.renderTopComponentLoading(state);
-    else 
+    else
       return (
         <View style={[styles.loadingDotsView1, {bottom: this.props.snapPoints[1] + 15}]}>
           <View style={styles.loadingDotsView2}>
@@ -228,19 +240,19 @@ class ScrollableContainer extends PureComponent {
   }
 
   render() {
-    const { 
-      numColumns, 
-      snapPoints, 
-      initialSnapIndex, 
-      topComponent, 
-      extraComponent, 
+    const {
+      numColumns,
+      snapPoints,
+      initialSnapIndex,
+      topComponent,
+      extraComponent,
       keyExtractor,
       renderItem,
       ListHeaderComponent,
       data,
       onEndReached = ()=>{} } = this.props;
 
-    if (snapPoints && snapPoints.length > 0)
+      if (snapPoints && snapPoints.length > 0)
       return (
           <View style={[styles.fill, {backgroundColor: "white", zIndex: -1,}]}>
             <Animated.View style={[styles.fill, { transform: [{ translateY: this._translateAnimY } ]}]}>
@@ -272,10 +284,10 @@ class ScrollableContainer extends PureComponent {
               onOpenEnd={this._onOpenEnd}
               enabledBottomInitialAnimation={true}
             />
-            
+
         </View>
       )
-    else 
+    else
       return null;
 
   }
@@ -299,7 +311,7 @@ const styles = StyleSheet.create({
   },
   contentContainerStyle: {
     backgroundColor: 'white',
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10, // TODO: do we need this?
     paddingBottom: 10
   },
   header: {
@@ -318,10 +330,10 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   xView: {
-    position: 'absolute', 
-    right: 8, 
-    top: 0, 
-    height: 30, 
+    position: 'absolute',
+    right: 8,
+    top: 0,
+    height: 30,
     width: 30
   },
   item: {
@@ -334,9 +346,9 @@ const styles = StyleSheet.create({
   extraComponent: {
     width: "100%",
     height: 40,
-    position: "absolute", 
-    top: 0, 
-    left: 0, 
+    position: "absolute",
+    top: 0,
+    left: 0,
     // backgroundColor: "red"
   },
   //loading layout
@@ -347,8 +359,8 @@ const styles = StyleSheet.create({
   },
   itemFlatlist: {
     marginBottom: 10,
-    height: 160, 
-    width: "100%", 
+    height: 160,
+    width: "100%",
   },
   listContainer: {
     backgroundColor: "transparent",

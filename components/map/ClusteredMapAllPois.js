@@ -28,7 +28,7 @@ import {
  * Definitions:
  *  cluster = poi inside > 1 ? then is just a number of inner pois, else is a poi
  */
-class ClusteredMapViewTop extends PureComponent {  
+class ClusteredMapViewTop extends PureComponent {
 
   constructor(props) {
     super(props);
@@ -62,7 +62,7 @@ class ClusteredMapViewTop extends PureComponent {
       // this._onUpdateCoords(this.props.others.geolocation, this.props.others.geolocationSource);
     }
   }
-  
+
   componentWillUnmount() {
   }
 
@@ -106,7 +106,7 @@ class ClusteredMapViewTop extends PureComponent {
     this._coords = position.coords;
     if (nearPois)
       this._region = boundingRect(nearPois, [this._coords.longitude, this._coords.latitude], (p) => _.get(p, "georef.coordinates", []));
-    
+
   }
 
   _animateMapToRegion = (coords, zoom, duration = 200, delay = 0) => {
@@ -119,14 +119,14 @@ class ClusteredMapViewTop extends PureComponent {
       camera.zoom = zoom;
     }
     if(delay && delay > 0) {
-      setTimeout(() => this._mapRef && this._mapRef.animateCamera(camera, {duration: duration}), delay); 
+      setTimeout(() => this._mapRef && this._mapRef.animateCamera(camera, {duration: duration}), delay);
     } else {
       this._mapRef.animateCamera(camera, {duration: duration});
     }
   }
 
   /**
-   * Get current or previous term (category) and its child uuids, 
+   * Get current or previous term (category) and its child uuids,
    */
   _getTerm = (props=this.props) => {
     let term = null;
@@ -144,7 +144,7 @@ class ClusteredMapViewTop extends PureComponent {
   }
 
   /**
-   * Fetch current clusters + pois based on current region 
+   * Fetch current clusters + pois based on current region
    *   clusters === pois when the cluster count is 1
    */
   _fetchClusters() {
@@ -152,14 +152,14 @@ class ClusteredMapViewTop extends PureComponent {
     const { term, childUuids } = this._getTerm();
     const { types } = this.state;
     let region = this._region;
-    
+
     let km = regionDiagonalKm(region);
     let dEps = (km / 1000) / (Layout.window.diagonal / Layout.map.markerPixels);
-    
+
     let p = regionToPoligon(region);
-    
+
     const regionString = `${p[0][0]} ${p[0][1]}, ${p[1][0]} ${p[1][1]}, ${p[2][0]} ${p[2][1]}, ${p[3][0]} ${p[3][1]}, ${p[4][0]} ${p[4][1]}`;
-    
+
     let uuidString = "{";
     for(let i=0; i<childUuids.length; i++) {
       uuidString += i < childUuids.length - 1 ? childUuids + "," : childUuids;
@@ -200,15 +200,15 @@ class ClusteredMapViewTop extends PureComponent {
   }
 
   /**
-   * Called when user presses poi or cluster items, 
-   *   set current poi if cluster.count == 1 else zooms in 
+   * Called when user presses poi or cluster items,
+   *   set current poi if cluster.count == 1 else zooms in
    *   to cluster region
    * @param {*} item: cluster
-   * @param {*} e: press event 
+   * @param {*} e: press event
    */
   _onPoiPress(item, e) {
     e.stopPropagation();
-    if(item.count == 1) { 
+    if(item.count == 1) {
       this._disableRegionChangeCallback = true;
       if(Platform.OS == "ios")
         this._animateMapToRegion({latitude: item.centroid.coordinates[1], longitude: item.centroid.coordinates[0]});
@@ -236,6 +236,10 @@ class ClusteredMapViewTop extends PureComponent {
    * @param {*} region: region boundaries that describe current view
    */
   _onRegionChangeComplete = (region) => {
+    console.log("_onRegionChangeComplete: ", region)
+    if (this.props.onRegionChanged) {
+      this.props.onRegionChanged(region);
+    }
     if(this.props._onMapRegionChanged)
       this.props._onMapRegionChanged();
 
@@ -255,7 +259,7 @@ class ClusteredMapViewTop extends PureComponent {
         this._fetchClusters();
       }, 800);
     }
-      
+
 
     //if (this.props.others.mapIsDragging[this.props.entityType])
     //  this.props.actions.setMapIsDragging(this.props.entityType, false);
@@ -336,7 +340,7 @@ class ClusteredMapViewTop extends PureComponent {
 
   /**
    * Renders single poi marker
-   * @param {*} item 
+   * @param {*} item
    */
   _renderEntityMarker(item) {
     var {term, entityType} = this.props;
@@ -356,14 +360,14 @@ class ClusteredMapViewTop extends PureComponent {
   }
 
   /**
-   * Based on number of elements that a cluster comprises renders 
+   * Based on number of elements that a cluster comprises renders
    * a marker with #of pois or a marker representing the poi category
-   * @param {*} clusters 
+   * @param {*} clusters
    */
   _renderClustersOrPoi = (clusters) => {
     const {term, entityType} = this.props;
     if (clusters)
-      return (clusters.map((cluster, idx) => 
+      return (clusters.map((cluster, idx) =>
           cluster.count > 1 ? (
             <ClusterMarker
               cluster={cluster}
@@ -383,7 +387,7 @@ class ClusteredMapViewTop extends PureComponent {
             />
           )
       ));
-    else 
+    else
       return null;
   }
 
@@ -480,7 +484,7 @@ class ClusteredMapViewTop extends PureComponent {
 
   /**
    * Renders selected poi (changes appereance)
-   * @param {*} selectedPoi 
+   * @param {*} selectedPoi
    */
   _renderSelectedPoi = (selectedPoi) => {
     const { selectedCluster } = this.state;
@@ -497,7 +501,7 @@ class ClusteredMapViewTop extends PureComponent {
           selected={selected}
         />
       )
-    else 
+    else
       return null;
   }
 
@@ -553,17 +557,18 @@ class ClusteredMapViewTop extends PureComponent {
     var {paddingBottom = 65, others} = this.props;
     let { mapType } = others;
 
-    var bottom = paddingBottom - (this.props.fullscreen ? 30 : 0); 
+    var bottom = paddingBottom - (this.props.fullscreen ? 30 : 0);
 
     return (
       <>
-        <Button
-          buttonStyle={styles.filterButton}
-          titleStyle={styles.filterButtonTitle}
-          containerStyle={styles.filterButtonContainer}
-          title={filter}
-          onPress={this._openFilterScreen}
-        />
+        <View pointerEvents="box-none" style={styles.filterButtonContainer}>
+            <Button
+              buttonStyle={styles.filterButton}
+              titleStyle={styles.filterButtonTitle}
+              title={filter}
+              onPress={this._openFilterScreen}
+            />
+        </View>
         <MapView
           ref={ref => this._mapRef = ref}
           mapPadding={{
@@ -588,7 +593,7 @@ class ClusteredMapViewTop extends PureComponent {
           {this._renderClustersOrPoi(clusters)}
           {this._renderSelectedPoi(selectedCluster)}
         </MapView>
-        {this.state.isCoordsInBound && 
+        {this.state.isCoordsInBound &&
           <Button
           type="clear"
           containerStyle={[styles.buttonGoToMyLocationContainer, {bottom: 15 + (paddingBottom || 0) }]}
@@ -685,17 +690,18 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.black,
     height: 32,
     borderRadius: 16,
-    alignSelf: 'center',
     paddingHorizontal: 25,
-    paddingVertical: 7,
-    position: 'absolute'
+    paddingVertical: 7
   },
   filterButtonTitle: {
     fontSize: 14,
     fontFamily: 'montserrat-bold'
   },
   filterButtonContainer: {
-    zIndex: 2
+    zIndex: 2,
+    width: '100%',
+    position: 'absolute',
+    alignItems: 'center'
   }
 });
 
