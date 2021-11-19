@@ -1,6 +1,6 @@
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
 import Colors from '../constants/Colors';
@@ -26,15 +26,15 @@ async function registerForPushNotificationsAsync(tokenOnly=false) {
     // Get the token that uniquely identifies this device
     token = (await Notifications.getExpoPushTokenAsync()).data;
     await AsyncStorage.setItem('expo_token', token);
-  } else { 
+  } else {
     console.log('Not a physical device but storing anyway!!');
     //TODO: remove
     await AsyncStorage.setItem('expo_token', token);
   }
 
-  //Android only. On Android 8.0+, creates a new notification channel to which local and push notifications 
-  //may be posted. Channels are visible to your users in the OS Settings app as "categories", and they 
-  //can change settings or disable notifications entirely on a per-channel basis. 
+  //Android only. On Android 8.0+, creates a new notification channel to which local and push notifications
+  //may be posted. Channels are visible to your users in the OS Settings app as "categories", and they
+  //can change settings or disable notifications entirely on a per-channel basis.
   //NOTE: after calling this method, you may no longer be able to alter the settings for this channel
   if (Platform.OS === 'android') {
     Notifications.setNotificationChannelAsync('default', {

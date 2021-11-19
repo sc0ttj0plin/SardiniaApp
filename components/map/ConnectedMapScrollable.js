@@ -18,7 +18,7 @@ import * as Constants from '../../constants';
 import Colors from '../../constants/Colors';
 import { LoadingLayoutHorizontalItemsFlatlist } from "../layouts";
 import CustomIcon from '../others/CustomIcon';
-const { Value, event, interpolate } = Animated;
+const { Value, event, interpolateNode } = Animated;
 import { Modalize } from 'react-native-modalize';
 import ConnectedEntityWidgetInModal from "../entity/ConnectedEntityWidgetInModal";
 import MapViewTop from "./MapViewTop";

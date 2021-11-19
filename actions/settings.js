@@ -1,6 +1,6 @@
 import * as firebase from "firebase";
 import * as Constants from "../constants";
-import AsyncStorage from "@react-native-community/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import _ from "lodash";
 
 import { INITIAL_STATE } from "../reducers/settings";
